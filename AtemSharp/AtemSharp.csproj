@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>AtemSharp</PackageId>
+        <PackageVersion>1.0.0</PackageVersion>
+        <Authors>Sofie Automation</Authors>
+        <Description>C# library for connecting with ATEM switchers</Description>
+        <Copyright>MIT</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/Sofie-Automation/sofie-atem-connection</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>atem;blackmagic;switcher;video</PackageTags>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.Reactive" Version="6.0.1" />
+    </ItemGroup>
+
+</Project>
