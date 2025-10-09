@@ -34,82 +34,190 @@ The AtemSharp project aims to provide C# implementations of ATEM commands that a
 
 - Look for test data in the TypeScript test files or `libatem-data.json`
 - This will help validate your C# implementation against known good data
+- It also gives you a hint for the actual types of the properties as it contains data assigned to them or expected from them
 
 ## 🏗️ Phase 2: Create C# Command Classes
 
 ### 2.1 WritableCommands (Outgoing)
 
-WritableCommands are used to send data to the ATEM device. They extend `WritableCommand<T>` and implement serialization logic.
+WritableCommands are used to send data to the ATEM device. They extend `SerializedCommand` and implement serialization logic with automatic flag management.
 
 ```csharp
-using AtemSharp.Commands3;
+using AtemSharp.Commands;
 using AtemSharp.Enums;
 using AtemSharp.Lib;
+using AtemSharp.State;
 
-namespace AtemSharp.Commands3.YourNamespace;
+namespace AtemSharp.Commands.YourNamespace;
 
 /// <summary>
 /// Command to update [describe what this command does]
 /// </summary>
 [Command("CAMH")] // Use the rawName from TypeScript
-public class YourCommand : WritableCommand<YourCommand>
+public class YourCommand : SerializedCommand
 {
+    private double _propertyName;
+    private int _anotherProperty;
+
+    /// <summary>
+    /// Create command initialized with current state values
+    /// </summary>
+    /// <param name="currentState">Current ATEM state</param>
+    /// <exception cref="InvalidIdError">Thrown if required state not available</exception>
+    public YourCommand(AtemState currentState)
+    {
+        // If old state does not exist, set Properties (instead of backing fields) to default values,
+        // so all flags are set (i.e. all values are to be applied by the ATEM)
+        if (currentState.Audio?.Headphones == null)
+        {
+            PropertyName = 0.0;
+            AnotherPropertiy = 10;
+            return;
+        }
+
+        var audioData = currentState.Audio.Headphones;
+        
+        // Initialize from current state (direct field access = no flags set)
+        _propertyName = audioData.PropertyName;
+        _anotherProperty = audioData.AnotherProperty;
+    }
+
     /// <summary>
     /// [Property description] in [units], [range]
     /// </summary>
-    [CommandProperty(1 << 0, 0)] // maskFlag, field index
-    public double? PropertyName { get; set; }
+    public double PropertyName
+    {
+        get => _propertyName;
+        set
+        {
+            // Validation (if applicable)
+            if (value < -60.0 || value > 6.0) {
+                throw new ArgumentOutOfRangeException(nameof(value), "PropertyName must be between -60.0 and +6.0");
+            }
+            
+            _propertyName = value;
+            Flag |= 1 << 0;  // Automatic flag setting!
+        }
+    }
 
     /// <summary>
     /// [Another property description]
     /// </summary>
-    [CommandProperty(1 << 1, 1)]
-    public int? AnotherProperty { get; set; }
-
-    // Internal properties that hold the actual values to write (like TypeScript this.properties)
-    public double ActualPropertyName { get; set; } = 0.0;
-    public int ActualAnotherProperty { get; set; } = 0;
+    public int AnotherProperty
+    {
+        get => _anotherProperty;
+        set
+        {
+            _anotherProperty = value;
+            Flag |= 1 << 1;  // Automatic flag setting!
+        }
+    }
 
     /// <inheritdoc />
-    public override Stream Serialize(ProtocolVersion version)
+    public override byte[] Serialize(ProtocolVersion version)
     {
-        var buffer = new byte[12]; // Commands3 typically use 12-byte payloads
+        using var memoryStream = new MemoryStream(6);
+        using var writer = new BinaryWriter(memoryStream);
         
-        // Calculate flag based on which properties are explicitly set (not null)
-        byte flag = 0;
-        if (PropertyName.HasValue) flag |= 1 << 0;
-        if (AnotherProperty.HasValue) flag |= 1 << 1;
+        // Write flag as single byte (matching TypeScript pattern)
+        writer.Write((byte)Flag);
+        writer.Pad(1); // Explicit padding when needed
         
-        // Write flag at byte 0
-        buffer[0] = flag;
+        // Write all property values using extension methods
+        writer.WriteUInt16(AtemUtil.DecibelToUInt16BE(PropertyName));
+        writer.WriteUInt16((ushort)AnotherProperty);
         
-        // Write properties using appropriate converters
-        BinaryPrimitives.WriteUInt16BigEndian(buffer.AsSpan(2), 
-            AtemUtil.DecibelToUInt16BE(ActualPropertyName));
-        BinaryPrimitives.WriteUInt16BigEndian(buffer.AsSpan(4), 
-            (ushort)ActualAnotherProperty);
-        
-        return new MemoryStream(buffer);
+        return memoryStream.ToArray();
     }
 }
 ```
 
+**Key Improvements in Modern Serialization Pattern:**
+- ✅ **Return `byte[]` directly**: More efficient than returning `MemoryStream`
+- ✅ **Extension methods**: Use `writer.WriteUInt16()` instead of `BinaryWriterExtensions.WriteUInt16BE(writer, ...)`
+- ✅ **Explicit padding**: Use `writer.Pad(n)` for clearer intent and readability
+- ✅ **Flag as byte**: Write `(byte)Flag` to match TypeScript single-byte flag pattern
+- ✅ **Simplified buffer management**: Direct `ToArray()` call eliminates `leaveOpen` complexity
+- ✅ **Simplified naming**: Removed "BE" suffix since ATEM protocol is exclusively big-endian
+
+**Available Extension Methods:**
+```csharp
+// From SerializationExtensions class
+writer.Pad(uint length)           // Write 'length' zero bytes for padding
+writer.WriteUInt16(ushort)        // Write 16-bit unsigned (always big-endian)
+writer.WriteInt16(short)          // Write 16-bit signed (always big-endian)
+
+// Corresponding read methods
+reader.ReadUInt16()               // Read 16-bit unsigned (always big-endian)
+reader.ReadInt16()                // Read 16-bit signed (always big-endian)
+```
+
+**Complete Serialization Example (Based on AudioMixerInputCommand):**
+```csharp
+public override byte[] Serialize(ProtocolVersion version)
+{
+    using var memoryStream = new MemoryStream(12);
+    using var writer = new BinaryWriter(memoryStream);
+    
+    // Flag always written as single byte first
+    writer.Write((byte)Flag);
+    writer.Pad(1);                                    // Pad to align with TypeScript
+    
+    // Write index/identifier (when present)
+    writer.WriteUInt16(Index);
+    
+    // Write enum values as bytes with padding as needed
+    writer.Write((byte)MixOption);
+    writer.Pad(1);                                    // Pad before next multi-byte value
+    
+    // Write computed values using utilities
+    writer.WriteUInt16(AtemUtil.DecibelToUInt16BE(Gain));
+    writer.WriteInt16(AtemUtil.BalanceToInt(Balance));
+    
+    // Write boolean values
+    writer.Write(RcaToXlrEnabled ? (byte)1 : (byte)0);
+    writer.Pad(1);                                    // Final padding if needed
+    
+    return memoryStream.ToArray();
+}
+```
+
+**Key Benefits of This Pattern:**
+- ✅ **State Initialization**: Command starts with current ATEM values automatically
+- ✅ **Automatic Flags**: No need to manually manage flags or call `UpdateProps`
+- ✅ **Type Safety**: No nullable properties since initialization guarantees values
+- ✅ **Validation**: State validation in constructor prevents invalid commands
+- ✅ **Simple Usage**: Just set properties, flags are handled automatically
+
+**Usage Pattern:**
+```csharp
+// Create command with current state
+var command = new YourCommand(currentState);
+
+// Change only what you want - flags set automatically
+command.PropertyName = newValue;      // Flag 0x01 set automatically
+command.AnotherProperty = newValue2;  // Flag 0x02 set automatically
+
+// Send command
+await atem.SendCommand(command);
+```
+
 ### 2.2 DeserializedCommands (Incoming)
 
-DeserializedCommands are used to receive and parse data from the ATEM device. They implement `IDeserializedCommand`.
+DeserializedCommands are used to receive and parse data from the ATEM device. They inherit from `DeserializedCommand`.
 
 ```csharp
-using AtemSharp.Commands3;
+using AtemSharp.Commands;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
-namespace AtemSharp.Commands3.YourNamespace;
+namespace AtemSharp.Commands.YourNamespace;
 
 /// <summary>
 /// Update command for [describe what this updates]
 /// </summary>
 [Command("AMHP")] // Use the rawName from TypeScript
-public class YourUpdateCommand : IDeserializedCommand
+public class YourUpdateCommand : DeserializedCommand
 {
     /// <summary>
     /// [Property description] in [units], [range]
@@ -127,8 +235,8 @@ public class YourUpdateCommand : IDeserializedCommand
         
         return new YourUpdateCommand
         {
-            PropertyName = AtemUtil.UInt16BEToDecibel(reader.ReadUInt16BE()),
-            AnotherProperty = reader.ReadUInt16BE(),
+            PropertyName = AtemUtil.UInt16BEToDecibel(BinaryReaderExtensions.ReadUInt16BE(reader)),
+            AnotherProperty = BinaryReaderExtensions.ReadUInt16BE(reader),
             // Read other properties as needed
         };
     }
@@ -136,18 +244,21 @@ public class YourUpdateCommand : IDeserializedCommand
     /// <inheritdoc />
     public string[] ApplyToState(AtemState state)
     {
-        // Validate state prerequisites
-        if (state.YourStateSection == null)
+        // Validate state prerequisites (same pattern as TypeScript update commands)
+        if (state.Audio == null)
         {
-            throw new InvalidIdError("State Section", "identifier");
+            throw new InvalidIdError("Classic Audio", "");
         }
 
-        // Update the state object
-        state.YourStateSection.PropertyName = PropertyName;
-        state.YourStateSection.AnotherProperty = AnotherProperty;
+        // Update the state object (mirroring TypeScript applyToState logic)
+        if (state.Audio.Headphones == null)
+            state.Audio.Headphones = new ClassicAudioHeadphoneOutputChannel();
+            
+        state.Audio.Headphones.PropertyName = PropertyName;
+        state.Audio.Headphones.AnotherProperty = AnotherProperty;
         
         // Return the state path that was modified for change tracking
-        return new[] { "yourStateSection.propertyName", "yourStateSection.anotherProperty" };
+        return new[] { "audio.headphones.propertyName", "audio.headphones.anotherProperty" };
     }
 }
 ```
@@ -157,20 +268,20 @@ public class YourUpdateCommand : IDeserializedCommand
 ### 3.1 WritableCommand Tests
 
 ```csharp
-using YourCommand = AtemSharp.Commands3.YourNamespace.YourCommand;
+using YourCommand = AtemSharp.Commands.YourNamespace.YourCommand;
 
-namespace AtemSharp.Tests.Commands3;
+namespace AtemSharp.Tests.Commands;
 
 [TestFixture]
 public class YourCommandTests : SerializedCommandTestBase<YourCommand, YourCommandTests.CommandData>
 {
-    /// <summary>
-    /// Specify which byte ranges contain floating-point encoded data
-    /// that should be compared with tolerance for precision differences
-    /// </summary>
+    /// </inheritdoc>
     protected override Range[] GetFloatingPointByteRanges()
     {
-        return new[] { 2..6 }; // Example: bytes 2-5 contain floating-point data
+        return [
+            2..4, // Some field
+            6..9 // Another field
+        ]; 
     }
 
     public class CommandData : CommandDataBase
@@ -181,19 +292,25 @@ public class YourCommandTests : SerializedCommandTestBase<YourCommand, YourComma
 
     protected override YourCommand CreateSut(TestCaseData testCase)
     {
-        var command = new YourCommand();
+        var command = new YourCommand(CreateMinimalStateForTesting());
 
-        // Set the actual values that should be written (like TypeScript this.properties)
-        command.ActualPropertyName = testCase.Command.PropertyName;
-        command.ActualAnotherProperty = testCase.Command.AnotherProperty;
-
-        // Set nullable properties only for those indicated by mask (for flag calculation)
-        if ((testCase.Command.Mask & (1 << 0)) != 0) 
-            command.PropertyName = testCase.Command.PropertyName;
-        if ((testCase.Command.Mask & (1 << 1)) != 0) 
-            command.AnotherProperty = testCase.Command.AnotherProperty;
+        // Set all properties from test data (flags are set from the base class)
+        command.PropertyName = testCase.Command.PropertyName;
+        command.AnotherProperty = testCase.Command.AnotherProperty;
 
         return command;
+    }
+
+    private static AtemState CreateMinimalStateForTesting()
+    {
+        return new AtemState
+        {
+            YourStateSection = new YourStateType
+            {
+                PropertyName = 0.0,  // Default values
+                AnotherProperty = 0  // Default values
+            }
+        };
     }
 }
 ```
@@ -201,9 +318,9 @@ public class YourCommandTests : SerializedCommandTestBase<YourCommand, YourComma
 ### 3.2 DeserializedCommand Tests
 
 ```csharp
-using AtemSharp.Commands3.YourNamespace;
+using AtemSharp.Commands.YourNamespace;
 
-namespace AtemSharp.Tests.Commands3;
+namespace AtemSharp.Tests.Commands;
 
 [TestFixture]
 public class YourUpdateCommandTests : DeserializedCommandTestBase<YourUpdateCommand, YourUpdateCommandTests.CommandData>
@@ -227,20 +344,13 @@ public class YourUpdateCommandTests : DeserializedCommandTestBase<YourUpdateComm
         var floatingPointProps = GetFloatingPointProperties();
         var failures = new List<string>();
 
-        // Compare PropertyName
-        if (floatingPointProps.Contains("PropertyName"))
-        {
-            if (!AreApproximatelyEqual(actualCommand.PropertyName, expectedData.PropertyName))
-            {
-                failures.Add($"PropertyName: expected {expectedData.PropertyName}, actual {actualCommand.PropertyName}");
-            }
-        }
-        else if (!actualCommand.PropertyName.Equals(expectedData.PropertyName))
+        // Compare PropertyName - it is a floating point value so we approximate
+        if (!AreApproximatelyEqual(actualCommand.PropertyName, expectedData.PropertyName))
         {
             failures.Add($"PropertyName: expected {expectedData.PropertyName}, actual {actualCommand.PropertyName}");
         }
 
-        // Compare AnotherProperty
+        // Compare AnotherProperty - it is not floating point so it needs to equal
         if (!actualCommand.AnotherProperty.Equals(expectedData.AnotherProperty))
         {
             failures.Add($"AnotherProperty: expected {expectedData.AnotherProperty}, actual {actualCommand.AnotherProperty}");
@@ -252,8 +362,6 @@ public class YourUpdateCommandTests : DeserializedCommandTestBase<YourUpdateComm
             Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
                        string.Join("\n", failures));
         }
-        
-        Assert.Pass($"All properties match for version {testCase.FirstVersion}");
     }
 }
 ```
@@ -264,21 +372,27 @@ public class YourUpdateCommandTests : DeserializedCommandTestBase<YourUpdateComm
 
 | TypeScript Type | C# (Writable) | C# (Deserialized) | Serialization Helper | Notes |
 |-----------------|---------------|-------------------|---------------------|-------|
-| `number` (decibel) | `double?` | `double` | `AtemUtil.DecibelToUInt16BE` / `UInt16BEToDecibel` | Audio gain values |
-| `number` (integer) | `int?` / `ushort?` | `int` / `ushort` | `reader.ReadUInt16BE()` / `WriteUInt16BE()` | Standard integers |
-| `number` (byte) | `byte?` | `byte` | `reader.ReadByte()` / Direct assignment | Single byte values |
-| `boolean` | `bool?` | `bool` | Convert to/from byte flags | Usually packed in flag bytes |
-| `enum` values | `EnumType?` | `EnumType` | Cast from/to underlying type | Custom enums |
+| `number` (decibel) | `double` | `double` | `AtemUtil.DecibelToUInt16BE` / `UInt16BEToDecibel` | Audio gain values, validation in setter |
+| `number` (percentage) | `double` | `double` | `/100` | Serialized as integer value with the unit 0.01% |
+| `number` (integer) | `int` / `ushort` | `int` / `ushort` | `writer.WriteUInt16()` / `reader.ReadUInt16()` | Standard integers (always big-endian) |
+| `number` (byte) | `byte` | `byte` | Direct assignment | Single byte values |
+| `boolean` | `bool` | `bool` | Convert to/from byte flags | Usually packed in flag bytes |
+| `enum` values | `EnumType` | `EnumType` | Cast from/to underlying type | Custom enums, validation in setter |
+
+**Key Differences from Old Pattern:**
+- ✅ **No Nullable Types**: Writable commands use non-nullable types since they're initialized from state
+- ✅ **Validation in Setters**: Range validation happens when properties are set
+- ✅ **Automatic Flags**: No manual flag calculation needed
 
 ### 4.2 Serialization Helpers
 
 **Reading Data (Deserialized Commands):**
 ```csharp
-// Read big-endian 16-bit integers
-var value = reader.ReadUInt16BE();
+// Read big-endian 16-bit integers using extension methods
+var value = reader.ReadUInt16();
 
 // Read decibel values
-var decibel = AtemUtil.UInt16BEToDecibel(reader.ReadUInt16BE());
+var decibel = AtemUtil.UInt16BEToDecibel(reader.ReadUInt16());
 
 // Read boolean from flag
 var flag = reader.ReadByte();
@@ -287,17 +401,21 @@ var boolValue = (flag & (1 << bitIndex)) != 0;
 
 **Writing Data (Writable Commands):**
 ```csharp
-// Write big-endian 16-bit integers
-BinaryPrimitives.WriteUInt16BigEndian(buffer.AsSpan(offset), value);
+// Write big-endian 16-bit integers using extension methods
+writer.WriteUInt16(value);
 
-// Write decibel values
-BinaryPrimitives.WriteUInt16BigEndian(buffer.AsSpan(offset), 
-    AtemUtil.DecibelToUInt16BE(decibelValue));
+// Write decibel values using utility and extension methods
+writer.WriteUInt16(AtemUtil.DecibelToUInt16BE(decibelValue));
 
-// Write boolean to flag
-byte flag = 0;
-if (boolValue) flag |= 1 << bitIndex;
-buffer[0] = flag;
+// Write single bytes with explicit padding when needed
+writer.Write((byte)enumValue);
+writer.Pad(1); // Add padding byte if required by protocol
+
+// Write boolean values
+writer.Write(boolValue ? (byte)1 : (byte)0);
+
+// Write flags as single byte (not full int)
+writer.Write((byte)Flag);
 ```
 
 ## ✅ Phase 5: Testing & Validation
@@ -315,11 +433,12 @@ dotnet test --filter "FullyQualifiedName~Commands3"
 ### 5.2 Common Issues to Check
 
 - **Byte order**: ATEM uses big-endian encoding for multi-byte values
-- **Buffer size**: Must match exactly (Commands3 typically use 12-byte payloads)
+- **Buffer size**: Must match exactly (typically 12-byte payloads for most commands)
 - **Floating-point precision**: Allow tolerance for decibel conversions due to precision differences
-- **Null handling**: WritableCommands use nullable properties, DeserializedCommands typically don't
-- **Flag calculation**: Only set flag bits for explicitly provided properties in WritableCommands
+- **State initialization**: Writable commands must initialize from current ATEM state
+- **Flag management**: Flags are set automatically when properties change
 - **State paths**: Return correct state modification paths for change tracking
+- **Validation**: Property setters should validate ranges and throw appropriate exceptions
 
 ### 5.3 Validation Checklist
 
@@ -336,8 +455,9 @@ dotnet test --filter "FullyQualifiedName~Commands3"
 Commands are automatically discovered through reflection using the `[Command("RAWNAME")]` attribute. Ensure:
 
 - The `[Command]` attribute has the correct raw name matching the TypeScript version
-- The class is in the appropriate namespace under `AtemSharp.Commands3`
-- The class is `public` and properly inherits from the base class
+- The class is in the appropriate namespace under `AtemSharp.Commands`
+- The class is `public` and properly inherits from the base class (`SerializedCommand` for writable, `IDeserializedCommand` for incoming)
+- If a MinimalProtocolVersion is given, it is also added to the CommandAttribute like this: `[Command("RAWNAME", ProtocolVersion.V3)]`
 
 ### 6.2 Documentation
 
@@ -350,7 +470,7 @@ Commands are automatically discovered through reflection using the `[Command("RA
 
 ### Useful Base Classes and Interfaces
 
-- `WritableCommand<T>` - Base for outgoing commands
+- `SerializedCommand` - Base for outgoing writable commands
 - `IDeserializedCommand` - Interface for incoming commands
 - `CommandTestBase<T>` - Common test functionality
 - `SerializedCommandTestBase<TCommand, TTestData>` - Tests for WritableCommands
@@ -359,22 +479,26 @@ Commands are automatically discovered through reflection using the `[Command("RA
 ### Key Utility Classes
 
 - `AtemUtil` - Conversion helpers for ATEM-specific data formats
-- `BinaryPrimitives` - Big-endian read/write operations
+- `BinaryWriterExtensions` / `BinaryReaderExtensions` - Big-endian read/write operations
 - `InvalidIdError` - Exception for invalid state references
 
 ### Example Commands to Reference
 
-- `AudioMixerHeadphonesCommand` - Simple WritableCommand with multiple properties
+- `AudioMixerHeadphonesCommand` - Simple WritableCommand with state initialization and automatic flags
+- `AudioMixerInputCommand` - WritableCommand with validation and multiple properties
 - `AudioMixerHeadphonesUpdateCommand` - Simple DeserializedCommand with state updates
 - Their corresponding test classes for implementation patterns
 
 ## 🚀 Best Practices
 
-1. **Follow Existing Patterns**: Use the established naming conventions and code structure
-2. **Test-Driven Development**: Write tests based on existing test data before implementing
-3. **Incremental Development**: Start with basic functionality, then add edge cases
-4. **Documentation First**: Write clear XML documentation as you implement
-5. **Validate Against TypeScript**: Ensure byte-for-byte compatibility with the original implementation
+1. **State-First Design**: Always initialize commands from current ATEM state
+2. **Automatic Flag Management**: Let property setters handle flags automatically
+3. **Validation in Setters**: Validate ranges and constraints when properties are set
+4. **Follow Existing Patterns**: Use the established naming conventions and code structure
+5. **Test-Driven Development**: Write tests based on existing test data before implementing
+6. **Incremental Development**: Start with basic functionality, then add edge cases
+7. **Documentation First**: Write clear XML documentation as you implement
+8. **Validate Against TypeScript**: Ensure byte-for-byte compatibility with the original implementation
 
 ---
 

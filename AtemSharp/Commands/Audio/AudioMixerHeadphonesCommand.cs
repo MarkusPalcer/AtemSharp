@@ -7,127 +7,99 @@ namespace AtemSharp.Commands.Audio;
 /// <summary>
 /// Command to update audio mixer headphones properties
 /// </summary>
-public class AudioMixerHeadphonesCommand : WritableCommand<object>
+[Command("CAMH")]
+public class AudioMixerHeadphonesCommand : SerializedCommand
 {
-    public new static readonly Dictionary<string, int> MaskFlags = new()
-    {
-        { "gain", 1 << 0 },
-        { "programOutGain", 1 << 1 },
-        { "talkbackGain", 1 << 2 },
-        { "sidetoneGain", 1 << 3 },
-    };
+	private double _gain;
+	private double _programOutGain;
+	private double _talkbackGain;
+	private double _sidetoneGain;
 
-    public new static readonly string RawName = "CAMH";
+	public AudioMixerHeadphonesCommand(AtemState currentState)
+	{
+		// If the audio state or headphones do not exist, initialize to default values
+		// by setting the properties, thus setting the changed-flag for each property
+		if (currentState.Audio?.Headphones is null)
+		{
+			Gain = 0.0;
+			ProgramOutGain = 0.0;
+			TalkbackGain = 0.0;
+			SidetoneGain = 0.0;
+			return;
+		}
 
-    public AudioMixerHeadphonesCommand() : base()
-    {
-    }
+		_gain = currentState.Audio.Headphones.Gain;
+		_programOutGain = currentState.Audio.Headphones.ProgramOutGain;
+		_talkbackGain = currentState.Audio.Headphones.TalkbackGain;
+		_sidetoneGain = currentState.Audio.Headphones.SidetoneGain;
+	}
 
-    /// <summary>
-    /// Update audio mixer headphones properties
-    /// </summary>
-    /// <param name="gain">Gain in decibel</param>
-    /// <param name="programOutGain">Program out gain in decibel</param>
-    /// <param name="talkbackGain">Talkback gain in decibel</param>
-    /// <param name="sidetoneGain">Sidetone gain in decibel</param>
-    /// <returns>True if any properties were updated</returns>
-    public bool UpdateProps(double? gain = null, double? programOutGain = null, double? talkbackGain = null, double? sidetoneGain = null)
-    {
-        var props = new Dictionary<string, object?>();
-        
-        if (gain.HasValue) props["gain"] = gain.Value;
-        if (programOutGain.HasValue) props["programOutGain"] = programOutGain.Value;
-        if (talkbackGain.HasValue) props["talkbackGain"] = talkbackGain.Value;
-        if (sidetoneGain.HasValue) props["sidetoneGain"] = sidetoneGain.Value;
-        
-        return UpdateProps(props);
-    }
+	/// <summary>
+	/// Gain in decibel, -Infinity to +6dB
+	/// </summary>
+	public double Gain
+	{
+		get => _gain;
+		set
+		{
+			_gain = value;
+			Flag |= 1 << 0;
+		}
+	}
 
-    public override byte[] Serialize(ProtocolVersion version)
-    {
-        var buffer = new byte[12];
-        
-        // Flag
-        buffer[0] = (byte)Flag;
-        
-        // Gain
-        if (_properties.TryGetValue("gain", out var gain))
-        {
-            var gainValue = AtemUtil.DecibelToUInt16BE((double)(gain ?? 0.0));
-            buffer[2] = (byte)(gainValue >> 8);
-            buffer[3] = (byte)(gainValue & 0xFF);
-        }
-        
-        // Program out gain
-        if (_properties.TryGetValue("programOutGain", out var programOutGain))
-        {
-            var gainValue = AtemUtil.DecibelToUInt16BE((double)(programOutGain ?? 0.0));
-            buffer[4] = (byte)(gainValue >> 8);
-            buffer[5] = (byte)(gainValue & 0xFF);
-        }
-        
-        // Talkback gain
-        if (_properties.TryGetValue("talkbackGain", out var talkbackGain))
-        {
-            var gainValue = AtemUtil.DecibelToUInt16BE((double)(talkbackGain ?? 0.0));
-            buffer[6] = (byte)(gainValue >> 8);
-            buffer[7] = (byte)(gainValue & 0xFF);
-        }
-        
-        // Sidetone gain
-        if (_properties.TryGetValue("sidetoneGain", out var sidetoneGain))
-        {
-            var gainValue = AtemUtil.DecibelToUInt16BE((double)(sidetoneGain ?? 0.0));
-            buffer[8] = (byte)(gainValue >> 8);
-            buffer[9] = (byte)(gainValue & 0xFF);
-        }
-        
-        return buffer;
-    }
-}
+	/// <summary>
+	/// Program out gain in decibel, -Infinity to +6dB
+	/// </summary>
+	public double ProgramOutGain
+	{
+		get => _programOutGain;
+		set
+		{
+			_programOutGain = value;
+			Flag |= 1 << 1;
+		}
+	}
 
-/// <summary>
-/// Command received when audio mixer headphones is updated
-/// </summary>
-public class AudioMixerHeadphonesUpdateCommand : DeserializedCommand<ClassicAudioHeadphoneOutputChannel>
-{
-    public new static readonly string RawName = "AMHP";
+	/// <summary>
+	/// Talkback gain in decibel, -Infinity to +6dB
+	/// </summary>
+	public double TalkbackGain
+	{
+		get => _talkbackGain;
+		set
+		{
+			_talkbackGain = value;
+			Flag |= 1 << 2;
+		}
+	}
 
-    public AudioMixerHeadphonesUpdateCommand(ClassicAudioHeadphoneOutputChannel properties) : base(properties)
-    {
-    }
+	/// <summary>
+	/// Sidetone gain in decibel, -Infinity to +6dB
+	/// </summary>
+	public double SidetoneGain
+	{
+		get => _sidetoneGain;
+		set
+		{
+			_sidetoneGain = value;
+			Flag |= 1 << 3;
+		}
+	}
 
-    public static AudioMixerHeadphonesUpdateCommand Deserialize(byte[] rawCommand)
-    {
-        var properties = new ClassicAudioHeadphoneOutputChannel
-        {
-            Gain = AtemUtil.UInt16BEToDecibel((ushort)((rawCommand[0] << 8) | rawCommand[1])),
-            ProgramOutGain = AtemUtil.UInt16BEToDecibel((ushort)((rawCommand[2] << 8) | rawCommand[3])),
-            TalkbackGain = AtemUtil.UInt16BEToDecibel((ushort)((rawCommand[4] << 8) | rawCommand[5])),
-            SidetoneGain = AtemUtil.UInt16BEToDecibel((ushort)((rawCommand[6] << 8) | rawCommand[7]))
-        };
+	/// <inheritdoc />
+	public override byte[] Serialize(ProtocolVersion version)
+	{
+		using var memoryStream = new MemoryStream(12);
+		using var writer = new BinaryWriter(memoryStream);
+		
+		writer.Write((byte)Flag);
+		writer.Pad(1);
+		writer.WriteUInt16(AtemUtil.DecibelToUInt16(Gain));
+		writer.WriteUInt16(AtemUtil.DecibelToUInt16(ProgramOutGain));
+		writer.WriteUInt16(AtemUtil.DecibelToUInt16(TalkbackGain));
+		writer.WriteUInt16(AtemUtil.DecibelToUInt16(SidetoneGain));
+		writer.Pad(2);	
 
-        return new AudioMixerHeadphonesUpdateCommand(properties);
-    }
-
-    public override string[] ApplyToState(AtemState state)
-    {
-        if (state.Audio == null)
-        {
-            throw new InvalidIdError("Classic Audio", "headphones");
-        }
-
-        if (state.Audio.Headphones == null)
-        {
-            state.Audio.Headphones = new ClassicAudioHeadphoneOutputChannel();
-        }
-
-        // Update properties
-        state.Audio.Headphones.Gain = Properties.Gain;
-        state.Audio.Headphones.ProgramOutGain = Properties.ProgramOutGain;
-        state.Audio.Headphones.TalkbackGain = Properties.TalkbackGain;
-        state.Audio.Headphones.SidetoneGain = Properties.SidetoneGain;
-
-        return new[] { "audio.headphones" };
-    }
+		return memoryStream.ToArray();
+	}
 }

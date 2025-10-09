@@ -1,4 +1,3 @@
-using System;
 using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
@@ -8,173 +7,126 @@ namespace AtemSharp.Commands.Audio;
 /// <summary>
 /// Command to update audio mixer input properties
 /// </summary>
-public class AudioMixerInputCommand : WritableCommand<object>
+[Command("CAMI")]
+public class AudioMixerInputCommand : SerializedCommand
 {
-    public new static readonly Dictionary<string, int> MaskFlags = new()
-    {
-        { "mixOption", 1 << 0 },
-        { "gain", 1 << 1 },
-        { "balance", 1 << 2 },
-        { "rcaToXlrEnabled", 1 << 3 },
-    };
+    private AudioMixOption _mixOption;
+    private double _gain;
+    private double _balance;
+    private bool _rcaToXlrEnabled;
 
-    public new static readonly string RawName = "CAMI";
+    /// <summary>
+    /// Audio input index
+    /// </summary>
+    public ushort Index { get; }
 
-    public int Index { get; }
-
-    public AudioMixerInputCommand(int index) : base()
+    /// <summary>
+    /// Create command initialized with current state values
+    /// </summary>
+    /// <param name="index">Audio input index (0-based)</param>
+    /// <param name="currentState">Current ATEM state</param>
+    /// <exception cref="InvalidIdError">Thrown if audio input not available</exception>
+    public AudioMixerInputCommand(ushort index, AtemState currentState)
     {
         Index = index;
+
+        // Validate audio input exists (like TypeScript update command)
+        if (currentState.Audio?.Channels == null || !currentState.Audio.Channels.ContainsKey(index))
+        {
+            throw new InvalidIdError("Classic Audio Input", index);
+        }
+
+        var audioChannel = currentState.Audio.Channels[index];
+        if (audioChannel == null)
+        {
+            throw new InvalidIdError("Classic Audio Input", index);
+        }
+
+        // Initialize from current state (direct field access = no flags)
+        _mixOption = audioChannel.MixOption;
+        _gain = audioChannel.Gain;
+        _balance = audioChannel.Balance;
+        _rcaToXlrEnabled = audioChannel.RcaToXlrEnabled;
     }
 
     /// <summary>
-    /// Update audio mixer input properties
+    /// Audio mix option (Off, On, AfterFader)
     /// </summary>
-    /// <param name="mixOption">Audio mix option</param>
-    /// <param name="gain">Gain in decibel</param>
-    /// <param name="balance">Balance (-50 to +50)</param>
-    /// <param name="rcaToXlrEnabled">RCA to XLR enabled</param>
-    /// <returns>True if any properties were updated</returns>
-    public bool UpdateProps(AudioMixOption? mixOption = null, double? gain = null, double? balance = null, bool? rcaToXlrEnabled = null)
+    public AudioMixOption MixOption
     {
-        var props = new Dictionary<string, object?>();
-        
-        if (mixOption.HasValue) props["mixOption"] = mixOption.Value;
-        if (gain.HasValue) props["gain"] = gain.Value;
-        if (balance.HasValue) props["balance"] = balance.Value;
-        if (rcaToXlrEnabled.HasValue) props["rcaToXlrEnabled"] = rcaToXlrEnabled.Value;
-        
-        return UpdateProps(props);
+        get => _mixOption;
+        set
+        {
+            _mixOption = value;
+            Flag |= 1 << 0;
+        }
     }
 
+    /// <summary>
+    /// Audio gain in decibels (-60.0 to +6.0)
+    /// </summary>
+    public double Gain
+    {
+        get => _gain;
+        set
+        {
+            if (value < -60.0 || value > 6.0)
+                throw new ArgumentOutOfRangeException(nameof(value), "Gain must be between -60.0 and +6.0 decibels");
+            
+            _gain = value;
+            Flag |= 1 << 1;
+        }
+    }
+
+    /// <summary>
+    /// Audio balance (-50.0 to +50.0, where 0 is center)
+    /// </summary>
+    public double Balance
+    {
+        get => _balance;
+        set
+        {
+            if (value < -50.0 || value > 50.0)
+                throw new ArgumentOutOfRangeException(nameof(value), "Balance must be between -50.0 and +50.0");
+            
+            _balance = value;
+            Flag |= 1 << 2;
+        }
+    }
+
+    /// <summary>
+    /// Whether RCA to XLR conversion is enabled
+    /// </summary>
+    public bool RcaToXlrEnabled
+    {
+        get => _rcaToXlrEnabled;
+        set
+        {
+            _rcaToXlrEnabled = value;
+            Flag |= 1 << 3;
+        }
+    }
+
+    /// <summary>
+    /// Serialize command to binary stream for transmission to ATEM
+    /// </summary>
+    /// <param name="version">Protocol version</param>
+    /// <returns>Serialized command data as stream</returns>
     public override byte[] Serialize(ProtocolVersion version)
     {
-        var buffer = new byte[12];
+	    using var memoryStream = new MemoryStream(12);
+	    using var writer = new BinaryWriter(memoryStream);
         
-        // Flag
-        buffer[0] = (byte)Flag;
+	    writer.Write((byte)Flag);
+	    writer.Pad(1);
+		writer.WriteUInt16(Index);
+		writer.Write((byte)MixOption);
+		writer.Pad(1);
+		writer.WriteUInt16(AtemUtil.DecibelToUInt16(Gain));
+		writer.WriteInt16(AtemUtil.BalanceToInt16(Balance));
+		writer.Write(RcaToXlrEnabled ? (byte)1 : (byte)0);
+		writer.Pad(1);
         
-        // Index
-        buffer[2] = (byte)(Index >> 8);
-        buffer[3] = (byte)(Index & 0xFF);
-        
-        // Mix option
-        if (_properties.TryGetValue("mixOption", out var mixOption))
-        {
-            buffer[4] = (byte)((AudioMixOption)(mixOption ?? AudioMixOption.Off));
-        }
-        
-        // Gain
-        if (_properties.TryGetValue("gain", out var gain))
-        {
-            var gainValue = AtemUtil.DecibelToUInt16BE((double)(gain ?? 0.0));
-            buffer[6] = (byte)(gainValue >> 8);
-            buffer[7] = (byte)(gainValue & 0xFF);
-        }
-        
-        // Balance
-        if (_properties.TryGetValue("balance", out var balance))
-        {
-            var balanceValue = AtemUtil.BalanceToInt((double)(balance ?? 0.0));
-            buffer[8] = (byte)(balanceValue >> 8);
-            buffer[9] = (byte)(balanceValue & 0xFF);
-        }
-        
-        // RCA to XLR enabled
-        if (_properties.TryGetValue("rcaToXlrEnabled", out var rcaToXlr))
-        {
-            buffer[10] = (bool)(rcaToXlr ?? false) ? (byte)1 : (byte)0;
-        }
-        
-        return buffer;
-    }
-}
-
-/// <summary>
-/// Command received when audio mixer input is updated
-/// </summary>
-public class AudioMixerInputUpdateCommand : DeserializedCommand<ClassicAudioChannel>
-{
-    public new static readonly string RawName = "AMIP";
-
-    public int Index { get; }
-
-    public AudioMixerInputUpdateCommand(int index, ClassicAudioChannel properties) : base(properties)
-    {
-        Index = index;
-    }
-
-    public static AudioMixerInputUpdateCommand Deserialize(byte[] rawCommand)
-    {
-        var index = (rawCommand[0] << 8) | rawCommand[1];
-        
-        var properties = new ClassicAudioChannel
-        {
-            SourceType = (AudioSourceType)rawCommand[2],
-            PortType = (ExternalPortType)((rawCommand[6] << 8) | rawCommand[7]),
-            MixOption = (AudioMixOption)rawCommand[8],
-            Gain = AtemUtil.UInt16BEToDecibel((ushort)((rawCommand[10] << 8) | rawCommand[11])),
-            Balance = AtemUtil.IntToBalance((short)((rawCommand[12] << 8) | rawCommand[13])),
-            RcaToXlrEnabled = false,
-            SupportsRcaToXlrEnabled = false
-        };
-
-        return new AudioMixerInputUpdateCommand(index, properties);
-    }
-
-    public override string[] ApplyToState(AtemState state)
-    {
-        if (state.Audio == null)
-        {
-            throw new InvalidIdError("Classic Audio", Index);
-        }
-
-        state.Audio.Channels[Index] = Properties;
-        return new[] { $"audio.channels.{Index}" };
-    }
-}
-
-/// <summary>
-/// Audio mixer input update command for V8+ protocol
-/// </summary>
-public class AudioMixerInputUpdateV8Command : DeserializedCommand<ClassicAudioChannel>
-{
-    public new static readonly ProtocolVersion MinimumVersion = ProtocolVersion.V8_0;
-    public new static readonly string RawName = "AMIP";
-
-    public int Index { get; }
-
-    public AudioMixerInputUpdateV8Command(int index, ClassicAudioChannel properties) : base(properties)
-    {
-        Index = index;
-    }
-
-    public static AudioMixerInputUpdateV8Command Deserialize(byte[] rawCommand)
-    {
-        var index = (rawCommand[0] << 8) | rawCommand[1];
-        
-        var properties = new ClassicAudioChannel
-        {
-            SourceType = (AudioSourceType)rawCommand[2],
-            PortType = (ExternalPortType)((rawCommand[6] << 8) | rawCommand[7]),
-            MixOption = (AudioMixOption)rawCommand[8],
-            Gain = AtemUtil.UInt16BEToDecibel((ushort)((rawCommand[10] << 8) | rawCommand[11])),
-            Balance = AtemUtil.IntToBalance((short)((rawCommand[12] << 8) | rawCommand[13])),
-            RcaToXlrEnabled = rawCommand[14] != 0,
-            SupportsRcaToXlrEnabled = rawCommand[15] != 0
-        };
-
-        return new AudioMixerInputUpdateV8Command(index, properties);
-    }
-
-    public override string[] ApplyToState(AtemState state)
-    {
-        if (state.Audio == null)
-        {
-            throw new InvalidIdError("Classic Audio", Index);
-        }
-
-        state.Audio.Channels[Index] = Properties;
-        return new[] { $"audio.channels.{Index}" };
+        return memoryStream.ToArray();
     }
 }

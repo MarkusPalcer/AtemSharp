@@ -21,11 +21,16 @@ public class AudioState
     /// Monitor audio channel
     /// </summary>
     public ClassicAudioMonitorChannel? Monitor { get; set; }
-    
+
     /// <summary>
     /// Headphones audio channel
     /// </summary>
-    public ClassicAudioHeadphoneOutputChannel? Headphones { get; set; }
+    public ClassicAudioHeadphoneOutputChannel? Headphones { get; set; } = new();
+    
+    /// <summary>
+    /// Whether audio follows video crossfade transitions
+    /// </summary>
+    public bool? AudioFollowVideoCrossfadeTransitionEnabled { get; set; }
 }
 
 /// <summary>
@@ -118,12 +123,17 @@ public class ClassicAudioMonitorChannel
     /// <summary>
     /// Solo input
     /// </summary>
-    public int? SoloInput { get; set; }
+    public ushort SoloSource { get; set; }
     
     /// <summary>
     /// Dim enabled
     /// </summary>
     public bool Dim { get; set; }
+    
+    /// <summary>
+    /// Dim level (0%-100%)
+    /// </summary>
+    public double DimLevel { get; set; }
 }
 
 /// <summary>
