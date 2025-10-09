@@ -94,10 +94,10 @@ public class AudioMixerHeadphonesCommand : SerializedCommand
 		
 		writer.Write((byte)Flag);
 		writer.Pad(1);
-		writer.WriteUInt16(AtemUtil.DecibelToUInt16(Gain));
-		writer.WriteUInt16(AtemUtil.DecibelToUInt16(ProgramOutGain));
-		writer.WriteUInt16(AtemUtil.DecibelToUInt16(TalkbackGain));
-		writer.WriteUInt16(AtemUtil.DecibelToUInt16(SidetoneGain));
+		writer.WriteUInt16BigEndian(Gain.DecibelToUInt16());
+		writer.WriteUInt16BigEndian(ProgramOutGain.DecibelToUInt16());
+		writer.WriteUInt16BigEndian(TalkbackGain.DecibelToUInt16());
+		writer.WriteUInt16BigEndian(SidetoneGain.DecibelToUInt16());
 		writer.Pad(2);	
 
 		return memoryStream.ToArray();

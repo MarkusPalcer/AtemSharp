@@ -89,12 +89,12 @@ public class DataTransferDownloadRequestCommand : SerializedCommand
         using var memoryStream = new MemoryStream(12);
         using var writer = new BinaryWriter(memoryStream);
         
-        writer.WriteUInt16(TransferId);         // Position 0-1
-        writer.WriteUInt16(TransferStoreId);    // Position 2-3
+        writer.WriteUInt16BigEndian(TransferId);         // Position 0-1
+        writer.WriteUInt16BigEndian(TransferStoreId);    // Position 2-3
         writer.Pad(2);                          // Position 4-5 (padding)
-        writer.WriteUInt16(TransferIndex);      // Position 6-7
-        writer.WriteUInt16(TransferType);       // Position 8-9 (Unknown in test data)
-        writer.WriteUInt16(Unknown2);           // Position 10-11 (Unknown2 in test data)
+        writer.WriteUInt16BigEndian(TransferIndex);      // Position 6-7
+        writer.WriteUInt16BigEndian(TransferType);       // Position 8-9 (Unknown in test data)
+        writer.WriteUInt16BigEndian(Unknown2);           // Position 10-11 (Unknown2 in test data)
         
         return memoryStream.ToArray();
     }

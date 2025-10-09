@@ -79,7 +79,7 @@ public class MyCommand : SerializableCommand
     
     public override void Serialize(BinaryWriter writer)
     {
-        writer.WriteUInt16((ushort)Parameter1);
+        writer.WriteUInt16BigEndian((ushort)Parameter1);
         writer.WriteBoolean(Parameter2);
     }
 }
@@ -95,7 +95,7 @@ public class MyStatusCommand : DeserializableCommand
     
     public override void Deserialize(BinaryReader reader)
     {
-        Status = reader.ReadUInt16();
+        Status = reader.ReadUInt16BigEndian();
     }
 }
 ```

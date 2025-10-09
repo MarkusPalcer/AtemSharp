@@ -51,13 +51,13 @@ public class AudioMixerMonitorUpdateCommand : IDeserializedCommand
 		
 		var enabled = reader.ReadByte() > 0; // byte 0
 		reader.ReadByte(); // Skip byte 1 (padding)
-		var gain = AtemUtil.UInt16ToDecibel(SerializationExtensions.ReadUInt16(reader)); // bytes 2-3
+		var gain = reader.ReadUInt16BigEndian().UInt16ToDecibel(); // bytes 2-3
 		var mute = reader.ReadByte() > 0; // byte 4
 		var solo = reader.ReadByte() > 0; // byte 5
-		var soloSource = SerializationExtensions.ReadUInt16(reader); // bytes 6-7
+		var soloSource = reader.ReadUInt16BigEndian(); // bytes 6-7
 		var dim = reader.ReadByte() > 0; // byte 8
 		reader.ReadByte(); // Skip byte 9 (padding)
-		var dimLevel = SerializationExtensions.ReadUInt16(reader) / 100.0; // bytes 10-11
+		var dimLevel = reader.ReadUInt16BigEndian() / 100.0; // bytes 10-11
 		
 		return new AudioMixerMonitorUpdateCommand
 		{

@@ -103,7 +103,7 @@ public class DataTransferFileDescriptionCommand : SerializedCommand
         using var writer = new BinaryWriter(memoryStream);
 
         // Write transfer ID (2 bytes)
-        writer.WriteUInt16(TransferId);
+        writer.WriteUInt16BigEndian(TransferId);
 
         // Write name (64 bytes, null-terminated UTF-8)
         var nameBytes = new byte[64];

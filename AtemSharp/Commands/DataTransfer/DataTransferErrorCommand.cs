@@ -31,7 +31,7 @@ public class DataTransferErrorCommand : IDeserializedCommand
         
         return new DataTransferErrorCommand
         {
-            TransferId = SerializationExtensions.ReadUInt16(reader),
+            TransferId = reader.ReadUInt16BigEndian(),
             ErrorCode = (ErrorCode)reader.ReadByte()
         };
     }

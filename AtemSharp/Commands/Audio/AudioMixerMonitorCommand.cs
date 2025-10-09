@@ -142,13 +142,13 @@ public class AudioMixerMonitorCommand : SerializedCommand
 		
 		writer.Write((byte)Flag);
 		writer.WriteBoolean(Enabled);
-		writer.WriteUInt16(AtemUtil.DecibelToUInt16(Gain));
+		writer.WriteUInt16BigEndian(Gain.DecibelToUInt16());
 		writer.WriteBoolean(Mute);
 		writer.WriteBoolean(Solo);
-		writer.WriteUInt16((ushort)SoloSource);
+		writer.WriteUInt16BigEndian((ushort)SoloSource);
 		writer.WriteBoolean(Dim);
 		writer.Pad(1);
-		writer.WriteUInt16((ushort)Math.Round(DimLevel * 100));
+		writer.WriteUInt16BigEndian((ushort)Math.Round(DimLevel * 100));
 		
 		return memoryStream.ToArray();
 	}

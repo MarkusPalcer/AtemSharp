@@ -51,8 +51,8 @@ public class DataTransferDataCommand : SerializedCommand, IDeserializedCommand
         using var memoryStream = new MemoryStream(4 + Body.Length);
         using var writer = new BinaryWriter(memoryStream);
         
-        writer.WriteUInt16(TransferId);
-        writer.WriteUInt16((ushort)Body.Length);
+        writer.WriteUInt16BigEndian(TransferId);
+        writer.WriteUInt16BigEndian((ushort)Body.Length);
         writer.Write(Body);
         
         return memoryStream.ToArray();
@@ -67,8 +67,8 @@ public class DataTransferDataCommand : SerializedCommand, IDeserializedCommand
     {
         using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
         
-        var transferId = SerializationExtensions.ReadUInt16(reader);
-        var size = SerializationExtensions.ReadUInt16(reader);
+        var transferId = reader.ReadUInt16BigEndian();
+        var size = reader.ReadUInt16BigEndian();
         var body = reader.ReadBytes(size);
         
         return new DataTransferDataCommand(transferId, body);

@@ -48,7 +48,7 @@ public class DataTransferAckCommand : SerializedCommand
         using var memoryStream = new MemoryStream(4);
         using var writer = new BinaryWriter(memoryStream);
         
-        writer.WriteUInt16(TransferId);
+        writer.WriteUInt16BigEndian(TransferId);
         writer.Write(TransferIndex);
         writer.Pad(1); // Pad to match 4-byte buffer from TypeScript
         

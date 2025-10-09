@@ -13,13 +13,13 @@ public static class SerializationExtensions
 		}
 	}
 	
-	public static void WriteUInt16(this BinaryWriter self, ushort value)
+	public static void WriteUInt16BigEndian(this BinaryWriter self, ushort value)
 	{
 		self.Write((byte)(value >> 8));
 		self.Write((byte)(value & 0xFF));
 	}
 
-	public static void WriteInt16(this BinaryWriter self, short value)
+	public static void WriteInt16BigEndian(this BinaryWriter self, short value)
 	{
 		self.Write((byte)(value >> 8));
 		self.Write((byte)(value & 0xFF));
@@ -37,14 +37,14 @@ public static class SerializationExtensions
 		self.Write(byteValue);
 	}
 
-	public static ushort ReadUInt16(this BinaryReader self)
+	public static ushort ReadUInt16BigEndian(this BinaryReader self)
 	{
 		var high = self.ReadByte();
 		var low = self.ReadByte();
 		return (ushort)((high << 8) | low);
 	}
 
-	public static short ReadInt16(this BinaryReader self)
+	public static short ReadInt16BigEndian(this BinaryReader self)
 	{
 		var high = self.ReadByte();
 		var low = self.ReadByte();

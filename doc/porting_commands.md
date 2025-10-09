@@ -124,8 +124,8 @@ public class YourCommand : SerializedCommand
         writer.Pad(1); // Explicit padding when needed
         
         // Write all property values using extension methods
-        writer.WriteUInt16(AtemUtil.DecibelToUInt16BE(PropertyName));
-        writer.WriteUInt16((ushort)AnotherProperty);
+        writer.WriteUInt16BigEndian(AtemUtil.DecibelToUInt16BE(PropertyName));
+        writer.WriteUInt16BigEndian((ushort)AnotherProperty);
         
         return memoryStream.ToArray();
     }
@@ -134,7 +134,7 @@ public class YourCommand : SerializedCommand
 
 **Key Improvements in Modern Serialization Pattern:**
 - ✅ **Return `byte[]` directly**: More efficient than returning `MemoryStream`
-- ✅ **Extension methods**: Use `writer.WriteUInt16()` instead of `BinaryWriterExtensions.WriteUInt16BE(writer, ...)`
+- ✅ **Extension methods**: Use `writer.WriteUInt16BigEndian()` instead of `BinaryWriterExtensions.WriteUInt16BE(writer, ...)`
 - ✅ **Explicit padding**: Use `writer.Pad(n)` for clearer intent and readability
 - ✅ **Flag as byte**: Write `(byte)Flag` to match TypeScript single-byte flag pattern
 - ✅ **Simplified buffer management**: Direct `ToArray()` call eliminates `leaveOpen` complexity
@@ -144,12 +144,12 @@ public class YourCommand : SerializedCommand
 ```csharp
 // From SerializationExtensions class
 writer.Pad(uint length)           // Write 'length' zero bytes for padding
-writer.WriteUInt16(ushort)        // Write 16-bit unsigned (always big-endian)
-writer.WriteInt16(short)          // Write 16-bit signed (always big-endian)
+writer.WriteUInt16BigEndian(ushort)        // Write 16-bit unsigned (always big-endian)
+writer.WriteInt16BigEndian(short)          // Write 16-bit signed (always big-endian)
 
 // Corresponding read methods
-reader.ReadUInt16()               // Read 16-bit unsigned (always big-endian)
-reader.ReadInt16()                // Read 16-bit signed (always big-endian)
+reader.ReadUInt16BigEndian()               // Read 16-bit unsigned (always big-endian)
+reader.ReadInt16BigEndian()                // Read 16-bit signed (always big-endian)
 ```
 
 **Complete Serialization Example (Based on AudioMixerInputCommand):**
@@ -164,15 +164,15 @@ public override byte[] Serialize(ProtocolVersion version)
     writer.Pad(1);                                    // Pad to align with TypeScript
     
     // Write index/identifier (when present)
-    writer.WriteUInt16(Index);
+    writer.WriteUInt16BigEndian(Index);
     
     // Write enum values as bytes with padding as needed
     writer.Write((byte)MixOption);
     writer.Pad(1);                                    // Pad before next multi-byte value
     
     // Write computed values using utilities
-    writer.WriteUInt16(AtemUtil.DecibelToUInt16BE(Gain));
-    writer.WriteInt16(AtemUtil.BalanceToInt(Balance));
+    writer.WriteUInt16BigEndian(AtemUtil.DecibelToUInt16BE(Gain));
+    writer.WriteInt16BigEndian(AtemUtil.BalanceToInt(Balance));
     
     // Write boolean values
     writer.WriteBoolean(RcaToXlrEnabled);
@@ -374,7 +374,7 @@ public class YourUpdateCommandTests : IDeserializedCommandTestBase<YourUpdateCom
 |-----------------|---------------|-------------------|---------------------|-------|
 | `number` (decibel) | `double` | `double` | `AtemUtil.DecibelToUInt16BE` / `UInt16BEToDecibel` | Audio gain values, validation in setter |
 | `number` (percentage) | `double` | `double` | `/100` | Serialized as integer value with the unit 0.01% |
-| `number` (integer) | `int` / `ushort` | `int` / `ushort` | `writer.WriteUInt16()` / `reader.ReadUInt16()` | Standard integers (always big-endian) |
+| `number` (integer) | `int` / `ushort` | `int` / `ushort` | `writer.WriteUInt16BigEndian()` / `reader.ReadUInt16BigEndian()` | Standard integers (always big-endian) |
 | `number` (byte) | `byte` | `byte` | Direct assignment | Single byte values |
 | `boolean` | `bool` | `bool` | Convert to/from byte flags | Usually packed in flag bytes |
 | `enum` values | `EnumType` | `EnumType` | Cast from/to underlying type | Custom enums, validation in setter |
@@ -389,10 +389,10 @@ public class YourUpdateCommandTests : IDeserializedCommandTestBase<YourUpdateCom
 **Reading Data (Deserialized Commands):**
 ```csharp
 // Read big-endian 16-bit integers using extension methods
-var value = reader.ReadUInt16();
+var value = reader.ReadUInt16BigEndian();
 
 // Read decibel values
-var decibel = AtemUtil.UInt16BEToDecibel(reader.ReadUInt16());
+var decibel = AtemUtil.UInt16BEToDecibel(reader.ReadUInt16BigEndian());
 
 // Read boolean from flag
 var flag = reader.ReadByte();
@@ -402,10 +402,10 @@ var boolValue = (flag & (1 << bitIndex)) != 0;
 **Writing Data (Writable Commands):**
 ```csharp
 // Write big-endian 16-bit integers using extension methods
-writer.WriteUInt16(value);
+writer.WriteUInt16BigEndian(value);
 
 // Write decibel values using utility and extension methods
-writer.WriteUInt16(AtemUtil.DecibelToUInt16BE(decibelValue));
+writer.WriteUInt16BigEndian(AtemUtil.DecibelToUInt16BE(decibelValue));
 
 // Write single bytes with explicit padding when needed
 writer.Write((byte)enumValue);

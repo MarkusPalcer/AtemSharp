@@ -64,15 +64,15 @@ We chose the MemoryStream + BinaryWriter approach because:
 
 1. **Idiomatic C#**: Uses standard .NET patterns for binary serialization
 2. **Maintainability**: Clear, readable code that's easy to debug and extend
-3. **Type Safety**: Extension methods like `WriteUInt16()` and `WriteInt16()` ensure correct endianness while maintaining type safety
+3. **Type Safety**: Extension methods like `WriteUInt16BigEndian()` and `WriteInt16BigEndian()` ensure correct endianness while maintaining type safety
 4. **Consistency**: All commands follow the same serialization pattern
 5. **Reliability**: Automatic memory management eliminates buffer overflow risks
 6. **Performance**: While there's theoretical overhead, real-world performance is adequate for ATEM command frequency
 
 The implementation uses custom extension methods in `SerializationExtensions.cs` to handle:
-- Big-endian byte order conversion (`WriteUInt16`, `WriteInt16`, etc.)
+- Big-endian byte order conversion (`WriteUInt16BigEndian`, `WriteInt16BigEndian`, etc.)
 - Padding for proper command alignment (`Pad()` method)
-- Consistent reading operations (`ReadUInt16`, `ReadInt16`, etc.)
+- Consistent reading operations (`ReadUInt16BigEndian`, `ReadInt16BigEndian`, etc.)
 
 This approach ensures that the serialized output is byte-for-byte identical to the TypeScript implementation while being maintainable and following C# best practices.
 

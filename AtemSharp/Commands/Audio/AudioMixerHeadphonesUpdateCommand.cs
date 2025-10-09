@@ -33,10 +33,10 @@ public class AudioMixerHeadphonesUpdateCommand : IDeserializedCommand
 		
 		return new AudioMixerHeadphonesUpdateCommand
 		{
-			Gain = AtemUtil.UInt16ToDecibel(SerializationExtensions.ReadUInt16(reader)),
-			ProgramOutGain = AtemUtil.UInt16ToDecibel(SerializationExtensions.ReadUInt16(reader)),
-			TalkbackGain = AtemUtil.UInt16ToDecibel(SerializationExtensions.ReadUInt16(reader)),
-			SidetoneGain = AtemUtil.UInt16ToDecibel(SerializationExtensions.ReadUInt16(reader))
+			Gain = reader.ReadUInt16BigEndian().UInt16ToDecibel(),
+			ProgramOutGain = reader.ReadUInt16BigEndian().UInt16ToDecibel(),
+			TalkbackGain = reader.ReadUInt16BigEndian().UInt16ToDecibel(),
+			SidetoneGain = reader.ReadUInt16BigEndian().UInt16ToDecibel()
 		};
 	}
 

@@ -93,8 +93,8 @@ public class AudioMixerMasterCommand : SerializedCommand
         
         writer.Write((byte)Flag);
         writer.Pad(1);
-        writer.WriteUInt16(AtemUtil.DecibelToUInt16(Gain));
-        writer.WriteInt16(AtemUtil.BalanceToInt16(Balance));
+        writer.WriteUInt16BigEndian(Gain.DecibelToUInt16());
+        writer.WriteInt16BigEndian(Balance.BalanceToInt16());
         writer.WriteBoolean(FollowFadeToBlack);
         writer.Pad(1);
         

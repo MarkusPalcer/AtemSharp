@@ -46,14 +46,14 @@ public class AudioMixerInputUpdateCommand : IDeserializedCommand
     {
         using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
 
-        var index = SerializationExtensions.ReadUInt16(reader);
+        var index = reader.ReadUInt16BigEndian();
         var sourceType = (AudioSourceType)reader.ReadByte();
         reader.ReadBytes(3); // Skip 3 bytes padding
-        var portType = (ExternalPortType)SerializationExtensions.ReadUInt16(reader);
+        var portType = (ExternalPortType)reader.ReadUInt16BigEndian();
         var mixOption = (AudioMixOption)reader.ReadByte();
         reader.ReadByte(); // Skip 1 byte padding
-        var gain = AtemUtil.UInt16ToDecibel(SerializationExtensions.ReadUInt16(reader));
-        var balance = AtemUtil.Int16ToBalance(SerializationExtensions.ReadInt16(reader));
+        var gain = reader.ReadUInt16BigEndian().UInt16ToDecibel();
+        var balance = reader.ReadInt16BigEndian().Int16ToBalance();
 
         return new AudioMixerInputUpdateCommand
         {

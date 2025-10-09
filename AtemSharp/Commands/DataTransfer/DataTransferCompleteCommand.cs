@@ -25,7 +25,7 @@ public class DataTransferCompleteCommand : IDeserializedCommand
         
         return new DataTransferCompleteCommand
         {
-            TransferId = SerializationExtensions.ReadUInt16(reader)
+            TransferId = reader.ReadUInt16BigEndian()
         };
     }
 

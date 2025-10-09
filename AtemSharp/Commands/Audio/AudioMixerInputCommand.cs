@@ -120,11 +120,11 @@ public class AudioMixerInputCommand : SerializedCommand
         
 	    writer.Write((byte)Flag);
 	    writer.Pad(1);
-		writer.WriteUInt16(Index);
+		writer.WriteUInt16BigEndian(Index);
 		writer.Write((byte)MixOption);
 		writer.Pad(1);
-		writer.WriteUInt16(AtemUtil.DecibelToUInt16(Gain));
-		writer.WriteInt16(AtemUtil.BalanceToInt16(Balance));
+		writer.WriteUInt16BigEndian(Gain.DecibelToUInt16());
+		writer.WriteInt16BigEndian(Balance.BalanceToInt16());
 		writer.WriteBoolean(RcaToXlrEnabled);
 		writer.Pad(1);
         

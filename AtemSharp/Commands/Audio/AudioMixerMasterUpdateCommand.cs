@@ -34,8 +34,8 @@ public class AudioMixerMasterUpdateCommand : IDeserializedCommand
     {
         using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
 
-        var gain = AtemUtil.UInt16ToDecibel(SerializationExtensions.ReadUInt16(reader));
-        var balance = AtemUtil.Int16ToBalance(SerializationExtensions.ReadInt16(reader));
+        var gain = reader.ReadUInt16BigEndian().UInt16ToDecibel();
+        var balance = reader.ReadInt16BigEndian().Int16ToBalance();
         var followFadeToBlack = reader.ReadBoolean();
 
         return new AudioMixerMasterUpdateCommand

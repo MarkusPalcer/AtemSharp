@@ -89,7 +89,7 @@ public class AudioMixerResetPeaksCommand : SerializedCommand
         
         writer.Write((byte)Flag);
         writer.WriteBoolean(All);
-        writer.WriteUInt16(Input);
+        writer.WriteUInt16BigEndian(Input);
         writer.WriteBoolean(Master);
         writer.WriteBoolean(Monitor);
         writer.Pad(2); // Pad to match 8-byte buffer from TypeScript
