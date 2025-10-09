@@ -14,12 +14,6 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
 		public bool FollowFadeToBlack { get; set; }
 	}
 
-	/// <inheritdoc />
-	protected override string[] GetFloatingPointProperties()
-	{
-		return ["Gain", "Balance"];
-	}
-
 	protected override void CompareCommandProperties(AudioMixerMasterUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
 	{
 		var failures = new List<string>();

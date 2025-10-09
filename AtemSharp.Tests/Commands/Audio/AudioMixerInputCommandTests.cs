@@ -1,7 +1,5 @@
 using AtemSharp.Commands.Audio;
-using AtemSharp.Enums;
 using AtemSharp.Enums.Audio;
-using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Audio;

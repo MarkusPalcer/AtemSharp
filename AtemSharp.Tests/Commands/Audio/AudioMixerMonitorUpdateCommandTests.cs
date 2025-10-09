@@ -69,7 +69,5 @@ public class AudioMixerMonitorUpdateCommandTests : DeserializedCommandTestBase<A
 			Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
 			            string.Join("\n", failures));
 		}
-		
-		Assert.Pass($"All properties match for version {testCase.FirstVersion}");
 	}
 }

@@ -10,21 +10,12 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 	/// <summary>
 	/// Override to specify tolerances for floating-point property comparisons
 	/// </summary>
-	protected virtual double GetFloatingPointTolerance()
+	protected double GetFloatingPointTolerance()
 	{
 		return 0.01; // Default tolerance for decibel values
 	}
 
-	/// <summary>
-	/// Override to specify which properties contain floating-point values
-	/// that should be compared with tolerance
-	/// </summary>
-	protected virtual string[] GetFloatingPointProperties()
-	{
-		return Array.Empty<string>();
-	}
-
-	protected virtual bool AreApproximatelyEqual(double actual, double expected)
+	protected bool AreApproximatelyEqual(double actual, double expected)
 	{
 		if (double.IsInfinity(expected) && double.IsInfinity(actual))
 			return Math.Sign(expected) == Math.Sign(actual);

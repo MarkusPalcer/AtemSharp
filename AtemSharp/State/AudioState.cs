@@ -1,5 +1,3 @@
-using AtemSharp.Enums;
-
 namespace AtemSharp.State;
 
 /// <summary>
@@ -26,5 +24,10 @@ public class AudioState
     /// Monitor audio channel
     /// </summary>
     public ClassicAudioMonitorChannel? Monitor { get; set; }
+    
+    /// <summary>
+    /// Whether audio follows video crossfade transition
+    /// </summary>
+    public bool? AudioFollowVideoCrossfadeTransitionEnabled { get; set; }
     
 }

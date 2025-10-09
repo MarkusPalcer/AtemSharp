@@ -1,5 +1,4 @@
 using AtemSharp.Commands.Audio;
-using AtemSharp.Enums;
 using AtemSharp.Enums.Audio;
 using AtemSharp.Enums.Ports;
 
@@ -19,12 +18,6 @@ public class AudioMixerInputUpdateV8CommandTests : DeserializedCommandTestBase<A
 		public double Balance { get; set; }
 		public bool SupportsRcaToXlrEnabled { get; set; }
 		public bool RcaToXlrEnabled { get; set; }
-	}
-
-	/// <inheritdoc />
-	protected override string[] GetFloatingPointProperties()
-	{
-		return ["Gain", "Balance"];
 	}
 
 	protected override void CompareCommandProperties(AudioMixerInputUpdateV8Command actualCommand, CommandData expectedData, TestCaseData testCase)

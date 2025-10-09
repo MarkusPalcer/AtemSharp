@@ -1,5 +1,4 @@
 using System.Text;
-using AtemSharp.Enums;
 using AtemSharp.Enums.Audio;
 using AtemSharp.Enums.Ports;
 using AtemSharp.Lib;

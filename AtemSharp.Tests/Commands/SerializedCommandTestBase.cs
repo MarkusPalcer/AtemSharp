@@ -16,7 +16,7 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
 		return [];
 	}
 
-	protected virtual bool IsFloatingPointByte(int index, int totalLength)
+	protected bool IsFloatingPointByte(int index, int totalLength)
 	{
 		var ranges = GetFloatingPointByteRanges();
 		foreach (var range in ranges)
@@ -29,7 +29,7 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
 		return false;
 	}
 
-	protected virtual bool AreApproximatelyEqual(byte[] actual, byte[] expected)
+	protected bool AreApproximatelyEqual(byte[] actual, byte[] expected)
 	{
 		if (actual.Length != expected.Length) return false;
 		
@@ -103,14 +103,12 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
 		// Assert - First try exact match
 		if (actualPayload.SequenceEqual(expectedPayload))
 		{
-			Assert.Pass($"Exact match for mask {testCase.Command.Mask:X2}");
 			return;
 		}
 		
 		// Then try approximate match for floating-point fields
 		if (AreApproximatelyEqual(actualPayload, expectedPayload))
 		{
-			Assert.Pass($"Acceptable floating-point precision difference for mask {testCase.Command.Mask:X2}");
 			return;
 		}
 		
