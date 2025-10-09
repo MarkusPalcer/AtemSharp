@@ -1,5 +1,6 @@
 using System.Reflection;
 using AtemSharp.Commands;
+using JetBrains.Annotations;
 
 namespace AtemSharp.Tests.Commands;
 
@@ -22,6 +23,7 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 		// Inherits all properties from base, no additional properties needed
 	}
 
+	[UsedImplicitly(ImplicitUseTargetFlags.Members | ImplicitUseTargetFlags.WithInheritors)]
 	public new abstract class CommandDataBase : CommandTestBase<TTestData>.CommandDataBase
 	{
 		// Base class for test data - derived classes add specific properties
