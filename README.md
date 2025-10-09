@@ -57,63 +57,14 @@ await atem.DisconnectAsync();
 await atem.DestroyAsync();
 ```
 
-## Architecture
+## Documentation
 
-The library is organized into several key namespaces:
+For detailed information, see the documentation in the `doc/` folder:
 
-- `AtemSharp` - Main connection classes (`Atem`, `BasicAtem`)
-- `AtemSharp.Commands` - Command classes for controlling ATEM
-- `AtemSharp.State` - State management classes
-- `AtemSharp.Enums` - Enumerations for ATEM protocols and settings
-- `AtemSharp.Net` - Low-level networking and socket handling
-
-## Connection Options
-
-```csharp
-var atem = new Atem(new AtemOptions
-{
-    Address = "192.168.1.240",
-    Port = 9910, // Default ATEM port
-    DebugBuffers = false,
-    MaxPacketSize = 1416 // Matching ATEM software default
-});
-```
-
-## Events
-
-The library provides several events for monitoring connection and state:
-
-- `Connected` - Fired when connection is established
-- `Disconnected` - Fired when connection is lost
-- `StateChanged` - Fired when ATEM state changes
-- `ReceivedCommands` - Fired when commands are received from ATEM
-- `Error` - Fired when errors occur
-- `Info` - Fired for informational messages
-
-## Commands
-
-Commands are strongly typed classes that can be sent to the ATEM:
-
-```csharp
-// Cut command
-var cut = new CutCommand(mixEffect: 0);
-
-// Multiple commands can be sent together
-await atem.SendCommandsAsync(new ISerializableCommand[] { cut });
-```
-
-## State Management
-
-The ATEM state is automatically maintained as commands are received:
-
-```csharp
-atem.StateChanged += (sender, e) =>
-{
-    var state = e.State;
-    // Access current ATEM state
-    // e.ChangedPaths contains the paths that were modified
-};
-```
+- **[Getting Started](doc/getting-started.md)** - Installation, basic usage, and connection options
+- **[Architecture](doc/architecture.md)** - Library structure and design patterns
+- **[Commands](doc/commands.md)** - Working with ATEM commands and serialization
+- **[Events & State](doc/events.md)** - Event handling and state management
 
 ## Status
 
@@ -129,7 +80,7 @@ This is now a **functional** port of the TypeScript library with significant cap
 - ✅ **Core ATEM commands**: Cut, Auto, Program/Preview Input
 - ✅ **State management** for Mix Effects and device info
 - ✅ **Version detection and handshake protocol**
-- ✅ **Complete examples** and documentation
+- ✅ **Complete documentation** and examples
 - ✅ Unit test framework setup
 - 🔲 Complete command implementations (hundreds more commands)
 - 🔲 Full data transfer functionality
@@ -138,6 +89,8 @@ This is now a **functional** port of the TypeScript library with significant cap
 ## Contributing
 
 This library is part of the Sofie TV Automation system. Contributions are welcome!
+
+See the [development documentation](doc/) for detailed guides on extending the library.
 
 ## License
 
