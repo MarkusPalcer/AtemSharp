@@ -141,12 +141,12 @@ public class AudioMixerMonitorCommand : SerializedCommand
 		using var writer = new BinaryWriter(memoryStream);
 		
 		writer.Write((byte)Flag);
-		writer.Write(Enabled ? (byte)1 : (byte)0);
+		writer.WriteBoolean(Enabled);
 		writer.WriteUInt16(AtemUtil.DecibelToUInt16(Gain));
-		writer.Write(Mute ? (byte)1 : (byte)0);
-		writer.Write(Solo ? (byte)1 : (byte)0);
+		writer.WriteBoolean(Mute);
+		writer.WriteBoolean(Solo);
 		writer.WriteUInt16((ushort)SoloSource);
-		writer.Write(Dim ? (byte)1 : (byte)0);
+		writer.WriteBoolean(Dim);
 		writer.Pad(1);
 		writer.WriteUInt16((ushort)Math.Round(DimLevel * 100));
 		

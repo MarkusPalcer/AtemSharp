@@ -175,7 +175,7 @@ public override byte[] Serialize(ProtocolVersion version)
     writer.WriteInt16(AtemUtil.BalanceToInt(Balance));
     
     // Write boolean values
-    writer.Write(RcaToXlrEnabled ? (byte)1 : (byte)0);
+    writer.WriteBoolean(RcaToXlrEnabled);
     writer.Pad(1);                                    // Final padding if needed
     
     return memoryStream.ToArray();
@@ -412,7 +412,7 @@ writer.Write((byte)enumValue);
 writer.Pad(1); // Add padding byte if required by protocol
 
 // Write boolean values
-writer.Write(boolValue ? (byte)1 : (byte)0);
+writer.WriteBoolean(boolValue);
 
 // Write flags as single byte (not full int)
 writer.Write((byte)Flag);
