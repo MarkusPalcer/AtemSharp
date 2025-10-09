@@ -13,6 +13,14 @@ public static class SerializationExtensions
 		}
 	}
 	
+	public static void WriteUInt32BigEndian(this BinaryWriter self, uint value)
+	{
+		self.Write((byte)(value >> 24));
+		self.Write((byte)(value >> 16));
+		self.Write((byte)(value >> 8));
+		self.Write((byte)(value & 0xFF));
+	}
+	
 	public static void WriteUInt16BigEndian(this BinaryWriter self, ushort value)
 	{
 		self.Write((byte)(value >> 8));

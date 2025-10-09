@@ -146,6 +146,7 @@ public class YourCommand : SerializedCommand
 writer.Pad(uint length)           // Write 'length' zero bytes for padding
 writer.WriteUInt16BigEndian(ushort)        // Write 16-bit unsigned (always big-endian)
 writer.WriteInt16BigEndian(short)          // Write 16-bit signed (always big-endian)
+writer.WriteUInt32BigEndian(uint)          // Write 32-bit unsigned (always big-endian)
 
 // Corresponding read methods
 reader.ReadUInt16BigEndian()               // Read 16-bit unsigned (always big-endian)
