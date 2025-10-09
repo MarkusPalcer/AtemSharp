@@ -22,4 +22,9 @@ public class AudioState
     /// </summary>
     public ClassicAudioHeadphoneOutputChannel? Headphones { get; set; } = new();
     
+    /// <summary>
+    /// Monitor audio channel
+    /// </summary>
+    public ClassicAudioMonitorChannel? Monitor { get; set; }
+    
 }
