@@ -8,9 +8,9 @@
 
 The TypeScript implementation uses Node.js Buffer APIs for binary serialization, writing directly to pre-allocated byte arrays with explicit byte order handling. Direct 1:1 copying of this approach to C# would have several disadvantages:
 
-1. **Platform differences**: Node.js Buffer methods like `writeUInt16BE()` don't have direct C# equivalents
+1. **Platform differences**: Node.js Buffer methods like `writeUInt16()` don't have direct C# equivalents
 2. **Memory management**: Pre-allocating fixed-size byte arrays in C# is less flexible than using streams
-3. **Error-prone manual indexing**: The TS code manually tracks byte positions (e.g., `buffer.writeUInt16BE(value, 6)`), which is fragile and hard to maintain
+3. **Error-prone manual indexing**: The TS code manually tracks byte positions (e.g., `buffer.writeUInt16(value, 6)`), which is fragile and hard to maintain
 4. **Endianness complexity**: Manual byte order conversion in C# would require extensive low-level bit manipulation
 5. **Type safety**: Direct byte array manipulation bypasses C#'s type system benefits
 

@@ -7,7 +7,7 @@ namespace AtemSharp.Commands.DataTransfer;
 /// Command received when a data transfer operation is complete
 /// </summary>
 [Command("FTDC")]
-public class DataTransferCompleteCommand : DeserializedCommand
+public class DataTransferCompleteCommand : IDeserializedCommand
 {
     /// <summary>
     /// ID of the transfer that completed
@@ -34,7 +34,7 @@ public class DataTransferCompleteCommand : DeserializedCommand
     /// </summary>
     /// <param name="state">ATEM state to modify</param>
     /// <returns>List of state paths that were changed (empty for this command)</returns>
-    public override string[] ApplyToState(AtemState state)
+    public string[] ApplyToState(AtemState state)
     {
         // Nothing to do - this is just a notification that a transfer completed
         // The TypeScript implementation also returns an empty array

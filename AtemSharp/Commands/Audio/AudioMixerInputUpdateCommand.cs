@@ -10,7 +10,7 @@ namespace AtemSharp.Commands.Audio;
 /// Update command for audio mixer input properties
 /// </summary>
 [Command("AMIP")]
-public class AudioMixerInputUpdateCommand : DeserializedCommand
+public class AudioMixerInputUpdateCommand : IDeserializedCommand
 {
     /// <summary>
     /// Audio input index
@@ -67,7 +67,7 @@ public class AudioMixerInputUpdateCommand : DeserializedCommand
     }
 
     /// <inheritdoc />
-    public override string[] ApplyToState(AtemState state)
+    public string[] ApplyToState(AtemState state)
     {
         if (state.Audio == null)
         {

@@ -8,7 +8,7 @@ namespace AtemSharp.Commands.Audio;
 /// Update command for audio mixer monitor properties
 /// </summary>
 [Command("AMmO")]
-public class AudioMixerMonitorUpdateCommand : DeserializedCommand
+public class AudioMixerMonitorUpdateCommand : IDeserializedCommand
 {
 	/// <summary>
 	/// Whether the monitor is enabled
@@ -72,7 +72,7 @@ public class AudioMixerMonitorUpdateCommand : DeserializedCommand
 	}
 
 	/// <inheritdoc />
-	public override string[] ApplyToState(AtemState state)
+	public string[] ApplyToState(AtemState state)
 	{
 		if (state.Audio == null)
 		{

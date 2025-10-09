@@ -24,20 +24,6 @@ public static class SerializationExtensions
 		self.Write((byte)(value >> 8));
 		self.Write((byte)(value & 0xFF));
 	}
-	
-	public static ushort ReadUInt16(this BinaryReader self)
-	{
-		var high = self.ReadByte();
-		var low = self.ReadByte();
-		return (ushort)((high << 8) | low);
-	}
-	
-	public static short ReadInt16(this BinaryReader self)
-	{
-		var high = self.ReadByte();
-		var low = self.ReadByte();
-		return (short)((high << 8) | low);
-	}
 
 	/// <summary>
 	/// Write a boolean value to the stream.
@@ -50,4 +36,20 @@ public static class SerializationExtensions
 		var byteValue = value ? (byte)1 : (byte)0;
 		self.Write(byteValue);
 	}
+
+	public static ushort ReadUInt16(this BinaryReader self)
+	{
+		var high = self.ReadByte();
+		var low = self.ReadByte();
+		return (ushort)((high << 8) | low);
+	}
+
+	public static short ReadInt16(this BinaryReader self)
+	{
+		var high = self.ReadByte();
+		var low = self.ReadByte();
+		return (short)((high << 8) | low);
+	}
+	
+	// ReadBoolean is already defined on the BinaryReader class
 }

@@ -5,7 +5,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Audio;
 
 [Command("AMHP")]
-public class AudioMixerHeadphonesUpdateCommand : DeserializedCommand
+public class AudioMixerHeadphonesUpdateCommand : IDeserializedCommand
 {
 	/// <summary>
 	/// Gain in decibel, -Infinity to +6dB
@@ -41,7 +41,7 @@ public class AudioMixerHeadphonesUpdateCommand : DeserializedCommand
 	}
 
 	/// <inheritdoc />
-	public override string[] ApplyToState(AtemState state)
+	public string[] ApplyToState(AtemState state)
 	{
 		if (state.Audio == null)
 		{

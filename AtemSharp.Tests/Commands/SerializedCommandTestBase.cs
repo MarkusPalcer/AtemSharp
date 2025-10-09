@@ -16,6 +16,29 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
 		return [];
 	}
 
+	/// <summary>
+	/// Extract command payload using the length encoded in the ATEM packet header.
+	/// This automatically handles both fixed-length and variable-length commands.
+	/// </summary>
+	/// <param name="fullPacketBytes">The complete packet bytes including headers</param>
+	/// <returns>The command payload bytes</returns>
+	protected static byte[] ExtractExpectedPayload(byte[] fullPacketBytes)
+	{
+		if (fullPacketBytes.Length < 8)
+		{
+			throw new ArgumentException("Packet must be at least 8 bytes (4-byte header + 4-byte command name)");
+		}
+
+		// Read the total packet length from the first 2 bytes (big-endian)
+		var totalPacketLength = (fullPacketBytes[0] << 8) | fullPacketBytes[1];
+		
+		// Command payload length = total packet length - 8 bytes (4-byte packet header + 4-byte command name)
+		var commandPayloadLength = totalPacketLength - 8;
+		
+		// Extract exactly that many bytes after the 8-byte header
+		return ExtractCommandPayload(fullPacketBytes, commandPayloadLength);
+	}
+
 	protected bool IsFloatingPointByte(int index, int totalLength)
 	{
 		var ranges = GetFloatingPointByteRanges();
@@ -92,7 +115,7 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
 	{
 		// Arrange - Extract expected payload from the full packet
 		var fullPacketBytes = ParseHexBytes(testCase.Bytes);
-		var expectedPayload = ExtractCommandPayload(fullPacketBytes, 12); // 12-byte command payload for serialized commands
+		var expectedPayload = ExtractExpectedPayload(fullPacketBytes);
 
 		var command = CreateSut(testCase);
 		command.Flag = (ushort)testCase.Command.Mask;

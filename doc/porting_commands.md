@@ -217,7 +217,7 @@ namespace AtemSharp.Commands.YourNamespace;
 /// Update command for [describe what this updates]
 /// </summary>
 [Command("AMHP")] // Use the rawName from TypeScript
-public class YourUpdateCommand : DeserializedCommand
+public class YourUpdateCommand : IDeserializedCommand
 {
     /// <summary>
     /// [Property description] in [units], [range]
@@ -323,7 +323,7 @@ using AtemSharp.Commands.YourNamespace;
 namespace AtemSharp.Tests.Commands;
 
 [TestFixture]
-public class YourUpdateCommandTests : DeserializedCommandTestBase<YourUpdateCommand, YourUpdateCommandTests.CommandData>
+public class YourUpdateCommandTests : IDeserializedCommandTestBase<YourUpdateCommand, YourUpdateCommandTests.CommandData>
 {
     /// <summary>
     /// Specify which properties contain floating-point values that should be compared with tolerance

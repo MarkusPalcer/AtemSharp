@@ -7,7 +7,7 @@ namespace AtemSharp.Commands.Audio;
 /// Update command for audio mixer properties
 /// </summary>
 [Command("AMPP")]
-public class AudioMixerPropertiesUpdateCommand : DeserializedCommand
+public class AudioMixerPropertiesUpdateCommand : IDeserializedCommand
 {
     /// <summary>
     /// Whether audio follows video crossfade transition
@@ -37,7 +37,7 @@ public class AudioMixerPropertiesUpdateCommand : DeserializedCommand
     /// <param name="state">Current ATEM state to update</param>
     /// <returns>Path indicating what was changed in the state</returns>
     /// <exception cref="InvalidIdError">Thrown if classic audio is not available</exception>
-    public override string[] ApplyToState(AtemState state)
+    public string[] ApplyToState(AtemState state)
     {
         if (state.Audio == null)
         {

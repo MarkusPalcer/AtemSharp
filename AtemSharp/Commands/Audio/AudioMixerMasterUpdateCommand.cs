@@ -8,7 +8,7 @@ namespace AtemSharp.Commands.Audio;
 /// Update command for audio mixer master properties
 /// </summary>
 [Command("AMMO")]
-public class AudioMixerMasterUpdateCommand : DeserializedCommand
+public class AudioMixerMasterUpdateCommand : IDeserializedCommand
 {
     /// <summary>
     /// Audio gain in decibels
@@ -52,7 +52,7 @@ public class AudioMixerMasterUpdateCommand : DeserializedCommand
     /// <param name="state">Current ATEM state to update</param>
     /// <returns>Path indicating what was changed in the state</returns>
     /// <exception cref="InvalidIdError">Thrown if classic audio is not available</exception>
-    public override string[] ApplyToState(AtemState state)
+    public string[] ApplyToState(AtemState state)
     {
         if (state.Audio == null)
         {

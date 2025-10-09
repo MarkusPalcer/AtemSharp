@@ -5,7 +5,7 @@ using JetBrains.Annotations;
 namespace AtemSharp.Tests.Commands;
 
 public abstract class DeserializedCommandTestBase<TCommand, TTestData> : CommandTestBase<TTestData>
-	where TCommand : DeserializedCommand
+	where TCommand : IDeserializedCommand
 	where TTestData : DeserializedCommandTestBase<TCommand, TTestData>.CommandDataBase, new()
 {
 	private const double FloatingPointTolerance = 0.01;
