@@ -13,28 +13,3 @@ public enum ProtocolVersion
     V9_4 = 0x0002001f, // 2.31
     V9_6 = 0x00020020, // 2.32
 }
-
-/// <summary>
-/// Transition styles
-/// </summary>
-public enum TransitionStyle
-{
-    MIX = 0x00,
-    DIP = 0x01,
-    WIPE = 0x02,
-    DVE = 0x03,
-    STING = 0x04,
-}
-
-/// <summary>
-/// Transition selection flags
-/// </summary>
-[Flags]
-public enum TransitionSelection
-{
-    Background = 1 << 0,
-    Key1 = 1 << 1,
-    Key2 = 1 << 2,
-    Key3 = 1 << 3,
-    Key4 = 1 << 4,
-}

@@ -5,10 +5,6 @@ namespace AtemSharp.State;
 /// </summary>
 public class AtemState
 {
-    public DeviceInfo Info { get; set; } = new();
-    public VideoState Video { get; } = new();
-    public SettingsState Settings { get; set; } = new();
-    public Dictionary<int, InputChannelState> Inputs { get; set; } = new();
     public AudioState? Audio { get; set; } 
 
 }
