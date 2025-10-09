@@ -7,20 +7,14 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 	where TCommand : DeserializedCommand
 	where TTestData : DeserializedCommandTestBase<TCommand, TTestData>.CommandDataBase, new()
 {
-	/// <summary>
-	/// Override to specify tolerances for floating-point property comparisons
-	/// </summary>
-	protected double GetFloatingPointTolerance()
-	{
-		return 0.01; // Default tolerance for decibel values
-	}
+	private const double FloatingPointTolerance = 0.01;
 
 	protected bool AreApproximatelyEqual(double actual, double expected)
 	{
 		if (double.IsInfinity(expected) && double.IsInfinity(actual))
 			return Math.Sign(expected) == Math.Sign(actual);
 		
-		return Math.Abs(actual - expected) <= GetFloatingPointTolerance();
+		return Math.Abs(actual - expected) <= FloatingPointTolerance;
 	}
 
 	public new class TestCaseData : CommandTestBase<TTestData>.TestCaseData
@@ -33,7 +27,7 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 		// Base class for test data - derived classes add specific properties
 	}
 
-	protected static TestCaseData[] LoadTestData()
+	private static TestCaseData[] LoadTestData()
 	{
 		// Get the raw name from the CommandAttribute
 		var commandAttribute = typeof(TCommand).GetCustomAttribute<CommandAttribute>();
@@ -100,7 +94,7 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 		var deserializeMethod = typeof(TCommand).GetMethod("Deserialize", 
 		                                                   BindingFlags.Public | BindingFlags.Static,
 		                                                   null,
-		                                                   new[] { typeof(Stream) },
+		                                                   [typeof(Stream)],
 		                                                   null);
 
 		if (deserializeMethod == null)
@@ -109,7 +103,7 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 		}
 
 		using var stream = new MemoryStream(payload);
-		var result = deserializeMethod.Invoke(null, new object[] { stream });
+		var result = deserializeMethod.Invoke(null, [stream]);
 		
 		if (result is not TCommand command)
 		{

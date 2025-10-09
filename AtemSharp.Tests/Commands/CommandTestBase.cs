@@ -1,5 +1,7 @@
 using System.Reflection;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AtemSharp.Tests.Commands;
 
@@ -10,6 +12,16 @@ namespace AtemSharp.Tests.Commands;
 public abstract class CommandTestBase<TTestData>
 	where TTestData : CommandTestBase<TTestData>.CommandDataBase, new()
 {
+
+	[UsedImplicitly(ImplicitUseTargetFlags.Members | ImplicitUseTargetFlags.WithInheritors)]
+	public class PartialTestCaseData
+	{
+		public string Name { get; set; } = "";
+		public int FirstVersion { get; set; }
+		public string Bytes { get; set; } = "";
+		public required JObject Command { get; set; }
+	}
+	
 	public class TestCaseData
 	{
 		public string Name { get; set; } = "";
@@ -41,10 +53,18 @@ public abstract class CommandTestBase<TTestData>
 		
 		using var reader = new StreamReader(stream);
 		var json = reader.ReadToEnd();
-		var allTestCases = JsonConvert.DeserializeObject<TestCaseData[]>(json) ?? [];
+		var allTestCases = JsonConvert.DeserializeObject<PartialTestCaseData[]>(json) ?? [];
 
 		// Filter by the provided command raw name
-		return allTestCases.Where(tc => tc.Name == commandRawName).ToArray();
+		return allTestCases.Where(tc => tc.Name == commandRawName)
+		                   .Select(x => new TestCaseData()
+		                    {
+			                    Command = x.Command.ToObject<TTestData>()!,
+			                    Bytes = x.Bytes,
+			                    FirstVersion = x.FirstVersion,
+			                    Name = x.Name
+		                    })
+		                   .ToArray();
 	}
 
 	/// <summary>
@@ -77,6 +97,7 @@ public abstract class CommandTestBase<TTestData>
 	/// Generate NUnit test cases from the loaded test data.
 	/// Subclasses can override to customize test case naming and description.
 	/// </summary>
+	[UsedImplicitly]
 	protected static IEnumerable<NUnit.Framework.TestCaseData> GenerateTestCases<TCommand>(TestCaseData[] testCases, string commandDisplayName)
 	{
 		Assert.That(testCases.Length, Is.GreaterThan(0), 
