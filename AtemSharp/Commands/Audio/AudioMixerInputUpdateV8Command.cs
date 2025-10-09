@@ -64,8 +64,8 @@ public class AudioMixerInputUpdateV8Command : DeserializedCommand
         reader.ReadByte(); // Skip 1 byte padding
         var gain = AtemUtil.UInt16ToDecibel(SerializationExtensions.ReadUInt16(reader));
         var balance = AtemUtil.Int16ToBalance(SerializationExtensions.ReadInt16(reader));
-        var supportsRcaToXlrEnabled = reader.ReadByte() != 0;
-        var rcaToXlrEnabled = reader.ReadByte() != 0;
+        var supportsRcaToXlrEnabled = reader.ReadBoolean();
+        var rcaToXlrEnabled = reader.ReadBoolean();
 
         return new AudioMixerInputUpdateV8Command
         {

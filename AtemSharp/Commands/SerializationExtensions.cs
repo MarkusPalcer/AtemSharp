@@ -38,4 +38,16 @@ public static class SerializationExtensions
 		var low = self.ReadByte();
 		return (short)((high << 8) | low);
 	}
+
+	/// <summary>
+	/// Write a boolean value to the stream.
+	/// Writes 1 for true, 0 for false.
+	/// </summary>
+	/// <param name="self">The BinaryWriter instance</param>
+	/// <param name="value">The boolean value to write</param>
+	public static void WriteBoolean(this BinaryWriter self, bool value)
+	{
+		var byteValue = value ? (byte)1 : (byte)0;
+		self.Write(byteValue);
+	}
 }

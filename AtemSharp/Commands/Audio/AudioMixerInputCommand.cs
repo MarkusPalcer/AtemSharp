@@ -124,7 +124,7 @@ public class AudioMixerInputCommand : SerializedCommand
 		writer.Pad(1);
 		writer.WriteUInt16(AtemUtil.DecibelToUInt16(Gain));
 		writer.WriteInt16(AtemUtil.BalanceToInt16(Balance));
-		writer.Write(RcaToXlrEnabled ? (byte)1 : (byte)0);
+		writer.WriteBoolean(RcaToXlrEnabled);
 		writer.Pad(1);
         
         return memoryStream.ToArray();
