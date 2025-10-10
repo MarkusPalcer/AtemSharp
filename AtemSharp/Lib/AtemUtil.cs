@@ -50,24 +50,17 @@ public static class AtemUtil
     }
 
     /// <summary>
-    /// Extract a null-terminated string from a byte buffer at the specified position and length
+    /// Extract a null-terminated string from a byte span
     /// </summary>
-    /// <param name="buffer">Byte buffer containing the string data</param>
-    /// <param name="offset">Starting position in the buffer</param>
-    /// <param name="length">Maximum length to read</param>
+    /// <param name="span">Byte span containing the string data</param>
     /// <returns>Extracted string</returns>
-    public static string BufferToNullTerminatedString(byte[] buffer, int offset, int length)
+    public static string ToNullTerminatedString(this Span<byte> span)
     {
-        // Find the null terminator or use the full length
-        var endIndex = offset + length;
-        var nullIndex = Array.IndexOf(buffer, (byte)0, offset, length);
-        if (nullIndex >= 0)
-        {
-            endIndex = nullIndex;
-        }
+        // Find the null terminator or use the full span length
+        var nullIndex = span.IndexOf((byte)0);
+        var length = nullIndex >= 0 ? nullIndex : span.Length;
 
-        // Extract the string from offset to endIndex
-        var stringLength = endIndex - offset;
-        return stringLength > 0 ? Encoding.UTF8.GetString(buffer, offset, stringLength) : string.Empty;
+        // Extract the string from the span
+        return length > 0 ? Encoding.UTF8.GetString(span[..length]) : string.Empty;
     }
 }

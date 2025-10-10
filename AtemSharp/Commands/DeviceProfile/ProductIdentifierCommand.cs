@@ -32,8 +32,10 @@ public class ProductIdentifierCommand : IDeserializedCommand
         using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
 
         // Read 40 bytes for product identifier and extract null-terminated string
-        var productIdentifierBytes = reader.ReadBytes(40);
-        var productIdentifier = AtemUtil.BufferToNullTerminatedString(productIdentifierBytes, 0, 40);
+        Span<byte> productIdentifierBytes = stackalloc byte[40];
+        // ReSharper disable once MustUseReturnValue
+        reader.Read(productIdentifierBytes);
+        var productIdentifier = productIdentifierBytes.ToNullTerminatedString();
 
         // Read model as single byte
         var model = (Model)reader.ReadByte();
