@@ -13,5 +13,10 @@ public class AtemState
     /// <summary>
     /// Audio state for classic ATEM devices
     /// </summary>
-    public AudioState? Audio { get; set; } 
+    public AudioState? Audio { get; set; }
+
+    /// <summary>
+    /// Fairlight audio state for ATEM devices with Fairlight audio support
+    /// </summary>
+    public FairlightAudioState? Fairlight { get; set; }
 }

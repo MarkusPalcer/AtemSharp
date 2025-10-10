@@ -9,4 +9,9 @@ public class DeviceInfo
     /// Audio mixer configuration and capabilities
     /// </summary>
     public AudioMixerInfo? AudioMixer { get; set; }
+
+    /// <summary>
+    /// Fairlight audio mixer configuration and capabilities
+    /// </summary>
+    public FairlightAudioMixerInfo? FairlightMixer { get; set; }
 }
