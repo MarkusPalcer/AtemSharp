@@ -18,6 +18,11 @@ public class DeviceInfo
     public Model Model { get; set; }
 
     /// <summary>
+    /// ATEM protocol API version
+    /// </summary>
+    public ProtocolVersion ApiVersion { get; set; } = ProtocolVersion.Unknown;
+
+    /// <summary>
     /// Power supply status for each power supply in the device
     /// </summary>
     public bool[] Power { get; set; } = [];
