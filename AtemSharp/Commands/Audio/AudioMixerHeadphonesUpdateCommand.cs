@@ -1,4 +1,5 @@
 using System.Text;
+using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
@@ -27,7 +28,7 @@ public class AudioMixerHeadphonesUpdateCommand : IDeserializedCommand
 	/// </summary>
 	public double TalkbackGain { get; set; }
 	
-	public static AudioMixerHeadphonesUpdateCommand Deserialize(Stream stream)
+	public static AudioMixerHeadphonesUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
 	{
 		using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true) ;
 		

@@ -1,4 +1,5 @@
 using System.Text;
+using AtemSharp.Enums;
 using AtemSharp.Enums.Audio;
 using AtemSharp.Enums.Ports;
 using AtemSharp.Lib;
@@ -42,7 +43,7 @@ public class AudioMixerInputUpdateCommand : IDeserializedCommand
     /// </summary>
     public double Balance { get; set; }
 
-    public static AudioMixerInputUpdateCommand Deserialize(Stream stream)
+    public static AudioMixerInputUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
     {
         using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
 

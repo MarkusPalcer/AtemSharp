@@ -1,4 +1,5 @@
 using AtemSharp.Commands.DeviceProfile;
+using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
@@ -77,7 +78,7 @@ public class AudioMixerConfigCommandTests : DeserializedCommandTestBase<AudioMix
         using var stream = new MemoryStream(data);
 
         // Act
-        var command = AudioMixerConfigCommand.Deserialize(stream);
+        var command = AudioMixerConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.Inputs, Is.EqualTo(20));
@@ -93,7 +94,7 @@ public class AudioMixerConfigCommandTests : DeserializedCommandTestBase<AudioMix
         using var stream = new MemoryStream(data);
 
         // Act
-        var command = AudioMixerConfigCommand.Deserialize(stream);
+        var command = AudioMixerConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.Inputs, Is.EqualTo(0));
@@ -109,7 +110,7 @@ public class AudioMixerConfigCommandTests : DeserializedCommandTestBase<AudioMix
         using var stream = new MemoryStream(data);
 
         // Act
-        var command = AudioMixerConfigCommand.Deserialize(stream);
+        var command = AudioMixerConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.Inputs, Is.EqualTo(255));

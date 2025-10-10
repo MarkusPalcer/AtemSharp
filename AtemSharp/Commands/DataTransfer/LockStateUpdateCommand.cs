@@ -1,4 +1,5 @@
 using System.Text;
+using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DataTransfer;
@@ -24,7 +25,7 @@ public class LockStateUpdateCommand : IDeserializedCommand
     /// </summary>
     /// <param name="stream">Binary stream to read from</param>
     /// <returns>Deserialized command</returns>
-    public static LockStateUpdateCommand Deserialize(Stream stream)
+    public static LockStateUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
     {
         using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
         

@@ -63,7 +63,7 @@ public class DataTransferDataCommand : SerializedCommand, IDeserializedCommand
     /// </summary>
     /// <param name="stream">Binary stream to read from</param>
     /// <returns>Deserialized command</returns>
-    public static DataTransferDataCommand Deserialize(Stream stream)
+    public static DataTransferDataCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
     {
         using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
         

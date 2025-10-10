@@ -1,4 +1,5 @@
 using AtemSharp.Commands.DataTransfer;
+using AtemSharp.Enums;
 
 namespace AtemSharp.Tests.Commands.DataTransfer;
 
@@ -62,7 +63,7 @@ public class LockStateUpdateCommandTests : DeserializedCommandTestBase<LockState
         using var stream = new MemoryStream(data);
 
         // Act
-        var command = LockStateUpdateCommand.Deserialize(stream);
+        var command = LockStateUpdateCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.Index, Is.EqualTo(7634));
@@ -77,7 +78,7 @@ public class LockStateUpdateCommandTests : DeserializedCommandTestBase<LockState
         using var stream = new MemoryStream(data);
 
         // Act
-        var command = LockStateUpdateCommand.Deserialize(stream);
+        var command = LockStateUpdateCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.Index, Is.EqualTo(11672));

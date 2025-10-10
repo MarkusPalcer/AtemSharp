@@ -1,4 +1,5 @@
 using AtemSharp.Commands.DataTransfer;
+using AtemSharp.Enums;
 
 namespace AtemSharp.Tests.Commands.DataTransfer;
 
@@ -60,7 +61,7 @@ public class DataTransferCompleteCommandTests : DeserializedCommandTestBase<Data
         stream.Position = 0;
 
         // Act
-        var command = DataTransferCompleteCommand.Deserialize(stream);
+        var command = DataTransferCompleteCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.TransferId, Is.EqualTo(expectedTransferId));
@@ -79,7 +80,7 @@ public class DataTransferCompleteCommandTests : DeserializedCommandTestBase<Data
         stream.Position = 0;
 
         // Act
-        var command = DataTransferCompleteCommand.Deserialize(stream);
+        var command = DataTransferCompleteCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.TransferId, Is.EqualTo(0));
@@ -99,7 +100,7 @@ public class DataTransferCompleteCommandTests : DeserializedCommandTestBase<Data
         stream.Position = 0;
 
         // Act
-        var command = DataTransferCompleteCommand.Deserialize(stream);
+        var command = DataTransferCompleteCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.TransferId, Is.EqualTo(maxTransferId));

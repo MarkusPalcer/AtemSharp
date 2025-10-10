@@ -1,4 +1,5 @@
 using System.Text;
+using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DeviceProfile;
@@ -19,7 +20,7 @@ public class MacroPoolConfigCommand : IDeserializedCommand
     /// </summary>
     /// <param name="stream">Binary stream containing command data</param>
     /// <returns>Deserialized command instance</returns>
-    public static MacroPoolConfigCommand Deserialize(Stream stream)
+    public static MacroPoolConfigCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
     {
         using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
 

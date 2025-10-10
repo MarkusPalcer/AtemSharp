@@ -54,7 +54,7 @@ public class AudioMixerInputUpdateV8Command : IDeserializedCommand
     /// </summary>
     public bool RcaToXlrEnabled { get; set; }
 
-    public static AudioMixerInputUpdateV8Command Deserialize(Stream stream)
+    public static AudioMixerInputUpdateV8Command Deserialize(Stream stream, ProtocolVersion protocolVersion)
     {
         using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
 

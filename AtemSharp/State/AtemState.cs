@@ -19,4 +19,6 @@ public class AtemState
     /// Fairlight audio state for ATEM devices with Fairlight audio support
     /// </summary>
     public FairlightAudioState? Fairlight { get; set; }
+
+    public MultiViewerState? MultiViewer { get; set; }
 }

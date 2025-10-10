@@ -1,4 +1,5 @@
 using AtemSharp.Commands.DeviceProfile;
+using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
@@ -136,7 +137,7 @@ public class MediaPoolConfigCommandTests : DeserializedCommandTestBase<MediaPool
         using var stream = new MemoryStream(data);
 
         // Act
-        var command = MediaPoolConfigCommand.Deserialize(stream);
+        var command = MediaPoolConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.StillCount, Is.EqualTo(20));
@@ -151,7 +152,7 @@ public class MediaPoolConfigCommandTests : DeserializedCommandTestBase<MediaPool
         using var stream = new MemoryStream(data);
 
         // Act
-        var command = MediaPoolConfigCommand.Deserialize(stream);
+        var command = MediaPoolConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.StillCount, Is.EqualTo(0));
@@ -166,7 +167,7 @@ public class MediaPoolConfigCommandTests : DeserializedCommandTestBase<MediaPool
         using var stream = new MemoryStream(data);
 
         // Act
-        var command = MediaPoolConfigCommand.Deserialize(stream);
+        var command = MediaPoolConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.StillCount, Is.EqualTo(255));

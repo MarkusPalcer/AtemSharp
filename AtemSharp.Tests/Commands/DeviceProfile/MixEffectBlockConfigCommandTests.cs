@@ -1,4 +1,5 @@
 using AtemSharp.Commands.DeviceProfile;
+using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
@@ -65,7 +66,7 @@ public class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixE
         using var stream = new MemoryStream(data);
 
         // Act
-        var command = MixEffectBlockConfigCommand.Deserialize(stream);
+        var command = MixEffectBlockConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.Index, Is.EqualTo(3));
@@ -80,7 +81,7 @@ public class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixE
         using var stream = new MemoryStream(data);
 
         // Act
-        var command = MixEffectBlockConfigCommand.Deserialize(stream);
+        var command = MixEffectBlockConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.Index, Is.EqualTo(0));
@@ -95,7 +96,7 @@ public class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixE
         using var stream = new MemoryStream(data);
 
         // Act
-        var command = MixEffectBlockConfigCommand.Deserialize(stream);
+        var command = MixEffectBlockConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.Index, Is.EqualTo(255));
@@ -110,7 +111,7 @@ public class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixE
         using var stream = new MemoryStream(data);
 
         // Act
-        var command = MixEffectBlockConfigCommand.Deserialize(stream);
+        var command = MixEffectBlockConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.Index, Is.EqualTo(0));

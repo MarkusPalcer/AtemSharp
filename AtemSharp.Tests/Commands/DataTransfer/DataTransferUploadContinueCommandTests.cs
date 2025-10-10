@@ -1,4 +1,5 @@
 using AtemSharp.Commands.DataTransfer;
+using AtemSharp.Enums;
 
 namespace AtemSharp.Tests.Commands.DataTransfer;
 
@@ -87,7 +88,7 @@ public class DataTransferUploadContinueCommandTests : DeserializedCommandTestBas
         stream.Position = 0;
 
         // Act
-        var command = DataTransferUploadContinueCommand.Deserialize(stream);
+        var command = DataTransferUploadContinueCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.TransferId, Is.EqualTo(expectedTransferId));
@@ -108,7 +109,7 @@ public class DataTransferUploadContinueCommandTests : DeserializedCommandTestBas
         stream.Position = 0;
 
         // Act
-        var command = DataTransferUploadContinueCommand.Deserialize(stream);
+        var command = DataTransferUploadContinueCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.TransferId, Is.EqualTo(0));
@@ -139,7 +140,7 @@ public class DataTransferUploadContinueCommandTests : DeserializedCommandTestBas
         stream.Position = 0;
 
         // Act
-        var command = DataTransferUploadContinueCommand.Deserialize(stream);
+        var command = DataTransferUploadContinueCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.TransferId, Is.EqualTo(maxValue));
@@ -172,7 +173,7 @@ public class DataTransferUploadContinueCommandTests : DeserializedCommandTestBas
         stream.Position = 0;
 
         // Act
-        var command = DataTransferUploadContinueCommand.Deserialize(stream);
+        var command = DataTransferUploadContinueCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.TransferId, Is.EqualTo(transferId));
@@ -205,7 +206,7 @@ public class DataTransferUploadContinueCommandTests : DeserializedCommandTestBas
         stream.Position = 0;
 
         // Act
-        var command = DataTransferUploadContinueCommand.Deserialize(stream);
+        var command = DataTransferUploadContinueCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert - padding bytes should not affect the results
         Assert.That(command.TransferId, Is.EqualTo(expectedTransferId));

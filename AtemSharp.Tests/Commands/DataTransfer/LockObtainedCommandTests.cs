@@ -1,4 +1,5 @@
 using AtemSharp.Commands.DataTransfer;
+using AtemSharp.Enums;
 
 namespace AtemSharp.Tests.Commands.DataTransfer;
 
@@ -60,7 +61,7 @@ public class LockObtainedCommandTests : DeserializedCommandTestBase<LockObtained
         stream.Position = 0;
 
         // Act
-        var command = LockObtainedCommand.Deserialize(stream);
+        var command = LockObtainedCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.Index, Is.EqualTo(expectedIndex));
@@ -79,7 +80,7 @@ public class LockObtainedCommandTests : DeserializedCommandTestBase<LockObtained
         stream.Position = 0;
 
         // Act
-        var command = LockObtainedCommand.Deserialize(stream);
+        var command = LockObtainedCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.Index, Is.EqualTo(0));
@@ -99,7 +100,7 @@ public class LockObtainedCommandTests : DeserializedCommandTestBase<LockObtained
         stream.Position = 0;
 
         // Act
-        var command = LockObtainedCommand.Deserialize(stream);
+        var command = LockObtainedCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.Index, Is.EqualTo(maxIndex));
@@ -129,7 +130,7 @@ public class LockObtainedCommandTests : DeserializedCommandTestBase<LockObtained
             stream.Position = 0;
 
             // Act
-            var command = LockObtainedCommand.Deserialize(stream);
+            var command = LockObtainedCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
             // Assert
             Assert.That(command.Index, Is.EqualTo(expected), $"Failed for bytes 0x{byte1:X2}{byte2:X2}");

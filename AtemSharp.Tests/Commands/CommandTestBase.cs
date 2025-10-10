@@ -1,4 +1,5 @@
 using System.Reflection;
+using AtemSharp.Enums;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -17,7 +18,7 @@ public abstract class CommandTestBase<TTestData>
 	public class PartialTestCaseData
 	{
 		public string Name { get; set; } = "";
-		public int FirstVersion { get; set; }
+		public ProtocolVersion FirstVersion { get; set; }
 		public string Bytes { get; set; } = "";
 		public required JObject Command { get; set; }
 	}
@@ -25,7 +26,7 @@ public abstract class CommandTestBase<TTestData>
 	public class TestCaseData
 	{
 		public string Name { get; set; } = "";
-		public int FirstVersion { get; set; }
+		public ProtocolVersion FirstVersion { get; set; }
 		public string Bytes { get; set; } = "";
 		public TTestData Command { get; set; } = new();
 	}

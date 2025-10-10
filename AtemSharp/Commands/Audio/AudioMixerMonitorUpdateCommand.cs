@@ -1,4 +1,5 @@
 using System.Text;
+using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
@@ -45,7 +46,7 @@ public class AudioMixerMonitorUpdateCommand : IDeserializedCommand
 	/// </summary>
 	public double DimLevel { get; set; }
 	
-	public static AudioMixerMonitorUpdateCommand Deserialize(Stream stream)
+	public static AudioMixerMonitorUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
 	{
 		using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
 		

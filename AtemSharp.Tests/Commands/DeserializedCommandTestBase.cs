@@ -1,5 +1,6 @@
 using System.Reflection;
 using AtemSharp.Commands;
+using AtemSharp.Enums;
 using JetBrains.Annotations;
 
 namespace AtemSharp.Tests.Commands;
@@ -82,7 +83,7 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 		var commandPayload = ExtractCommandPayload(fullPacketBytes);
 
 		// Act - Deserialize the command
-		var actualCommand = DeserializeCommand(commandPayload);
+		var actualCommand = DeserializeCommand(commandPayload, testCase.FirstVersion);
 
 		// Assert - Compare properties
 		CompareCommandProperties(actualCommand, testCase.Command, testCase);
@@ -90,22 +91,22 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 
 	protected abstract void CompareCommandProperties(TCommand actualCommand, TTestData expectedData, TestCaseData testCase);
 
-	private static TCommand DeserializeCommand(byte[] payload)
+	private static TCommand DeserializeCommand(byte[] payload, ProtocolVersion protocolVersion)
 	{
 		// Use reflection to call the static Deserialize method
 		var deserializeMethod = typeof(TCommand).GetMethod("Deserialize", 
 		                                                   BindingFlags.Public | BindingFlags.Static,
 		                                                   null,
-		                                                   [typeof(Stream)],
+		                                                   [typeof(Stream), typeof(ProtocolVersion)],
 		                                                   null);
 
 		if (deserializeMethod == null)
 		{
-			throw new InvalidOperationException($"Command {typeof(TCommand).Name} must have a static Deserialize(Stream) method");
+			throw new InvalidOperationException($"Command {typeof(TCommand).Name} must have a static Deserialize(Stream, ProtocolVersion) method");
 		}
 
 		using var stream = new MemoryStream(payload);
-		var result = deserializeMethod.Invoke(null, [stream]);
+		var result = deserializeMethod.Invoke(null, [stream, protocolVersion]);
 		
 		if (result is not TCommand command)
 		{

@@ -1,4 +1,5 @@
 using AtemSharp.Commands.Audio;
+using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Audio;
@@ -76,7 +77,7 @@ public class AudioMixerPropertiesUpdateCommandTests : DeserializedCommandTestBas
 		using var stream = new MemoryStream(data);
 
 		// Act
-		var command = AudioMixerPropertiesUpdateCommand.Deserialize(stream);
+		var command = AudioMixerPropertiesUpdateCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
 		// Assert
 		Assert.That(command.AudioFollowVideo, Is.True);
@@ -90,7 +91,7 @@ public class AudioMixerPropertiesUpdateCommandTests : DeserializedCommandTestBas
 		using var stream = new MemoryStream(data);
 
 		// Act
-		var command = AudioMixerPropertiesUpdateCommand.Deserialize(stream);
+		var command = AudioMixerPropertiesUpdateCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
 		// Assert
 		Assert.That(command.AudioFollowVideo, Is.False);

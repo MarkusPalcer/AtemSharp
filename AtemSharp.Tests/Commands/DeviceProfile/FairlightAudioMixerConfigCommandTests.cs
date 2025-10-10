@@ -1,4 +1,5 @@
 using AtemSharp.Commands.DeviceProfile;
+using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
@@ -68,7 +69,7 @@ public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase
         using var stream = new MemoryStream(data);
 
         // Act
-        var command = FairlightAudioMixerConfigCommand.Deserialize(stream);
+        var command = FairlightAudioMixerConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command, Is.Not.Null);
@@ -84,7 +85,7 @@ public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase
         using var stream = new MemoryStream(data);
 
         // Act
-        var command = FairlightAudioMixerConfigCommand.Deserialize(stream);
+        var command = FairlightAudioMixerConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command, Is.Not.Null);
@@ -100,7 +101,7 @@ public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase
         using var stream = new MemoryStream(data);
 
         // Act
-        var command = FairlightAudioMixerConfigCommand.Deserialize(stream);
+        var command = FairlightAudioMixerConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command, Is.Not.Null);

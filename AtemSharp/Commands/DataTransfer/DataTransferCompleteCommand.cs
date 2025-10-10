@@ -1,4 +1,5 @@
 using System.Text;
+using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DataTransfer;
@@ -19,7 +20,7 @@ public class DataTransferCompleteCommand : IDeserializedCommand
     /// </summary>
     /// <param name="stream">Binary stream to read from</param>
     /// <returns>Deserialized command</returns>
-    public static DataTransferCompleteCommand Deserialize(Stream stream)
+    public static DataTransferCompleteCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
     {
         using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
         

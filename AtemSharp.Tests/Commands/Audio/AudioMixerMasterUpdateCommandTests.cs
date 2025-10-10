@@ -1,4 +1,5 @@
 using AtemSharp.Commands.Audio;
+using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Audio;
@@ -135,7 +136,7 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
 		using var stream = new MemoryStream(testData);
 
 		// Act
-		var command = AudioMixerMasterUpdateCommand.Deserialize(stream);
+		var command = AudioMixerMasterUpdateCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
 		// Assert - Use exact values from the test data JSON
 		Assert.That(command.Gain, Is.EqualTo(-8.006111663332227).Within(0.01));
@@ -157,7 +158,7 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
 		using var stream = new MemoryStream(testData);
 
 		// Act
-		var command = AudioMixerMasterUpdateCommand.Deserialize(stream);
+		var command = AudioMixerMasterUpdateCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
 		// Assert
 		Assert.That(command.Gain, Is.EqualTo(-8.539189295546434).Within(0.01));

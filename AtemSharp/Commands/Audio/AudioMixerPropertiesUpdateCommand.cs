@@ -1,4 +1,5 @@
 using System.Text;
+using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Audio;
@@ -19,7 +20,7 @@ public class AudioMixerPropertiesUpdateCommand : IDeserializedCommand
     /// </summary>
     /// <param name="stream">Binary stream containing command data</param>
     /// <returns>Deserialized command instance</returns>
-    public static AudioMixerPropertiesUpdateCommand Deserialize(Stream stream)
+    public static AudioMixerPropertiesUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
     {
         using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
 

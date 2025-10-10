@@ -1,4 +1,5 @@
 using AtemSharp.Commands.DataTransfer;
+using AtemSharp.Enums;
 using AtemSharp.Enums.DataTransfer;
 
 namespace AtemSharp.Tests.Commands.DataTransfer;
@@ -72,7 +73,7 @@ public class DataTransferErrorCommandTests : DeserializedCommandTestBase<DataTra
         stream.Position = 0;
 
         // Act
-        var command = DataTransferErrorCommand.Deserialize(stream);
+        var command = DataTransferErrorCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.TransferId, Is.EqualTo(expectedTransferId));
@@ -93,7 +94,7 @@ public class DataTransferErrorCommandTests : DeserializedCommandTestBase<DataTra
         stream.Position = 0;
 
         // Act
-        var command = DataTransferErrorCommand.Deserialize(stream);
+        var command = DataTransferErrorCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.TransferId, Is.EqualTo(0));
@@ -115,7 +116,7 @@ public class DataTransferErrorCommandTests : DeserializedCommandTestBase<DataTra
         stream.Position = 0;
 
         // Act
-        var command = DataTransferErrorCommand.Deserialize(stream);
+        var command = DataTransferErrorCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.TransferId, Is.EqualTo(maxTransferId));
@@ -140,7 +141,7 @@ public class DataTransferErrorCommandTests : DeserializedCommandTestBase<DataTra
         stream.Position = 0;
 
         // Act
-        var command = DataTransferErrorCommand.Deserialize(stream);
+        var command = DataTransferErrorCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.TransferId, Is.EqualTo(transferId));
@@ -164,7 +165,7 @@ public class DataTransferErrorCommandTests : DeserializedCommandTestBase<DataTra
         stream.Position = 0;
 
         // Act
-        var command = DataTransferErrorCommand.Deserialize(stream);
+        var command = DataTransferErrorCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.TransferId, Is.EqualTo(transferId));
@@ -187,7 +188,7 @@ public class DataTransferErrorCommandTests : DeserializedCommandTestBase<DataTra
         stream.Position = 0;
 
         // Act
-        var command = DataTransferErrorCommand.Deserialize(stream);
+        var command = DataTransferErrorCommand.Deserialize(stream, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.TransferId, Is.EqualTo(0xABCD));
