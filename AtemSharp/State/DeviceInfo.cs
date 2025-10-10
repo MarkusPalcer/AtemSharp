@@ -19,4 +19,9 @@ public class DeviceInfo
     /// Macro pool configuration and capabilities
     /// </summary>
     public MacroPoolInfo? MacroPool { get; set; }
+
+    /// <summary>
+    /// Media pool configuration and capabilities
+    /// </summary>
+    public MediaPoolInfo? MediaPool { get; set; }
 }
