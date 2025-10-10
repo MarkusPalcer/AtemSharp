@@ -24,4 +24,9 @@ public class AtemState
     /// Multiviewer configuration and capabilities
     /// </summary>
     public MultiViewerInfo? MultiViewer { get; set; }
+
+    /// <summary>
+    /// Display clock state and configuration
+    /// </summary>
+    public DisplayClockState? DisplayClock { get; set; }
 }
