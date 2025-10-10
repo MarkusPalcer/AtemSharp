@@ -1,5 +1,4 @@
 using AtemSharp.Commands;
-using AtemSharp.Enums;
 
 namespace AtemSharp.Tests.Commands;
 
@@ -121,7 +120,7 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
 		command.Flag = (ushort)testCase.Command.Mask;
 
 		// Act
-		var actualPayload = command.Serialize(ProtocolVersion.V8_1_1);
+		var actualPayload = command.Serialize(testCase.FirstVersion);
 
 		// Assert - First try exact match
 		if (actualPayload.SequenceEqual(expectedPayload))

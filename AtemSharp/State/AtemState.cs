@@ -29,4 +29,9 @@ public class AtemState
     /// Display clock state and configuration
     /// </summary>
     public DisplayClockState? DisplayClock { get; set; }
+
+    /// <summary>
+    /// Video state including downstream keyers, mix effects, etc.
+    /// </summary>
+    public VideoState? Video { get; set; } 
 }
