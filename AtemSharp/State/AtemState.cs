@@ -5,6 +5,13 @@ namespace AtemSharp.State;
 /// </summary>
 public class AtemState
 {
-    public AudioState? Audio { get; set; } 
+    /// <summary>
+    /// Device information and capabilities
+    /// </summary>
+    public DeviceInfo Info { get; set; } = new();
 
+    /// <summary>
+    /// Audio state for classic ATEM devices
+    /// </summary>
+    public AudioState? Audio { get; set; } 
 }
