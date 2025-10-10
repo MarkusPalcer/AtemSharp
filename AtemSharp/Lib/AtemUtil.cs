@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace AtemSharp.Lib;
 
 /// <summary>
@@ -45,5 +47,27 @@ public static class AtemUtil
     public static short BalanceToInt16(this double input)
     {
         return (short)Math.Round(input * 200);
+    }
+
+    /// <summary>
+    /// Extract a null-terminated string from a byte buffer at the specified position and length
+    /// </summary>
+    /// <param name="buffer">Byte buffer containing the string data</param>
+    /// <param name="offset">Starting position in the buffer</param>
+    /// <param name="length">Maximum length to read</param>
+    /// <returns>Extracted string</returns>
+    public static string BufferToNullTerminatedString(byte[] buffer, int offset, int length)
+    {
+        // Find the null terminator or use the full length
+        var endIndex = offset + length;
+        var nullIndex = Array.IndexOf(buffer, (byte)0, offset, length);
+        if (nullIndex >= 0)
+        {
+            endIndex = nullIndex;
+        }
+
+        // Extract the string from offset to endIndex
+        var stringLength = endIndex - offset;
+        return stringLength > 0 ? Encoding.UTF8.GetString(buffer, offset, stringLength) : string.Empty;
     }
 }

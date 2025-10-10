@@ -1,3 +1,5 @@
+using AtemSharp.Enums;
+
 namespace AtemSharp.State;
 
 /// <summary>
@@ -5,6 +7,21 @@ namespace AtemSharp.State;
 /// </summary>
 public class DeviceInfo
 {
+    /// <summary>
+    /// Product identifier string from the device
+    /// </summary>
+    public string? ProductIdentifier { get; set; }
+
+    /// <summary>
+    /// ATEM device model
+    /// </summary>
+    public Model Model { get; set; }
+
+    /// <summary>
+    /// Power supply status for each power supply in the device
+    /// </summary>
+    public bool[] Power { get; set; } = [];
+
     /// <summary>
     /// Audio mixer configuration and capabilities
     /// </summary>
