@@ -377,7 +377,7 @@ public class YourUpdateCommandTests : IDeserializedCommandTestBase<YourUpdateCom
 | `number` (percentage) | `double` | `double` | `/100` | Serialized as integer value with the unit 0.01% |
 | `number` (integer) | `int` / `ushort` | `int` / `ushort` | `writer.WriteUInt16BigEndian()` / `reader.ReadUInt16BigEndian()` | Standard integers (always big-endian) |
 | `number` (byte) | `byte` | `byte` | Direct assignment | Single byte values |
-| `boolean` | `bool` | `bool` | Convert to/from byte flags | Usually packed in flag bytes |
+| `boolean` | `bool` | `bool` | writer.WriteBoolean() / reader.ReadBoolean() | |
 | `enum` values | `EnumType` | `EnumType` | Cast from/to underlying type | Custom enums, validation in setter |
 
 **Key Differences from Old Pattern:**
