@@ -51,4 +51,14 @@ public class DeviceInfo
     /// Mix effect configurations and capabilities
     /// </summary>
     public Dictionary<int, MixEffectInfo> MixEffects { get; set; } = new();
+
+    /// <summary>
+    /// Device capabilities and hardware configuration
+    /// </summary>
+    public AtemCapabilities? Capabilities { get; set; }
+
+    /// <summary>
+    /// Multiviewer configuration and capabilities
+    /// </summary>
+    public MultiViewerInfo MultiViewer { get; set; } = new();
 }

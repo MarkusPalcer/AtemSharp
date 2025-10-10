@@ -24,7 +24,7 @@ public class MultiviewerConfigCommand : IDeserializedCommand
 	
 	public string[] ApplyToState(AtemState state)
 	{
-		state.MultiViewer ??= new MultiViewerState();
+		state.MultiViewer ??= new MultiViewerInfo();
 
 		state.MultiViewer.Count = Count;
 		state.MultiViewer.WindowCount = WindowCount;

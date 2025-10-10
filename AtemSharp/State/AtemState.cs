@@ -20,5 +20,8 @@ public class AtemState
     /// </summary>
     public FairlightAudioState? Fairlight { get; set; }
 
-    public MultiViewerState? MultiViewer { get; set; }
+    /// <summary>
+    /// Multiviewer configuration and capabilities
+    /// </summary>
+    public MultiViewerInfo? MultiViewer { get; set; }
 }

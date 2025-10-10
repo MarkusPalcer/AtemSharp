@@ -45,7 +45,7 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 		// Arrange
 		var state = new AtemState
 		{
-			MultiViewer = new MultiViewerState
+			MultiViewer = new MultiViewerInfo
 			{
 				Count = 1,
 				WindowCount = 8
