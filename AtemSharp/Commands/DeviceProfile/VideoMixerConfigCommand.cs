@@ -43,7 +43,7 @@ public class VideoMixerConfigCommand : IDeserializedCommand
             var requiresReconfig = false;
             if (hasRequiresReconfig)
             {
-                requiresReconfig = reader.ReadByte() != 0;
+                requiresReconfig = reader.ReadBoolean();
             }
 
             modes[i] = new SupportedVideoMode
