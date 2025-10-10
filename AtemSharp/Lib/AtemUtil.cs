@@ -1,5 +1,3 @@
-using System.Text;
-
 namespace AtemSharp.Lib;
 
 /// <summary>
@@ -47,20 +45,5 @@ public static class AtemUtil
     public static short BalanceToInt16(this double input)
     {
         return (short)Math.Round(input * 200);
-    }
-
-    /// <summary>
-    /// Extract a null-terminated string from a byte span
-    /// </summary>
-    /// <param name="span">Byte span containing the string data</param>
-    /// <returns>Extracted string</returns>
-    public static string ToNullTerminatedString(this Span<byte> span)
-    {
-        // Find the null terminator or use the full span length
-        var nullIndex = span.IndexOf((byte)0);
-        var length = nullIndex >= 0 ? nullIndex : span.Length;
-
-        // Extract the string from the span
-        return length > 0 ? Encoding.UTF8.GetString(span[..length]) : string.Empty;
     }
 }

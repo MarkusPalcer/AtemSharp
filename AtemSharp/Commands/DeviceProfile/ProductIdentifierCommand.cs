@@ -1,6 +1,5 @@
 using System.Text;
 using AtemSharp.Enums;
-using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DeviceProfile;
@@ -35,7 +34,7 @@ public class ProductIdentifierCommand : IDeserializedCommand
         Span<byte> productIdentifierBytes = stackalloc byte[40];
         // ReSharper disable once MustUseReturnValue
         reader.Read(productIdentifierBytes);
-        var productIdentifier = productIdentifierBytes.ToNullTerminatedString();
+        var productIdentifier = Encoding.UTF8.GetString(productIdentifierBytes).TrimEnd('\0'); 
 
         // Read model as single byte
         var model = (Model)reader.ReadByte();

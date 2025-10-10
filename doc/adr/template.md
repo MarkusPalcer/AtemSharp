@@ -4,6 +4,8 @@ Meta:
 - The filename is the current date and the title
 - The title describes the topic of the ADR
 
+## Context
+
 The first paragraph after the heading (which again is the topic) is a short description of the decision without reasoning.
 
 ## Problem
