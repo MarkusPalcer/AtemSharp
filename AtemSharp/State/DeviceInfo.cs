@@ -43,6 +43,11 @@ public class DeviceInfo
     public MediaPoolInfo? MediaPool { get; set; }
 
     /// <summary>
+    /// SuperSource configurations and capabilities
+    /// </summary>
+    public Dictionary<int, SuperSourceInfo> SuperSources { get; set; } = new();
+
+    /// <summary>
     /// Mix effect configurations and capabilities
     /// </summary>
     public Dictionary<int, MixEffectInfo> MixEffects { get; set; } = new();
