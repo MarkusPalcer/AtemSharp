@@ -2,6 +2,8 @@
 
 The C# implementation uses explicit property setters with manual flag management in SerializedCommand classes. Each property setter automatically sets the corresponding bit in the `Flag` field using bitwise OR operations (e.g., `Flag |= 1 << 0`). This provides compile-time type safety while maintaining binary compatibility with the ATEM protocol's change flag system.
 
+The properties are on the command itself, not on a separate class, see [the relevant ADR](2025-10-10%20Command%20Properties%20are%20Attached%20to%20the%20Command%20Directly.md)
+
 ## Problem
 
 The TypeScript implementation leverages JavaScript's dynamic object nature where objects function as dictionaries, allowing the `WritableCommand` base class to generically iterate over property names and automatically set flags using a static `MaskFlags` mapping. However, C# is a statically typed language where:
