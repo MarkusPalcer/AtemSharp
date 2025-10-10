@@ -46,4 +46,24 @@ public static class AtemUtil
     {
         return (short)Math.Round(input * 200);
     }
+
+    /// <summary>
+    /// Convert coordinate value to signed 16-bit integer
+    /// </summary>
+    /// <param name="input">Coordinate value</param>
+    /// <returns>Signed 16-bit integer value</returns>
+    public static short CoordinateToInt16(this double input)
+    {
+        return (short)Math.Round(input * 1000);
+    }
+
+    /// <summary>
+    /// Convert signed 16-bit integer to coordinate value
+    /// </summary>
+    /// <param name="input">Signed 16-bit integer value</param>
+    /// <returns>Coordinate value</returns>
+    public static double Int16ToCoordinate(this short input)
+    {
+        return input / 1000.0;
+    }
 }
