@@ -24,4 +24,9 @@ public class DeviceInfo
     /// Media pool configuration and capabilities
     /// </summary>
     public MediaPoolInfo? MediaPool { get; set; }
+
+    /// <summary>
+    /// Mix effect configurations and capabilities
+    /// </summary>
+    public Dictionary<int, MixEffectInfo> MixEffects { get; set; } = new();
 }
