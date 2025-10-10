@@ -40,12 +40,12 @@ public class DeviceInfo
     /// <summary>
     /// Macro pool configuration and capabilities
     /// </summary>
-    public MacroPoolInfo? MacroPool { get; set; }
+    public MacroPoolInfo MacroPool { get; set; } = new();
 
     /// <summary>
     /// Media pool configuration and capabilities
     /// </summary>
-    public MediaPoolInfo? MediaPool { get; set; }
+    public MediaPoolInfo MediaPool { get; set; } = new();
 
     /// <summary>
     /// SuperSource configurations and capabilities
@@ -66,4 +66,9 @@ public class DeviceInfo
     /// Multiviewer configuration and capabilities
     /// </summary>
     public MultiViewerInfo MultiViewer { get; set; } = new();
+
+    /// <summary>
+    /// Supported video modes for this device
+    /// </summary>
+    public SupportedVideoMode[] SupportedVideoModes { get; set; } = [];
 }
