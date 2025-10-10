@@ -3,35 +3,13 @@ using AtemSharp.Enums;
 namespace AtemSharp.State;
 
 /// <summary>
-/// Display clock time representation
+/// Display clock state container
 /// </summary>
-public class DisplayClockTime
-{
-    /// <summary>
-    /// Hours (0-23)
-    /// </summary>
-    public byte Hours { get; set; }
-
-    /// <summary>
-    /// Minutes (0-59)
-    /// </summary>
-    public byte Minutes { get; set; }
-
-    /// <summary>
-    /// Seconds (0-59)
-    /// </summary>
-    public byte Seconds { get; set; }
-
-    /// <summary>
-    /// Frames (0-59, depends on frame rate)
-    /// </summary>
-    public byte Frames { get; set; }
-}
-
-/// <summary>
-/// Display clock properties configuration
-/// </summary>
-public class DisplayClockProperties
+/// <remarks>
+/// Other than in the TypeScript original, the properties are directly on this class,
+/// not in a nested Properties object
+/// </remarks>
+public class DisplayClockState
 {
     /// <summary>
     /// Whether the display clock is enabled
@@ -51,12 +29,12 @@ public class DisplayClockProperties
     /// <summary>
     /// X position of the clock display
     /// </summary>
-    public ushort PositionX { get; set; }
+    public double PositionX { get; set; }
 
     /// <summary>
     /// Y position of the clock display
     /// </summary>
-    public ushort PositionY { get; set; }
+    public double PositionY { get; set; }
 
     /// <summary>
     /// Whether the clock should auto-hide
@@ -77,17 +55,6 @@ public class DisplayClockProperties
     /// Clock state (stopped, running, reset)
     /// </summary>
     public DisplayClockClockState ClockState { get; set; }
-}
-
-/// <summary>
-/// Display clock state container
-/// </summary>
-public class DisplayClockState
-{
-    /// <summary>
-    /// Display clock properties configuration
-    /// </summary>
-    public DisplayClockProperties Properties { get; set; } = new();
 
     /// <summary>
     /// Current time (only updated following a call to DisplayClockRequestTime)
