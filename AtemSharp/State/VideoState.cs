@@ -8,15 +8,15 @@ public class VideoState
     /// <summary>
     /// Mix effects available on this device
     /// </summary>
-    public MixEffect?[] MixEffects { get; set; } = [];
+    public Dictionary<int, MixEffect> MixEffects { get; set; } = [];
 
     /// <summary>
     /// Downstream keyers available on this device
     /// </summary>
-    public DownstreamKeyer?[] DownstreamKeyers { get; set; } = [];
+    public Dictionary<int, DownstreamKeyer> DownstreamKeyers { get; set; } = [];
 
     /// <summary>
     /// Auxiliary output sources
     /// </summary>
-    public int?[] Auxiliaries { get; set; } = [];
+    public Dictionary<int, int> Auxiliaries { get; set; } = [];
 }

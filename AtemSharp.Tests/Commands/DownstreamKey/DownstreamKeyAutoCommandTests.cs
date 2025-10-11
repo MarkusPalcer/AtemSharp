@@ -33,14 +33,16 @@ public class DownstreamKeyAutoCommandTests : SerializedCommandTestBase<Downstrea
     /// </summary>
     private static AtemState CreateStateWithDownstreamKeyer(int keyerId)
     {
-        var downstreamKeyers = new DownstreamKeyer?[Math.Max(keyerId + 1, 2)];
-        downstreamKeyers[keyerId] = new DownstreamKeyer
+        var downstreamKeyers = new Dictionary<int, DownstreamKeyer>
         {
-            InTransition = false,
-            RemainingFrames = 0,
-            IsAuto = false,
-            OnAir = false,
-            IsTowardsOnAir = false
+	        [keyerId] = new()
+	        {
+		        InTransition = false,
+		        RemainingFrames = 0,
+		        IsAuto = false,
+		        OnAir = false,
+		        IsTowardsOnAir = false
+	        }
         };
 
         var state = new AtemState

@@ -67,22 +67,8 @@ public class DownstreamKeyPropertiesCommand : IDeserializedCommand
             throw new InvalidIdError("DownstreamKeyer", DownstreamKeyerId);
         }
 
-        // Ensure Video state exists
-        state.Video ??= new VideoState();
-        
-        // Ensure DownstreamKeyers array is large enough
-        if (state.Video.DownstreamKeyers.Length <= DownstreamKeyerId)
-        {
-            var newArray = new DownstreamKeyer?[DownstreamKeyerId + 1];
-            Array.Copy(state.Video.DownstreamKeyers, newArray, state.Video.DownstreamKeyers.Length);
-            state.Video.DownstreamKeyers = newArray;
-        }
-
-        // Ensure DownstreamKeyer object exists
-        state.Video.DownstreamKeyers[DownstreamKeyerId] ??= new DownstreamKeyer();
-        
         // Update the properties
-        state.Video.DownstreamKeyers[DownstreamKeyerId]!.Properties = Properties;
+        state.Video.DownstreamKeyers.GetOrCreate(DownstreamKeyerId).Properties = Properties;
 
         // Return the state path that was modified
         return [$"video.downstreamKeyers.{DownstreamKeyerId}.properties"];

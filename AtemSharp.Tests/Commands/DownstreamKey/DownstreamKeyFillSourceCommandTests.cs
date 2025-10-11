@@ -21,11 +21,12 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
         var state = CreateStateWithDownstreamKeyer(testCase.Command.Index, testCase.Command.FillSource);
         
         // Create command with the keyer ID
-        var command = new DownstreamKeyFillSourceCommand(testCase.Command.Index, state);
+        var command = new DownstreamKeyFillSourceCommand(testCase.Command.Index, state)
+        {
+	        // Set the actual input value that should be written
+	        Input = testCase.Command.FillSource
+        };
 
-        // Set the actual input value that should be written
-        command.Input = testCase.Command.FillSource;
-        
         return command;
     }
 
@@ -34,19 +35,21 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
     /// </summary>
     private static AtemState CreateStateWithDownstreamKeyer(int keyerId, int fillSource = 0)
     {
-        var downstreamKeyers = new DownstreamKeyer?[Math.Max(keyerId + 1, 2)];
-        downstreamKeyers[keyerId] = new DownstreamKeyer
+        var downstreamKeyers = new Dictionary<int, DownstreamKeyer>
         {
-            InTransition = false,
-            RemainingFrames = 0,
-            IsAuto = false,
-            OnAir = false,
-            IsTowardsOnAir = false,
-            Sources = new DownstreamKeyerSources
-            {
-                FillSource = fillSource,
-                CutSource = 1000
-            }
+	        [keyerId] = new()
+	        {
+		        InTransition = false,
+		        RemainingFrames = 0,
+		        IsAuto = false,
+		        OnAir = false,
+		        IsTowardsOnAir = false,
+		        Sources = new DownstreamKeyerSources
+		        {
+			        FillSource = fillSource,
+			        CutSource = 1000
+		        }
+	        }
         };
 
         var state = new AtemState
@@ -97,14 +100,16 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
     {
         // Arrange
         const int keyerId = 1;
-        var downstreamKeyers = new DownstreamKeyer?[2];
-        downstreamKeyers[keyerId] = new DownstreamKeyer
+        var downstreamKeyers = new Dictionary<int, DownstreamKeyer>
         {
-            InTransition = false,
-            RemainingFrames = 0,
-            IsAuto = false,
-            OnAir = false,
-            Sources = null // Missing sources
+	        [keyerId] = new()
+	        {
+		        InTransition = false,
+		        RemainingFrames = 0,
+		        IsAuto = false,
+		        OnAir = false,
+		        Sources = null // Missing sources
+	        }
         };
 
         var state = new AtemState
@@ -128,10 +133,11 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
     public void Input_WhenSet_ShouldUpdateFlagAndValue()
     {
         // Arrange
-        var command = new DownstreamKeyFillSourceCommand(0, CreateStateWithDownstreamKeyer(0));
-        
-        // Act
-        command.Input = 1234;
+        var command = new DownstreamKeyFillSourceCommand(0, CreateStateWithDownstreamKeyer(0))
+        {
+	        // Act
+	        Input = 1234
+        };
 
         // Assert
         Assert.That(command.Input, Is.EqualTo(1234));
@@ -142,10 +148,12 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
     public void Input_WhenSetMultipleTimes_ShouldMaintainFlag()
     {
         // Arrange
-        var command = new DownstreamKeyFillSourceCommand(0, CreateStateWithDownstreamKeyer(0));
-        
-        // Act
-        command.Input = 100;
+        var command = new DownstreamKeyFillSourceCommand(0, CreateStateWithDownstreamKeyer(0))
+        {
+	        // Act
+	        Input = 100
+        };
+
         command.Input = 200;
 
         // Assert
@@ -162,8 +170,10 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
     public void Serialize_WithDifferentValues_ShouldProduceCorrectOutput(int keyerId, int input)
     {
         // Arrange
-        var command = new DownstreamKeyFillSourceCommand(keyerId, CreateStateWithDownstreamKeyer(keyerId));
-        command.Input = input;
+        var command = new DownstreamKeyFillSourceCommand(keyerId, CreateStateWithDownstreamKeyer(keyerId))
+        {
+	        Input = input
+        };
 
         // Act
         var result = command.Serialize(ProtocolVersion.V8_1_1);
@@ -189,8 +199,10 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
         // Arrange
         const int maxKeyerId = 255;
         const int maxInput = 65535;
-        var command = new DownstreamKeyFillSourceCommand(maxKeyerId, CreateStateWithDownstreamKeyer(maxKeyerId));
-        command.Input = maxInput;
+        var command = new DownstreamKeyFillSourceCommand(maxKeyerId, CreateStateWithDownstreamKeyer(maxKeyerId))
+        {
+	        Input = maxInput
+        };
 
         // Act
         var result = command.Serialize(ProtocolVersion.V8_1_1);
@@ -209,8 +221,10 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
         // Arrange
         const int keyerId = 1;
         const int input = 500;
-        var command = new DownstreamKeyFillSourceCommand(keyerId, CreateStateWithDownstreamKeyer(keyerId));
-        command.Input = input;
+        var command = new DownstreamKeyFillSourceCommand(keyerId, CreateStateWithDownstreamKeyer(keyerId))
+        {
+	        Input = input
+        };
 
         // Act
         var modernResult = command.Serialize(ProtocolVersion.V8_1_1);
@@ -226,8 +240,10 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
     public void RoundTrip_WithDifferentInputValues_ShouldMaintainConsistency(int keyerId, int input)
     {
         // Arrange
-        var command = new DownstreamKeyFillSourceCommand(keyerId, CreateStateWithDownstreamKeyer(keyerId));
-        command.Input = input;
+        var command = new DownstreamKeyFillSourceCommand(keyerId, CreateStateWithDownstreamKeyer(keyerId))
+        {
+	        Input = input
+        };
 
         // Act
         var serialized = command.Serialize(ProtocolVersion.V8_1_1);
@@ -256,34 +272,17 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
     }
 
     [Test]
-    public void Constructor_WithNullState_ShouldUseDefaults()
-    {
-        // Arrange
-        const int keyerId = 0;
-        var state = new AtemState
-        {
-            Video = null // Null video state
-        };
-
-        // Act
-        var command = new DownstreamKeyFillSourceCommand(keyerId, state);
-
-        // Assert
-        Assert.That(command.DownstreamKeyerId, Is.EqualTo(keyerId));
-        Assert.That(command.Input, Is.EqualTo(0)); // Default value
-        Assert.That(command.Flag, Is.EqualTo(1)); // Flag should be set due to property assignment
-    }
-
-    [Test]
     public void Constructor_WithKeyerIndexOutOfBounds_ShouldUseDefaults()
     {
         // Arrange
         const int keyerId = 10; // Higher than available keyers
-        var downstreamKeyers = new DownstreamKeyer?[2]; // Only 2 keyers available
-        downstreamKeyers[0] = new DownstreamKeyer
+        var downstreamKeyers = new Dictionary<int, DownstreamKeyer>
         {
-            Sources = new DownstreamKeyerSources { FillSource = 100, CutSource = 200 }
-        };
+	        [0] = new()
+	        {
+		        Sources = new DownstreamKeyerSources { FillSource = 100, CutSource = 200 }
+	        }
+        }; // Only 2 keyers available
 
         var state = new AtemState
         {

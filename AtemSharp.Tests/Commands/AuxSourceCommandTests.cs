@@ -1,5 +1,4 @@
 using AtemSharp.Commands;
-using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands;
@@ -33,8 +32,10 @@ public class AuxSourceCommandTests : SerializedCommandTestBase<AuxSourceCommand,
     /// </summary>
     private static AtemState CreateStateWithAuxiliary(int auxId, int source = 0)
     {
-        var auxiliaries = new int?[Math.Max(auxId + 1, 2)];
-        auxiliaries[auxId] = source;
+	    var auxiliaries = new Dictionary<int, int>
+	    {
+		    { auxId, source }
+	    };
 
         return new AtemState
         {
@@ -46,7 +47,7 @@ public class AuxSourceCommandTests : SerializedCommandTestBase<AuxSourceCommand,
             {
                 Capabilities = new AtemCapabilities
                 {
-                    Auxiliaries = auxiliaries.Length
+                    Auxiliaries = auxiliaries.Count
                 }
             }
         };

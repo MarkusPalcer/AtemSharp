@@ -49,17 +49,6 @@ public class AuxSourceUpdateCommand : IDeserializedCommand
 			throw new InvalidIdError("Auxiliary", AuxBus);
 		}
 
-		// Ensure Video state exists
-		state.Video ??= new VideoState();
-
-		// Ensure auxiliaries array is large enough
-		if (state.Video.Auxiliaries.Length <= AuxBus)
-		{
-			var newArray = new int?[AuxBus + 1];
-			Array.Copy(state.Video.Auxiliaries, newArray, state.Video.Auxiliaries.Length);
-			state.Video.Auxiliaries = newArray;
-		}
-
 		// Update the auxiliary source
 		state.Video.Auxiliaries[AuxBus] = Source;
 

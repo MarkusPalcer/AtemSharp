@@ -75,7 +75,6 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
 
         // Assert
         Assert.That(state.Video, Is.Not.Null);
-        Assert.That(state.Video!.MixEffects, Has.Length.GreaterThan(mixEffectId));
         Assert.That(state.Video.MixEffects[mixEffectId], Is.Not.Null);
         Assert.That(state.Video.MixEffects[mixEffectId]!.ProgramInput, Is.EqualTo(newSource));
         Assert.That(changedPaths, Has.Length.EqualTo(1));
@@ -133,7 +132,7 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
     /// </summary>
     private static AtemState CreateStateWithMixEffect(int mixEffectId, int programInput = 0)
     {
-        var mixEffects = new MixEffect?[Math.Max(mixEffectId + 1, 2)];
+        Dictionary<int, MixEffect> mixEffects = new Dictionary<int, MixEffect>();
         mixEffects[mixEffectId] = new MixEffect
         {
             Index = mixEffectId,
@@ -146,9 +145,6 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
                 HandlePosition = 0,
                 RemainingFrames = 0
             },
-            TransitionProperties = new TransitionProperties(),
-            TransitionSettings = new TransitionSettings(),
-            UpstreamKeyers = []
         };
 
         return new AtemState

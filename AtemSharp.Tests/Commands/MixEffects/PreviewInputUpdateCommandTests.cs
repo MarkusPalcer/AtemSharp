@@ -73,7 +73,6 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
 
         // Assert
         Assert.That(state.Video, Is.Not.Null);
-        Assert.That(state.Video!.MixEffects, Has.Length.GreaterThan(mixEffectId));
         Assert.That(state.Video.MixEffects[mixEffectId], Is.Not.Null);
         Assert.That(state.Video.MixEffects[mixEffectId]!.PreviewInput, Is.EqualTo(newSource));
         Assert.That(changedPaths, Has.Length.EqualTo(1));
@@ -139,7 +138,7 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
     /// </summary>
     private static AtemState CreateStateWithMixEffect(int mixEffectId, int previewInput = 0)
     {
-        var mixEffects = new MixEffect?[Math.Max(mixEffectId + 1, 2)];
+        Dictionary<int, MixEffect> mixEffects = new Dictionary<int, MixEffect>();
         mixEffects[mixEffectId] = new MixEffect
         {
             Index = mixEffectId,
@@ -152,9 +151,6 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
                 HandlePosition = 0,
                 RemainingFrames = 0
             },
-            TransitionProperties = new TransitionProperties(),
-            TransitionSettings = new TransitionSettings(),
-            UpstreamKeyers = []
         };
 
         return new AtemState

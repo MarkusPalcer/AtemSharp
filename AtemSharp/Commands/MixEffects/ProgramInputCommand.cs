@@ -27,17 +27,13 @@ public class ProgramInputCommand : SerializedCommand
         MixEffectId = mixEffectId;
 
         // If no video state or mix effect array exists, initialize with defaults
-        if (currentState.Video?.MixEffects == null || 
-            mixEffectId >= currentState.Video.MixEffects.Length ||
-            currentState.Video.MixEffects[mixEffectId] == null)
+        if (!currentState.Video.MixEffects.TryGetValue(mixEffectId, out var mixEffect))
         {
             // Set default value and flag (like TypeScript pattern)
             Source = 0;
             return;
         }
 
-        var mixEffect = currentState.Video.MixEffects[mixEffectId]!;
-        
         // Initialize from current state (direct field access = no flags set)
         _source = mixEffect.ProgramInput;
     }

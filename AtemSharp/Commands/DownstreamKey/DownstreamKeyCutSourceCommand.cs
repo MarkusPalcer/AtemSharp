@@ -27,18 +27,14 @@ public class DownstreamKeyCutSourceCommand : SerializedCommand
         DownstreamKeyerId = downstreamKeyerId;
 
         // If no video state or downstream keyer array exists, initialize with defaults
-        if (currentState.Video?.DownstreamKeyers == null || 
-            downstreamKeyerId >= currentState.Video.DownstreamKeyers.Length ||
-            currentState.Video.DownstreamKeyers[downstreamKeyerId] == null ||
-            currentState.Video.DownstreamKeyers[downstreamKeyerId]!.Sources == null)
+        if (!currentState.Video.DownstreamKeyers.TryGetValue(downstreamKeyerId, out var dsk ) ||
+            dsk.Sources == null)
         {
             // Set default value and flag (like TypeScript pattern)
             Input = 0;
             return;
         }
 
-        var dsk = currentState.Video.DownstreamKeyers[downstreamKeyerId]!;
-        
         // Initialize from current state (direct field access = no flags set)
         _input = dsk.Sources!.CutSource;
     }

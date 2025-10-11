@@ -33,5 +33,5 @@ public class AtemState
     /// <summary>
     /// Video state including downstream keyers, mix effects, etc.
     /// </summary>
-    public VideoState? Video { get; set; } 
+    public VideoState Video { get; set; } = new();
 }

@@ -27,17 +27,14 @@ public class DownstreamKeyOnAirCommand : SerializedCommand
         DownstreamKeyerId = downstreamKeyerId;
 
         // If no video state or downstream keyer array exists, initialize with defaults
-        if (currentState.Video?.DownstreamKeyers == null || 
-            downstreamKeyerId >= currentState.Video.DownstreamKeyers.Length ||
-            currentState.Video.DownstreamKeyers[downstreamKeyerId] == null)
+        if (!currentState.Video.DownstreamKeyers.TryGetValue(downstreamKeyerId, out var dsk))
+        
         {
             // Set default value and flag (like TypeScript pattern)
             OnAir = false;
             return;
         }
 
-        var dsk = currentState.Video.DownstreamKeyers[downstreamKeyerId]!;
-        
         // Initialize from current state (direct field access = no flags set)
         _onAir = dsk.OnAir;
     }

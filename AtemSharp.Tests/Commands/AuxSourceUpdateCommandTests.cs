@@ -74,44 +74,6 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
 
         // Assert
         Assert.That(state.Video, Is.Not.Null, "Video state should be created");
-        Assert.That(state.Video!.Auxiliaries, Has.Length.GreaterThan(auxId));
-        Assert.That(state.Video.Auxiliaries[auxId], Is.EqualTo(newSource));
-        Assert.That(changedPaths[0], Is.EqualTo($"video.auxiliaries.{auxId}"));
-    }
-
-    [Test]
-    public void ApplyToState_WithSmallAuxiliariesArray_ExpandsArray()
-    {
-        // Arrange
-        const int auxId = 5;
-        const int newSource = 3000;
-        
-        var state = new AtemState
-        {
-            Video = new VideoState
-            {
-                Auxiliaries = new int?[2] // Smaller than auxId
-            },
-            Info = new DeviceInfo
-            {
-                Capabilities = new AtemCapabilities
-                {
-                    Auxiliaries = 10 // More than auxId
-                }
-            }
-        };
-        
-        var command = new AuxSourceUpdateCommand
-        {
-            AuxBus = auxId,
-            Source = newSource
-        };
-
-        // Act
-        var changedPaths = command.ApplyToState(state);
-
-        // Assert
-        Assert.That(state.Video.Auxiliaries, Has.Length.GreaterThan(auxId));
         Assert.That(state.Video.Auxiliaries[auxId], Is.EqualTo(newSource));
         Assert.That(changedPaths[0], Is.EqualTo($"video.auxiliaries.{auxId}"));
     }
@@ -162,20 +124,17 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
     /// </summary>
     private static AtemState CreateStateWithAuxiliary(int auxId, int source = 0)
     {
-        var auxiliaries = new int?[Math.Max(auxId + 1, 2)];
-        auxiliaries[auxId] = source;
-
         return new AtemState
         {
             Video = new VideoState
             {
-                Auxiliaries = auxiliaries
+                Auxiliaries = new Dictionary<int, int> { {auxId, source} },
             },
             Info = new DeviceInfo
             {
                 Capabilities = new AtemCapabilities
                 {
-                    Auxiliaries = auxiliaries.Length
+                    Auxiliaries = auxId+1
                 }
             }
         };

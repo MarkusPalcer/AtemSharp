@@ -50,7 +50,7 @@ public class PreviewInputUpdateCommand : IDeserializedCommand
 		}
 
 		// Get or create the mix effect
-		var mixEffect = AtemStateUtil.GetMixEffect(state, MixEffectId);
+		var mixEffect = state.Video.MixEffects.GetOrCreate(MixEffectId);
         
 		// Update the preview input
 		mixEffect.PreviewInput = Source;

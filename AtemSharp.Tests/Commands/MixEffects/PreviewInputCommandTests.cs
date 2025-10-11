@@ -32,7 +32,7 @@ public class PreviewInputCommandTests : SerializedCommandTestBase<PreviewInputCo
     /// </summary>
     private static AtemState CreateStateWithMixEffect(int mixEffectId, int previewInput = 0)
     {
-        var mixEffects = new MixEffect?[Math.Max(mixEffectId + 1, 2)];
+        Dictionary<int, MixEffect> mixEffects = new Dictionary<int, MixEffect>();
         mixEffects[mixEffectId] = new MixEffect
         {
             Index = mixEffectId,
@@ -45,9 +45,6 @@ public class PreviewInputCommandTests : SerializedCommandTestBase<PreviewInputCo
                 HandlePosition = 0,
                 RemainingFrames = 0
             },
-            TransitionProperties = new TransitionProperties(),
-            TransitionSettings = new TransitionSettings(),
-            UpstreamKeyers = []
         };
 
         return new AtemState

@@ -138,7 +138,7 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
 
         // Assert
         Assert.That(state.Video, Is.Not.Null);
-        Assert.That(state.Video.DownstreamKeyers.Length, Is.GreaterThan(0));
+        Assert.That(state.Video.DownstreamKeyers.Count, Is.GreaterThan(0));
         Assert.That(state.Video.DownstreamKeyers[0], Is.Not.Null);
         Assert.That(state.Video.DownstreamKeyers[0]!.Properties, Is.Not.Null);
         
@@ -193,7 +193,6 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
 
         // Assert
         Assert.That(state.Video, Is.Not.Null);
-        Assert.That(state.Video!.DownstreamKeyers.Length, Is.GreaterThanOrEqualTo(3));
         Assert.That(state.Video.DownstreamKeyers[2], Is.Not.Null);
         Assert.That(state.Video.DownstreamKeyers[2]!.Properties, Is.Not.Null);
         
@@ -254,7 +253,6 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         var state = new AtemState();
         state.Info.Capabilities = new AtemCapabilities { DownstreamKeyers = 2 };
         state.Video = new VideoState();
-        state.Video.DownstreamKeyers = new DownstreamKeyer?[2];
         state.Video.DownstreamKeyers[0] = new DownstreamKeyer
         {
             Properties = new DownstreamKeyerProperties

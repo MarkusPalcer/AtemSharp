@@ -1,278 +1,235 @@
 using AtemSharp.State;
 
-namespace AtemSharp.Tests.State.Utilities;
+namespace AtemSharp.Tests.State;
 
 [TestFixture]
 public class AtemStateUtilTests
 {
-    [Test]
-    public void GetMixEffect_WithNullVideoState_ShouldCreateVideoStateAndMixEffect()
+	   /// <summary>
+    /// Test class to use with the generic extension method
+    /// </summary>
+    private class TestObject
     {
-        // Arrange
-        var state = new AtemState
-        {
-            Video = null // Explicitly null
-        };
-
-        // Act
-        var result = AtemStateUtil.GetMixEffect(state, 0);
-
-        // Assert
-        Assert.That(state.Video, Is.Not.Null, "Video state should be created");
-        Assert.That(state.Video.MixEffects, Is.Not.Null, "MixEffects array should be created");
-        Assert.That(state.Video.MixEffects, Has.Length.EqualTo(1), "MixEffects array should have one element");
-        Assert.That(state.Video.MixEffects[0], Is.Not.Null, "MixEffect should be created");
-        Assert.That(result, Is.SameAs(state.Video.MixEffects[0]), "Should return the created MixEffect");
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 
     [Test]
-    public void GetMixEffect_WithEmptyMixEffectsArray_ShouldCreateMixEffect()
+    public void GetOrCreate_WithEmptyDictionary_ShouldCreateAndReturnNewInstance()
     {
         // Arrange
-        var state = new AtemState
-        {
-            Video = new VideoState
-            {
-                MixEffects = [] // Empty array
-            }
-        };
+        var dictionary = new Dictionary<int, TestObject>();
 
         // Act
-        var result = AtemStateUtil.GetMixEffect(state, 0);
+        var result = dictionary.GetOrCreate(5);
 
         // Assert
-        Assert.That(state.Video.MixEffects, Has.Length.EqualTo(1), "MixEffects array should be resized");
-        Assert.That(state.Video.MixEffects[0], Is.Not.Null, "MixEffect should be created");
-        Assert.That(result, Is.SameAs(state.Video.MixEffects[0]), "Should return the created MixEffect");
+        Assert.That(result, Is.Not.Null, "Should create a new instance");
+        Assert.That(dictionary.Count, Is.EqualTo(1), "Dictionary should contain one element");
+        Assert.That(dictionary.ContainsKey(5), Is.True, "Dictionary should contain the key");
+        Assert.That(dictionary[5], Is.SameAs(result), "Dictionary should contain the created instance");
     }
 
     [Test]
-    public void GetMixEffect_WithExistingMixEffect_ShouldReturnExisting()
+    public void GetOrCreate_WithExistingKey_ShouldReturnExistingInstance()
     {
         // Arrange
-        var existingMixEffect = new MixEffect
-        {
-            Index = 0,
-            ProgramInput = 1234,
-            PreviewInput = 5678
-        };
-
-        var state = new AtemState
-        {
-            Video = new VideoState
-            {
-                MixEffects = [existingMixEffect]
-            }
-        };
+        var existingObject = new TestObject { Id = 42, Name = "Existing" };
+        var dictionary = new Dictionary<int, TestObject> { { 10, existingObject } };
 
         // Act
-        var result = AtemStateUtil.GetMixEffect(state, 0);
+        var result = dictionary.GetOrCreate(10);
 
         // Assert
-        Assert.That(result, Is.SameAs(existingMixEffect), "Should return the existing MixEffect");
-        Assert.That(result.ProgramInput, Is.EqualTo(1234), "Should preserve existing properties");
-        Assert.That(result.PreviewInput, Is.EqualTo(5678), "Should preserve existing properties");
+        Assert.That(result, Is.SameAs(existingObject), "Should return the existing instance");
+        Assert.That(result.Id, Is.EqualTo(42), "Should preserve existing properties");
+        Assert.That(result.Name, Is.EqualTo("Existing"), "Should preserve existing properties");
+        Assert.That(dictionary.Count, Is.EqualTo(1), "Dictionary size should remain the same");
     }
 
     [Test]
-    public void GetMixEffect_WithInsufficientArraySize_ShouldExpandArray()
+    public void GetOrCreate_WithNonExistentKey_ShouldCreateNewInstanceAndPreserveExisting()
     {
         // Arrange
-        var existingMixEffect = new MixEffect { Index = 0 };
-        var state = new AtemState
-        {
-            Video = new VideoState
-            {
-                MixEffects = [existingMixEffect] // Array of size 1
-            }
-        };
+        var existingObject = new TestObject { Id = 100, Name = "First" };
+        var dictionary = new Dictionary<int, TestObject> { { 1, existingObject } };
 
         // Act
-        var result = AtemStateUtil.GetMixEffect(state, 2); // Request index 2
+        var result = dictionary.GetOrCreate(3);
 
         // Assert
-        Assert.That(state.Video.MixEffects, Has.Length.EqualTo(3), "Array should be expanded to size 3");
-        Assert.That(state.Video.MixEffects[0], Is.SameAs(existingMixEffect), "Existing element should be preserved");
-        Assert.That(state.Video.MixEffects[1], Is.Null, "Intermediate element should be null");
-        Assert.That(state.Video.MixEffects[2], Is.Not.Null, "Requested element should be created");
-        Assert.That(result, Is.SameAs(state.Video.MixEffects[2]), "Should return the created MixEffect");
-    }
-
-    [Test]
-    public void GetMixEffect_WithNullElementInArray_ShouldCreateMixEffect()
-    {
-        // Arrange
-        var state = new AtemState
-        {
-            Video = new VideoState
-            {
-                MixEffects = new MixEffect?[3] { null, null, null }
-            }
-        };
-
-        // Act
-        var result = AtemStateUtil.GetMixEffect(state, 1);
-
-        // Assert
-        Assert.That(state.Video.MixEffects, Has.Length.EqualTo(3), "Array size should remain the same");
-        Assert.That(state.Video.MixEffects[0], Is.Null, "Other elements should remain null");
-        Assert.That(state.Video.MixEffects[1], Is.Not.Null, "Requested element should be created");
-        Assert.That(state.Video.MixEffects[2], Is.Null, "Other elements should remain null");
-        Assert.That(result, Is.SameAs(state.Video.MixEffects[1]), "Should return the created MixEffect");
-    }
-
-    [Test]
-    public void GetMixEffect_CreatedMixEffect_ShouldHaveCorrectDefaultValues()
-    {
-        // Arrange
-        var state = new AtemState();
-
-        // Act
-        var result = AtemStateUtil.GetMixEffect(state, 0);
-
-        // Assert
-        Assert.That(result.Index, Is.EqualTo(0), "Index should be set correctly");
-        Assert.That(result.ProgramInput, Is.EqualTo(0), "ProgramInput should have default value");
-        Assert.That(result.PreviewInput, Is.EqualTo(0), "PreviewInput should have default value");
-        Assert.That(result.TransitionPreview, Is.False, "TransitionPreview should be false");
+        Assert.That(result, Is.Not.Null, "Should create a new instance");
+        Assert.That(result, Is.Not.SameAs(existingObject), "Should be a different instance");
+        Assert.That(dictionary.Count, Is.EqualTo(2), "Dictionary should have two elements");
+        Assert.That(dictionary[1], Is.SameAs(existingObject), "Should preserve existing element");
+        Assert.That(dictionary[3], Is.SameAs(result), "Should contain the new element");
         
-        Assert.That(result.TransitionPosition, Is.Not.Null, "TransitionPosition should be created");
-        Assert.That(result.TransitionPosition.InTransition, Is.False, "TransitionPosition.InTransition should be false");
-        Assert.That(result.TransitionPosition.HandlePosition, Is.EqualTo(0), "TransitionPosition.HandlePosition should be 0");
-        Assert.That(result.TransitionPosition.RemainingFrames, Is.EqualTo(0), "TransitionPosition.RemainingFrames should be 0");
-        
-        Assert.That(result.TransitionProperties, Is.Not.Null, "TransitionProperties should be created");
-        Assert.That(result.TransitionSettings, Is.Not.Null, "TransitionSettings should be created");
-        Assert.That(result.UpstreamKeyers, Is.Not.Null, "UpstreamKeyers should be created");
-        Assert.That(result.UpstreamKeyers, Is.Empty, "UpstreamKeyers should be empty array");
+        // Verify existing object is unchanged
+        Assert.That(existingObject.Id, Is.EqualTo(100), "Existing object should be unchanged");
+        Assert.That(existingObject.Name, Is.EqualTo("First"), "Existing object should be unchanged");
     }
 
     [Test]
-    public void GetMixEffect_WithDifferentIndices_ShouldCreateCorrectIndices()
+    public void GetOrCreate_WithZeroKey_ShouldWork()
     {
         // Arrange
-        var state = new AtemState();
+        var dictionary = new Dictionary<int, TestObject>();
 
         // Act
-        var mixEffect0 = AtemStateUtil.GetMixEffect(state, 0);
-        var mixEffect2 = AtemStateUtil.GetMixEffect(state, 2);
-        var mixEffect1 = AtemStateUtil.GetMixEffect(state, 1);
+        var result = dictionary.GetOrCreate(0);
 
         // Assert
-        Assert.That(mixEffect0.Index, Is.EqualTo(0), "MixEffect 0 should have correct index");
-        Assert.That(mixEffect1.Index, Is.EqualTo(1), "MixEffect 1 should have correct index");
-        Assert.That(mixEffect2.Index, Is.EqualTo(2), "MixEffect 2 should have correct index");
-        
-        // Verify they're stored in the correct array positions
-        Assert.That(state.Video!.MixEffects[0], Is.SameAs(mixEffect0), "MixEffect 0 should be at array index 0");
-        Assert.That(state.Video.MixEffects[1], Is.SameAs(mixEffect1), "MixEffect 1 should be at array index 1");
-        Assert.That(state.Video.MixEffects[2], Is.SameAs(mixEffect2), "MixEffect 2 should be at array index 2");
+        Assert.That(result, Is.Not.Null, "Should create instance for key 0");
+        Assert.That(dictionary.ContainsKey(0), Is.True, "Dictionary should contain key 0");
+        Assert.That(dictionary[0], Is.SameAs(result), "Should return the created instance");
     }
 
     [Test]
-    public void GetMixEffect_MultipleCallsSameIndex_ShouldReturnSameInstance()
+    public void GetOrCreate_WithNegativeKey_ShouldWork()
     {
         // Arrange
-        var state = new AtemState();
+        var dictionary = new Dictionary<int, TestObject>();
 
         // Act
-        var firstCall = AtemStateUtil.GetMixEffect(state, 1);
-        var secondCall = AtemStateUtil.GetMixEffect(state, 1);
-        var thirdCall = AtemStateUtil.GetMixEffect(state, 1);
+        var result = dictionary.GetOrCreate(-5);
 
         // Assert
-        Assert.That(firstCall, Is.SameAs(secondCall), "Second call should return same instance");
-        Assert.That(secondCall, Is.SameAs(thirdCall), "Third call should return same instance");
-        Assert.That(state.Video!.MixEffects, Has.Length.EqualTo(2), "Array should only be expanded once");
+        Assert.That(result, Is.Not.Null, "Should create instance for negative key");
+        Assert.That(dictionary.ContainsKey(-5), Is.True, "Dictionary should contain negative key");
+        Assert.That(dictionary[-5], Is.SameAs(result), "Should return the created instance");
     }
 
     [Test]
-    public void GetMixEffect_WithLargeIndex_ShouldExpandArrayCorrectly()
+    public void GetOrCreate_MultipleCallsSameKey_ShouldReturnSameInstance()
     {
         // Arrange
-        var state = new AtemState();
+        var dictionary = new Dictionary<int, TestObject>();
 
         // Act
-        var result = AtemStateUtil.GetMixEffect(state, 10);
+        var first = dictionary.GetOrCreate(7);
+        var second = dictionary.GetOrCreate(7);
+        var third = dictionary.GetOrCreate(7);
 
         // Assert
-        Assert.That(state.Video!.MixEffects, Has.Length.EqualTo(11), "Array should be expanded to accommodate index 10");
-        Assert.That(state.Video.MixEffects[10], Is.SameAs(result), "MixEffect should be at the correct index");
-        Assert.That(result.Index, Is.EqualTo(10), "MixEffect should have correct index");
+        Assert.That(first, Is.SameAs(second), "First and second calls should return same instance");
+        Assert.That(second, Is.SameAs(third), "Second and third calls should return same instance");
+        Assert.That(dictionary.Count, Is.EqualTo(1), "Dictionary should only contain one element");
+    }
+
+    [Test]
+    public void GetOrCreate_WithMixEffectType_ShouldCreateCorrectObject()
+    {
+        // Arrange
+        var dictionary = new Dictionary<int, MixEffect>();
+
+        // Act
+        var result = dictionary.GetOrCreate(2);
+
+        // Assert
+        Assert.That(result, Is.Not.Null, "Should create MixEffect instance");
+        Assert.That(result, Is.TypeOf<MixEffect>(), "Should be correct type");
+        Assert.That(dictionary[2], Is.SameAs(result), "Should store in dictionary");
         
-        // Verify all other elements are null
-        for (int i = 0; i < 10; i++)
+        // Verify default MixEffect values
+        Assert.That(result.Index, Is.EqualTo(0), "Should have default Index value");
+        Assert.That(result.ProgramInput, Is.EqualTo(0), "Should have default ProgramInput value");
+        Assert.That(result.PreviewInput, Is.EqualTo(0), "Should have default PreviewInput value");
+    }
+
+    [Test]
+    public void GetOrCreate_WithDownstreamKeyerType_ShouldCreateCorrectObject()
+    {
+        // Arrange
+        var dictionary = new Dictionary<int, DownstreamKeyer>();
+
+        // Act
+        var result = dictionary.GetOrCreate(1);
+
+        // Assert
+        Assert.That(result, Is.Not.Null, "Should create DownstreamKeyer instance");
+        Assert.That(result, Is.TypeOf<DownstreamKeyer>(), "Should be correct type");
+        Assert.That(dictionary[1], Is.SameAs(result), "Should store in dictionary");
+    }
+
+    [Test]
+    public void GetOrCreate_SparseIndices_ShouldWorkCorrectly()
+    {
+        // Arrange
+        var dictionary = new Dictionary<int, TestObject>();
+
+        // Act - Create objects at non-sequential indices
+        var obj1 = dictionary.GetOrCreate(1);
+        var obj10 = dictionary.GetOrCreate(10);
+        var obj5 = dictionary.GetOrCreate(5);
+        var obj100 = dictionary.GetOrCreate(100);
+
+        // Assert
+        Assert.That(dictionary.Count, Is.EqualTo(4), "Should have four objects");
+        Assert.That(dictionary[1], Is.SameAs(obj1), "Should contain object at index 1");
+        Assert.That(dictionary[5], Is.SameAs(obj5), "Should contain object at index 5");
+        Assert.That(dictionary[10], Is.SameAs(obj10), "Should contain object at index 10");
+        Assert.That(dictionary[100], Is.SameAs(obj100), "Should contain object at index 100");
+        
+        // Verify intermediate indices don't exist (sparse behavior)
+        Assert.That(dictionary.ContainsKey(2), Is.False, "Should not contain index 2");
+        Assert.That(dictionary.ContainsKey(3), Is.False, "Should not contain index 3");
+        Assert.That(dictionary.ContainsKey(4), Is.False, "Should not contain index 4");
+        Assert.That(dictionary.ContainsKey(11), Is.False, "Should not contain index 11");
+    }
+
+    [Test]
+    public void GetOrCreate_ThreadSafety_ShouldNotCorruptDictionary()
+    {
+        // Arrange
+        var dictionary = new Dictionary<int, TestObject>();
+        var tasks = new List<Task<TestObject>>();
+        const int numTasks = 10;
+        const int keyToTest = 42;
+
+        // Act - Multiple threads trying to get/create the same key
+        for (int i = 0; i < numTasks; i++)
         {
-            Assert.That(state.Video.MixEffects[i], Is.Null, $"Element {i} should be null");
+            tasks.Add(Task.Run(() => dictionary.GetOrCreate(keyToTest)));
         }
-    }
 
-    [Test]
-    public void GetMixEffect_WithExistingVideoStateAndOtherProperties_ShouldPreserveOtherProperties()
-    {
-        // Arrange
-        var existingDownstreamKeyer = new DownstreamKeyer();
-        var state = new AtemState
-        {
-            Video = new VideoState
-            {
-                DownstreamKeyers = [existingDownstreamKeyer],
-                MixEffects = []
-            }
-        };
-
-        // Act
-        var result = AtemStateUtil.GetMixEffect(state, 0);
+        var results = Task.WhenAll(tasks).Result;
 
         // Assert
-        Assert.That(state.Video.DownstreamKeyers, Has.Length.EqualTo(1), "DownstreamKeyers should be preserved");
-        Assert.That(state.Video.DownstreamKeyers[0], Is.SameAs(existingDownstreamKeyer), "Existing DownstreamKeyer should be preserved");
-        Assert.That(state.Video.MixEffects, Has.Length.EqualTo(1), "MixEffects should be created");
-        Assert.That(result, Is.Not.Null, "MixEffect should be created");
-    }
-
-    [Test]
-    public void GetMixEffect_WithZeroIndex_ShouldWork()
-    {
-        // Arrange
-        var state = new AtemState();
-
-        // Act
-        var result = AtemStateUtil.GetMixEffect(state, 0);
-
-        // Assert
-        Assert.That(result, Is.Not.Null, "Should create MixEffect for index 0");
-        Assert.That(result.Index, Is.EqualTo(0), "Index should be 0");
-        Assert.That(state.Video!.MixEffects, Has.Length.EqualTo(1), "Array should have one element");
-    }
-
-    [Test]
-    public void GetMixEffect_ArrayCopy_ShouldPreserveExistingElements()
-    {
-        // Arrange
-        var mixEffect0 = new MixEffect { Index = 0, ProgramInput = 100 };
-        var mixEffect1 = new MixEffect { Index = 1, ProgramInput = 200 };
-        var state = new AtemState
-        {
-            Video = new VideoState
-            {
-                MixEffects = [mixEffect0, mixEffect1]
-            }
-        };
-
-        // Act - Request a higher index to trigger array expansion
-        var result = AtemStateUtil.GetMixEffect(state, 4);
-
-        // Assert
-        Assert.That(state.Video.MixEffects, Has.Length.EqualTo(5), "Array should be expanded");
-        Assert.That(state.Video.MixEffects[0], Is.SameAs(mixEffect0), "Original element 0 should be preserved");
-        Assert.That(state.Video.MixEffects[1], Is.SameAs(mixEffect1), "Original element 1 should be preserved");
-        Assert.That(state.Video.MixEffects[2], Is.Null, "New element 2 should be null");
-        Assert.That(state.Video.MixEffects[3], Is.Null, "New element 3 should be null");
-        Assert.That(state.Video.MixEffects[4], Is.SameAs(result), "New element 4 should be the created MixEffect");
+        Assert.That(dictionary.Count, Is.EqualTo(1), "Dictionary should only contain one element");
+        Assert.That(dictionary.ContainsKey(keyToTest), Is.True, "Dictionary should contain the test key");
         
-        // Verify original elements maintain their properties
-        Assert.That(mixEffect0.ProgramInput, Is.EqualTo(100), "Original element properties should be preserved");
-        Assert.That(mixEffect1.ProgramInput, Is.EqualTo(200), "Original element properties should be preserved");
+        // Note: This test may have race conditions due to Dictionary not being thread-safe,
+        // but it helps verify that the method itself doesn't introduce additional corruption
+        Assert.That(results.Length, Is.EqualTo(numTasks), "All tasks should complete");
+        Assert.That(results.All(r => r != null), Is.True, "All results should be non-null");
+    }
+
+    [Test]
+    public void GetOrCreate_WithCustomConstructorBehavior_ShouldUseDefaultConstructor()
+    {
+        // This test verifies that the method uses new T() which calls the parameterless constructor
+        
+        // Arrange
+        var dictionary = new Dictionary<int, TestObject>();
+
+        // Act
+        var result = dictionary.GetOrCreate(1);
+
+        // Assert
+        Assert.That(result.Id, Is.EqualTo(0), "Should use default constructor - Id should be 0");
+        Assert.That(result.Name, Is.EqualTo(string.Empty), "Should use default constructor - Name should be empty");
+        Assert.That(result.CreatedAt, Is.Not.EqualTo(default(DateTime)), "CreatedAt should be set by constructor");
+    }
+
+    [Test]
+    public void GetOrCreate_WithNullDictionary_ShouldThrowArgumentNullException()
+    {
+        // Arrange
+        Dictionary<int, TestObject> dictionary = null!;
+
+        // Act & Assert
+        var exception = Assert.Throws<ArgumentNullException>(() => dictionary.GetOrCreate(1));
+        Assert.That(exception.ParamName, Is.EqualTo("dict"), "Exception should specify the correct parameter name");
     }
 }

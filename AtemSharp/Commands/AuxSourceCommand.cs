@@ -27,19 +27,15 @@ public class AuxSourceCommand : SerializedCommand
         AuxBus = auxBus;
 
         // If no video state or auxiliaries array exists, initialize with defaults
-        if (currentState.Video?.Auxiliaries == null || 
-            auxBus >= currentState.Video.Auxiliaries.Length ||
-            currentState.Video.Auxiliaries[auxBus] == null)
+        if (!currentState.Video.Auxiliaries.TryGetValue(auxBus, out var auxSource))
         {
             // Set default value and flag (like TypeScript pattern)
             Source = 0;
             return;
         }
 
-        var auxSource = currentState.Video.Auxiliaries[auxBus]!;
-        
         // Initialize from current state (direct field access = no flags set)
-        _source = auxSource.Value;
+        _source = auxSource;
     }
 
     /// <summary>

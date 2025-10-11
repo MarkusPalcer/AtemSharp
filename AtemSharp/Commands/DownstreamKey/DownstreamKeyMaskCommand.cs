@@ -32,9 +32,8 @@ public class DownstreamKeyMaskCommand : SerializedCommand
         DownstreamKeyerId = downstreamKeyerId;
 
         // If no video state or downstream keyer array exists, initialize with defaults
-        if (currentState.Video?.DownstreamKeyers == null || 
-            downstreamKeyerId >= currentState.Video.DownstreamKeyers.Length ||
-            currentState.Video.DownstreamKeyers[downstreamKeyerId]?.Properties?.Mask == null)
+        if (!currentState.Video.DownstreamKeyers.TryGetValue(downstreamKeyerId, out var downstreamKeyer) ||
+            downstreamKeyer.Properties?.Mask == null)
         {
             // Set default values and flags (like TypeScript pattern)
             Enabled = false;
@@ -45,7 +44,7 @@ public class DownstreamKeyMaskCommand : SerializedCommand
             return;
         }
 
-        var maskProps = currentState.Video.DownstreamKeyers[downstreamKeyerId]!.Properties!.Mask;
+        var maskProps = downstreamKeyer.Properties!.Mask;
         
         // Initialize from current state (direct field access = no flags set)
         _enabled = maskProps.Enabled;

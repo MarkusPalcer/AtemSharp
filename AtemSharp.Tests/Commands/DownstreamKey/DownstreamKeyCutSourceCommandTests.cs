@@ -33,19 +33,21 @@ public class DownstreamKeyCutSourceCommandTests : SerializedCommandTestBase<Down
     /// </summary>
     private static AtemState CreateStateWithDownstreamKeyer(int keyerId, int cutSource = 0)
     {
-        var downstreamKeyers = new DownstreamKeyer?[Math.Max(keyerId + 1, 2)];
-        downstreamKeyers[keyerId] = new DownstreamKeyer
+        var downstreamKeyers = new Dictionary<int, DownstreamKeyer>
         {
-            InTransition = false,
-            RemainingFrames = 0,
-            IsAuto = false,
-            OnAir = false,
-            IsTowardsOnAir = false,
-            Sources = new DownstreamKeyerSources
-            {
-                FillSource = 1000,
-                CutSource = cutSource
-            }
+	        [keyerId] = new DownstreamKeyer
+	        {
+		        InTransition = false,
+		        RemainingFrames = 0,
+		        IsAuto = false,
+		        OnAir = false,
+		        IsTowardsOnAir = false,
+		        Sources = new DownstreamKeyerSources
+		        {
+			        FillSource = 1000,
+			        CutSource = cutSource
+		        }
+	        }
         };
 
         var state = new AtemState
@@ -96,14 +98,16 @@ public class DownstreamKeyCutSourceCommandTests : SerializedCommandTestBase<Down
     {
         // Arrange
         const int keyerId = 1;
-        var downstreamKeyers = new DownstreamKeyer?[2];
-        downstreamKeyers[keyerId] = new DownstreamKeyer
+        var downstreamKeyers = new Dictionary<int, DownstreamKeyer>
         {
-            InTransition = false,
-            RemainingFrames = 0,
-            IsAuto = false,
-            OnAir = false,
-            Sources = null // Missing sources
+	        [keyerId] = new()
+	        {
+		        InTransition = false,
+		        RemainingFrames = 0,
+		        IsAuto = false,
+		        OnAir = false,
+		        Sources = null // Missing sources
+	        }
         };
 
         var state = new AtemState

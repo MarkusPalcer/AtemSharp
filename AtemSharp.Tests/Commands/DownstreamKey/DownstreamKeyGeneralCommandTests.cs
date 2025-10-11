@@ -39,7 +39,7 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
     /// </summary>
     private static AtemState CreateStateWithDownstreamKeyer(int keyerId)
     {
-        var downstreamKeyers = new DownstreamKeyer?[Math.Max(keyerId + 1, 2)];
+        Dictionary<int, DownstreamKeyer> downstreamKeyers = new Dictionary<int, DownstreamKeyer>();
         downstreamKeyers[keyerId] = new DownstreamKeyer
         {
             InTransition = false,
