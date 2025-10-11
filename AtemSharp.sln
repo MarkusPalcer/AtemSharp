@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtemSharp", "AtemSharp\Atem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtemSharp.Tests", "AtemSharp.Tests\AtemSharp.Tests.csproj", "{53D9735B-3C3F-47F1-9C26-4BB183714474}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtemSharp.Demo", "AtemSharp.Demo\AtemSharp.Demo.csproj", "{5893466F-CD53-45DF-9C86-618A279EB2B6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{53D9735B-3C3F-47F1-9C26-4BB183714474}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{53D9735B-3C3F-47F1-9C26-4BB183714474}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{53D9735B-3C3F-47F1-9C26-4BB183714474}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5893466F-CD53-45DF-9C86-618A279EB2B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5893466F-CD53-45DF-9C86-618A279EB2B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5893466F-CD53-45DF-9C86-618A279EB2B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5893466F-CD53-45DF-9C86-618A279EB2B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
