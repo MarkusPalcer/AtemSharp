@@ -1,0 +1,52 @@
+using System.Reflection;
+using AtemSharp.Commands;
+using AtemSharp.Enums;
+using AtemSharp.State;
+
+namespace AtemSharp.Tests.Commands;
+
+[TestFixture]
+// The test data does not contain test cases for this command since it has no data to deserialize
+public class InitCompleteCommandTests
+{
+    [Test]
+    public void TestDeserialization()
+    {
+        // Arrange - Create empty stream since InitCompleteCommand has no data
+        using var stream = new MemoryStream();
+
+        // Act - Deserialize the command
+        var command = InitCompleteCommand.Deserialize(stream, ProtocolVersion.V7_2);
+
+        // Assert - Verify the command was created successfully
+        Assert.That(command, Is.Not.Null);
+        Assert.That(command, Is.InstanceOf<InitCompleteCommand>());
+    }
+
+    [Test]
+    public void TestApplyToState()
+    {
+        // Arrange - Create a command and empty state
+        var command = new InitCompleteCommand();
+        var state = new AtemState();
+
+        // Act - Apply the command to state
+        var result = command.ApplyToState(state);
+
+        // Assert - Verify it returns the expected path
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Length, Is.EqualTo(1));
+        Assert.That(result[0], Is.EqualTo("info"));
+    }
+
+    [Test]
+    public void TestCommandAttribute()
+    {
+        // Arrange & Act - Get the command attribute from the class
+        var commandAttribute = typeof(InitCompleteCommand).GetCustomAttribute<CommandAttribute>();
+
+        // Assert - Verify the command has the correct raw name
+        Assert.That(commandAttribute, Is.Not.Null);
+        Assert.That(commandAttribute.RawName, Is.EqualTo("InCm"));
+    }
+}
