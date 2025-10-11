@@ -1,0 +1,107 @@
+using System.Buffers.Binary;
+
+namespace AtemSharp.Lib;
+
+/// <summary>
+/// Extension methods for working with spans and memory streams for ATEM protocol parsing
+/// </summary>
+public static class SpanExtensions
+{
+    /// <summary>
+    /// Creates a MemoryStream from a ReadOnlySpan&lt;byte&gt; for use with BinaryReader
+    /// </summary>
+    /// <param name="span">The span to wrap</param>
+    /// <returns>A MemoryStream containing the span data</returns>
+    public static MemoryStream ToMemoryStream(this ReadOnlySpan<byte> span)
+    {
+        return new MemoryStream(span.ToArray());
+    }
+
+    /// <summary>
+    /// Reads a big-endian UInt16 from the specified offset in the span
+    /// </summary>
+    /// <param name="span">The span to read from</param>
+    /// <param name="offset">The offset to start reading from</param>
+    /// <returns>The UInt16 value in host byte order</returns>
+    public static ushort ReadUInt16BigEndian(this ReadOnlySpan<byte> span, int offset)
+    {
+        return BinaryPrimitives.ReadUInt16BigEndian(span.Slice(offset, sizeof(ushort)));
+    }
+
+    /// <summary>
+    /// Reads a big-endian UInt32 from the specified offset in the span
+    /// </summary>
+    /// <param name="span">The span to read from</param>
+    /// <param name="offset">The offset to start reading from</param>
+    /// <returns>The UInt32 value in host byte order</returns>
+    public static uint ReadUInt32BigEndian(this ReadOnlySpan<byte> span, int offset)
+    {
+        return BinaryPrimitives.ReadUInt32BigEndian(span.Slice(offset, sizeof(uint)));
+    }
+
+    /// <summary>
+    /// Reads a big-endian Int16 from the specified offset in the span
+    /// </summary>
+    /// <param name="span">The span to read from</param>
+    /// <param name="offset">The offset to start reading from</param>
+    /// <returns>The Int16 value in host byte order</returns>
+    public static short ReadInt16BigEndian(this ReadOnlySpan<byte> span, int offset)
+    {
+        return BinaryPrimitives.ReadInt16BigEndian(span.Slice(offset, sizeof(short)));
+    }
+
+    /// <summary>
+    /// Reads a big-endian Int32 from the specified offset in the span
+    /// </summary>
+    /// <param name="span">The span to read from</param>
+    /// <param name="offset">The offset to start reading from</param>
+    /// <returns>The Int32 value in host byte order</returns>
+    public static int ReadInt32BigEndian(this ReadOnlySpan<byte> span, int offset)
+    {
+        return BinaryPrimitives.ReadInt32BigEndian(span.Slice(offset, sizeof(int)));
+    }
+
+    /// <summary>
+    /// Writes a big-endian UInt16 to the specified offset in the span
+    /// </summary>
+    /// <param name="span">The span to write to</param>
+    /// <param name="offset">The offset to start writing at</param>
+    /// <param name="value">The value to write</param>
+    public static void WriteUInt16BigEndian(this Span<byte> span, int offset, ushort value)
+    {
+        BinaryPrimitives.WriteUInt16BigEndian(span.Slice(offset, sizeof(ushort)), value);
+    }
+
+    /// <summary>
+    /// Writes a big-endian UInt32 to the specified offset in the span
+    /// </summary>
+    /// <param name="span">The span to write to</param>
+    /// <param name="offset">The offset to start writing at</param>
+    /// <param name="value">The value to write</param>
+    public static void WriteUInt32BigEndian(this Span<byte> span, int offset, uint value)
+    {
+        BinaryPrimitives.WriteUInt32BigEndian(span.Slice(offset, sizeof(uint)), value);
+    }
+
+    /// <summary>
+    /// Writes a big-endian Int16 to the specified offset in the span
+    /// </summary>
+    /// <param name="span">The span to write to</param>
+    /// <param name="offset">The offset to start writing at</param>
+    /// <param name="value">The value to write</param>
+    public static void WriteInt16BigEndian(this Span<byte> span, int offset, short value)
+    {
+        BinaryPrimitives.WriteInt16BigEndian(span.Slice(offset, sizeof(short)), value);
+    }
+
+    /// <summary>
+    /// Writes a big-endian Int32 to the specified offset in the span
+    /// </summary>
+    /// <param name="span">The span to write to</param>
+    /// <param name="offset">The offset to start writing at</param>
+    /// <param name="value">The value to write</param>
+    public static void WriteInt32BigEndian(this Span<byte> span, int offset, int value)
+    {
+        BinaryPrimitives.WriteInt32BigEndian(span.Slice(offset, sizeof(int)), value);
+    }
+}
