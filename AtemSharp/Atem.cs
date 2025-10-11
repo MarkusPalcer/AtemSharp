@@ -71,20 +71,81 @@ public class Atem : IDisposable
 
 	private void OnPacketReceived(object? sender, PacketReceivedEventArgs e)
 	{
-		// TODO: Parse commands from packet and apply to state
-		// For now, this is just a placeholder for the transport functionality
+		try
+		{
+			// Extract commands from packet payload and apply to state
+			// Based on TypeScript atemSocket.ts _parseCommands method (lines 181-217)
+			var payload = e.Packet.Payload;
+			var offset = 0;
+
+			// Parse all commands in the packet payload
+			while (offset + Constants.AtemConstants.COMMAND_HEADER_SIZE <= payload.Length)
+			{
+				// Extract command header (8 bytes: length, reserved, rawName)
+				var commandLength = (payload[offset] << 8) | payload[offset + 1]; // Big-endian 16-bit
+				// Skip reserved bytes (offset + 2, offset + 3)
+				var rawName = System.Text.Encoding.ASCII.GetString(payload, offset + 4, 4);
+
+				// Validate command length
+				if (commandLength < Constants.AtemConstants.COMMAND_HEADER_SIZE)
+				{
+					// Commands are never less than 8 bytes (header size)
+					break;
+				}
+
+				if (offset + commandLength > payload.Length)
+				{
+					// Command extends beyond payload - malformed packet
+					break;
+				}
+
+				// Extract command data (excluding the 8-byte header)
+				var commandDataStart = offset + Constants.AtemConstants.COMMAND_HEADER_SIZE;
+				var commandDataLength = commandLength - Constants.AtemConstants.COMMAND_HEADER_SIZE;
+				using var commandDataStream = new MemoryStream(payload, commandDataStart, commandDataLength);
+
+				try
+				{
+					// Try to parse the command using CommandParser
+					var command = _commandParser.ParseCommand(rawName, commandDataStream);
+					if (command != null)
+					{
+						// Apply the command to the current state
+						command.ApplyToState(State!);
+					}
+					// Note: Unknown commands are tracked by CommandParser.ParseCommand
+				}
+				catch (Exception ex)
+				{
+					// Log command parsing error but continue processing other commands
+					// Matches TypeScript emit('error', `Failed to deserialize command: ${cmdConstructor.constructor.name}: ${e}`)
+					Console.WriteLine($"Failed to deserialize command {rawName}: {ex.Message}");
+				}
+
+				// Move to next command
+				offset += commandLength;
+			}
+		}
+		catch (Exception ex)
+		{
+			// Handle any unexpected errors during packet processing
+			Console.WriteLine($"Error processing packet: {ex.Message}");
+		}
 	}
 
 	private void OnConnectionStateChanged(object? sender, ConnectionStateChangedEventArgs e)
 	{
-		// TODO: Handle connection state changes
-		// For now, this is just a placeholder for the transport functionality
+		// Handle connection state transitions
+		// This is primarily driven by the transport layer (UDP handshake)
+		// but may be further refined by command processing (e.g., InitComplete)
+		
+		Console.WriteLine($"Connection state changed: {e.PreviousState} -> {e.State}");
 	}
 
 	private void OnErrorOccurred(object? sender, Exception e)
 	{
-		// TODO: Handle transport errors
-		// For now, this is just a placeholder for the transport functionality
+		// Handle transport layer errors
+		Console.WriteLine($"Transport error occurred: {e.Message}");
 	}
 
 	/// <summary>
