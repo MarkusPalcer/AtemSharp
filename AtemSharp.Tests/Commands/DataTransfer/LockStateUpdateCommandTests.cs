@@ -1,5 +1,6 @@
 using AtemSharp.Commands.DataTransfer;
 using AtemSharp.Enums;
+using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DataTransfer;
 
@@ -45,7 +46,7 @@ public class LockStateUpdateCommandTests : DeserializedCommandTestBase<LockState
             Index = 12345,
             Locked = true
         };
-        var state = new State.AtemState();
+        var state = new AtemState();
 
         // Act
         var result = command.ApplyToState(state);

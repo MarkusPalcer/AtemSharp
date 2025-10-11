@@ -1,6 +1,7 @@
 using AtemSharp.Commands.DataTransfer;
 using AtemSharp.Enums;
 using AtemSharp.Enums.DataTransfer;
+using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DataTransfer;
 
@@ -46,7 +47,7 @@ public class DataTransferErrorCommandTests : DeserializedCommandTestBase<DataTra
             TransferId = 12345,
             ErrorCode = ErrorCode.Retry
         };
-        var state = new State.AtemState();
+        var state = new AtemState();
 
         // Act
         var result = command.ApplyToState(state);
