@@ -11,6 +11,38 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 {
 	private const double FloatingPointTolerance = 0.01;
 
+	/// <summary>
+	/// Compares two float values for approximate equality by rounding to the specified number of decimal places.
+	/// This is useful when test data has limited precision and exact floating-point comparison is not appropriate.
+	/// </summary>
+	/// <param name="actual">The actual value from the command</param>
+	/// <param name="expected">The expected value from test data</param>
+	/// <param name="decimals">The number of decimal places to round to before comparison</param>
+	/// <returns>True if the values are equal after rounding to the specified decimal places</returns>
+	protected bool AreApproximatelyEqual(float actual, float expected, int decimals)
+	{
+		return AreApproximatelyEqual(Math.Round(actual, decimals), Math.Round(expected, decimals));
+	}
+
+	/// <summary>
+	/// Compares two double values for approximate equality by rounding to the specified number of decimal places.
+	/// This is useful when test data has limited precision and exact floating-point comparison is not appropriate.
+	/// </summary>
+	/// <param name="actual">The actual value from the command</param>
+	/// <param name="expected">The expected value from test data</param>
+	/// <param name="decimals">The number of decimal places to round to before comparison</param>
+	/// <returns>True if the values are equal after rounding to the specified decimal places</returns>
+	protected bool AreApproximatelyEqual(double actual, double expected, int decimals)
+	{
+		return AreApproximatelyEqual(Math.Round(actual, decimals), Math.Round(expected, decimals));
+	}
+	
+	/// <summary>
+	/// Compares two double values for approximate equality using a fixed tolerance.
+	/// </summary>
+	/// <param name="actual">The actual value from the command</param>
+	/// <param name="expected">The expected value from test data</param>
+	/// <returns>True if the values are within the floating-point tolerance</returns>
 	protected bool AreApproximatelyEqual(double actual, double expected)
 	{
 		if (double.IsInfinity(expected) && double.IsInfinity(actual))
