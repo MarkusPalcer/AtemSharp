@@ -4,7 +4,7 @@
 - Deserialization is usually tested by having the test class inherit from DeserializedCommandTestBase
 - These pull test data from the TypeScript implementation to ensure that the C# implementation behaves as the TypeScript implementation
 - If that works, no additional tests for serialization/deserialization are required
-- If the base class complains that there are no test data for the command, have the test class not inherit from the base class and implement serialization/deserialization tests manually
+- If the base class complains that there are no test data for the command, have the test class not inherit from the base class and implement serialization/deserialization tests manually and write a comment on the test class to explain this
 - Manual tests are added for methods other than serialization/deserialization
 - When wanting to set specific flags, for example to test ApplyToState, use the internal setter of the Flags property after setting all properties to test values.
 
