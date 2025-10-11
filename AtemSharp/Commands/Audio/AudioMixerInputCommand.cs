@@ -32,13 +32,12 @@ public class AudioMixerInputCommand : SerializedCommand
         Index = index;
 
         // Validate audio input exists (like TypeScript update command)
-        if (currentState.Audio?.Channels == null || !currentState.Audio.Channels.ContainsKey(index))
+        if (currentState.Audio?.Channels is null || !currentState.Audio.Channels.TryGetValue(index, out var audioChannel))
         {
             throw new InvalidIdError("Classic Audio Input", index);
         }
 
-        var audioChannel = currentState.Audio.Channels[index];
-        if (audioChannel == null)
+        if (audioChannel is null)
         {
             throw new InvalidIdError("Classic Audio Input", index);
         }

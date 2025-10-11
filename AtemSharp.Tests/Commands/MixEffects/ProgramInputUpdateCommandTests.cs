@@ -1,6 +1,4 @@
-using AtemSharp.Commands;
 using AtemSharp.Commands.MixEffects;
-using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.MixEffects;
@@ -41,7 +39,7 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
         var changedPaths = command.ApplyToState(state);
 
         // Assert
-        Assert.That(state.Video!.MixEffects[mixEffectId]!.ProgramInput, Is.EqualTo(newSource));
+        Assert.That(state.Video.MixEffects[mixEffectId].ProgramInput, Is.EqualTo(newSource));
         Assert.That(changedPaths, Has.Length.EqualTo(1));
         Assert.That(changedPaths[0], Is.EqualTo($"video.mixEffects.{mixEffectId}.programInput"));
     }
@@ -76,7 +74,7 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
         // Assert
         Assert.That(state.Video, Is.Not.Null);
         Assert.That(state.Video.MixEffects[mixEffectId], Is.Not.Null);
-        Assert.That(state.Video.MixEffects[mixEffectId]!.ProgramInput, Is.EqualTo(newSource));
+        Assert.That(state.Video.MixEffects[mixEffectId].ProgramInput, Is.EqualTo(newSource));
         Assert.That(changedPaths, Has.Length.EqualTo(1));
         Assert.That(changedPaths[0], Is.EqualTo($"video.mixEffects.{mixEffectId}.programInput"));
     }
@@ -161,5 +159,115 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
                 MixEffects = mixEffects
             }
         };
+    }
+
+    [Test]
+    public void ApplyToState_ValidIndex_ShouldSucceed()
+    {
+        // Arrange
+        var state = new AtemState();
+        state.Info.Capabilities = new AtemCapabilities
+        {
+            MixEffects = 2 // 0-1 valid
+        };
+        
+        var command = new ProgramInputUpdateCommand
+        {
+            MixEffectId = 0,
+            Source = 1000
+        };
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => command.ApplyToState(state));
+        Assert.That(state.Video.MixEffects[0].ProgramInput, Is.EqualTo(1000));
+    }
+
+    [Test]
+    public void ApplyToState_InvalidIndex_ShouldThrowInvalidIdError()
+    {
+        // Arrange
+        var state = new AtemState();
+        state.Info.Capabilities = new AtemCapabilities
+        {
+            MixEffects = 2 // 0-1 valid
+        };
+        
+        var command = new ProgramInputUpdateCommand
+        {
+            MixEffectId = 2, // Invalid - only 0-1 are valid
+            Source = 1000
+        };
+
+        // Act & Assert
+        var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
+        Assert.That(ex.Message, Contains.Substring("MixEffect"));
+        Assert.That(ex.Message, Contains.Substring("2"));
+    }
+
+    [Test]
+    public void ApplyToState_NullCapabilities_ShouldThrowInvalidIdError()
+    {
+        // Arrange
+        var state = new AtemState();
+        state.Info.Capabilities = null;
+        
+        var command = new ProgramInputUpdateCommand
+        {
+            MixEffectId = 0,
+            Source = 1000
+        };
+
+        // Act & Assert
+        var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
+        Assert.That(ex.Message, Contains.Substring("MixEffect"));
+    }
+
+    [Test]
+    public void ApplyToState_SparseIndexAccess_ShouldWork()
+    {
+        // Arrange
+        var state = new AtemState();
+        state.Info.Capabilities = new AtemCapabilities
+        {
+            MixEffects = 4,  // 0-3 valid
+            Auxiliaries = 5  // 0-4 valid
+        };
+        
+        var programCommand = new ProgramInputUpdateCommand
+        {
+            MixEffectId = 3, // Skip indices 0-2
+            Source = 5000
+        };
+
+        // Act
+        programCommand.ApplyToState(state);
+
+        // Assert
+        Assert.That(state.Video.MixEffects.ContainsKey(0), Is.False);
+        Assert.That(state.Video.MixEffects.ContainsKey(1), Is.False);
+        Assert.That(state.Video.MixEffects.ContainsKey(2), Is.False);
+        Assert.That(state.Video.MixEffects[3].ProgramInput, Is.EqualTo(5000));
+    }
+
+    [Test]
+    public void ApplyToState_BoundaryValues_ShouldBeHandledCorrectly()
+    {
+        // Arrange
+        var state = new AtemState();
+        state.Info.Capabilities = new AtemCapabilities
+        {
+            MixEffects = 2 // 0-1 valid
+        };
+        
+        // Test exactly at the boundary (last valid index)
+        var command = new ProgramInputUpdateCommand
+        {
+            MixEffectId = 1, // Last valid index (capabilities.MixEffects = 2, so 0-1 are valid)
+            Source = 7000
+        };
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => command.ApplyToState(state));
+        Assert.That(state.Video.MixEffects[1].ProgramInput, Is.EqualTo(7000));
     }
 }

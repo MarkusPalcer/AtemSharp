@@ -1,5 +1,4 @@
 using AtemSharp.Commands.DisplayClock;
-using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DisplayClock;
 

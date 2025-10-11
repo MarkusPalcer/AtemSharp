@@ -44,7 +44,7 @@ public class AuxSourceUpdateCommand : IDeserializedCommand
 	public string[] ApplyToState(AtemState state)
 	{
 		// Validate auxiliary output index
-		if (state.Info.Capabilities == null || AuxBus >= state.Info.Capabilities.Auxiliaries)
+		if (state.Info.Capabilities is null || AuxBus >= state.Info.Capabilities.Auxiliaries)
 		{
 			throw new InvalidIdError("Auxiliary", AuxBus);
 		}

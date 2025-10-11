@@ -20,7 +20,7 @@ public class AudioMixerPropertiesCommand : SerializedCommand
     {
         // If old state does not exist, set Properties (instead of backing fields) to default values,
         // so all flags are set (i.e. all values are to be applied by the ATEM)
-        if (currentState.Audio == null)
+        if (currentState.Audio is null)
         {
             throw new InvalidIdError("Classic Audio", "properties");
         }

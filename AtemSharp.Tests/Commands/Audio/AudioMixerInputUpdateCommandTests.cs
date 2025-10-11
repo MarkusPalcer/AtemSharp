@@ -1,6 +1,7 @@
 using AtemSharp.Commands.Audio;
 using AtemSharp.Enums.Audio;
 using AtemSharp.Enums.Ports;
+using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Audio;
 
@@ -64,5 +65,46 @@ public class AudioMixerInputUpdateCommandTests : DeserializedCommandTestBase<Aud
 			Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
 			            string.Join("\n", failures));
 		}
+	}
+
+	[Test]
+	public void ApplyToState_ValidAudioState_ShouldSucceed()
+	{
+		// Arrange
+		var state = new AtemState();
+		state.Audio = new AudioState();
+		
+		var command = new AudioMixerInputUpdateCommand
+		{
+			Index = 1000,
+			SourceType = AudioSourceType.ExternalVideo,
+			Balance = 0.0,
+			Gain = -30.0
+		};
+
+		// Act & Assert
+		Assert.DoesNotThrow(() => command.ApplyToState(state));
+		Assert.That(state.Audio.Channels[1000], Is.Not.Null);
+		Assert.That(state.Audio.Channels[1000].SourceType, Is.EqualTo(AudioSourceType.ExternalVideo));
+	}
+
+	[Test]
+	public void ApplyToState_NullAudioState_ShouldThrowInvalidIdError()
+	{
+		// Arrange
+		var state = new AtemState();
+		state.Audio = null; // Audio subsystem not available
+		
+		var command = new AudioMixerInputUpdateCommand
+		{
+			Index = 1000,
+			SourceType = AudioSourceType.ExternalVideo,
+			Balance = 0.0,
+			Gain = -30.0
+		};
+
+		// Act & Assert
+		var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
+		Assert.That(ex.Message, Contains.Substring("Classic Audio"));
 	}
 }

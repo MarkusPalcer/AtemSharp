@@ -40,7 +40,7 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
         var changedPaths = command.ApplyToState(state);
 
         // Assert
-        Assert.That(state.Video!.Auxiliaries[auxId], Is.EqualTo(newSource));
+        Assert.That(state.Video.Auxiliaries[auxId], Is.EqualTo(newSource));
         Assert.That(changedPaths, Has.Length.EqualTo(1));
         Assert.That(changedPaths[0], Is.EqualTo($"video.auxiliaries.{auxId}"));
     }
@@ -138,5 +138,66 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
                 }
             }
         };
+    }
+
+    [Test]
+    public void ApplyToState_ValidIndex_ShouldSucceed()
+    {
+        // Arrange
+        var state = new AtemState();
+        state.Info.Capabilities = new AtemCapabilities
+        {
+            Auxiliaries = 4 // 0-3 valid
+        };
+        
+        var command = new AuxSourceUpdateCommand
+        {
+            AuxBus = 2,
+            Source = 3000
+        };
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => command.ApplyToState(state));
+        Assert.That(state.Video.Auxiliaries[2], Is.EqualTo(3000));
+    }
+
+    [Test]
+    public void ApplyToState_InvalidIndex_ShouldThrowInvalidIdError()
+    {
+        // Arrange
+        var state = new AtemState();
+        state.Info.Capabilities = new AtemCapabilities
+        {
+            Auxiliaries = 4 // 0-3 valid
+        };
+        
+        var command = new AuxSourceUpdateCommand
+        {
+            AuxBus = 6, // Invalid - only 0-3 are valid
+            Source = 3000
+        };
+
+        // Act & Assert
+        var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
+        Assert.That(ex.Message, Contains.Substring("Auxiliary"));
+        Assert.That(ex.Message, Contains.Substring("6"));
+    }
+
+    [Test]
+    public void ApplyToState_NullCapabilities_ShouldThrowInvalidIdError()
+    {
+        // Arrange
+        var state = new AtemState();
+        state.Info.Capabilities = null;
+        
+        var command = new AuxSourceUpdateCommand
+        {
+            AuxBus = 0,
+            Source = 3000
+        };
+
+        // Act & Assert
+        var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
+        Assert.That(ex.Message, Contains.Substring("Auxiliary"));
     }
 }

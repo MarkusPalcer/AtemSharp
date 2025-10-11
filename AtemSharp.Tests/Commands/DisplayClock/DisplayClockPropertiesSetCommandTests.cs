@@ -1,4 +1,3 @@
-using AtemSharp.Commands;
 using AtemSharp.Commands.DisplayClock;
 using AtemSharp.Enums;
 using AtemSharp.State;

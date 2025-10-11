@@ -62,7 +62,7 @@ public class DownstreamKeyPropertiesCommand : IDeserializedCommand
     public string[] ApplyToState(AtemState state)
     {
         // Validate downstream keyer index
-        if (state.Info.Capabilities == null || DownstreamKeyerId >= state.Info.Capabilities.DownstreamKeyers)
+        if (state.Info.Capabilities is null || DownstreamKeyerId >= state.Info.Capabilities.DownstreamKeyers)
         {
             throw new InvalidIdError("DownstreamKeyer", DownstreamKeyerId);
         }

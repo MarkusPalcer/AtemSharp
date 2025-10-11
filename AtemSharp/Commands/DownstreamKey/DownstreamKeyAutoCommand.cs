@@ -27,8 +27,7 @@ public class DownstreamKeyAutoCommand : SerializedCommand
         DownstreamKeyerId = downstreamKeyerId;
 
         // If no video state or downstream keyer array exists, initialize with defaults
-        if (currentState.Video?.DownstreamKeyers == null || 
-            !currentState.Video.DownstreamKeyers.TryGetValue(downstreamKeyerId, out var dsk))
+        if (!currentState.Video.DownstreamKeyers.TryGetValue(downstreamKeyerId, out var dsk))
         {
             // Set default value and flag (like TypeScript pattern)
             IsTowardsOnAir = false;

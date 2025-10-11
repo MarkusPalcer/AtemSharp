@@ -28,7 +28,7 @@ public class DownstreamKeyCutSourceCommand : SerializedCommand
 
         // If no video state or downstream keyer array exists, initialize with defaults
         if (!currentState.Video.DownstreamKeyers.TryGetValue(downstreamKeyerId, out var dsk ) ||
-            dsk.Sources == null)
+            dsk.Sources is null)
         {
             // Set default value and flag (like TypeScript pattern)
             Input = 0;

@@ -27,7 +27,7 @@ public class DisplayClockPropertiesSetCommand : SerializedCommand
     {
         // If old state does not exist, set Properties (instead of backing fields) to default values,
         // so all flags are set (i.e. all values are to be applied by the ATEM)
-        if (currentState.DisplayClock == null)
+        if (currentState.DisplayClock is null)
         {
             Enabled = false;
             Size = 0;
@@ -50,7 +50,7 @@ public class DisplayClockPropertiesSetCommand : SerializedCommand
         _positionX = displayClockData.PositionX;
         _positionY = displayClockData.PositionY;
         _autoHide = displayClockData.AutoHide;
-        _startFrom = displayClockData.StartFrom ?? new DisplayClockTime();
+        _startFrom = displayClockData.StartFrom;
         _startFromFrames = 0; // Default value for startFromFrames (this is an extension property)
         _clockMode = displayClockData.ClockMode;
     }
@@ -181,7 +181,7 @@ public class DisplayClockPropertiesSetCommand : SerializedCommand
         // Future: id at byte 2 (skip for now)
 
         // Write flag as 16-bit value (matches TypeScript pattern)
-        writer.WriteUInt16BigEndian((ushort)Flag);
+        writer.WriteUInt16BigEndian(Flag);
         writer.Pad(1); // Pad to byte 3
 
         writer.WriteBoolean(Enabled);

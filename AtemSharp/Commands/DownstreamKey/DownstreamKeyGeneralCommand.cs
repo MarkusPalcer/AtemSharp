@@ -31,7 +31,7 @@ public class DownstreamKeyGeneralCommand : SerializedCommand
 
         // If no video state or downstream keyer array exists, initialize with defaults
         if (!currentState.Video.DownstreamKeyers.TryGetValue(downstreamKeyerId, out var dsk) ||
-            dsk.Properties == null)
+            dsk.Properties is null)
         {
             // Set default values and flags (like TypeScript pattern)
             PreMultiply = false;

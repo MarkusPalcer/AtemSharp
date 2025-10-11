@@ -165,4 +165,43 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
 		Assert.That(command.Balance, Is.EqualTo(-34.829096815003595).Within(0.01));
 		Assert.That(command.FollowFadeToBlack, Is.False);
 	}
+
+	[Test]
+	public void ApplyToState_ValidAudioState_ShouldSucceed()
+	{
+		// Arrange
+		var state = new AtemState();
+		state.Audio = new AudioState();
+		
+		var command = new AudioMixerMasterUpdateCommand
+		{
+			Gain = -10.0,
+			Balance = 0.0,
+			FollowFadeToBlack = false
+		};
+
+		// Act & Assert
+		Assert.DoesNotThrow(() => command.ApplyToState(state));
+		Assert.That(state.Audio.Master, Is.Not.Null);
+		Assert.That(state.Audio.Master.Gain, Is.EqualTo(-10.0));
+	}
+
+	[Test]
+	public void ApplyToState_NullAudioState_ShouldThrowInvalidIdError()
+	{
+		// Arrange
+		var state = new AtemState();
+		state.Audio = null; // Audio subsystem not available
+		
+		var command = new AudioMixerMasterUpdateCommand
+		{
+			Gain = -10.0,
+			Balance = 0.0,
+			FollowFadeToBlack = false
+		};
+
+		// Act & Assert
+		var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
+		Assert.That(ex.Message, Contains.Substring("Classic Audio"));
+	}
 }

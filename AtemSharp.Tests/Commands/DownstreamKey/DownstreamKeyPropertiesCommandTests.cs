@@ -140,9 +140,9 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         Assert.That(state.Video, Is.Not.Null);
         Assert.That(state.Video.DownstreamKeyers.Count, Is.GreaterThan(0));
         Assert.That(state.Video.DownstreamKeyers[0], Is.Not.Null);
-        Assert.That(state.Video.DownstreamKeyers[0]!.Properties, Is.Not.Null);
+        Assert.That(state.Video.DownstreamKeyers[0].Properties, Is.Not.Null);
         
-        var properties = state.Video.DownstreamKeyers[0]!.Properties!;
+        var properties = state.Video.DownstreamKeyers[0].Properties!;
         Assert.That(properties.Tie, Is.EqualTo(true));
         Assert.That(properties.Rate, Is.EqualTo(25));
         Assert.That(properties.PreMultiply, Is.EqualTo(false));
@@ -194,9 +194,9 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         // Assert
         Assert.That(state.Video, Is.Not.Null);
         Assert.That(state.Video.DownstreamKeyers[2], Is.Not.Null);
-        Assert.That(state.Video.DownstreamKeyers[2]!.Properties, Is.Not.Null);
+        Assert.That(state.Video.DownstreamKeyers[2].Properties, Is.Not.Null);
         
-        var properties = state.Video.DownstreamKeyers[2]!.Properties!;
+        var properties = state.Video.DownstreamKeyers[2].Properties!;
         Assert.That(properties.Tie, Is.EqualTo(false));
         Assert.That(properties.Rate, Is.EqualTo(50));
         Assert.That(properties.PreMultiply, Is.EqualTo(true));
@@ -286,7 +286,7 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         var result = command.ApplyToState(state);
 
         // Assert
-        var properties = state.Video.DownstreamKeyers[0]!.Properties!;
+        var properties = state.Video.DownstreamKeyers[0].Properties!;
         Assert.That(properties.Tie, Is.EqualTo(true));
         Assert.That(properties.Rate, Is.EqualTo(30));
         Assert.That(properties.PreMultiply, Is.EqualTo(true));
@@ -300,5 +300,58 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         Assert.That(properties.Mask.Right, Is.EqualTo(2.0));
         
         Assert.That(result, Is.EqualTo(new[] { "video.downstreamKeyers.0.properties" }));
+    }
+
+    [Test]
+    public void ApplyToState_ValidIndex_ShouldSucceed()
+    {
+        // Arrange
+        var state = new AtemState();
+        state.Info.Capabilities = new AtemCapabilities
+        {
+            DownstreamKeyers = 2 // 0-1 valid
+        };
+        
+        var command = new DownstreamKeyPropertiesCommand
+        {
+            DownstreamKeyerId = 0,
+            Properties = new()
+            {
+                Tie = false,
+                Rate = 25,
+                PreMultiply = false
+            }
+        };
+
+        // Act & Assert
+        Assert.DoesNotThrow(() => command.ApplyToState(state));
+        Assert.That(state.Video.DownstreamKeyers[0].Properties, Is.Not.Null);
+    }
+
+    [Test]
+    public void ApplyToState_InvalidIndex_ShouldThrowInvalidIdError()
+    {
+        // Arrange
+        var state = new AtemState();
+        state.Info.Capabilities = new AtemCapabilities
+        {
+            DownstreamKeyers = 2 // 0-1 valid
+        };
+        
+        var command = new DownstreamKeyPropertiesCommand
+        {
+            DownstreamKeyerId = 3, // Invalid - only 0-1 are valid
+            Properties = new()
+            {
+                Tie = false,
+                Rate = 25,
+                PreMultiply = false
+            }
+        };
+
+        // Act & Assert
+        var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
+        Assert.That(ex.Message, Contains.Substring("DownstreamKeyer"));
+        Assert.That(ex.Message, Contains.Substring("3"));
     }
 }

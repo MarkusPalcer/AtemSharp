@@ -75,7 +75,7 @@ public class AudioMixerMonitorUpdateCommand : IDeserializedCommand
 	/// <inheritdoc />
 	public string[] ApplyToState(AtemState state)
 	{
-		if (state.Audio == null)
+		if (state.Audio is null)
 		{
 			throw new InvalidIdError("Classic Audio", "monitor");
 		}

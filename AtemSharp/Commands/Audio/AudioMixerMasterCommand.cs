@@ -23,7 +23,7 @@ public class AudioMixerMasterCommand : SerializedCommand
     {
         // If old state does not exist, set Properties (instead of backing fields) to default values,
         // so all flags are set (i.e. all values are to be applied by the ATEM)
-        if (currentState.Audio?.Master == null)
+        if (currentState.Audio?.Master is null)
         {
             throw new InvalidIdError("Classic Audio", "master");
         }

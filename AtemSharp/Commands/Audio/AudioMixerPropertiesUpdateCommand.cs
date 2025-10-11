@@ -40,7 +40,7 @@ public class AudioMixerPropertiesUpdateCommand : IDeserializedCommand
     /// <exception cref="InvalidIdError">Thrown if classic audio is not available</exception>
     public string[] ApplyToState(AtemState state)
     {
-        if (state.Audio == null)
+        if (state.Audio is null)
         {
             throw new InvalidIdError("Classic Audio", "properties");
         }
