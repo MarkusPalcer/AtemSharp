@@ -1,9 +1,12 @@
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp;
 
 public class Atem
 {
+	private readonly CommandParser _commandParser = new();
+
 	public async Task Connect(string remoteHost, int remotePort = Constants.AtemConstants.DEFAULT_PORT)
 	{
 		State = new AtemState();
@@ -16,5 +19,14 @@ public class Atem
 	}
 
 	public AtemState State { get; set; } = new();
-	public HashSet<string> UnknownCommands { get; set; }
+	
+	/// <summary>
+	/// Command parser for handling ATEM protocol commands
+	/// </summary>
+	public CommandParser CommandParser => _commandParser;
+	
+	/// <summary>
+	/// Set of unknown/unrecognized command names encountered during parsing
+	/// </summary>
+	public static HashSet<string> UnknownCommands { get; } = new();
 }

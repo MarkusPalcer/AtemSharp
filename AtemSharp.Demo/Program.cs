@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using AtemSharp;
 using Newtonsoft.Json;
 
 Console.WriteLine("=== AtemSharp Demo ===\n");
@@ -15,7 +16,7 @@ Console.WriteLine("Current state:");
 Console.WriteLine(JsonConvert.SerializeObject(state, Formatting.Indented));
 Console.WriteLine();
 Console.WriteLine("Unknown commands received:");
-foreach (var cmd in atem.UnknownCommands)
+foreach (var cmd in Atem.UnknownCommands)
 {
 	Console.WriteLine($"  - {cmd}");
 }
