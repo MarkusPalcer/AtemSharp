@@ -21,6 +21,11 @@ public class MultiViewer
 	public Dictionary<int, MultiViewerWindowState> Windows { get; set; } = new();
 
 	/// <summary>
+	/// VU opacity level (0-100)
+	/// </summary>
+	public int VuOpacity { get; set; }
+
+	/// <summary>
 	/// Create a new MultiViewer with default index
 	/// </summary>
 	public MultiViewer()
