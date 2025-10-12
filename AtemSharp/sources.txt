@@ -59,7 +59,6 @@ src\commands\MixEffects\Key\MixEffectKeyPatternCommand.ts - CKPt, KePt
 src\commands\MixEffects\Key\MixEffectKeyPropertiesGetCommand.ts - KeBP
 src\commands\MixEffects\Key\MixEffectKeyRunToCommand.ts - RFlK
 src\commands\MixEffects\Key\MixEffectKeyTypeSetCommand.ts - CKTp
-src\commands\MixEffects\Transition\TransitionDipCommand.ts - CTDp, TDpP
 src\commands\MixEffects\Transition\TransitionDVECommand.ts - CTDv, TDvP
 src\commands\MixEffects\Transition\TransitionStingerCommand.ts - CTSt, TStP
 src\commands\MixEffects\Transition\TransitionWipeCommand.ts - CTWp, TWpP
