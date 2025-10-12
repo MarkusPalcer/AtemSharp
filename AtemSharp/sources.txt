@@ -1,100 +1,98 @@
-src\commands\DownstreamKey\DownstreamKeyRateCommand.ts
-src\commands\DownstreamKey\DownstreamKeySourcesCommand.ts
-src\commands\DownstreamKey\DownstreamKeyStateCommand.ts
-src\commands\DownstreamKey\DownstreamKeyTieCommand.ts
-src\commands\Fairlight\AudioRouting\AudioRoutingOutput.ts
-src\commands\Fairlight\AudioRouting\AudioRoutingSource.ts
-src\commands\Fairlight\FairlightMixerInputCommand.ts
-src\commands\Fairlight\FairlightMixerMasterCommand.ts
-src\commands\Fairlight\FairlightMixerMasterCompressorCommand.ts
-src\commands\Fairlight\FairlightMixerMasterDynamicsResetCommand.ts
-src\commands\Fairlight\FairlightMixerMasterEqualizerBandCommand.ts
-src\commands\Fairlight\FairlightMixerMasterEqualizerResetCommand.ts
-src\commands\Fairlight\FairlightMixerMasterLevelsCommand.ts
-src\commands\Fairlight\FairlightMixerMasterLimiterCommand.ts
-src\commands\Fairlight\FairlightMixerMasterPropertiesCommand.ts
-src\commands\Fairlight\FairlightMixerMonitorCommand.ts
-src\commands\Fairlight\FairlightMixerMonitorSoloCommand.ts
-src\commands\Fairlight\FairlightMixerResetPeakLevelsCommand.ts
-src\commands\Fairlight\FairlightMixerSendLevelsCommand.ts
-src\commands\Fairlight\FairlightMixerSourceCommand.ts
-src\commands\Fairlight\FairlightMixerSourceCompressorCommand.ts
-src\commands\Fairlight\FairlightMixerSourceDynamicsResetCommand.ts
-src\commands\Fairlight\FairlightMixerSourceEqualizerBandCommand.ts
-src\commands\Fairlight\FairlightMixerSourceEqualizerResetCommand.ts
-src\commands\Fairlight\FairlightMixerSourceExpanderCommand.ts
-src\commands\Fairlight\FairlightMixerSourceLevelsCommand.ts
-src\commands\Fairlight\FairlightMixerSourceLimiterCommand.ts
-src\commands\Fairlight\FairlightMixerSourceResetPeakLevelsCommand.ts
-src\commands\Inputs\InputPropertiesCommand.ts
-src\commands\Macro\MacroActionCommand.ts
-src\commands\Macro\MacroAddTimedPauseCommand.ts
-src\commands\Macro\MacroPropertiesCommand.ts
-src\commands\Macro\MacroRecordCommand.ts
-src\commands\Macro\MacroRecordingStatusCommand.ts
-src\commands\Macro\MacroRunStatusCommand.ts
-src\commands\Media\MediaPlayerSourceCommand.ts
-src\commands\Media\MediaPlayerStatusCommand.ts
-src\commands\Media\MediaPoolCaptureStillCommand.ts
-src\commands\Media\MediaPoolClearClipCommand.ts
-src\commands\Media\MediaPoolClearStillCommand.ts
-src\commands\Media\MediaPoolClipDescription.ts
-src\commands\Media\MediaPoolFrameDescription.ts
-src\commands\Media\MediaPoolSetClipCommand.ts
-src\commands\MixEffects\FadeToBlack\FadeToBlackAutoCommand.ts
-src\commands\MixEffects\FadeToBlack\FadeToBlackRateCommand.ts
-src\commands\MixEffects\FadeToBlack\FadeToBlackStateCommand.ts
-src\commands\MixEffects\Key\MixEffectKeyAdvancedChromaPropertiesCommand.ts
-src\commands\MixEffects\Key\MixEffectKeyAdvancedChromaSampleCommand.ts
-src\commands\MixEffects\Key\MixEffectKeyAdvancedChromaSampleResetCommand.ts
-src\commands\MixEffects\Key\MixEffectKeyChromaCommand.ts
-src\commands\MixEffects\Key\MixEffectKeyCutSourceSetCommand.ts
-src\commands\MixEffects\Key\MixEffectKeyDVECommand.ts
-src\commands\MixEffects\Key\MixEffectKeyFillSourceSetCommand.ts
-src\commands\MixEffects\Key\MixEffectKeyFlyKeyframeCommand.ts
-src\commands\MixEffects\Key\MixEffectKeyFlyPropertiesGetCommand.ts
-src\commands\MixEffects\Key\MixEffectKeyLumaCommand.ts
-src\commands\MixEffects\Key\MixEffectKeyMaskSetCommand.ts
-src\commands\MixEffects\Key\MixEffectKeyOnAirCommand.ts
-src\commands\MixEffects\Key\MixEffectKeyPatternCommand.ts
-src\commands\MixEffects\Key\MixEffectKeyPropertiesGetCommand.ts
-src\commands\MixEffects\Key\MixEffectKeyRunToCommand.ts
-src\commands\MixEffects\Key\MixEffectKeyTypeSetCommand.ts
-src\commands\MixEffects\Transition\TransitionDipCommand.ts
-src\commands\MixEffects\Transition\TransitionDVECommand.ts
-src\commands\MixEffects\Transition\TransitionMixCommand.ts
-src\commands\MixEffects\Transition\TransitionPositionCommand.ts
-src\commands\MixEffects\Transition\TransitionPreviewCommand.ts
-src\commands\MixEffects\Transition\TransitionPropertiesCommand.ts
-src\commands\MixEffects\Transition\TransitionStingerCommand.ts
-src\commands\MixEffects\Transition\TransitionWipeCommand.ts
-src\commands\MixEffects\AutoTransitionCommand.ts
-src\commands\MixEffects\CutCommand.ts
-src\commands\Recording\RecordingDiskCommand.ts
-src\commands\Recording\RecordingDurationCommand.ts
-src\commands\Recording\RecordingISOCommand.ts
-src\commands\Recording\RecordingSettingsCommand.ts
-src\commands\Recording\RecordingStatusCommand.ts
-src\commands\Settings\MediaPool.ts
-src\commands\Settings\MultiViewerPropertiesCommand.ts
-src\commands\Settings\MultiViewerSourceCommand.ts
-src\commands\Settings\MultiViewerVuOpacityCommand.ts
-src\commands\Settings\MultiViewerWindowSafeAreaCommand.ts
-src\commands\Settings\MultiViewerWindowVuMeterCommand.ts
-src\commands\Settings\VideoMode.ts
-src\commands\Streaming\StreamingAudioBitratesCommand.ts
-src\commands\Streaming\StreamingDurationCommand.ts
-src\commands\Streaming\StreamingServiceCommand.ts
-src\commands\Streaming\StreamingStatsCommand.ts
-src\commands\Streaming\StreamingStatusCommand.ts
-src\commands\SuperSource\SuperSourceBoxParametersCommand.ts
-src\commands\SuperSource\SuperSourcePropertiesCommand.ts
-src\commands\CameraControlCommand.ts
-src\commands\ColorGeneratorCommand.ts
-src\commands\CommandBase.ts
-src\commands\index.ts
-src\commands\PowerStatusCommand.ts
-src\commands\StartupStateCommand.ts
-src\commands\TallyBySourceCommand.ts
-src\commands\TimeCommand.ts
-src\commands\TimeConfigCommand.ts
+﻿src\commands\DownstreamKey\DownstreamKeyRateCommand.ts - CDsR
+src\commands\DownstreamKey\DownstreamKeySourcesCommand.ts - DskB
+src\commands\DownstreamKey\DownstreamKeyStateCommand.ts - DskS, DskS
+src\commands\DownstreamKey\DownstreamKeyTieCommand.ts - CDsT
+src\commands\Fairlight\AudioRouting\AudioRoutingOutput.ts - AROC, AROP
+src\commands\Fairlight\AudioRouting\AudioRoutingSource.ts - ARSC, ARSP
+src\commands\Fairlight\FairlightMixerInputCommand.ts - CFIP, CFIP, FAIP
+src\commands\Fairlight\FairlightMixerMasterCommand.ts - CFMP, FAMP
+src\commands\Fairlight\FairlightMixerMasterCompressorCommand.ts - CMCP, MOCP
+src\commands\Fairlight\FairlightMixerMasterDynamicsResetCommand.ts - RMOD
+src\commands\Fairlight\FairlightMixerMasterEqualizerBandCommand.ts - CMBP, AMBP
+src\commands\Fairlight\FairlightMixerMasterEqualizerResetCommand.ts - RMOE
+src\commands\Fairlight\FairlightMixerMasterLevelsCommand.ts - FDLv
+src\commands\Fairlight\FairlightMixerMasterLimiterCommand.ts - CMLP, AMLP
+src\commands\Fairlight\FairlightMixerMasterPropertiesCommand.ts - CMPP, FMPP
+src\commands\Fairlight\FairlightMixerMonitorCommand.ts - CFMH, FMHP
+src\commands\Fairlight\FairlightMixerMonitorSoloCommand.ts - CFMS, FAMS
+src\commands\Fairlight\FairlightMixerResetPeakLevelsCommand.ts - RFLP
+src\commands\Fairlight\FairlightMixerSendLevelsCommand.ts - SFLN
+src\commands\Fairlight\FairlightMixerSourceCommand.ts - FASD, CFSP, FASP
+src\commands\Fairlight\FairlightMixerSourceCompressorCommand.ts - CICP, AICP
+src\commands\Fairlight\FairlightMixerSourceDynamicsResetCommand.ts - RICD
+src\commands\Fairlight\FairlightMixerSourceEqualizerBandCommand.ts - CEBP, AEBP
+src\commands\Fairlight\FairlightMixerSourceEqualizerResetCommand.ts - RICE
+src\commands\Fairlight\FairlightMixerSourceExpanderCommand.ts - CIXP, AIXP
+src\commands\Fairlight\FairlightMixerSourceLevelsCommand.ts - FMLv
+src\commands\Fairlight\FairlightMixerSourceLimiterCommand.ts - CILP, AILP
+src\commands\Fairlight\FairlightMixerSourceResetPeakLevelsCommand.ts - RFIP
+src\commands\Inputs\InputPropertiesCommand.ts - CInL, InPr
+src\commands\Macro\MacroActionCommand.ts - MAct
+src\commands\Macro\MacroAddTimedPauseCommand.ts - MSlp
+src\commands\Macro\MacroPropertiesCommand.ts - MPrp, CMPr
+src\commands\Macro\MacroRecordCommand.ts - MSRc
+src\commands\Macro\MacroRecordingStatusCommand.ts - MRcS
+src\commands\Macro\MacroRunStatusCommand.ts - MRPr, MRCP
+src\commands\Media\MediaPlayerSourceCommand.ts - MPSS, MPCE
+src\commands\Media\MediaPlayerStatusCommand.ts - SCPS, RCPS
+src\commands\Media\MediaPoolCaptureStillCommand.ts - Capt
+src\commands\Media\MediaPoolClearClipCommand.ts - CMPC
+src\commands\Media\MediaPoolClearStillCommand.ts - CSTL
+src\commands\Media\MediaPoolClipDescription.ts - MPCS
+src\commands\Media\MediaPoolFrameDescription.ts - MPfe
+src\commands\Media\MediaPoolSetClipCommand.ts - SMPC
+src\commands\MixEffects\FadeToBlack\FadeToBlackAutoCommand.ts - FtbA
+src\commands\MixEffects\FadeToBlack\FadeToBlackRateCommand.ts - FtbC, FtbP
+src\commands\MixEffects\FadeToBlack\FadeToBlackStateCommand.ts - FtbS
+src\commands\MixEffects\Key\MixEffectKeyAdvancedChromaPropertiesCommand.ts - CACK, KACk
+src\commands\MixEffects\Key\MixEffectKeyAdvancedChromaSampleCommand.ts - CACC, KACC
+src\commands\MixEffects\Key\MixEffectKeyAdvancedChromaSampleResetCommand.ts - RACK
+src\commands\MixEffects\Key\MixEffectKeyChromaCommand.ts - CKCk, KeCk
+src\commands\MixEffects\Key\MixEffectKeyCutSourceSetCommand.ts - CKeC
+src\commands\MixEffects\Key\MixEffectKeyDVECommand.ts - CKDV, KeDV
+src\commands\MixEffects\Key\MixEffectKeyFillSourceSetCommand.ts - CKeF
+src\commands\MixEffects\Key\MixEffectKeyFlyKeyframeCommand.ts - KKFP, CKFP, SFKF
+src\commands\MixEffects\Key\MixEffectKeyFlyPropertiesGetCommand.ts - KeFS
+src\commands\MixEffects\Key\MixEffectKeyLumaCommand.ts - CKLm, KeLm
+src\commands\MixEffects\Key\MixEffectKeyMaskSetCommand.ts - CKMs
+src\commands\MixEffects\Key\MixEffectKeyOnAirCommand.ts - CKOn, KeOn
+src\commands\MixEffects\Key\MixEffectKeyPatternCommand.ts - CKPt, KePt
+src\commands\MixEffects\Key\MixEffectKeyPropertiesGetCommand.ts - KeBP
+src\commands\MixEffects\Key\MixEffectKeyRunToCommand.ts - RFlK
+src\commands\MixEffects\Key\MixEffectKeyTypeSetCommand.ts - CKTp
+src\commands\MixEffects\Transition\TransitionDipCommand.ts - CTDp, TDpP
+src\commands\MixEffects\Transition\TransitionDVECommand.ts - CTDv, TDvP
+src\commands\MixEffects\Transition\TransitionMixCommand.ts - CTMx, TMxP
+src\commands\MixEffects\Transition\TransitionPositionCommand.ts - CTPs, TrPs
+src\commands\MixEffects\Transition\TransitionPreviewCommand.ts - CTPr, TrPr
+src\commands\MixEffects\Transition\TransitionPropertiesCommand.ts - CTTp, TrSS
+src\commands\MixEffects\Transition\TransitionStingerCommand.ts - CTSt, TStP
+src\commands\MixEffects\Transition\TransitionWipeCommand.ts - CTWp, TWpP
+src\commands\MixEffects\AutoTransitionCommand.ts - DAut
+src\commands\MixEffects\CutCommand.ts - DCut
+src\commands\Recording\RecordingDiskCommand.ts - RMSp, RTMD
+src\commands\Recording\RecordingDurationCommand.ts - RMDR, RTMR
+src\commands\Recording\RecordingISOCommand.ts - ISOi
+src\commands\Recording\RecordingSettingsCommand.ts - CRMS, RMSu
+src\commands\Recording\RecordingStatusCommand.ts - RcTM, RTMS
+src\commands\Settings\MediaPool.ts - CMPS, MPSp
+src\commands\Settings\MultiViewerPropertiesCommand.ts - CMvP, MvPr
+src\commands\Settings\MultiViewerSourceCommand.ts - CMvI, MvIn
+src\commands\Settings\MultiViewerVuOpacityCommand.ts - VuMo
+src\commands\Settings\MultiViewerWindowSafeAreaCommand.ts - SaMw
+src\commands\Settings\MultiViewerWindowVuMeterCommand.ts - VuMS, VuMC
+src\commands\Settings\VideoMode.ts - CVdM, VidM
+src\commands\Streaming\StreamingAudioBitratesCommand.ts - STAB
+src\commands\Streaming\StreamingDurationCommand.ts - SRDR, SRST
+src\commands\Streaming\StreamingServiceCommand.ts - CRSS, SRSU
+src\commands\Streaming\StreamingStatsCommand.ts - SRSS
+src\commands\Streaming\StreamingStatusCommand.ts - StrR, StRS
+src\commands\SuperSource\SuperSourceBoxParametersCommand.ts - CSBP, SSBP
+src\commands\SuperSource\SuperSourcePropertiesCommand.ts - CSSc, CSSc, CSBd, SSrc, SSrc, SSBd
+src\commands\CameraControlCommand.ts - CCmd, CCdP
+src\commands\ColorGeneratorCommand.ts - CClV, ColV
+src\commands\PowerStatusCommand.ts - Powr
+src\commands\StartupStateCommand.ts - SRsv, SRcl
+src\commands\TallyBySourceCommand.ts - TlSr
+src\commands\TimeCommand.ts - Time, TiRq
+src\commands\TimeConfigCommand.ts - CTCC, TCCc
