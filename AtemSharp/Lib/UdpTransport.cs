@@ -6,24 +6,6 @@ using AtemSharp.Enums;
 namespace AtemSharp.Lib;
 
 /// <summary>
-/// Event arguments for packet received events
-/// </summary>
-public class PacketReceivedEventArgs : EventArgs
-{
-    public required AtemPacket Packet { get; init; }
-    public required IPEndPoint RemoteEndPoint { get; init; }
-}
-
-/// <summary>
-/// Event arguments for connection state change events
-/// </summary>
-public class ConnectionStateChangedEventArgs : EventArgs
-{
-    public required ConnectionState State { get; init; }
-    public required ConnectionState PreviousState { get; init; }
-}
-
-/// <summary>
 /// UDP transport layer for ATEM protocol communication.
 /// Handles connection state management, packet reliability, and async message processing.
 /// </summary>

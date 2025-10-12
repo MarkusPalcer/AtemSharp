@@ -75,7 +75,6 @@ src\commands\Recording\RecordingISOCommand.ts - ISOi
 src\commands\Recording\RecordingSettingsCommand.ts - CRMS, RMSu
 src\commands\Recording\RecordingStatusCommand.ts - RcTM, RTMS
 src\commands\Settings\MediaPool.ts - CMPS, MPSp
-src\commands\Settings\MultiViewerPropertiesCommand.ts - CMvP, MvPr
 src\commands\Settings\MultiViewerSourceCommand.ts - CMvI, MvIn
 src\commands\Settings\MultiViewerVuOpacityCommand.ts - VuMo
 src\commands\Settings\MultiViewerWindowSafeAreaCommand.ts - SaMw

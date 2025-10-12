@@ -6,6 +6,19 @@ namespace AtemSharp.State;
 public static class AtemStateUtil
 {
 	/// <summary>
+	/// Gets a MultiViewer from the state, creating it if it doesn't exist
+	/// </summary>
+	/// <param name="state">The ATEM state</param>
+	/// <param name="index">The MultiViewer index</param>
+	/// <returns>The MultiViewer instance</returns>
+	public static MultiViewer GetMultiViewer(AtemState state, int index)
+	{
+		var multiViewer = state.Settings.MultiViewers.GetOrCreate(index);
+		multiViewer.Index = index; // Ensure index is set correctly
+		return multiViewer;
+	}
+
+	/// <summary>
 	/// Gets an existing value from the dictionary or creates a new instance if the key doesn't exist.
 	/// This method provides sparse indexing behavior similar to JavaScript arrays, where only
 	/// explicitly accessed indices contain objects.

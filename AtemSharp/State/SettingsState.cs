@@ -16,4 +16,9 @@ public class SettingsState
     /// Current time mode of the device
     /// </summary>
     public TimeMode TimeMode { get; set; }
+    
+    /// <summary>
+    /// MultiViewer settings indexed by MultiViewer ID using sparse Dictionary for efficient memory usage
+    /// </summary>
+    public Dictionary<int, MultiViewer> MultiViewers { get; set; } = [];
 }
