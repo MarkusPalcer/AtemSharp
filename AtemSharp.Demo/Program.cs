@@ -1,14 +1,32 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using AtemSharp;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 Console.WriteLine("=== AtemSharp Demo ===\n");
 
-var atem = new Atem();
-await atem.ConnectAsync("192.168.178.69");
+// Create a console logger factory and logger
+using var loggerFactory = LoggerFactory.Create(builder =>
+    builder.AddConsole().SetMinimumLevel(LogLevel.Information));
+var logger = loggerFactory.CreateLogger<Atem>();
+
+var atem = new Atem(logger);
+
+var cts = new CancellationTokenSource();
+cts.CancelAfter(TimeSpan.FromSeconds(5));
+try
+{
+	await atem.ConnectAsync("192.168.178.69", cancellationToken: cts.Token);
+}
+catch (TaskCanceledException)
+{
+	Console.WriteLine("Connection timed out.");
+	return;
+}
+
 Console.WriteLine("Connected, waiting 2s for data to come in ...");
-Thread.Sleep(2000);
+await Task.Delay(TimeSpan.FromSeconds(2));
 await atem.DisconnectAsync();
 var state = atem.State;
 

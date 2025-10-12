@@ -10,6 +10,8 @@ public enum ConnectionState : byte
     /// </summary>
     Closed = 0x00,
     
+    SendingSyn = 0xFE,
+    
     /// <summary>
     /// Hello packet sent, waiting for response
     /// </summary>

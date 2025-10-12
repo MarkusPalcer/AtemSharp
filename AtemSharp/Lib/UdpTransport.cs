@@ -129,9 +129,7 @@ public sealed class UdpTransport : IUdpTransport
         {
             throw new ArgumentException($"Invalid IP address: {address}", nameof(address));
         }
-
         _remoteEndPoint = new IPEndPoint(ipAddress, port);
-        ConnectionState = ConnectionState.SynSent;
 
         try
         {
@@ -141,9 +139,19 @@ public sealed class UdpTransport : IUdpTransport
             // Start the receive loop
             _receiveTask = ReceiveLoopAsync(_cancellationTokenSource.Token);
             
-            // Now we would typically send a hello packet here to initiate the handshake
-            // Since we also simulate the other side of the handshake, we can just set the state to connected
-            ConnectionState = ConnectionState.Established;
+            ConnectionState = ConnectionState.SendingSyn;
+            
+            // Send the initial ATEM hello packet to initiate the handshake
+            var helloPacket = new AtemPacket 
+            { 
+                Payload = AtemConstants.HELLO_PACKET 
+            };
+            await SendPacketAsync(helloPacket, cancellationToken);
+			
+            ConnectionState = ConnectionState.SynSent;
+            
+            // The connection state will be set to Established when we receive the proper response
+            // For now, we remain in SynSent state until the ATEM protocol handshake completes
         }
         catch (Exception ex)
         {

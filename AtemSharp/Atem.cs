@@ -28,6 +28,7 @@ public class Atem : IDisposable
 	private readonly ILogger<Atem> _logger;
 	private bool _disposed;
 	private IUdpTransport _transport;
+	private TaskCompletionSource<bool>? _connectionCompletionSource;
 
 	/// <summary>
 	/// Gets the current ATEM state
@@ -75,7 +76,12 @@ public class Atem : IDisposable
 			throw new ObjectDisposedException(nameof(Atem));
 
 		State = new AtemState();
+		_connectionCompletionSource = new TaskCompletionSource<bool>();
+		
 		await Transport.ConnectAsync(remoteHost, remotePort, cancellationToken);
+		
+		// Wait for InitCompleteCommand to be received, indicating the connection is fully established
+		await _connectionCompletionSource.Task.WaitAsync(cancellationToken);
 	}
 
 	/// <summary>
@@ -139,6 +145,13 @@ public class Atem : IDisposable
 					{
 						// Apply the command to the current state
 						command.ApplyToState(State!);
+						
+						// Check if this is the InitCompleteCommand
+						if (command is Commands.InitCompleteCommand)
+						{
+							// Signal that the connection is fully established
+							_connectionCompletionSource?.SetResult(true);
+						}
 					}
 					// Note: Unknown commands are tracked by CommandParser.ParseCommand
 					#if DEBUG
@@ -192,5 +205,8 @@ public class Atem : IDisposable
 		Transport.ConnectionStateChanged -= OnConnectionStateChanged;
 		Transport.ErrorOccurred -= OnErrorOccurred;
 		Transport.Dispose();
+		
+		// Clean up any pending connection completion
+		_connectionCompletionSource?.TrySetCanceled();
 	}
 }
