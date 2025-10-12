@@ -34,4 +34,9 @@ public class AtemState
     /// Video state including downstream keyers, mix effects, etc.
     /// </summary>
     public VideoState Video { get; set; } = new();
+
+    /// <summary>
+    /// Settings state including video mode and other device settings
+    /// </summary>
+    public SettingsState Settings { get; set; } = new();
 }

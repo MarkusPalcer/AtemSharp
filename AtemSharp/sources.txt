@@ -81,7 +81,6 @@ src\commands\Settings\MultiViewerSourceCommand.ts - CMvI, MvIn
 src\commands\Settings\MultiViewerVuOpacityCommand.ts - VuMo
 src\commands\Settings\MultiViewerWindowSafeAreaCommand.ts - SaMw
 src\commands\Settings\MultiViewerWindowVuMeterCommand.ts - VuMS, VuMC
-src\commands\Settings\VideoMode.ts - CVdM, VidM
 src\commands\Streaming\StreamingAudioBitratesCommand.ts - STAB
 src\commands\Streaming\StreamingDurationCommand.ts - SRDR, SRST
 src\commands\Streaming\StreamingServiceCommand.ts - CRSS, SRSU
