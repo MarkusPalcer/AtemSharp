@@ -9,6 +9,8 @@ The AtemSharp project aims to provide C# implementations of ATEM commands that a
 - **WritableCommands** (Outgoing): Commands sent to the ATEM device
 - **DeserializedCommands** (Incoming): Commands received from the ATEM device
 
+Also heed the ADRs in the doc/adr folder.
+
 ## 🎯 Phase 1: Analysis & Preparation
 
 ### 1.1 Identify the TypeScript Command
@@ -139,69 +141,6 @@ public class YourCommand : SerializedCommand
 - ✅ **Flag as byte**: Write `(byte)Flag` to match TypeScript single-byte flag pattern
 - ✅ **Simplified buffer management**: Direct `ToArray()` call eliminates `leaveOpen` complexity
 - ✅ **Simplified naming**: Removed "BE" suffix since ATEM protocol is exclusively big-endian
-
-**Available Extension Methods:**
-```csharp
-// From SerializationExtensions class
-writer.Pad(uint length)           // Write 'length' zero bytes for padding
-writer.WriteUInt16BigEndian(ushort)        // Write 16-bit unsigned (always big-endian)
-writer.WriteInt16BigEndian(short)          // Write 16-bit signed (always big-endian)
-writer.WriteUInt32BigEndian(uint)          // Write 32-bit unsigned (always big-endian)
-
-// Corresponding read methods
-reader.ReadUInt16BigEndian()               // Read 16-bit unsigned (always big-endian)
-reader.ReadInt16BigEndian()                // Read 16-bit signed (always big-endian)
-```
-
-**Complete Serialization Example (Based on AudioMixerInputCommand):**
-```csharp
-public override byte[] Serialize(ProtocolVersion version)
-{
-    using var memoryStream = new MemoryStream(12);
-    using var writer = new BinaryWriter(memoryStream);
-    
-    // Flag always written as single byte first
-    writer.Write((byte)Flag);
-    writer.Pad(1);                                    // Pad to align with TypeScript
-    
-    // Write index/identifier (when present)
-    writer.WriteUInt16BigEndian(Index);
-    
-    // Write enum values as bytes with padding as needed
-    writer.Write((byte)MixOption);
-    writer.Pad(1);                                    // Pad before next multi-byte value
-    
-    // Write computed values using utilities
-    writer.WriteUInt16BigEndian(AtemUtil.DecibelToUInt16BE(Gain));
-    writer.WriteInt16BigEndian(AtemUtil.BalanceToInt(Balance));
-    
-    // Write boolean values
-    writer.WriteBoolean(RcaToXlrEnabled);
-    writer.Pad(1);                                    // Final padding if needed
-    
-    return memoryStream.ToArray();
-}
-```
-
-**Key Benefits of This Pattern:**
-- ✅ **State Initialization**: Command starts with current ATEM values automatically
-- ✅ **Automatic Flags**: No need to manually manage flags or call `UpdateProps`
-- ✅ **Type Safety**: No nullable properties since initialization guarantees values
-- ✅ **Validation**: State validation in constructor prevents invalid commands
-- ✅ **Simple Usage**: Just set properties, flags are handled automatically
-
-**Usage Pattern:**
-```csharp
-// Create command with current state
-var command = new YourCommand(currentState);
-
-// Change only what you want - flags set automatically
-command.PropertyName = newValue;      // Flag 0x01 set automatically
-command.AnotherProperty = newValue2;  // Flag 0x02 set automatically
-
-// Send command
-await atem.SendCommand(command);
-```
 
 ### 2.2 DeserializedCommands (Incoming)
 
@@ -377,7 +316,7 @@ public class YourUpdateCommandTests : IDeserializedCommandTestBase<YourUpdateCom
 | `number` (percentage) | `double` | `double` | `/100` | Serialized as integer value with the unit 0.01% |
 | `number` (integer) | `int` / `ushort` | `int` / `ushort` | `writer.WriteUInt16BigEndian()` / `reader.ReadUInt16BigEndian()` | Standard integers (always big-endian) |
 | `number` (byte) | `byte` | `byte` | Direct assignment | Single byte values |
-| `boolean` | `bool` | `bool` | writer.WriteBoolean() / reader.ReadBoolean() | |
+| `boolean` | `bool` | `bool` | `writer.WriteBoolean()` / `reader.ReadBoolean()` | |
 | `enum` values | `EnumType` | `EnumType` | Cast from/to underlying type | Custom enums, validation in setter |
 
 **Key Differences from Old Pattern:**

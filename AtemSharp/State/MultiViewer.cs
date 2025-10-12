@@ -16,6 +16,11 @@ public class MultiViewer
 	public MultiViewerPropertiesState? Properties { get; set; }
 
 	/// <summary>
+	/// MultiViewer windows indexed by window index using sparse Dictionary for efficient memory usage
+	/// </summary>
+	public Dictionary<int, MultiViewerWindowState> Windows { get; set; } = new();
+
+	/// <summary>
 	/// Create a new MultiViewer with default index
 	/// </summary>
 	public MultiViewer()
