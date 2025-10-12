@@ -20,7 +20,12 @@ public class TransitionSettings
     /// </summary>
     public WipeTransitionSettings? Wipe { get; set; }
 
+    /// <summary>
+    /// DVE transition settings
+    /// </summary>
+    // ReSharper disable once InconsistentNaming Domain Specific Acronym
+    public DVETransitionSettings? DVE { get; set; }
+
     // TODO: Add other transition settings as they are implemented:
-    // public DVETransitionSettings? DVE { get; set; }
     // public StingerTransitionSettings? Stinger { get; set; }
 }
