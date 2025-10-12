@@ -1,8 +1,116 @@
-# MockAtemServer Test Utility
+# Test Utilities
 
 ## Overview
 
+This directory contains test utilities to help with testing ATEM-related functionality:
+
+- **MockAtemServer**: A minimal UDP server that mimics ATEM device behavior
+- **FakeUdpTransport**: A fake implementation of IUdpTransport for unit testing
+
+## MockAtemServer
+
 The `MockAtemServer` is a minimal UDP server that mimics ATEM device behavior for testing purposes. This test double allows for realistic testing of the ATEM connection protocol while providing the ability to verify data being sent and received.
+
+## FakeUdpTransport
+
+The `FakeUdpTransport` is a fake implementation of `IUdpTransport` that provides complete control over connection behavior and events for unit testing.
+
+### Key Features:
+- **Connection State Management**: Properly tracks and transitions between connection states
+- **Event Simulation**: Allows tests to trigger `PacketReceived` and `ErrorOccurred` events manually
+- **Configurable Behavior**: Control whether connect/disconnect operations succeed or fail
+- **Packet Tracking**: Automatically tracks all sent packets for verification
+- **Realistic State Transitions**: Simulates proper ATEM connection state progression
+
+### Basic Usage Example:
+
+```csharp
+[Test]
+public async Task ExampleTest()
+{
+    // Arrange
+    using var fakeTransport = new FakeUdpTransport();
+    var stateChanges = new List<ConnectionState>();
+    fakeTransport.ConnectionStateChanged += (_, e) => stateChanges.Add(e.State);
+
+    // Act
+    await fakeTransport.ConnectAsync("192.168.1.100");
+
+    // Assert
+    Assert.That(fakeTransport.ConnectionState, Is.EqualTo(ConnectionState.Established));
+    Assert.That(stateChanges, Contains.Item(ConnectionState.SynSent));
+    Assert.That(stateChanges, Contains.Item(ConnectionState.Established));
+}
+```
+
+### Event Simulation:
+
+```csharp
+[Test]
+public void SimulatePacketReceived()
+{
+    // Arrange
+    using var fakeTransport = new FakeUdpTransport();
+    var receivedPackets = new List<AtemPacket>();
+    fakeTransport.PacketReceived += (_, e) => receivedPackets.Add(e.Packet);
+
+    var testPacket = new AtemPacket
+    {
+        Flags = PacketFlag.AckReply,
+        Length = 12,
+        SessionId = 123,
+        PacketId = 1,
+        Payload = Array.Empty<byte>()
+    };
+
+    // Act
+    fakeTransport.SimulatePacketReceived(testPacket);
+
+    // Assert
+    Assert.That(receivedPackets, Has.Count.EqualTo(1));
+    Assert.That(receivedPackets[0], Is.EqualTo(testPacket));
+}
+```
+
+### Error Simulation:
+
+```csharp
+[Test]
+public void SimulateNetworkError()
+{
+    // Arrange
+    using var fakeTransport = new FakeUdpTransport();
+    var errors = new List<Exception>();
+    fakeTransport.ErrorOccurred += (_, ex) => errors.Add(ex);
+
+    var networkError = new SocketException(10054); // Connection reset
+
+    // Act
+    fakeTransport.SimulateError(networkError);
+
+    // Assert
+    Assert.That(errors, Has.Count.EqualTo(1));
+    Assert.That(errors[0], Is.InstanceOf<SocketException>());
+}
+```
+
+### Configurable Failure Testing:
+
+```csharp
+[Test]
+public void TestConnectionFailure()
+{
+    // Arrange
+    using var fakeTransport = new FakeUdpTransport();
+    fakeTransport.ShouldConnectSucceed = false;
+    fakeTransport.ConnectException = new TimeoutException("Connection timeout");
+
+    // Act & Assert
+    var ex = Assert.ThrowsAsync<TimeoutException>(() => 
+        fakeTransport.ConnectAsync("192.168.1.100"));
+    Assert.That(ex.Message, Is.EqualTo("Connection timeout"));
+}
+```
 
 ## Concurrent Test Execution
 

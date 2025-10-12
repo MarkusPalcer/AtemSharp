@@ -7,9 +7,27 @@ namespace AtemSharp;
 public class Atem : IDisposable
 {
 	private readonly CommandParser _commandParser = new();
-	private readonly UdpTransport _transport = new();
+
+	internal IUdpTransport Transport
+	{
+		get => _transport;
+		set
+		{
+			// Subscribe to transport events
+			_transport.PacketReceived -= OnPacketReceived;
+			_transport.ConnectionStateChanged -= OnConnectionStateChanged;
+			_transport.ErrorOccurred -= OnErrorOccurred;
+			
+			value.PacketReceived += OnPacketReceived;
+			value.ConnectionStateChanged += OnConnectionStateChanged;
+			value.ErrorOccurred += OnErrorOccurred;
+			_transport = value;
+		}
+	}
+
 	private readonly ILogger<Atem> _logger;
 	private bool _disposed;
+	private IUdpTransport _transport;
 
 	/// <summary>
 	/// Gets the current ATEM state
@@ -22,19 +40,23 @@ public class Atem : IDisposable
 	public static HashSet<string> UnknownCommands { get; } = new();
 
 	/// <summary>
-	/// Command parser for handling ATEM protocol commands
-	/// </summary>
-	public CommandParser CommandParser => _commandParser;
-
-	/// <summary>
 	/// Initializes a new instance of the Atem class
 	/// </summary>
 	/// <param name="logger">Logger instance for diagnostic output</param>
-	public Atem(ILogger<Atem>? logger = null)
+	public Atem(ILogger<Atem>? logger = null) : this(new UdpTransport(), logger)
 	{
+	}
+
+	/// <summary>
+	/// Initializes a new instance of the Atem class with the specified transport
+	/// This constructor is useful for testing scenarios where you want to inject a mock transport
+	/// </summary>
+	/// <param name="transport">The UDP transport to use for communication</param>
+	/// <param name="logger">Logger instance for diagnostic output</param>
+	public Atem(IUdpTransport transport, ILogger<Atem>? logger = null)
+	{
+		_transport = transport ?? throw new ArgumentNullException(nameof(transport));
 		_logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<Atem>.Instance;
-		
-		// Subscribe to transport events
 		_transport.PacketReceived += OnPacketReceived;
 		_transport.ConnectionStateChanged += OnConnectionStateChanged;
 		_transport.ErrorOccurred += OnErrorOccurred;
@@ -53,7 +75,7 @@ public class Atem : IDisposable
 			throw new ObjectDisposedException(nameof(Atem));
 
 		State = new AtemState();
-		await _transport.ConnectAsync(remoteHost, remotePort, cancellationToken);
+		await Transport.ConnectAsync(remoteHost, remotePort, cancellationToken);
 	}
 
 	/// <summary>
@@ -65,14 +87,14 @@ public class Atem : IDisposable
 	{
 		if (!_disposed)
 		{
-			await _transport.DisconnectAsync(cancellationToken);
+			await Transport.DisconnectAsync(cancellationToken);
 		}
 	}
 
 	/// <summary>
 	/// Gets the current connection state
 	/// </summary>
-	public Enums.ConnectionState ConnectionState => _transport.ConnectionState;
+	public Enums.ConnectionState ConnectionState => Transport.ConnectionState;
 
 	private void OnPacketReceived(object? sender, PacketReceivedEventArgs e)
 	{
@@ -119,6 +141,9 @@ public class Atem : IDisposable
 						command.ApplyToState(State!);
 					}
 					// Note: Unknown commands are tracked by CommandParser.ParseCommand
+					#if DEBUG
+					_logger.LogDebug("Processed command: {CommandName}", rawName);
+					#endif
 				}
 				catch (Exception ex)
 				{
@@ -163,9 +188,9 @@ public class Atem : IDisposable
 
 		_disposed = true;
 
-		_transport.PacketReceived -= OnPacketReceived;
-		_transport.ConnectionStateChanged -= OnConnectionStateChanged;
-		_transport.ErrorOccurred -= OnErrorOccurred;
-		_transport.Dispose();
+		Transport.PacketReceived -= OnPacketReceived;
+		Transport.ConnectionStateChanged -= OnConnectionStateChanged;
+		Transport.ErrorOccurred -= OnErrorOccurred;
+		Transport.Dispose();
 	}
 }
