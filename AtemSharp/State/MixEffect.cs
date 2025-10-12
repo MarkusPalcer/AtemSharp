@@ -39,4 +39,9 @@ public class MixEffect
     /// Transition properties for this mix effect
     /// </summary>
     public TransitionProperties? TransitionProperties { get; set; }
+
+    /// <summary>
+    /// Transition settings for this mix effect
+    /// </summary>
+    public TransitionSettings? TransitionSettings { get; set; }
 }
