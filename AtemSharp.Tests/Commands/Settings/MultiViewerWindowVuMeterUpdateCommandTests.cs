@@ -1,0 +1,181 @@
+using AtemSharp.Commands.Settings;
+using AtemSharp.Enums;
+using AtemSharp.State;
+
+namespace AtemSharp.Tests.Commands.Settings;
+
+[TestFixture]
+public class MultiViewerWindowVuMeterUpdateCommandTests : DeserializedCommandTestBase<MultiViewerWindowVuMeterUpdateCommand,
+    MultiViewerWindowVuMeterUpdateCommandTests.CommandData>
+{
+    public class CommandData : CommandDataBase
+    {
+        public int MultiviewIndex { get; set; }  // Match TypeScript property name
+        public int WindowIndex { get; set; }
+        public bool VuEnabled { get; set; }
+    }
+
+    protected override void CompareCommandProperties(MultiViewerWindowVuMeterUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    {
+        Assert.That(actualCommand.MultiViewerId, Is.EqualTo(expectedData.MultiviewIndex), 
+                   $"MultiViewerId should match expected value for test case {testCase.Name}");
+        Assert.That(actualCommand.WindowIndex, Is.EqualTo(expectedData.WindowIndex), 
+                   $"WindowIndex should match expected value for test case {testCase.Name}");
+        Assert.That(actualCommand.VuEnabled, Is.EqualTo(expectedData.VuEnabled), 
+                   $"VuEnabled should match expected value for test case {testCase.Name}");
+    }
+
+    [Test]
+    public void ApplyToState_WithValidMultiViewer_UpdatesWindow()
+    {
+        // Arrange
+        const int multiViewerId = 1;
+        const int windowIndex = 5;
+        const bool vuEnabled = true;
+        
+        var state = CreateStateWithMultiViewer(multiViewerId);
+        var command = new MultiViewerWindowVuMeterUpdateCommand
+        {
+            MultiViewerId = multiViewerId,
+            WindowIndex = windowIndex,
+            VuEnabled = vuEnabled
+        };
+
+        // Act
+        var changedPaths = command.ApplyToState(state);
+
+        // Assert
+        var multiViewer = AtemStateUtil.GetMultiViewer(state, multiViewerId);
+        Assert.That(multiViewer.Windows.ContainsKey(windowIndex), Is.True, "Window should exist");
+        
+        var window = multiViewer.Windows[windowIndex];
+        Assert.That(window.AudioMeter, Is.EqualTo(vuEnabled));
+        
+        Assert.That(changedPaths, Has.Length.EqualTo(1));
+        Assert.That(changedPaths[0], Is.EqualTo($"settings.multiViewers.{multiViewerId}.windows.{windowIndex}.audioMeter"));
+    }
+
+    [Test]
+    public void ApplyToState_WithoutMultiViewer_ThrowsInvalidIdError()
+    {
+        // Arrange
+        const int multiViewerId = 3;
+        
+        var state = new AtemState(); // Empty state
+        var command = new MultiViewerWindowVuMeterUpdateCommand
+        {
+            MultiViewerId = multiViewerId,
+            WindowIndex = 0,
+            VuEnabled = true
+        };
+
+        // Act & Assert
+        Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
+    }
+
+    [Test]
+    public void ApplyToState_WithInvalidMultiViewerId_ThrowsInvalidIdError()
+    {
+        // Arrange
+        const int validMultiViewerId = 1;
+        const int invalidMultiViewerId = 5;
+        
+        var state = CreateStateWithMultiViewer(validMultiViewerId);
+        var command = new MultiViewerWindowVuMeterUpdateCommand
+        {
+            MultiViewerId = invalidMultiViewerId,
+            WindowIndex = 0,
+            VuEnabled = true
+        };
+
+        // Act & Assert
+        Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
+    }
+
+    [Test]
+    public void ApplyToState_WithExistingWindow_UpdatesAudioMeter()
+    {
+        // Arrange
+        const int multiViewerId = 0;
+        const int windowIndex = 2;
+        
+        var state = CreateStateWithMultiViewer(multiViewerId);
+        
+        // Pre-populate window with different AudioMeter value
+        var multiViewer = AtemStateUtil.GetMultiViewer(state, multiViewerId);
+        multiViewer.Windows[windowIndex] = new MultiViewerWindowState
+        {
+            AudioMeter = false,
+            WindowIndex = windowIndex
+        };
+        
+        var command = new MultiViewerWindowVuMeterUpdateCommand
+        {
+            MultiViewerId = multiViewerId,
+            WindowIndex = windowIndex,
+            VuEnabled = true
+        };
+
+        // Act
+        var changedPaths = command.ApplyToState(state);
+
+        // Assert
+        var window = multiViewer.Windows[windowIndex];
+        Assert.That(window.AudioMeter, Is.True, "AudioMeter should be updated to true");
+        Assert.That(changedPaths[0], Is.EqualTo($"settings.multiViewers.{multiViewerId}.windows.{windowIndex}.audioMeter"));
+    }
+
+    [Test]
+    public void ApplyToState_WithNewWindow_CreatesWindowWithAudioMeter()
+    {
+        // Arrange
+        const int multiViewerId = 0;
+        const int windowIndex = 7;
+        
+        var state = CreateStateWithMultiViewer(multiViewerId);
+        var command = new MultiViewerWindowVuMeterUpdateCommand
+        {
+            MultiViewerId = multiViewerId,
+            WindowIndex = windowIndex,
+            VuEnabled = false
+        };
+
+        // Act
+        var changedPaths = command.ApplyToState(state);
+
+        // Assert
+        var multiViewer = AtemStateUtil.GetMultiViewer(state, multiViewerId);
+        Assert.That(multiViewer.Windows.ContainsKey(windowIndex), Is.True, "New window should be created");
+        
+        var window = multiViewer.Windows[windowIndex];
+        Assert.That(window.AudioMeter, Is.False, "AudioMeter should be set to false");
+        Assert.That(changedPaths[0], Is.EqualTo($"settings.multiViewers.{multiViewerId}.windows.{windowIndex}.audioMeter"));
+    }
+
+    /// <summary>
+    /// Creates an AtemState with a valid MultiViewer at the specified index
+    /// </summary>
+    private static AtemState CreateStateWithMultiViewer(int multiViewerId)
+    {
+        var multiViewers = new Dictionary<int, MultiViewer>
+        {
+            { multiViewerId, new MultiViewer(multiViewerId) }
+        };
+
+        return new AtemState
+        {
+            Settings = new SettingsState
+            {
+                MultiViewers = multiViewers
+            },
+            Info = new DeviceInfo
+            {
+                MultiViewer = new MultiViewerInfo
+                {
+                    Count = multiViewerId + 1,
+                    WindowCount = 10
+                }
+            }
+        };
+    }
+}
