@@ -26,6 +26,8 @@ public class TransitionSettings
     // ReSharper disable once InconsistentNaming Domain Specific Acronym
     public DVETransitionSettings? DVE { get; set; }
 
-    // TODO: Add other transition settings as they are implemented:
-    // public StingerTransitionSettings? Stinger { get; set; }
+    /// <summary>
+    /// Stinger transition settings
+    /// </summary>
+    public StingerTransitionSettings? Stinger { get; set; }
 }
