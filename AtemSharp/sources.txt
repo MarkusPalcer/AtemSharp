@@ -93,4 +93,3 @@ src\commands\ColorGeneratorCommand.ts - CClV, ColV
 src\commands\StartupStateCommand.ts - SRsv, SRcl
 src\commands\TallyBySourceCommand.ts - TlSr
 src\commands\TimeCommand.ts - Time, TiRq
-src\commands\TimeConfigCommand.ts - CTCC, TCCc

@@ -11,4 +11,9 @@ public class SettingsState
     /// Current video mode of the device
     /// </summary>
     public VideoMode VideoMode { get; set; }
+    
+    /// <summary>
+    /// Current time mode of the device
+    /// </summary>
+    public TimeMode TimeMode { get; set; }
 }
