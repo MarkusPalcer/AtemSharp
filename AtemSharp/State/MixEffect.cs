@@ -34,4 +34,9 @@ public class MixEffect
     /// Current transition position
     /// </summary>
     public TransitionPosition TransitionPosition { get; set; } = new();
+
+    /// <summary>
+    /// Transition properties for this mix effect
+    /// </summary>
+    public TransitionProperties? TransitionProperties { get; set; }
 }

@@ -64,7 +64,6 @@ src\commands\MixEffects\Transition\TransitionDVECommand.ts - CTDv, TDvP
 src\commands\MixEffects\Transition\TransitionMixCommand.ts - CTMx, TMxP
 src\commands\MixEffects\Transition\TransitionPositionCommand.ts - CTPs, TrPs
 src\commands\MixEffects\Transition\TransitionPreviewCommand.ts - CTPr, TrPr
-src\commands\MixEffects\Transition\TransitionPropertiesCommand.ts - CTTp, TrSS
 src\commands\MixEffects\Transition\TransitionStingerCommand.ts - CTSt, TStP
 src\commands\MixEffects\Transition\TransitionWipeCommand.ts - CTWp, TWpP
 src\commands\MixEffects\AutoTransitionCommand.ts - DAut
