@@ -76,7 +76,6 @@ src\commands\Recording\RecordingSettingsCommand.ts - CRMS, RMSu
 src\commands\Recording\RecordingStatusCommand.ts - RcTM, RTMS
 src\commands\Settings\MediaPool.ts - CMPS, MPSp
 src\commands\Settings\MultiViewerVuOpacityCommand.ts - VuMo
-src\commands\Settings\MultiViewerWindowSafeAreaCommand.ts - SaMw
 src\commands\Streaming\StreamingAudioBitratesCommand.ts - STAB
 src\commands\Streaming\StreamingDurationCommand.ts - SRDR, SRST
 src\commands\Streaming\StreamingServiceCommand.ts - CRSS, SRSU
