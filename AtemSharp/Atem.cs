@@ -1,5 +1,6 @@
 using AtemSharp.Lib;
 using AtemSharp.State;
+using Microsoft.Extensions.Logging;
 
 namespace AtemSharp;
 
@@ -7,6 +8,7 @@ public class Atem : IDisposable
 {
 	private readonly CommandParser _commandParser = new();
 	private readonly UdpTransport _transport = new();
+	private readonly ILogger<Atem> _logger;
 	private bool _disposed;
 
 	/// <summary>
@@ -27,8 +29,11 @@ public class Atem : IDisposable
 	/// <summary>
 	/// Initializes a new instance of the Atem class
 	/// </summary>
-	public Atem()
+	/// <param name="logger">Logger instance for diagnostic output</param>
+	public Atem(ILogger<Atem>? logger = null)
 	{
+		_logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<Atem>.Instance;
+		
 		// Subscribe to transport events
 		_transport.PacketReceived += OnPacketReceived;
 		_transport.ConnectionStateChanged += OnConnectionStateChanged;
@@ -119,7 +124,7 @@ public class Atem : IDisposable
 				{
 					// Log command parsing error but continue processing other commands
 					// Matches TypeScript emit('error', `Failed to deserialize command: ${cmdConstructor.constructor.name}: ${e}`)
-					Console.WriteLine($"Failed to deserialize command {rawName}: {ex.Message}");
+					_logger.LogError(ex, "Failed to deserialize command {CommandName}: {ErrorMessage}", rawName, ex.Message);
 				}
 
 				// Move to next command
@@ -129,7 +134,7 @@ public class Atem : IDisposable
 		catch (Exception ex)
 		{
 			// Handle any unexpected errors during packet processing
-			Console.WriteLine($"Error processing packet: {ex.Message}");
+			_logger.LogError(ex, "Error processing packet: {ErrorMessage}", ex.Message);
 		}
 	}
 
@@ -139,13 +144,13 @@ public class Atem : IDisposable
 		// This is primarily driven by the transport layer (UDP handshake)
 		// but may be further refined by command processing (e.g., InitComplete)
 		
-		Console.WriteLine($"Connection state changed: {e.PreviousState} -> {e.State}");
+		_logger.LogInformation("Connection state changed: {PreviousState} -> {NewState}", e.PreviousState, e.State);
 	}
 
 	private void OnErrorOccurred(object? sender, Exception e)
 	{
 		// Handle transport layer errors
-		Console.WriteLine($"Transport error occurred: {e.Message}");
+		_logger.LogError(e, "Transport error occurred: {ErrorMessage}", e.Message);
 	}
 
 	/// <summary>
