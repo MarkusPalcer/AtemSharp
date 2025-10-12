@@ -14,6 +14,10 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 	/// <summary>
 	/// Compares two float values for approximate equality by rounding to the specified number of decimal places.
 	/// This is useful when test data has limited precision and exact floating-point comparison is not appropriate.
+	/// Use this method when the ATEM binary protocol stores values with specific scaling factors:
+	/// - 1 decimal place: Values scaled by 10 (e.g., clip/gain values stored as value * 10)
+	/// - 2 decimal places: Values scaled by 100 (e.g., percentage values stored as percentage * 100)
+	/// - Higher precision: Values with more complex scaling or conversion factors
 	/// </summary>
 	/// <param name="actual">The actual value from the command</param>
 	/// <param name="expected">The expected value from test data</param>
@@ -27,6 +31,10 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 	/// <summary>
 	/// Compares two double values for approximate equality by rounding to the specified number of decimal places.
 	/// This is useful when test data has limited precision and exact floating-point comparison is not appropriate.
+	/// Use this method when the ATEM binary protocol stores values with specific scaling factors:
+	/// - 1 decimal place: Values scaled by 10 (e.g., clip/gain values stored as value * 10)
+	/// - 2 decimal places: Values scaled by 100 (e.g., percentage values stored as percentage * 100)
+	/// - Higher precision: Values with more complex scaling or conversion factors
 	/// </summary>
 	/// <param name="actual">The actual value from the command</param>
 	/// <param name="expected">The expected value from test data</param>

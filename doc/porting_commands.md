@@ -380,7 +380,36 @@ dotnet test --filter "FullyQualifiedName~Commands3"
 - **State paths**: Return correct state modification paths for change tracking
 - **Validation**: Property setters should validate ranges and throw appropriate exceptions
 
-### 5.3 Validation Checklist
+### 5.3 Floating-Point Precision in Tests
+
+When testing commands with floating-point values, use the appropriate `AreApproximatelyEqual` overload:
+
+```csharp
+// For values that should match to 1 decimal place (common for scaled values like Clip/Gain)
+if (!AreApproximatelyEqual(actualCommand.Clip, expectedData.Clip, 1))
+{
+    failures.Add($"Clip: expected {expectedData.Clip}, actual {actualCommand.Clip}");
+}
+
+// For values that should match to 2 decimal places
+if (!AreApproximatelyEqual(actualCommand.Gain, expectedData.Gain, 2))
+{
+    failures.Add($"Gain: expected {expectedData.Gain}, actual {actualCommand.Gain}");
+}
+
+// For basic tolerance-based comparison (default ±0.01)
+if (!AreApproximatelyEqual(actualCommand.Volume, expectedData.Volume))
+{
+    failures.Add($"Volume: expected {expectedData.Volume}, actual {actualCommand.Volume}");
+}
+```
+
+**Guidelines for precision:**
+- **1 decimal place**: Values scaled by 10 (e.g., clip/gain values that are stored as `value * 10`)
+- **2 decimal places**: Values scaled by 100 (e.g., percentage values stored as `percentage * 100`)  
+- **Basic tolerance**: Decibel values and other converted floating-point values
+
+### 5.4 Validation Checklist
 
 1. ✅ **Serialization test passes** - your C# matches the expected byte output from test data
 2. ✅ **Deserialization test passes** - your C# correctly parses the byte input from test data
