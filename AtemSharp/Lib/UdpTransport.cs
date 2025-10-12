@@ -141,12 +141,9 @@ public sealed class UdpTransport : IUdpTransport
             
             ConnectionState = ConnectionState.SendingSyn;
             
-            // Send the initial ATEM hello packet to initiate the handshake
-            var helloPacket = new AtemPacket 
-            { 
-                Payload = AtemConstants.HELLO_PACKET 
-            };
-            await SendPacketAsync(helloPacket, cancellationToken);
+            // Send the initial ATEM hello packet directly (no packet wrapper)
+            // This matches the TypeScript implementation which sends COMMAND_CONNECT_HELLO raw
+            await _udpClient.SendAsync(AtemConstants.HELLO_PACKET, cancellationToken);
 			
             ConnectionState = ConnectionState.SynSent;
             

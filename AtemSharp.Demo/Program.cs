@@ -13,21 +13,12 @@ var logger = loggerFactory.CreateLogger<Atem>();
 
 var atem = new Atem(logger);
 
-var cts = new CancellationTokenSource();
-cts.CancelAfter(TimeSpan.FromSeconds(5));
-try
-{
-	await atem.ConnectAsync("192.168.178.69", cancellationToken: cts.Token);
-}
-catch (TaskCanceledException)
-{
-	Console.WriteLine("Connection timed out.");
-	return;
-}
-
+Console.WriteLine("Attempting to connect to 192.168.178.69:9910...");
+await atem.ConnectAsync("192.168.178.69");
 Console.WriteLine("Connected, waiting 2s for data to come in ...");
 await Task.Delay(TimeSpan.FromSeconds(2));
 await atem.DisconnectAsync();
+
 var state = atem.State;
 
 // Serialize state to JSON
