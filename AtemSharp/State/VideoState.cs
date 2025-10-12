@@ -6,6 +6,11 @@ namespace AtemSharp.State;
 public class VideoState
 {
     /// <summary>
+    /// Input channels available on this device
+    /// </summary>
+    public Dictionary<int, InputChannel> Inputs { get; set; } = [];
+
+    /// <summary>
     /// Mix effects available on this device
     /// </summary>
     public Dictionary<int, MixEffect> MixEffects { get; set; } = [];

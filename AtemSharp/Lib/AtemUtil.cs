@@ -66,4 +66,68 @@ public static class AtemUtil
     {
         return input / 1000.0;
     }
+
+    /// <summary>
+    /// Extract individual flag components from a combined flag value
+    /// </summary>
+    /// <param name="value">Combined flag value</param>
+    /// <returns>Array of individual flag values</returns>
+    public static T[] GetComponents<T>(T value) where T : Enum
+    {
+        var result = new List<T>();
+        var intValue = Convert.ToInt32(value);
+        
+        for (int next = 1; next <= intValue; next <<= 1)
+        {
+            if ((intValue & next) > 0)
+            {
+                result.Add((T)Enum.ToObject(typeof(T), next));
+            }
+        }
+        
+        return result.ToArray();
+    }
+
+    /// <summary>
+    /// Read a null-terminated string from a byte array
+    /// </summary>
+    /// <param name="buffer">Source byte array</param>
+    /// <param name="startIndex">Starting index in the buffer</param>
+    /// <param name="maxLength">Maximum length to read</param>
+    /// <returns>Null-terminated string</returns>
+    public static string ReadNullTerminatedString(byte[] buffer, int startIndex, int maxLength)
+    {
+        var endIndex = startIndex;
+        var maxIndex = Math.Min(startIndex + maxLength, buffer.Length);
+        
+        // Find null terminator or end of available data
+        while (endIndex < maxIndex && buffer[endIndex] != 0)
+        {
+            endIndex++;
+        }
+        
+        return System.Text.Encoding.UTF8.GetString(buffer, startIndex, endIndex - startIndex);
+    }
+
+    /// <summary>
+    /// Write a string to a byte array with null termination and padding
+    /// </summary>
+    /// <param name="text">String to write</param>
+    /// <param name="buffer">Target byte array</param>
+    /// <param name="startIndex">Starting index in the buffer</param>
+    /// <param name="maxLength">Maximum length to write (including null terminator)</param>
+    public static void WriteNullTerminatedString(string text, byte[] buffer, int startIndex, int maxLength)
+    {
+        var bytes = System.Text.Encoding.UTF8.GetBytes(text);
+        var lengthToCopy = Math.Min(bytes.Length, maxLength - 1); // Leave space for null terminator
+        
+        // Copy string bytes
+        Array.Copy(bytes, 0, buffer, startIndex, lengthToCopy);
+        
+        // Fill remaining space with zeros (including null terminator)
+        for (int i = startIndex + lengthToCopy; i < startIndex + maxLength; i++)
+        {
+            buffer[i] = 0;
+        }
+    }
 }
