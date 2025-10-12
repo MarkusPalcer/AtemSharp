@@ -61,7 +61,6 @@ src\commands\MixEffects\Key\MixEffectKeyRunToCommand.ts - RFlK
 src\commands\MixEffects\Key\MixEffectKeyTypeSetCommand.ts - CKTp
 src\commands\MixEffects\Transition\TransitionDVECommand.ts - CTDv, TDvP
 src\commands\MixEffects\Transition\TransitionStingerCommand.ts - CTSt, TStP
-src\commands\MixEffects\Transition\TransitionWipeCommand.ts - CTWp, TWpP
 src\commands\MixEffects\AutoTransitionCommand.ts - DAut
 src\commands\MixEffects\CutCommand.ts - DCut
 src\commands\Recording\RecordingDiskCommand.ts - RMSp, RTMD

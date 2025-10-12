@@ -15,8 +15,12 @@ public class TransitionSettings
     /// </summary>
     public DipTransitionSettings? Dip { get; set; }
 
+    /// <summary>
+    /// Wipe transition settings
+    /// </summary>
+    public WipeTransitionSettings? Wipe { get; set; }
+
     // TODO: Add other transition settings as they are implemented:
     // public DVETransitionSettings? DVE { get; set; }
     // public StingerTransitionSettings? Stinger { get; set; }
-    // public WipeTransitionSettings? Wipe { get; set; }
 }
