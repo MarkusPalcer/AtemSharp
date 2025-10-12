@@ -1,6 +1,4 @@
 using System.Net;
-using System.Net.Sockets;
-using AtemSharp.Commands.MixEffects;
 using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.Tests.TestUtilities;
@@ -8,7 +6,6 @@ using AtemSharp.Tests.TestUtilities;
 namespace AtemSharp.Tests.Lib;
 
 [TestFixture]
-[NonParallelizable]
 public class UdpTransportTests
 {
     private UdpTransport? _transport;
@@ -52,12 +49,10 @@ public class UdpTransportTests
     public async Task ConnectAsync_WithValidEndpoint_ShouldEstablishConnection()
     {
         // Arrange
-        var receivedPackets = new List<AtemPacket>();
         var connectionStates = new List<ConnectionState>();
         var tcs = new TaskCompletionSource();
         
-        _transport!.PacketReceived += (sender, args) => receivedPackets.Add(args.Packet);
-        _transport.ConnectionStateChanged += (sender, args) => 
+        _transport!.ConnectionStateChanged += (_, args) => 
         {
             connectionStates.Add(args.State);
             if (args.State == ConnectionState.Established)
@@ -67,7 +62,19 @@ public class UdpTransportTests
         };
 
         // Act
-        var connectTask = _transport.ConnectAsync("127.0.0.1", 9910);
+        var connectTask = _transport.ConnectAsync("127.0.0.1");
+        
+        // Simulate the ATEM device responding with a packet that has NewSessionId flag
+        // This will cause the connection state to transition to Established
+        var responsePacket = new AtemPacket
+        {
+            Flags = PacketFlag.NewSessionId | PacketFlag.AckRequest,
+            SessionId = 12345,
+            PacketId = 1,
+            Payload = Array.Empty<byte>()
+        };
+        _udpClientFake!.SimulateReceive(responsePacket.ToBytes());
+        
         await tcs.Task.WithTimeout();
         await connectTask.WithTimeout();
 
@@ -88,7 +95,19 @@ public class UdpTransportTests
         var customPort = 8888;
 
         // Act
-        await _transport!.ConnectAsync("127.0.0.1", customPort);
+        var connectTask = _transport!.ConnectAsync("127.0.0.1", customPort);
+        
+        // Simulate the ATEM device responding with a packet that has NewSessionId flag
+        var responsePacket = new AtemPacket
+        {
+            Flags = PacketFlag.NewSessionId | PacketFlag.AckRequest,
+            SessionId = 12345,
+            PacketId = 1,
+            Payload = Array.Empty<byte>()
+        };
+        _udpClientFake!.SimulateReceive(responsePacket.ToBytes());
+        
+        await connectTask;
 
         // Assert
         Assert.That(_transport.ConnectionState, Is.EqualTo(ConnectionState.Established));
@@ -100,7 +119,16 @@ public class UdpTransportTests
     public void ConnectAsync_WhenAlreadyConnected_ShouldThrowInvalidOperationException()
     {
         // Arrange
-        _transport!.ConnectAsync("127.0.0.1").Wait();
+        var connectTask = _transport!.ConnectAsync("127.0.0.1");
+        var responsePacket = new AtemPacket
+        {
+            Flags = PacketFlag.NewSessionId | PacketFlag.AckRequest,
+            SessionId = 12345,
+            PacketId = 1,
+            Payload = Array.Empty<byte>()
+        };
+        _udpClientFake!.SimulateReceive(responsePacket.ToBytes());
+        connectTask.Wait();
 
         // Act & Assert
         var ex = Assert.ThrowsAsync<InvalidOperationException>(() => _transport.ConnectAsync("127.0.0.1"));
@@ -111,7 +139,21 @@ public class UdpTransportTests
     public async Task SendPacketAsync_WhenConnected_ShouldSendData()
     {
         // Arrange
-        await _transport!.ConnectAsync("127.0.0.1");
+        // First establish connection (which sends a hello packet automatically)
+        var connectTask = _transport!.ConnectAsync("127.0.0.1");
+        var responsePacket = new AtemPacket
+        {
+            Flags = PacketFlag.NewSessionId | PacketFlag.AckRequest,
+            SessionId = 12345,
+            PacketId = 1,
+            Payload = Array.Empty<byte>()
+        };
+        _udpClientFake!.SimulateReceive(responsePacket.ToBytes());
+        await connectTask;
+        
+        // Clear sent data from connection process
+        _udpClientFake.ClearSentData();
+        
         var packet = AtemPacket.CreateHello();
 
         // Act
@@ -140,7 +182,7 @@ public class UdpTransportTests
         // Arrange
         var receivedPackets = new List<AtemPacket>();
         var tcs = new TaskCompletionSource();
-        _transport!.PacketReceived += (sender, args) => 
+        _transport!.PacketReceived += (_, args) => 
         {
             receivedPackets.Add(args.Packet);
             tcs.SetResult();
@@ -200,7 +242,7 @@ public class UdpTransportTests
         // Arrange
         var connectionStates = new List<ConnectionState>();
         var tcs = new TaskCompletionSource();
-        _transport!.ConnectionStateChanged += (sender, args) => 
+        _transport!.ConnectionStateChanged += (_, args) => 
         {
             connectionStates.Add(args.State);
             if (args.State == ConnectionState.Closed)
@@ -225,7 +267,7 @@ public class UdpTransportTests
     }
 
     [Test]
-    public async Task DisconnectAsync_WhenNotConnected_ShouldCompleteWithoutError()
+    public void DisconnectAsync_WhenNotConnected_ShouldCompleteWithoutError()
     {
         // Act & Assert
         Assert.DoesNotThrowAsync(() => _transport!.DisconnectAsync());
@@ -236,7 +278,20 @@ public class UdpTransportTests
     public async Task SendHelloPacketAsync_ShouldSendCorrectPacket()
     {
         // Arrange
-        await _transport!.ConnectAsync("127.0.0.1");
+        // First establish connection (which sends a hello packet automatically)
+        var connectTask = _transport!.ConnectAsync("127.0.0.1");
+        var responsePacket = new AtemPacket
+        {
+            Flags = PacketFlag.NewSessionId | PacketFlag.AckRequest,
+            SessionId = 12345,
+            PacketId = 1,
+            Payload = Array.Empty<byte>()
+        };
+        _udpClientFake!.SimulateReceive(responsePacket.ToBytes());
+        await connectTask;
+        
+        // Clear sent data from connection process
+        _udpClientFake.ClearSentData();
 
         // Act
         await _transport.SendHelloPacketAsync(CancellationToken.None);
@@ -259,8 +314,8 @@ public class UdpTransportTests
         // Assert - Should not throw when accessing after dispose
         Assert.DoesNotThrow(() => 
         {
-            var state = _transport.ConnectionState;
-            var endpoint = _transport.RemoteEndPoint;
+            _ = _transport.ConnectionState;
+            _ = _transport.RemoteEndPoint;
         });
     }
 

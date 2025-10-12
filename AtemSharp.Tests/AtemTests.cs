@@ -7,7 +7,6 @@ using NSubstitute;
 namespace AtemSharp.Tests;
 
 [TestFixture]
-[NonParallelizable]
 public class AtemTests
 {
     private Atem? _atem;
@@ -191,6 +190,7 @@ public class AtemTests
 
 	    TaskCompletionSource? tcs = new TaskCompletionSource();
 	    _logger.WhenForAnyArgs(x => x.Log(default, default, default, default, default, default))
+	            // ReSharper disable once AccessToModifiedClosure Intended behavior for test
 	           .Do(_ => tcs?.SetResult());
 	    
 	    // Create a PreviewInputUpdateCommand packet manually (as sent by ATEM device)

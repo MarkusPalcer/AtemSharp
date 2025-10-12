@@ -2,6 +2,7 @@ using System.Net;
 using AtemSharp.Constants;
 using AtemSharp.Enums;
 using AtemSharp.Lib;
+using JetBrains.Annotations;
 
 namespace AtemSharp.Tests.TestUtilities;
 
@@ -49,9 +50,17 @@ public class UdpTransportFake : IUdpTransport
     /// <summary>
     /// List of packets that were sent via SendPacketAsync for verification in tests
     /// </summary>
+    [UsedImplicitly]
     public List<AtemPacket> SentPackets { get; } = new();
 
-    public void SuccessfullyConnect() => _connectTcs.SetResult();
+    public void SuccessfullyConnect()
+    {
+        _connectTcs.SetResult();
+        
+        // After successful connection, simulate the ATEM device sending an InitCompleteCommand
+        // This is required for the new networking implementation to complete the connection
+        SimulateInitCompleteCommand();
+    }
     
     public void FailConnect() => _connectTcs.SetException(new InvalidOperationException());
 
@@ -203,6 +212,39 @@ public class UdpTransportFake : IUdpTransport
         };
 
         PacketReceived?.Invoke(this, eventArgs);
+    }
+
+    /// <summary>
+    /// Simulates the ATEM device sending an InitCompleteCommand packet to signal
+    /// that the connection initialization is complete
+    /// </summary>
+    public void SimulateInitCompleteCommand()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        // Create an InitCompleteCommand packet manually
+        // Command header (8 bytes): length (8), reserved (0), raw name "InCm"
+        // No command data for InitComplete - just the header
+        var commandData = new byte[]
+        {
+            // Command header (8 bytes)
+            0x00, 0x08, // Command length (8 bytes = header only) - big endian
+            0x00, 0x00, // Reserved
+            (byte)'I', (byte)'n', (byte)'C', (byte)'m', // Raw name "InCm"
+            // No additional data for InitCompleteCommand
+        };
+        
+        var packet = new AtemPacket(commandData)
+        {
+            Flags = PacketFlag.AckRequest,
+            SessionId = 1,
+            PacketId = 100
+        };
+        
+        SimulatePacketReceived(packet);
     }
 
     /// <summary>
