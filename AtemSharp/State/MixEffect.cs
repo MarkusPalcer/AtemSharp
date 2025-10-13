@@ -44,4 +44,9 @@ public class MixEffect
     /// Transition settings for this mix effect
     /// </summary>
     public TransitionSettings? TransitionSettings { get; set; }
+
+    /// <summary>
+    /// Upstream keyers for this mix effect
+    /// </summary>
+    public Dictionary<int, UpstreamKeyer> UpstreamKeyers { get; set; } = new();
 }
