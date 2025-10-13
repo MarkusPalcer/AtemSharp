@@ -55,7 +55,6 @@ src\commands\MixEffects\Key\MixEffectKeyFlyPropertiesGetCommand.ts - KeFS
 src\commands\MixEffects\Key\MixEffectKeyLumaCommand.ts - CKLm, KeLm
 src\commands\MixEffects\Key\MixEffectKeyMaskSetCommand.ts - CKMs
 src\commands\MixEffects\Key\MixEffectKeyPatternCommand.ts - CKPt, KePt
-src\commands\MixEffects\Key\MixEffectKeyPropertiesGetCommand.ts - KeBP
 src\commands\MixEffects\Key\MixEffectKeyRunToCommand.ts - RFlK
 src\commands\MixEffects\Key\MixEffectKeyTypeSetCommand.ts - CKTp
 src\commands\MixEffects\AutoTransitionCommand.ts - DAut

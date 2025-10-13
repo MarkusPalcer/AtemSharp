@@ -1,3 +1,5 @@
+using AtemSharp.Enums;
+
 namespace AtemSharp.State;
 
 /// <summary>
@@ -24,4 +26,55 @@ public class UpstreamKeyer
     /// Cut source input number
     /// </summary>
     public int CutSource { get; set; }
+
+    /// <summary>
+    /// Type of keying effect (Luma, Chroma, Pattern, DVE)
+    /// </summary>
+    public MixEffectKeyType KeyType { get; set; }
+
+    /// <summary>
+    /// Whether this keyer supports fly key functionality
+    /// </summary>
+    public bool CanFlyKey { get; set; }
+
+    /// <summary>
+    /// Whether fly key is currently enabled
+    /// </summary>
+    public bool FlyEnabled { get; set; }
+
+    /// <summary>
+    /// Mask settings for the upstream keyer
+    /// </summary>
+    public UpstreamKeyerMaskSettings? MaskSettings { get; set; }
+}
+
+/// <summary>
+/// Mask settings for upstream keyer
+/// </summary>
+public class UpstreamKeyerMaskSettings
+{
+    /// <summary>
+    /// Whether masking is enabled
+    /// </summary>
+    public bool MaskEnabled { get; set; }
+
+    /// <summary>
+    /// Top edge of mask in units
+    /// </summary>
+    public double MaskTop { get; set; }
+
+    /// <summary>
+    /// Bottom edge of mask in units
+    /// </summary>
+    public double MaskBottom { get; set; }
+
+    /// <summary>
+    /// Left edge of mask in units
+    /// </summary>
+    public double MaskLeft { get; set; }
+
+    /// <summary>
+    /// Right edge of mask in units
+    /// </summary>
+    public double MaskRight { get; set; }
 }
