@@ -206,7 +206,7 @@ public class TransitionWipeCommand : SerializedCommand
         using var memoryStream = new MemoryStream(20);
         using var writer = new BinaryWriter(memoryStream);
 
-        writer.WriteUInt16BigEndian(Flag);  // Flag as 16-bit big endian (matching TypeScript buffer.writeUInt16BE)
+        writer.WriteUInt16BigEndian((ushort)Flag);  // Flag as 16-bit big endian (matching TypeScript buffer.writeUInt16BE)
         writer.Write((byte)MixEffectId);            // Mix effect index
         writer.Write((byte)Rate);                   // Rate value
         writer.Write((byte)Pattern);                // Pattern value

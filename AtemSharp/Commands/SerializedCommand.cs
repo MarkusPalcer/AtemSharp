@@ -10,7 +10,7 @@ public abstract class SerializedCommand : ICommand
 	/// <summary>
 	/// Property change flags
 	/// </summary>
-	public ushort Flag { get; internal set; }
+	public uint Flag { get; internal set; }
 	
     /// <summary>
     /// Serialize command to binary stream

@@ -181,7 +181,7 @@ public class DisplayClockPropertiesSetCommand : SerializedCommand
         // Future: id at byte 2 (skip for now)
 
         // Write flag as 16-bit value (matches TypeScript pattern)
-        writer.WriteUInt16BigEndian(Flag);
+        writer.WriteUInt16BigEndian((ushort)Flag);
         writer.Pad(1); // Pad to byte 3
 
         writer.WriteBoolean(Enabled);

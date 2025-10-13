@@ -191,7 +191,7 @@ public class TransitionStingerCommand : SerializedCommand
         using var writer = new BinaryWriter(memoryStream);
 
         // Write flag as 16-bit big endian (matching TypeScript buffer.writeUInt16BE)
-        writer.WriteUInt16BigEndian(Flag);
+        writer.WriteUInt16BigEndian((ushort)Flag);
         
         // Write mix effect index and source
         writer.Write((byte)MixEffectId);             // Mix effect index
