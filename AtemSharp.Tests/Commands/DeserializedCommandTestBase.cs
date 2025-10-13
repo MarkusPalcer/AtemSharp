@@ -25,7 +25,7 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 	/// <returns>True if the values are equal after rounding to the specified decimal places</returns>
 	protected bool AreApproximatelyEqual(float actual, float expected, int decimals)
 	{
-		return AreApproximatelyEqual(Math.Round(actual, decimals), Math.Round(expected, decimals));
+		return AreApproximatelyEqual(Math.Round(actual, decimals), Math.Round(expected, decimals), 1.0/(float)Math.Pow(10, decimals+1));
 	}
 
 	/// <summary>
@@ -42,7 +42,7 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 	/// <returns>True if the values are equal after rounding to the specified decimal places</returns>
 	protected bool AreApproximatelyEqual(double actual, double expected, int decimals)
 	{
-		return AreApproximatelyEqual(Math.Round(actual, decimals), Math.Round(expected, decimals));
+		return AreApproximatelyEqual(Math.Round(actual, decimals), Math.Round(expected, decimals), 1.0/Math.Pow(10, decimals+1));
 	}
 	
 	/// <summary>
@@ -50,13 +50,14 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 	/// </summary>
 	/// <param name="actual">The actual value from the command</param>
 	/// <param name="expected">The expected value from test data</param>
+	/// <param name="tolerance">How much difference between the two numbers is allowed before they are considered non-equal</param>
 	/// <returns>True if the values are within the floating-point tolerance</returns>
-	protected bool AreApproximatelyEqual(double actual, double expected)
+	protected bool AreApproximatelyEqual(double actual, double expected, double tolerance = FloatingPointTolerance)
 	{
 		if (double.IsInfinity(expected) && double.IsInfinity(actual))
 			return Math.Sign(expected) == Math.Sign(actual);
 		
-		return Math.Abs(actual - expected) <= FloatingPointTolerance;
+		return Math.Abs(actual - expected) <= tolerance;
 	}
 
 	public new class TestCaseData : CommandTestBase<TTestData>.TestCaseData
