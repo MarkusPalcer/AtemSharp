@@ -1,4 +1,5 @@
 using AtemSharp.Commands.MixEffects.Key;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
@@ -48,34 +49,34 @@ public class MixEffectKeyAdvancedChromaSampleUpdateCommandTests : DeserializedCo
 
         // Compare floating-point properties with tolerance based on scaling factors
         // CursorX and CursorY are scaled by 1000, so use 3 decimal places
-        if (!AreApproximatelyEqual(actualCommand.CursorX, expectedData.CursorX, 3))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.CursorX, expectedData.CursorX, 3))
         {
             failures.Add($"CursorX: expected {expectedData.CursorX}, actual {actualCommand.CursorX}");
         }
 
-        if (!AreApproximatelyEqual(actualCommand.CursorY, expectedData.CursorY, 3))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.CursorY, expectedData.CursorY, 3))
         {
             failures.Add($"CursorY: expected {expectedData.CursorY}, actual {actualCommand.CursorY}");
         }
 
         // CursorSize is scaled by 100, so use 2 decimal places
-        if (!AreApproximatelyEqual(actualCommand.CursorSize, expectedData.CursorSize, 2))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.CursorSize, expectedData.CursorSize, 2))
         {
             failures.Add($"CursorSize: expected {expectedData.CursorSize}, actual {actualCommand.CursorSize}");
         }
 
         // Sampled values are scaled by 10000, so use 4 decimal places
-        if (!AreApproximatelyEqual(actualCommand.SampledY, expectedData.SampledY, 4))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.SampledY, expectedData.SampledY, 4))
         {
             failures.Add($"SampledY: expected {expectedData.SampledY}, actual {actualCommand.SampledY}");
         }
 
-        if (!AreApproximatelyEqual(actualCommand.SampledCb, expectedData.SampledCb, 4))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.SampledCb, expectedData.SampledCb, 4))
         {
             failures.Add($"SampledCb: expected {expectedData.SampledCb}, actual {actualCommand.SampledCb}");
         }
 
-        if (!AreApproximatelyEqual(actualCommand.SampledCr, expectedData.SampledCr, 4))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.SampledCr, expectedData.SampledCr, 4))
         {
             failures.Add($"SampledCr: expected {expectedData.SampledCr}, actual {actualCommand.SampledCr}");
         }

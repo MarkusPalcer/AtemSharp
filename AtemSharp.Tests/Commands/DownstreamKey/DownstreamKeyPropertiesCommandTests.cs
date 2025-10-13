@@ -1,5 +1,6 @@
 using AtemSharp.Commands.DownstreamKey;
 using AtemSharp.State;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DownstreamKey;
 
@@ -51,13 +52,13 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         }
 
         // Compare Clip property (with 1 decimal place precision)
-        if (!AreApproximatelyEqual(actualCommand.Properties.Clip, expectedData.Clip, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Properties.Clip, expectedData.Clip, 1))
         {
             failures.Add($"Clip: expected {expectedData.Clip}, actual {actualCommand.Properties.Clip}");
         }
 
         // Compare Gain property (with 1 decimal place precision)
-        if (!AreApproximatelyEqual(actualCommand.Properties.Gain, expectedData.Gain, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Properties.Gain, expectedData.Gain, 1))
         {
             failures.Add($"Gain: expected {expectedData.Gain}, actual {actualCommand.Properties.Gain}");
         }
@@ -75,25 +76,25 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         }
 
         // Compare Mask Top property (with 3 decimal place precision for coordinates)
-        if (!AreApproximatelyEqual(actualCommand.Properties.Mask.Top, expectedData.MaskTop, 3))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Properties.Mask.Top, expectedData.MaskTop, 3))
         {
             failures.Add($"Mask.Top: expected {expectedData.MaskTop}, actual {actualCommand.Properties.Mask.Top}");
         }
 
         // Compare Mask Bottom property (with 3 decimal place precision for coordinates)
-        if (!AreApproximatelyEqual(actualCommand.Properties.Mask.Bottom, expectedData.MaskBottom, 3))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Properties.Mask.Bottom, expectedData.MaskBottom, 3))
         {
             failures.Add($"Mask.Bottom: expected {expectedData.MaskBottom}, actual {actualCommand.Properties.Mask.Bottom}");
         }
 
         // Compare Mask Left property (with 3 decimal place precision for coordinates)
-        if (!AreApproximatelyEqual(actualCommand.Properties.Mask.Left, expectedData.MaskLeft, 3))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Properties.Mask.Left, expectedData.MaskLeft, 3))
         {
             failures.Add($"Mask.Left: expected {expectedData.MaskLeft}, actual {actualCommand.Properties.Mask.Left}");
         }
 
         // Compare Mask Right property (with 3 decimal place precision for coordinates)
-        if (!AreApproximatelyEqual(actualCommand.Properties.Mask.Right, expectedData.MaskRight, 3))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Properties.Mask.Right, expectedData.MaskRight, 3))
         {
             failures.Add($"Mask.Right: expected {expectedData.MaskRight}, actual {actualCommand.Properties.Mask.Right}");
         }

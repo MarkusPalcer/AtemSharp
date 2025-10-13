@@ -2,6 +2,7 @@ using AtemSharp.Commands.Audio;
 using AtemSharp.Enums.Audio;
 using AtemSharp.Enums.Ports;
 using AtemSharp.State;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.Audio;
 
@@ -48,13 +49,13 @@ public class AudioMixerInputUpdateCommandTests : DeserializedCommandTestBase<Aud
 		}
 
 		// Compare Gain (floating point)
-		if (!AreApproximatelyEqual(actualCommand.Gain, expectedData.Gain))
+		if (!Utilities.AreApproximatelyEqual(actualCommand.Gain, expectedData.Gain))
 		{
 			failures.Add($"Gain: expected {expectedData.Gain}, actual {actualCommand.Gain}");
 		}
 
 		// Compare Balance (floating point)
-		if (!AreApproximatelyEqual(actualCommand.Balance, expectedData.Balance))
+		if (!Utilities.AreApproximatelyEqual(actualCommand.Balance, expectedData.Balance))
 		{
 			failures.Add($"Balance: expected {expectedData.Balance}, actual {actualCommand.Balance}");
 		}

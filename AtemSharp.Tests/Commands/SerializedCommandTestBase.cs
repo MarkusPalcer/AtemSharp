@@ -21,7 +21,7 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
 	/// </summary>
 	/// <param name="fullPacketBytes">The complete packet bytes including headers</param>
 	/// <returns>The command payload bytes</returns>
-	protected static byte[] ExtractExpectedPayload(byte[] fullPacketBytes)
+	private static byte[] ExtractExpectedPayload(byte[] fullPacketBytes)
 	{
 		if (fullPacketBytes.Length < 8)
 		{
@@ -38,7 +38,7 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
 		return ExtractCommandPayload(fullPacketBytes, commandPayloadLength);
 	}
 
-	protected bool IsFloatingPointByte(int index, int totalLength)
+	private bool IsFloatingPointByte(int index, int totalLength)
 	{
 		var ranges = GetFloatingPointByteRanges();
 		foreach (var range in ranges)
@@ -51,7 +51,7 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
 		return false;
 	}
 
-	protected bool AreApproximatelyEqual(byte[] actual, byte[] expected)
+	private bool AreApproximatelyEqual(byte[] actual, byte[] expected)
 	{
 		if (actual.Length != expected.Length) return false;
 		

@@ -1,6 +1,7 @@
 using AtemSharp.Commands.MixEffects.Transition;
 using AtemSharp.Enums;
 using AtemSharp.State;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
@@ -46,7 +47,7 @@ public class TransitionWipeUpdateCommandTests : DeserializedCommandTestBase<Tran
         }
 
         // Compare BorderWidth - floating point value so we approximate
-        if (!AreApproximatelyEqual(actualCommand.BorderWidth, expectedData.BorderWidth))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.BorderWidth, expectedData.BorderWidth))
         {
             failures.Add($"BorderWidth: expected {expectedData.BorderWidth}, actual {actualCommand.BorderWidth}");
         }
@@ -58,25 +59,25 @@ public class TransitionWipeUpdateCommandTests : DeserializedCommandTestBase<Tran
         }
 
         // Compare Symmetry - floating point value so we approximate
-        if (!AreApproximatelyEqual(actualCommand.Symmetry, expectedData.Symmetry))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Symmetry, expectedData.Symmetry))
         {
             failures.Add($"Symmetry: expected {expectedData.Symmetry}, actual {actualCommand.Symmetry}");
         }
 
         // Compare BorderSoftness - floating point value so we approximate
-        if (!AreApproximatelyEqual(actualCommand.BorderSoftness, expectedData.BorderSoftness))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.BorderSoftness, expectedData.BorderSoftness))
         {
             failures.Add($"BorderSoftness: expected {expectedData.BorderSoftness}, actual {actualCommand.BorderSoftness}");
         }
 
         // Compare XPosition - floating point value so we approximate
-        if (!AreApproximatelyEqual(actualCommand.XPosition, expectedData.XPosition))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.XPosition, expectedData.XPosition))
         {
             failures.Add($"XPosition: expected {expectedData.XPosition}, actual {actualCommand.XPosition}");
         }
 
         // Compare YPosition - floating point value so we approximate
-        if (!AreApproximatelyEqual(actualCommand.YPosition, expectedData.YPosition))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.YPosition, expectedData.YPosition))
         {
             failures.Add($"YPosition: expected {expectedData.YPosition}, actual {actualCommand.YPosition}");
         }

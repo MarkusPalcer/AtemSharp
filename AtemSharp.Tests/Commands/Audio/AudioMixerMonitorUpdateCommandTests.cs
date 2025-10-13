@@ -1,4 +1,5 @@
 using AtemSharp.Commands.Audio;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.Audio;
 
@@ -28,7 +29,7 @@ public class AudioMixerMonitorUpdateCommandTests : DeserializedCommandTestBase<A
 		}
 
 		// Compare Gain
-		if (!AreApproximatelyEqual(actualCommand.Gain, expectedData.Gain))
+		if (!Utilities.AreApproximatelyEqual(actualCommand.Gain, expectedData.Gain))
 		{
 			failures.Add($"Gain: expected {expectedData.Gain}, actual {actualCommand.Gain}");
 		}
@@ -58,7 +59,7 @@ public class AudioMixerMonitorUpdateCommandTests : DeserializedCommandTestBase<A
 		}
 
 		// Compare DimLevel
-		if (!AreApproximatelyEqual(actualCommand.DimLevel, expectedData.DimLevel))
+		if (!Utilities.AreApproximatelyEqual(actualCommand.DimLevel, expectedData.DimLevel))
 		{
 			failures.Add($"DimLevel: expected {expectedData.DimLevel}, actual {actualCommand.DimLevel}");
 		}

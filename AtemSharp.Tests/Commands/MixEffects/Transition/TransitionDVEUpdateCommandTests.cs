@@ -3,6 +3,7 @@ using AtemSharp.Commands;
 using AtemSharp.Commands.MixEffects.Transition;
 using AtemSharp.Enums;
 using AtemSharp.State;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
@@ -81,13 +82,13 @@ public class TransitionDVEUpdateCommandTests : DeserializedCommandTestBase<Trans
         }
 
         // Compare Clip - use approximate comparison with 1 decimal place precision (scaled by 10)
-        if (!AreApproximatelyEqual(actualCommand.Clip, expectedData.Clip, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Clip, expectedData.Clip, 1))
         {
             failures.Add($"Clip: expected {expectedData.Clip}, actual {actualCommand.Clip}");
         }
 
         // Compare Gain - use approximate comparison with 1 decimal place precision (scaled by 10)
-        if (!AreApproximatelyEqual(actualCommand.Gain, expectedData.Gain, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Gain, expectedData.Gain, 1))
         {
             failures.Add($"Gain: expected {expectedData.Gain}, actual {actualCommand.Gain}");
         }

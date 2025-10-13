@@ -1,5 +1,6 @@
 using AtemSharp.Commands.DisplayClock;
 using AtemSharp.Enums;
+using AtemSharp.Tests.TestUtilities;
 using JetBrains.Annotations;
 
 namespace AtemSharp.Tests.Commands.DisplayClock;
@@ -53,13 +54,13 @@ public class DisplayClockPropertiesGetCommandTests : DeserializedCommandTestBase
         }
 
         // Compare PositionX (floating point)
-        if (!AreApproximatelyEqual(actualCommand.PositionX, expectedData.PositionX))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.PositionX, expectedData.PositionX))
         {
             failures.Add($"PositionX: expected {expectedData.PositionX}, actual {actualCommand.PositionX}");
         }
 
         // Compare PositionY (floating point)
-        if (!AreApproximatelyEqual(actualCommand.PositionY, expectedData.PositionY))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.PositionY, expectedData.PositionY))
         {
             failures.Add($"PositionY: expected {expectedData.PositionY}, actual {actualCommand.PositionY}");
         }

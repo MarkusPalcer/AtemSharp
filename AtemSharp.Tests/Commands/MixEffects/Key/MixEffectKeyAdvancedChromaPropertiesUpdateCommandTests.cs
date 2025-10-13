@@ -1,4 +1,5 @@
 using AtemSharp.Commands.MixEffects.Key;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
@@ -40,57 +41,57 @@ public class MixEffectKeyAdvancedChromaPropertiesUpdateCommandTests : Deserializ
         }
 
         // Compare floating-point properties with tolerance (1 decimal place for values scaled by 10)
-        if (!AreApproximatelyEqual(actualCommand.ForegroundLevel, expectedData.ForegroundLevel, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.ForegroundLevel, expectedData.ForegroundLevel, 1))
         {
             failures.Add($"ForegroundLevel: expected {expectedData.ForegroundLevel}, actual {actualCommand.ForegroundLevel}");
         }
 
-        if (!AreApproximatelyEqual(actualCommand.BackgroundLevel, expectedData.BackgroundLevel, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.BackgroundLevel, expectedData.BackgroundLevel, 1))
         {
             failures.Add($"BackgroundLevel: expected {expectedData.BackgroundLevel}, actual {actualCommand.BackgroundLevel}");
         }
 
-        if (!AreApproximatelyEqual(actualCommand.KeyEdge, expectedData.KeyEdge, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.KeyEdge, expectedData.KeyEdge, 1))
         {
             failures.Add($"KeyEdge: expected {expectedData.KeyEdge}, actual {actualCommand.KeyEdge}");
         }
 
-        if (!AreApproximatelyEqual(actualCommand.SpillSuppression, expectedData.SpillSuppression, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.SpillSuppression, expectedData.SpillSuppression, 1))
         {
             failures.Add($"SpillSuppression: expected {expectedData.SpillSuppression}, actual {actualCommand.SpillSuppression}");
         }
 
-        if (!AreApproximatelyEqual(actualCommand.FlareSuppression, expectedData.FlareSuppression, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.FlareSuppression, expectedData.FlareSuppression, 1))
         {
             failures.Add($"FlareSuppression: expected {expectedData.FlareSuppression}, actual {actualCommand.FlareSuppression}");
         }
 
-        if (!AreApproximatelyEqual(actualCommand.Brightness, expectedData.Brightness, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Brightness, expectedData.Brightness, 1))
         {
             failures.Add($"Brightness: expected {expectedData.Brightness}, actual {actualCommand.Brightness}");
         }
 
-        if (!AreApproximatelyEqual(actualCommand.Contrast, expectedData.Contrast, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Contrast, expectedData.Contrast, 1))
         {
             failures.Add($"Contrast: expected {expectedData.Contrast}, actual {actualCommand.Contrast}");
         }
 
-        if (!AreApproximatelyEqual(actualCommand.Saturation, expectedData.Saturation, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Saturation, expectedData.Saturation, 1))
         {
             failures.Add($"Saturation: expected {expectedData.Saturation}, actual {actualCommand.Saturation}");
         }
 
-        if (!AreApproximatelyEqual(actualCommand.Red, expectedData.Red, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Red, expectedData.Red, 1))
         {
             failures.Add($"Red: expected {expectedData.Red}, actual {actualCommand.Red}");
         }
 
-        if (!AreApproximatelyEqual(actualCommand.Green, expectedData.Green, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Green, expectedData.Green, 1))
         {
             failures.Add($"Green: expected {expectedData.Green}, actual {actualCommand.Green}");
         }
 
-        if (!AreApproximatelyEqual(actualCommand.Blue, expectedData.Blue, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Blue, expectedData.Blue, 1))
         {
             failures.Add($"Blue: expected {expectedData.Blue}, actual {actualCommand.Blue}");
         }

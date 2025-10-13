@@ -1,6 +1,7 @@
 using AtemSharp.Commands.MixEffects.Transition;
 using AtemSharp.Enums;
 using AtemSharp.State;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
@@ -39,7 +40,7 @@ public class TransitionPositionUpdateCommandTests : DeserializedCommandTestBase<
         }
 
         // Compare HandlePosition - floating point value so we approximate
-        if (!AreApproximatelyEqual(actualCommand.HandlePosition, expectedData.HandlePosition))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.HandlePosition, expectedData.HandlePosition))
         {
             failures.Add($"HandlePosition: expected {expectedData.HandlePosition}, actual {actualCommand.HandlePosition}");
         }

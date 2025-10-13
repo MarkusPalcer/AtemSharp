@@ -1,5 +1,6 @@
 using AtemSharp.Commands.MixEffects.Key;
 using AtemSharp.Enums;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
@@ -76,25 +77,25 @@ public class MixEffectKeyPropertiesGetCommandTests : DeserializedCommandTestBase
         }
 
         // Compare MaskTop (floating point - use tolerance)
-        if (!AreApproximatelyEqual(actualCommand.MaskTop, expectedData.MaskTop, 3))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.MaskTop, expectedData.MaskTop, 3))
         {
             failures.Add($"MaskTop: expected {expectedData.MaskTop}, actual {actualCommand.MaskTop}");
         }
 
         // Compare MaskBottom (floating point - use tolerance)
-        if (!AreApproximatelyEqual(actualCommand.MaskBottom, expectedData.MaskBottom, 3))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.MaskBottom, expectedData.MaskBottom, 3))
         {
             failures.Add($"MaskBottom: expected {expectedData.MaskBottom}, actual {actualCommand.MaskBottom}");
         }
 
         // Compare MaskLeft (floating point - use tolerance)
-        if (!AreApproximatelyEqual(actualCommand.MaskLeft, expectedData.MaskLeft, 3))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.MaskLeft, expectedData.MaskLeft, 3))
         {
             failures.Add($"MaskLeft: expected {expectedData.MaskLeft}, actual {actualCommand.MaskLeft}");
         }
 
         // Compare MaskRight (floating point - use tolerance)
-        if (!AreApproximatelyEqual(actualCommand.MaskRight, expectedData.MaskRight, 3))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.MaskRight, expectedData.MaskRight, 3))
         {
             failures.Add($"MaskRight: expected {expectedData.MaskRight}, actual {actualCommand.MaskRight}");
         }

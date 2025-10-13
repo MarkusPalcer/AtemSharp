@@ -9,56 +9,6 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 	where TCommand : IDeserializedCommand
 	where TTestData : DeserializedCommandTestBase<TCommand, TTestData>.CommandDataBase, new()
 {
-	private const double FloatingPointTolerance = 0.01;
-
-	/// <summary>
-	/// Compares two float values for approximate equality by rounding to the specified number of decimal places.
-	/// This is useful when test data has limited precision and exact floating-point comparison is not appropriate.
-	/// Use this method when the ATEM binary protocol stores values with specific scaling factors:
-	/// - 1 decimal place: Values scaled by 10 (e.g., clip/gain values stored as value * 10)
-	/// - 2 decimal places: Values scaled by 100 (e.g., percentage values stored as percentage * 100)
-	/// - Higher precision: Values with more complex scaling or conversion factors
-	/// </summary>
-	/// <param name="actual">The actual value from the command</param>
-	/// <param name="expected">The expected value from test data</param>
-	/// <param name="decimals">The number of decimal places to round to before comparison</param>
-	/// <returns>True if the values are equal after rounding to the specified decimal places</returns>
-	protected bool AreApproximatelyEqual(float actual, float expected, int decimals)
-	{
-		return AreApproximatelyEqual(Math.Round(actual, decimals), Math.Round(expected, decimals), 1.0/(float)Math.Pow(10, decimals+1));
-	}
-
-	/// <summary>
-	/// Compares two double values for approximate equality by rounding to the specified number of decimal places.
-	/// This is useful when test data has limited precision and exact floating-point comparison is not appropriate.
-	/// Use this method when the ATEM binary protocol stores values with specific scaling factors:
-	/// - 1 decimal place: Values scaled by 10 (e.g., clip/gain values stored as value * 10)
-	/// - 2 decimal places: Values scaled by 100 (e.g., percentage values stored as percentage * 100)
-	/// - Higher precision: Values with more complex scaling or conversion factors
-	/// </summary>
-	/// <param name="actual">The actual value from the command</param>
-	/// <param name="expected">The expected value from test data</param>
-	/// <param name="decimals">The number of decimal places to round to before comparison</param>
-	/// <returns>True if the values are equal after rounding to the specified decimal places</returns>
-	protected bool AreApproximatelyEqual(double actual, double expected, int decimals)
-	{
-		return AreApproximatelyEqual(Math.Round(actual, decimals), Math.Round(expected, decimals), 1.0/Math.Pow(10, decimals+1));
-	}
-	
-	/// <summary>
-	/// Compares two double values for approximate equality using a fixed tolerance.
-	/// </summary>
-	/// <param name="actual">The actual value from the command</param>
-	/// <param name="expected">The expected value from test data</param>
-	/// <param name="tolerance">How much difference between the two numbers is allowed before they are considered non-equal</param>
-	/// <returns>True if the values are within the floating-point tolerance</returns>
-	protected bool AreApproximatelyEqual(double actual, double expected, double tolerance = FloatingPointTolerance)
-	{
-		if (double.IsInfinity(expected) && double.IsInfinity(actual))
-			return Math.Sign(expected) == Math.Sign(actual);
-		
-		return Math.Abs(actual - expected) <= tolerance;
-	}
 
 	public new class TestCaseData : CommandTestBase<TTestData>.TestCaseData
 	{

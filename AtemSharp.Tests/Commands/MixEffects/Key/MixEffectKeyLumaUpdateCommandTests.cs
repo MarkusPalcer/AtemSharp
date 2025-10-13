@@ -1,4 +1,5 @@
 using AtemSharp.Commands.MixEffects.Key;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
@@ -39,13 +40,13 @@ public class MixEffectKeyLumaUpdateCommandTests : DeserializedCommandTestBase<Mi
         }
 
         // Compare Clip - it is a floating point value so we approximate (1 decimal place for scaled values)
-        if (!AreApproximatelyEqual(actualCommand.Clip, expectedData.Clip, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Clip, expectedData.Clip, 1))
         {
             failures.Add($"Clip: expected {expectedData.Clip}, actual {actualCommand.Clip}");
         }
 
         // Compare Gain - it is a floating point value so we approximate (1 decimal place for scaled values)
-        if (!AreApproximatelyEqual(actualCommand.Gain, expectedData.Gain, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Gain, expectedData.Gain, 1))
         {
             failures.Add($"Gain: expected {expectedData.Gain}, actual {actualCommand.Gain}");
         }

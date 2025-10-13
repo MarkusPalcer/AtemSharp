@@ -1,6 +1,7 @@
 using AtemSharp.Commands.MixEffects.Transition;
 using AtemSharp.Enums;
 using AtemSharp.State;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
@@ -45,13 +46,13 @@ public class TransitionStingerUpdateCommandTests : DeserializedCommandTestBase<T
         }
 
         // Compare Clip - floating point value so we approximate with 1 decimal place precision
-        if (!AreApproximatelyEqual(actualCommand.Clip, expectedData.Clip, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Clip, expectedData.Clip, 1))
         {
             failures.Add($"Clip: expected {expectedData.Clip}, actual {actualCommand.Clip}");
         }
 
         // Compare Gain - floating point value so we approximate with 1 decimal place precision
-        if (!AreApproximatelyEqual(actualCommand.Gain, expectedData.Gain, 1))
+        if (!Utilities.AreApproximatelyEqual(actualCommand.Gain, expectedData.Gain, 1))
         {
             failures.Add($"Gain: expected {expectedData.Gain}, actual {actualCommand.Gain}");
         }

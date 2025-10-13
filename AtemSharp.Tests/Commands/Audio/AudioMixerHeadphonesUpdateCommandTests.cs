@@ -1,4 +1,5 @@
 using AtemSharp.Commands.Audio;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.Audio;
 
@@ -19,25 +20,25 @@ public class AudioMixerHeadphonesUpdateCommandTests : DeserializedCommandTestBas
 		var failures = new List<string>();
 
 		// Compare Gain
-		if (!AreApproximatelyEqual(actualCommand.Gain, expectedData.Gain))
+		if (!Utilities.AreApproximatelyEqual(actualCommand.Gain, expectedData.Gain))
 		{
 			failures.Add($"Gain: expected {expectedData.Gain}, actual {actualCommand.Gain}");
 		}
 
 		// Compare ProgramOutGain
-		if (!AreApproximatelyEqual(actualCommand.ProgramOutGain, expectedData.ProgramOutGain))
+		if (!Utilities.AreApproximatelyEqual(actualCommand.ProgramOutGain, expectedData.ProgramOutGain))
 		{
 			failures.Add($"ProgramOutGain: expected {expectedData.ProgramOutGain}, actual {actualCommand.ProgramOutGain}");
 		}
 
 		// Compare TalkbackGain
-		if (!AreApproximatelyEqual(actualCommand.TalkbackGain, expectedData.TalkbackGain))
+		if (!Utilities.AreApproximatelyEqual(actualCommand.TalkbackGain, expectedData.TalkbackGain))
 		{
 			failures.Add($"TalkbackGain: expected {expectedData.TalkbackGain}, actual {actualCommand.TalkbackGain}");
 		}
 
 		// Compare SidetoneGain
-		if (!AreApproximatelyEqual(actualCommand.SidetoneGain, expectedData.SidetoneGain))
+		if (!Utilities.AreApproximatelyEqual(actualCommand.SidetoneGain, expectedData.SidetoneGain))
 		{
 			failures.Add($"SidetoneGain: expected {expectedData.SidetoneGain}, actual {actualCommand.SidetoneGain}");
 		}
