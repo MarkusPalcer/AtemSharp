@@ -196,13 +196,13 @@ public class TransitionStingerCommand : SerializedCommand
         // Write mix effect index and source
         writer.Write((byte)MixEffectId);             // Mix effect index
         writer.Write((byte)Source);                  // Source value
-        writer.Write((byte)(PreMultipliedKey ? 1 : 0)); // Pre-multiplied key as byte
+        writer.WriteBoolean(PreMultipliedKey); // Pre-multiplied key as byte
         writer.Pad(1);                               // 1 byte padding
 
         // Write clip and gain as 16-bit big endian values
         writer.WriteUInt16BigEndian((ushort)Math.Round(Clip * 10));  // Clip as value * 10
         writer.WriteUInt16BigEndian((ushort)Math.Round(Gain * 10));  // Gain as value * 10
-        writer.Write((byte)(Invert ? 1 : 0));        // Invert as byte
+        writer.WriteBoolean(Invert);        // Invert as byte
         writer.Pad(1);                               // 1 byte padding
 
         // Write remaining values as 16-bit big endian

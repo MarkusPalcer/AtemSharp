@@ -217,8 +217,8 @@ public class TransitionWipeCommand : SerializedCommand
         writer.WriteUInt16BigEndian((ushort)Math.Round(BorderSoftness * 100)); // Border softness as percentage * 100
         writer.WriteUInt16BigEndian((ushort)Math.Round(XPosition * 10000));  // X position as 0-1 * 10000
         writer.WriteUInt16BigEndian((ushort)Math.Round(YPosition * 10000));  // Y position as 0-1 * 10000
-        writer.Write((byte)(ReverseDirection ? 1 : 0));      // Reverse direction as byte
-        writer.Write((byte)(FlipFlop ? 1 : 0));              // Flip flop as byte
+        writer.WriteBoolean(ReverseDirection);      // Reverse direction as byte
+        writer.WriteBoolean(FlipFlop);              // Flip flop as byte
 
         return memoryStream.ToArray();
     }

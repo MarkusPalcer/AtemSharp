@@ -101,13 +101,13 @@ public class TransitionDVEUpdateCommand : IDeserializedCommand
         var keySourceLow = reader.ReadByte();
         var keySource = (keySourceHigh << 8) | keySourceLow;
 
-        var enableKey = reader.ReadByte() == 1;
-        var preMultiplied = reader.ReadByte() == 1;
+        var enableKey = reader.ReadBoolean();;
+        var preMultiplied = reader.ReadBoolean();;
         var clip = reader.ReadUInt16BigEndian() / 10.0;  // Convert from fixed-point to double
         var gain = reader.ReadUInt16BigEndian() / 10.0;  // Convert from fixed-point to double
-        var invertKey = reader.ReadByte() == 1;
-        var reverse = reader.ReadByte() == 1;
-        var flipFlop = reader.ReadByte() == 1;
+        var invertKey = reader.ReadBoolean();;
+        var reverse = reader.ReadBoolean();;
+        var flipFlop = reader.ReadBoolean();;
 
         return new TransitionDVEUpdateCommand
         {

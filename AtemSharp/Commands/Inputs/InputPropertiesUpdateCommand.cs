@@ -80,7 +80,7 @@ public class InputPropertiesUpdateCommand : IDeserializedCommand
         var shortNameBytes = reader.ReadBytes(4);
         var shortName = AtemUtil.ReadNullTerminatedString(shortNameBytes, 0, 4);
         
-        var areNamesDefault = reader.ReadByte() == 1;
+        var areNamesDefault = reader.ReadBoolean();;
         reader.ReadByte(); // Skip padding
         
         var externalPortsValue = reader.ReadUInt16BigEndian();

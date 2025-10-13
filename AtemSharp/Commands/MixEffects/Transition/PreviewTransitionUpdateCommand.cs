@@ -30,7 +30,7 @@ public class PreviewTransitionUpdateCommand : IDeserializedCommand
         using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
 
         var mixEffectId = reader.ReadByte();
-        var preview = reader.ReadByte() == 1;
+        var preview = reader.ReadBoolean();;
 
         return new PreviewTransitionUpdateCommand
         {

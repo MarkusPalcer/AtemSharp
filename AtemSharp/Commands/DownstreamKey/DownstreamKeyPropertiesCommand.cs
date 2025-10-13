@@ -33,17 +33,17 @@ public class DownstreamKeyPropertiesCommand : IDeserializedCommand
         var downstreamKeyerId = reader.ReadByte();
         var properties = new DownstreamKeyerProperties
         {
-            Tie = reader.ReadByte() == 1,
+            Tie = reader.ReadBoolean(),
             Rate = reader.ReadByte(),
             
-            PreMultiply = reader.ReadByte() == 1,
+            PreMultiply = reader.ReadBoolean(),
             Clip = reader.ReadUInt16BigEndian() / 10.0, // Convert from fixed-point to double
             Gain = reader.ReadUInt16BigEndian() / 10.0, // Convert from fixed-point to double
-            Invert = reader.ReadByte() == 1,
+            Invert = reader.ReadBoolean(),
             
             Mask = new DownstreamKeyerMask
             {
-                Enabled = reader.ReadByte() == 1,
+                Enabled = reader.ReadBoolean(),
                 Top = reader.ReadInt16BigEndian() / 1000.0,    // Convert from thousandths
                 Bottom = reader.ReadInt16BigEndian() / 1000.0, // Convert from thousandths
                 Left = reader.ReadInt16BigEndian() / 1000.0,   // Convert from thousandths

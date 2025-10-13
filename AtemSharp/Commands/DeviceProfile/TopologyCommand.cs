@@ -152,7 +152,7 @@ public class TopologyCommand : IDeserializedCommand
                 reader.ReadByte();
             }
 
-            command.CameraControl = reader.ReadByte() == 1;  // offset 17 + v230offset
+            command.CameraControl = reader.ReadBoolean();;  // offset 17 + v230offset
 
             // Advanced features are only available if buffer has enough data
             var totalLength = (int)stream.Length;
@@ -172,11 +172,11 @@ public class TopologyCommand : IDeserializedCommand
                 // Read advanced features if available
                 if (stream.Position < stream.Length)
                 {
-                    command.AdvancedChromaKeyers = reader.ReadByte() == 1;
+                    command.AdvancedChromaKeyers = reader.ReadBoolean();;
                     
                     if (stream.Position < stream.Length)
                     {
-                        command.OnlyConfigurableOutputs = reader.ReadByte() == 1;
+                        command.OnlyConfigurableOutputs = reader.ReadBoolean();;
                     }
                 }
             }

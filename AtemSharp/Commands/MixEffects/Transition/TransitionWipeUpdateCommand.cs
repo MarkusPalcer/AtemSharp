@@ -84,8 +84,8 @@ public class TransitionWipeUpdateCommand : IDeserializedCommand
         var borderSoftness = reader.ReadUInt16BigEndian() / 100.0; // Convert from percentage * 100 to double
         var xPosition = reader.ReadUInt16BigEndian() / 10000.0;    // Convert from 0-1 * 10000 to double
         var yPosition = reader.ReadUInt16BigEndian() / 10000.0;    // Convert from 0-1 * 10000 to double
-        var reverseDirection = reader.ReadByte() == 1;
-        var flipFlop = reader.ReadByte() == 1;
+        var reverseDirection = reader.ReadBoolean();;
+        var flipFlop = reader.ReadBoolean();;
 
         return new TransitionWipeUpdateCommand
         {

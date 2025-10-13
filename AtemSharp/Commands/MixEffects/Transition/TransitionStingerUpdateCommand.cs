@@ -71,12 +71,12 @@ public class TransitionStingerUpdateCommand : IDeserializedCommand
 
         var mixEffectId = reader.ReadByte();
         var source = reader.ReadByte();
-        var preMultipliedKey = reader.ReadByte() == 1;
+        var preMultipliedKey = reader.ReadBoolean();;
         reader.ReadByte(); // Skip 1 byte padding (offset 3)
         
         var clip = reader.ReadUInt16BigEndian() / 10.0;    // Convert from value * 10 to double
         var gain = reader.ReadUInt16BigEndian() / 10.0;    // Convert from value * 10 to double
-        var invert = reader.ReadByte() == 1;
+        var invert = reader.ReadBoolean();;
         reader.ReadByte(); // Skip 1 byte padding (offset 9)
         
         // According to TypeScript: these use bit shifting to combine bytes (big endian manual reconstruction)
