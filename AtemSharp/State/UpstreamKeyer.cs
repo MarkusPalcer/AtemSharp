@@ -61,6 +61,11 @@ public class UpstreamKeyer
     /// DVE (Digital Video Effects) settings for the upstream keyer
     /// </summary>
     public UpstreamKeyerDVESettings? DVESettings { get; set; }
+    
+    /// <summary>
+    /// Fly properties for the upstream keyer
+    /// </summary>
+    public UpstreamKeyerFlyProperties? FlyProperties { get; set; }
 }
 
 /// <summary>
@@ -377,4 +382,30 @@ public class UpstreamKeyerDVESettings
     /// Transition rate (frames)
     /// </summary>
     public int Rate { get; set; }
+}
+
+/// <summary>
+/// Fly properties for upstream keyer
+/// </summary>
+public class UpstreamKeyerFlyProperties
+{
+    /// <summary>
+    /// Whether key frame A is set
+    /// </summary>
+    public bool IsASet { get; set; }
+    
+    /// <summary>
+    /// Whether key frame B is set
+    /// </summary>
+    public bool IsBSet { get; set; }
+    
+    /// <summary>
+    /// Current key frame state flags
+    /// </summary>
+    public IsAtKeyFrame IsAtKeyFrame { get; set; }
+    
+    /// <summary>
+    /// Run to infinite index
+    /// </summary>
+    public int RunToInfiniteIndex { get; set; }
 }

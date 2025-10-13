@@ -48,7 +48,6 @@ src\commands\MixEffects\Key\MixEffectKeyChromaCommand.ts - CKCk, KeCk
 src\commands\MixEffects\Key\MixEffectKeyCutSourceSetCommand.ts - CKeC
 src\commands\MixEffects\Key\MixEffectKeyFillSourceSetCommand.ts - CKeF
 src\commands\MixEffects\Key\MixEffectKeyFlyKeyframeCommand.ts - KKFP, CKFP, SFKF
-src\commands\MixEffects\Key\MixEffectKeyFlyPropertiesGetCommand.ts - KeFS
 src\commands\MixEffects\Key\MixEffectKeyMaskSetCommand.ts - CKMs
 src\commands\MixEffects\Key\MixEffectKeyPatternCommand.ts - CKPt, KePt
 src\commands\MixEffects\Key\MixEffectKeyRunToCommand.ts - RFlK
