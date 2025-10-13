@@ -43,7 +43,6 @@ src\commands\Media\MediaPoolSetClipCommand.ts - SMPC
 src\commands\MixEffects\FadeToBlack\FadeToBlackAutoCommand.ts - FtbA
 src\commands\MixEffects\FadeToBlack\FadeToBlackRateCommand.ts - FtbC, FtbP
 src\commands\MixEffects\FadeToBlack\FadeToBlackStateCommand.ts - FtbS
-src\commands\MixEffects\Key\MixEffectKeyAdvancedChromaPropertiesCommand.ts - CACK, KACk
 src\commands\MixEffects\Key\MixEffectKeyAdvancedChromaSampleCommand.ts - CACC, KACC
 src\commands\MixEffects\Key\MixEffectKeyAdvancedChromaSampleResetCommand.ts - RACK
 src\commands\MixEffects\Key\MixEffectKeyChromaCommand.ts - CKCk, KeCk
