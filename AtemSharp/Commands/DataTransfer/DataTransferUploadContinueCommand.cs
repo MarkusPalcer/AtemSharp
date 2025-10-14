@@ -1,5 +1,5 @@
-using System.Text;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DataTransfer;
@@ -13,37 +13,28 @@ public class DataTransferUploadContinueCommand : IDeserializedCommand
     /// <summary>
     /// ID of the transfer that should continue
     /// </summary>
-    public ushort TransferId { get; set; }
+    public ushort TransferId { get; init; }
 
     /// <summary>
     /// Size of each chunk to be sent in bytes
     /// </summary>
-    public ushort ChunkSize { get; set; }
+    public ushort ChunkSize { get; init; }
 
     /// <summary>
     /// Number of chunks to send in sequence
     /// </summary>
-    public ushort ChunkCount { get; set; }
+    public ushort ChunkCount { get; init; }
 
     /// <summary>
     /// Deserialize binary data into command
     /// </summary>
-    /// <param name="stream">Binary stream to read from</param>
-    /// <returns>Deserialized command</returns>
-    public static DataTransferUploadContinueCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static DataTransferUploadContinueCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
-        var transferId = reader.ReadUInt16BigEndian();
-        reader.ReadBytes(4); // Skip 4 bytes (offsets 2-5)
-        var chunkSize = reader.ReadUInt16BigEndian();
-        var chunkCount = reader.ReadUInt16BigEndian();
-
         return new DataTransferUploadContinueCommand
         {
-            TransferId = transferId,
-            ChunkSize = chunkSize,
-            ChunkCount = chunkCount
+            TransferId = rawCommand.ReadUInt16BigEndian(0),
+            ChunkSize = rawCommand.ReadUInt16BigEndian(6),
+            ChunkCount = rawCommand.ReadUInt16BigEndian(8)
         };
     }
 

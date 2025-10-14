@@ -1,5 +1,5 @@
-using System.Text;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DeviceProfile;
@@ -13,72 +13,73 @@ public class TopologyCommand : IDeserializedCommand
     /// <summary>
     /// Number of Mix Effect blocks available
     /// </summary>
-    public int MixEffects { get; set; }
+    public int MixEffects { get; init; }
 
     /// <summary>
     /// Number of video sources available
     /// </summary>
-    public int Sources { get; set; }
+    public int Sources { get; init; }
 
     /// <summary>
     /// Number of auxiliary outputs available
     /// </summary>
-    public int Auxiliaries { get; set; }
+    public int Auxiliaries { get; init; }
 
     /// <summary>
     /// Number of mix minus outputs available
     /// </summary>
-    public int MixMinusOutputs { get; set; }
+    public int MixMinusOutputs { get; init; }
 
     /// <summary>
     /// Number of media players available
     /// </summary>
-    public int MediaPlayers { get; set; }
+    public int MediaPlayers { get; init; }
 
     /// <summary>
     /// Number of multiviewers available (-1 for older protocol versions)
     /// </summary>
-    public int Multiviewers { get; set; } = -1;
+    public int Multiviewers { get; init; } = -1;
 
     /// <summary>
     /// Number of serial ports available
     /// </summary>
-    public int SerialPorts { get; set; }
+    public int SerialPorts { get; init; }
 
     /// <summary>
     /// Maximum number of HyperDecks supported
     /// </summary>
-    public int MaxHyperdecks { get; set; }
+    public int MaxHyperdecks { get; init; }
 
     /// <summary>
     /// Number of Digital Video Effects available
     /// </summary>
-    public int DVEs { get; set; }
+    // ReSharper disable once InconsistentNaming Domain Specific Acronym
+    public int DVEs { get; init; }
 
     /// <summary>
     /// Number of stinger transitions available
     /// </summary>
-    public int Stingers { get; set; }
+    public int Stingers { get; init; }
 
     /// <summary>
     /// Number of SuperSource inputs available
     /// </summary>
-    public int SuperSources { get; set; }
+    public int SuperSources { get; init; }
 
     /// <summary>
     /// Number of talkback channels available
     /// </summary>
-    public int TalkbackChannels { get; set; }
+    public int TalkbackChannels { get; init; }
 
     /// <summary>
     /// Number of downstream keyers available
     /// </summary>
-    public int DownstreamKeyers { get; set; }
+    public int DownstreamKeyers { get; init; }
 
     /// <summary>
     /// Camera control capability
     /// </summary>
-    public bool CameraControl { get; set; }
+    public bool CameraControl { get; init; }
 
     /// <summary>
     /// Advanced chroma keyers available
@@ -93,93 +94,35 @@ public class TopologyCommand : IDeserializedCommand
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static TopologyCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static TopologyCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
         // Protocol version offset calculation (matching TypeScript logic)
-        var v230offset = protocolVersion > ProtocolVersion.V8_0_1 ? 1 : 0;
-        var isOlderProtocol = protocolVersion <= ProtocolVersion.V8_0;
+        var v230Offset = protocolVersion > ProtocolVersion.V8_0_1 ? 1 : 0;
 
         var command = new TopologyCommand
         {
-            MixEffects = reader.ReadByte(),              // offset 0
-            Sources = reader.ReadByte(),                 // offset 1
-            DownstreamKeyers = reader.ReadByte(),        // offset 2
-            Auxiliaries = reader.ReadByte(),             // offset 3
-            MixMinusOutputs = reader.ReadByte(),         // offset 4
-            MediaPlayers = reader.ReadByte(),            // offset 5
+            MixEffects = rawCommand.ReadUInt8(0),
+            Sources = rawCommand.ReadUInt8(1),
+            DownstreamKeyers = rawCommand.ReadUInt8(2),
+            Auxiliaries = rawCommand.ReadUInt8(3),
+            MixMinusOutputs = rawCommand.ReadUInt8(4),
+            MediaPlayers = rawCommand.ReadUInt8(5),
+            Multiviewers = v230Offset > 0 ? rawCommand.ReadUInt8(6) : -1,
+            SerialPorts = rawCommand.ReadUInt8(6 + v230Offset),
+            MaxHyperdecks = rawCommand.ReadUInt8(7 + v230Offset),
+            DVEs = rawCommand.ReadUInt8(8 + v230Offset),
+            Stingers = rawCommand.ReadUInt8(9 + v230Offset),
+            SuperSources = rawCommand.ReadUInt8(10 + v230Offset),
+            TalkbackChannels = rawCommand.ReadUInt8(12 + v230Offset),
+            CameraControl = rawCommand.ReadBoolean(17 + v230Offset),
+            AdvancedChromaKeyers = false,
+            OnlyConfigurableOutputs = false
         };
 
-        // Multiviewers field only available in newer protocol versions
-        if (v230offset > 0)
+        if (rawCommand.Length > 20)
         {
-            command.Multiviewers = reader.ReadByte();    // offset 6 (newer versions only)
-        }
-        else
-        {
-            command.Multiviewers = -1;                   // Not available in older protocols
-        }
-
-        command.SerialPorts = reader.ReadByte();         // offset 6 + v230offset
-        command.MaxHyperdecks = reader.ReadByte();       // offset 7 + v230offset
-        command.DVEs = reader.ReadByte();                // offset 8 + v230offset
-        command.Stingers = reader.ReadByte();            // offset 9 + v230offset
-        command.SuperSources = reader.ReadByte();        // offset 10 + v230offset
-
-        // Skip one byte (offset 11 + v230offset is unused)
-        reader.ReadByte();
-
-        // For older protocols, TalkbackChannels and advanced features are not available
-        if (isOlderProtocol)
-        {
-            // Set features to 0/false for older protocols that don't support them
-            command.TalkbackChannels = 0;
-            command.CameraControl = false;
-            command.AdvancedChromaKeyers = false;
-            command.OnlyConfigurableOutputs = false;
-        }
-        else
-        {
-            command.TalkbackChannels = reader.ReadByte();    // offset 12 + v230offset
-
-            // Skip bytes to reach camera control flag (offset 17 + v230offset)
-            for (var i = 0; i < 4; i++)
-            {
-                reader.ReadByte();
-            }
-
-            command.CameraControl = reader.ReadBoolean();;  // offset 17 + v230offset
-
-            // Advanced features are only available if buffer has enough data
-            var totalLength = (int)stream.Length;
-            if (totalLength > 20)
-            {
-                // Skip to advanced features position
-                var currentPosition = (int)stream.Position;
-                var advancedFeaturesStart = 21 + v230offset;
-                var skipBytes = advancedFeaturesStart - currentPosition;
-
-                // Skip bytes to reach advanced features if needed
-                for (var i = 0; i < skipBytes && stream.Position < stream.Length; i++)
-                {
-                    reader.ReadByte();
-                }
-
-                // Read advanced features if available
-                if (stream.Position < stream.Length)
-                {
-                    command.AdvancedChromaKeyers = reader.ReadBoolean();;
-
-                    if (stream.Position < stream.Length)
-                    {
-                        command.OnlyConfigurableOutputs = reader.ReadBoolean();;
-                    }
-                }
-            }
+            command.AdvancedChromaKeyers = rawCommand.ReadBoolean(21 + v230Offset);
+            command.OnlyConfigurableOutputs = rawCommand.ReadBoolean(22 + v230Offset);
         }
 
         return command;

@@ -1,5 +1,3 @@
-using System.Text;
-using AtemSharp.Commands;
 using AtemSharp.Commands.MixEffects.Transition;
 using AtemSharp.Enums;
 using AtemSharp.State;
@@ -117,66 +115,6 @@ public class TransitionDVEUpdateCommandTests : DeserializedCommandTestBase<Trans
             Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
                        string.Join("\n", failures));
         }
-    }
-
-    [Test]
-    public void Deserialize_ValidData_ProducesCorrectCommand()
-    {
-        // Arrange - create test data that matches the TypeScript deserialization pattern
-        var mixEffectId = (byte)1;
-        var rate = (byte)25;
-        var logoRate = (byte)15;
-        var style = (byte)DVEEffect.SwooshTop;
-        var fillSourceHigh = (byte)0x03;  // High byte of 1000 (0x03E8)
-        var fillSourceLow = (byte)0xE8;   // Low byte of 1000
-        var keySourceHigh = (byte)0x07;   // High byte of 2000 (0x07D0)
-        var keySourceLow = (byte)0xD0;    // Low byte of 2000
-        var enableKey = (byte)1;
-        var preMultiplied = (byte)1;
-        var clip = (ushort)500;
-        var gain = (ushort)750;
-        var invertKey = (byte)1;
-        var reverse = (byte)1;
-        var flipFlop = (byte)1;
-
-        using var stream = new MemoryStream();
-        using (var writer = new BinaryWriter(stream, Encoding.ASCII, leaveOpen: true))
-        {
-            writer.Write(mixEffectId);
-            writer.Write(rate);
-            writer.Write(logoRate);
-            writer.Write(style);
-            writer.Write(fillSourceHigh);
-            writer.Write(fillSourceLow);
-            writer.Write(keySourceHigh);
-            writer.Write(keySourceLow);
-            writer.Write(enableKey);
-            writer.Write(preMultiplied);
-            writer.WriteUInt16BigEndian(clip);
-            writer.WriteUInt16BigEndian(gain);
-            writer.Write(invertKey);
-            writer.Write(reverse);
-            writer.Write(flipFlop);
-        }
-        stream.Position = 0;
-
-        // Act
-        var command = TransitionDVEUpdateCommand.Deserialize(stream, ProtocolVersion.V8_0);
-
-        // Assert
-        Assert.That(command.MixEffectId, Is.EqualTo(mixEffectId));
-        Assert.That(command.Rate, Is.EqualTo(rate));
-        Assert.That(command.LogoRate, Is.EqualTo(logoRate));
-        Assert.That(command.Style, Is.EqualTo(DVEEffect.SwooshTop));
-        Assert.That(command.FillSource, Is.EqualTo(1000)); // (0x03 << 8) | 0xE8 = 1000
-        Assert.That(command.KeySource, Is.EqualTo(2000));  // (0x07 << 8) | 0xD0 = 2000
-        Assert.That(command.EnableKey, Is.True);
-        Assert.That(command.PreMultiplied, Is.True);
-        Assert.That(command.Clip, Is.EqualTo(50));  // 500 / 10 = 50
-        Assert.That(command.Gain, Is.EqualTo(75));  // 750 / 10 = 75
-        Assert.That(command.InvertKey, Is.True);
-        Assert.That(command.Reverse, Is.True);
-        Assert.That(command.FlipFlop, Is.True);
     }
 
     [Test]

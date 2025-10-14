@@ -9,7 +9,7 @@ namespace AtemSharp.Commands;
 [Command("InCm")]
 public class InitCompleteCommand : IDeserializedCommand
 {
-    public static InitCompleteCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static InitCompleteCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
         // This command has no data payload - it's just a marker
         return new InitCompleteCommand();

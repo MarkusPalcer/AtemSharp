@@ -10,17 +10,17 @@ namespace AtemSharp.Tests.Commands.Settings;
 /// All test cases have Mode=N525i5994NTSC but expect different byte inputs.
 /// </summary>
 [TestFixture]
+// TODO: Check test data
 public class VideoModeUpdateCommandTests
 {
     [Test]
     public void Deserialize_ShouldReadVideoModeFromFirstByte()
     {
         // Arrange
-        var testData = new byte[] { 13, 0, 0, 0 }; // VideoMode.N1080p5994 = 13
-        using var stream = new MemoryStream(testData);
+        Span<byte> testData = [13, 0, 0, 0]; // VideoMode.N1080p5994 = 13
 
         // Act
-        var command = VideoModeUpdateCommand.Deserialize(stream, ProtocolVersion.V7_2);
+        var command = VideoModeUpdateCommand.Deserialize(testData, ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.Mode, Is.EqualTo(VideoMode.N1080p5994), "Should deserialize video mode correctly");
@@ -29,22 +29,19 @@ public class VideoModeUpdateCommandTests
     [Test]
     public void Deserialize_ShouldHandleDifferentVideoModes()
     {
-        var testCases = new[]
-        {
-            (new byte[] { 0, 0, 0, 0 }, VideoMode.N525i5994NTSC),
-            (new byte[] { 1, 0, 0, 0 }, VideoMode.P625i50PAL),
-            (new byte[] { 4, 0, 0, 0 }, VideoMode.P720p50),
-            (new byte[] { 13, 0, 0, 0 }, VideoMode.N1080p5994),
-            (new byte[] { 25, 0, 0, 0 }, VideoMode.N8KHDp5994)
-        };
+        (byte[], VideoMode)[] testCases =
+        [
+            ([0, 0, 0, 0], VideoMode.N525i5994NTSC),
+            ([1, 0, 0, 0], VideoMode.P625i50PAL),
+            ([4, 0, 0, 0], VideoMode.P720p50),
+            ([13, 0, 0, 0], VideoMode.N1080p5994),
+            ([25, 0, 0, 0], VideoMode.N8KHDp5994)
+        ];
 
         foreach (var (data, expectedMode) in testCases)
         {
-            // Arrange
-            using var stream = new MemoryStream(data);
-
             // Act
-            var command = VideoModeUpdateCommand.Deserialize(stream, ProtocolVersion.V7_2);
+            var command = VideoModeUpdateCommand.Deserialize(data.AsSpan(), ProtocolVersion.V7_2);
 
             // Assert
             Assert.That(command.Mode, Is.EqualTo(expectedMode),

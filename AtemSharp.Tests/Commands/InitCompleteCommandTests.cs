@@ -1,7 +1,6 @@
 using System.Reflection;
 using AtemSharp.Commands;
 using AtemSharp.Enums;
-using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands;
 
@@ -12,11 +11,8 @@ public class InitCompleteCommandTests
     [Test]
     public void TestDeserialization()
     {
-        // Arrange - Create empty stream since InitCompleteCommand has no data
-        using var stream = new MemoryStream();
-
         // Act - Deserialize the command
-        var command = InitCompleteCommand.Deserialize(stream, ProtocolVersion.V7_2);
+        var command = InitCompleteCommand.Deserialize(Span<byte>.Empty, ProtocolVersion.V7_2);
 
         // Assert - Verify the command was created successfully
         Assert.That(command, Is.Not.Null);

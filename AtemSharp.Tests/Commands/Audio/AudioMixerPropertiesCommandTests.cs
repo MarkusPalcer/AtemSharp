@@ -36,7 +36,7 @@ public class AudioMixerPropertiesCommandTests : SerializedCommandTestBase<AudioM
 		{
 			Audio = new AudioState
 			{
-				AudioFollowVideoCrossfadeTransitionEnabled = false
+				AudioFollowsVideo = false
 			}
 		};
 		return state;

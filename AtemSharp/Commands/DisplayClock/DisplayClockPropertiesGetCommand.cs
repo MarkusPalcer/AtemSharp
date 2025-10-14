@@ -1,5 +1,5 @@
-using System.Text;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DisplayClock;
@@ -13,89 +13,67 @@ public class DisplayClockPropertiesGetCommand : IDeserializedCommand
     /// <summary>
     /// Whether the display clock is enabled
     /// </summary>
-    public bool Enabled { get; set; }
+    public bool Enabled { get; init; }
 
     /// <summary>
     /// Size of the clock display
     /// </summary>
-    public byte Size { get; set; }
+    public byte Size { get; init; }
 
     /// <summary>
     /// Opacity of the clock display (0-255)
     /// </summary>
-    public byte Opacity { get; set; }
+    public byte Opacity { get; init; }
 
     /// <summary>
     /// X position of the clock display
     /// </summary>
-    public double PositionX { get; set; }
+    public double PositionX { get; init; }
 
     /// <summary>
     /// Y position of the clock display
     /// </summary>
-    public double PositionY { get; set; }
+    public double PositionY { get; init; }
 
     /// <summary>
     /// Whether the clock should auto-hide
     /// </summary>
-    public bool AutoHide { get; set; }
+    public bool AutoHide { get; init; }
 
     /// <summary>
     /// Starting time for countdown/countup modes
     /// </summary>
-    public DisplayClockTime StartFrom { get; set; } = new();
+    public DisplayClockTime StartFrom { get; init; } = new();
 
     /// <summary>
     /// Clock mode (countdown, countup, time of day)
     /// </summary>
-    public DisplayClockClockMode ClockMode { get; set; }
+    public DisplayClockClockMode ClockMode { get; init; }
 
     /// <summary>
     /// Clock state (stopped, running, reset)
     /// </summary>
-    public DisplayClockClockState ClockState { get; set; }
+    public DisplayClockClockState ClockState { get; init; }
 
-    public static DisplayClockPropertiesGetCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static DisplayClockPropertiesGetCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
-        // Future: id at byte 0 (skip for now)
-        reader.ReadByte();
-
-        var enabled = reader.ReadBoolean();  // byte 1
-        reader.ReadByte(); // Skip padding at byte 2
-        var size = reader.ReadByte();          // byte 3
-        reader.ReadByte(); // Skip padding at byte 4
-        var opacity = reader.ReadByte();       // byte 5
-        var positionX = reader.ReadInt16BigEndian();  // bytes 6-7
-        var positionY = reader.ReadInt16BigEndian();  // bytes 8-9
-        var autoHide = reader.ReadBoolean(); // byte 10
-
-        var startFromHours = reader.ReadByte();   // byte 11
-        var startFromMinutes = reader.ReadByte(); // byte 12
-        var startFromSeconds = reader.ReadByte(); // byte 13
-        var startFromFrames = reader.ReadByte();  // byte 14
-
-        var clockMode = (DisplayClockClockMode)reader.ReadByte();  // byte 15
-        var clockState = (DisplayClockClockState)reader.ReadByte(); // byte 16
-
         return new DisplayClockPropertiesGetCommand
         {
-            Enabled = enabled,
-            Size = size,
-            Opacity = opacity,
-            PositionX = Math.Round(positionX / 1000.0, 3),
-            PositionY = Math.Round(positionY / 1000.0, 3),
-            AutoHide = autoHide,
+            Enabled = rawCommand.ReadBoolean(1),
+            Size = rawCommand.ReadUInt8(3),
+            Opacity = rawCommand.ReadUInt8(5),
+            PositionX = Math.Round(rawCommand.ReadInt16BigEndian(6) / 1000.0, 3),
+            PositionY = Math.Round(rawCommand.ReadInt16BigEndian(8) / 1000.0, 3),
+            AutoHide = rawCommand.ReadBoolean(10),
             StartFrom = new DisplayClockTime
             {
-                Hours = startFromHours,
-                Minutes = startFromMinutes,
-                Seconds = startFromSeconds,
-                Frames = startFromFrames
+                Hours = rawCommand.ReadUInt8(11),
+                Minutes = rawCommand.ReadUInt8(12),
+                Seconds = rawCommand.ReadUInt8(13),
+                Frames = rawCommand.ReadUInt8(14)
             },
-            ClockMode = clockMode,
-            ClockState = clockState
+            ClockMode = (DisplayClockClockMode)rawCommand.ReadUInt8(15),
+            ClockState = (DisplayClockClockState)rawCommand.ReadUInt8(16)
         };
     }
 

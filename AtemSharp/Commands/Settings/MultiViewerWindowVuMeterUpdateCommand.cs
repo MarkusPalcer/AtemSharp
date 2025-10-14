@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Settings;
@@ -12,37 +13,28 @@ public class MultiViewerWindowVuMeterUpdateCommand : IDeserializedCommand
     /// <summary>
     /// MultiViewer ID for this update
     /// </summary>
-    public int MultiViewerId { get; set; }
+    public int MultiViewerId { get; init; }
 
     /// <summary>
     /// The window index within the MultiViewer
     /// </summary>
-    public int WindowIndex { get; set; }
+    public int WindowIndex { get; init; }
 
     /// <summary>
     /// Whether VU meter display is enabled for this window
     /// </summary>
-    public bool VuEnabled { get; set; }
+    public bool VuEnabled { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static MultiViewerWindowVuMeterUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static MultiViewerWindowVuMeterUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var multiViewerId = reader.ReadByte();
-        var windowIndex = reader.ReadByte();
-        var vuEnabled = reader.ReadBoolean();
-
         return new MultiViewerWindowVuMeterUpdateCommand
         {
-            MultiViewerId = multiViewerId,
-            WindowIndex = windowIndex,
-            VuEnabled = vuEnabled
+            MultiViewerId = rawCommand.ReadUInt8(0),
+            WindowIndex = rawCommand.ReadUInt8(1),
+            VuEnabled = rawCommand.ReadBoolean(2)
         };
     }
 

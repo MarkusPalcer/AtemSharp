@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Key;
@@ -12,102 +13,82 @@ public class MixEffectKeyPropertiesGetCommand : IDeserializedCommand
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>
-    public int MixEffectIndex { get; set; }
+    public int MixEffectIndex { get; init; }
 
     /// <summary>
     /// Upstream keyer index (0-based)
     /// </summary>
-    public int KeyerIndex { get; set; }
+    public int KeyerIndex { get; init; }
 
     /// <summary>
     /// Type of keying effect
     /// </summary>
-    public MixEffectKeyType KeyType { get; set; }
+    public MixEffectKeyType KeyType { get; init; }
 
     /// <summary>
     /// Whether this keyer supports fly key functionality
     /// </summary>
-    public bool CanFlyKey { get; set; }
+    public bool CanFlyKey { get; init; }
 
     /// <summary>
     /// Whether fly key is currently enabled
     /// </summary>
-    public bool FlyEnabled { get; set; }
+    public bool FlyEnabled { get; init; }
 
     /// <summary>
     /// Fill source input number
     /// </summary>
-    public int FillSource { get; set; }
+    public int FillSource { get; init; }
 
     /// <summary>
     /// Cut source input number
     /// </summary>
-    public int CutSource { get; set; }
+    public int CutSource { get; init; }
 
     /// <summary>
     /// Whether masking is enabled
     /// </summary>
-    public bool MaskEnabled { get; set; }
+    public bool MaskEnabled { get; init; }
 
     /// <summary>
     /// Top edge of mask
     /// </summary>
-    public double MaskTop { get; set; }
+    public double MaskTop { get; init; }
 
     /// <summary>
     /// Bottom edge of mask
     /// </summary>
-    public double MaskBottom { get; set; }
+    public double MaskBottom { get; init; }
 
     /// <summary>
     /// Left edge of mask
     /// </summary>
-    public double MaskLeft { get; set; }
+    public double MaskLeft { get; init; }
 
     /// <summary>
     /// Right edge of mask
     /// </summary>
-    public double MaskRight { get; set; }
+    public double MaskRight { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static MixEffectKeyPropertiesGetCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static MixEffectKeyPropertiesGetCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var mixEffectIndex = reader.ReadByte();           // byte 0
-        var keyerIndex = reader.ReadByte();               // byte 1
-        var keyType = (MixEffectKeyType)reader.ReadByte(); // byte 2
-        reader.ReadByte();                                // byte 3 - padding
-        var canFlyKey = reader.ReadBoolean();             // byte 4
-        var flyEnabled = reader.ReadBoolean();            // byte 5
-        var fillSource = reader.ReadUInt16BigEndian();    // bytes 6-7
-        var cutSource = reader.ReadUInt16BigEndian();     // bytes 8-9
-        var maskEnabled = reader.ReadBoolean();           // byte 10
-        reader.ReadByte();                                // byte 11 - padding
-        var maskTop = reader.ReadInt16BigEndian() / 1000.0;     // bytes 12-13
-        var maskBottom = reader.ReadInt16BigEndian() / 1000.0;  // bytes 14-15
-        var maskLeft = reader.ReadInt16BigEndian() / 1000.0;    // bytes 16-17
-        var maskRight = reader.ReadInt16BigEndian() / 1000.0;   // bytes 18-19
-
         return new MixEffectKeyPropertiesGetCommand
         {
-            MixEffectIndex = mixEffectIndex,
-            KeyerIndex = keyerIndex,
-            KeyType = keyType,
-            CanFlyKey = canFlyKey,
-            FlyEnabled = flyEnabled,
-            FillSource = fillSource,
-            CutSource = cutSource,
-            MaskEnabled = maskEnabled,
-            MaskTop = maskTop,
-            MaskBottom = maskBottom,
-            MaskLeft = maskLeft,
-            MaskRight = maskRight
+            MixEffectIndex = rawCommand.ReadUInt8(0),
+            KeyerIndex = rawCommand.ReadUInt8(1),
+            KeyType = (MixEffectKeyType)rawCommand.ReadUInt8(2),
+            CanFlyKey = rawCommand.ReadBoolean(4),
+            FlyEnabled = rawCommand.ReadBoolean(5),
+            FillSource = rawCommand.ReadUInt16BigEndian(6),
+            CutSource = rawCommand.ReadUInt16BigEndian(8),
+            MaskEnabled = rawCommand.ReadBoolean(10),
+            MaskTop = rawCommand.ReadInt16BigEndian(12) / 1000.0,
+            MaskBottom = rawCommand.ReadInt16BigEndian(14) / 1000.0,
+            MaskLeft = rawCommand.ReadInt16BigEndian(16) / 1000.0,
+            MaskRight = rawCommand.ReadInt16BigEndian(18) / 1000.0
         };
     }
 
@@ -138,8 +119,7 @@ public class MixEffectKeyPropertiesGetCommand : IDeserializedCommand
         keyer.CutSource = CutSource;
 
         // Update mask settings
-        if (keyer.MaskSettings == null)
-            keyer.MaskSettings = new UpstreamKeyerMaskSettings();
+        keyer.MaskSettings ??= new UpstreamKeyerMaskSettings();
 
         keyer.MaskSettings.MaskEnabled = MaskEnabled;
         keyer.MaskSettings.MaskTop = MaskTop;

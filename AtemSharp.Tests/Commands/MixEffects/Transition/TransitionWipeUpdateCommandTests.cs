@@ -1,5 +1,4 @@
 using AtemSharp.Commands.MixEffects.Transition;
-using AtemSharp.Enums;
 using AtemSharp.State;
 using AtemSharp.Tests.TestUtilities;
 
@@ -100,43 +99,6 @@ public class TransitionWipeUpdateCommandTests : DeserializedCommandTestBase<Tran
             Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
                        string.Join("\n", failures));
         }
-    }
-
-    [Test]
-    public void Deserialize_ValidData_ProducesCorrectCommand()
-    {
-        // Arrange - create binary data matching the ATEM protocol
-        // Based on test data: "00-A1-0A-00-26-25-00-00-25-46-17-71-26-C4-03-67-00-01"
-        using var stream = new MemoryStream(new byte[] {
-            0x00,       // MixEffectId = 0
-            0xA1,       // Rate = 161
-            0x0A,       // Pattern = 10
-            0x00,       // Padding
-            0x26, 0x25, // BorderWidth = 9765 (97.65%)
-            0x00, 0x00, // BorderInput = 0
-            0x25, 0x46, // Symmetry = 9542 (95.42%)
-            0x17, 0x71, // BorderSoftness = 6001 (60.01%)
-            0x26, 0xC4, // XPosition = 9924 (0.9924)
-            0x03, 0x67, // YPosition = 871 (0.0871)
-            0x00,       // ReverseDirection = false
-            0x01        // FlipFlop = true
-        });
-
-        // Act
-        var command = TransitionWipeUpdateCommand.Deserialize(stream, ProtocolVersion.V8_1_1);
-
-        // Assert
-        Assert.That(command.MixEffectId, Is.EqualTo(0));
-        Assert.That(command.Rate, Is.EqualTo(161));
-        Assert.That(command.Pattern, Is.EqualTo(10));
-        Assert.That(command.BorderWidth, Is.EqualTo(97.65).Within(0.01));
-        Assert.That(command.BorderInput, Is.EqualTo(0));
-        Assert.That(command.Symmetry, Is.EqualTo(95.42).Within(0.01));
-        Assert.That(command.BorderSoftness, Is.EqualTo(60.01).Within(0.01));
-        Assert.That(command.XPosition, Is.EqualTo(0.9924).Within(0.0001));
-        Assert.That(command.YPosition, Is.EqualTo(0.0871).Within(0.0001));
-        Assert.That(command.ReverseDirection, Is.False);
-        Assert.That(command.FlipFlop, Is.True);
     }
 
     [Test]

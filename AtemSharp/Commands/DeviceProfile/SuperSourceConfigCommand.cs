@@ -1,5 +1,5 @@
-using System.Text;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DeviceProfile;
@@ -13,43 +13,32 @@ public class SuperSourceConfigCommand : IDeserializedCommand
     /// <summary>
     /// SuperSource ID (0-based index)
     /// </summary>
-    public int SsrcId { get; set; }
+    public int SuperSourceId { get; init; }
 
     /// <summary>
     /// Number of SuperSource boxes available
     /// </summary>
-    public byte BoxCount { get; set; }
+    public byte BoxCount { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static SuperSourceConfigCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static SuperSourceConfigCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
         if (protocolVersion >= ProtocolVersion.V8_0)
         {
-            var ssrcId = reader.ReadByte();
-            reader.ReadByte(); // Skip padding byte
-            var boxCount = reader.ReadByte();
-
             return new SuperSourceConfigCommand
             {
-                SsrcId = ssrcId,
-                BoxCount = boxCount
+                SuperSourceId = rawCommand.ReadUInt8(0),
+                BoxCount = rawCommand.ReadUInt8(2)
             };
         }
         else
         {
-            var boxCount = reader.ReadByte();
-
             return new SuperSourceConfigCommand
             {
-                SsrcId = 0,
-                BoxCount = boxCount
+                SuperSourceId = 0,
+                BoxCount = rawCommand.ReadUInt8(0)
             };
         }
     }
@@ -62,7 +51,7 @@ public class SuperSourceConfigCommand : IDeserializedCommand
     public void ApplyToState(AtemState state)
     {
         // Update device info SuperSource configuration
-        state.Info.SuperSources[SsrcId] = new SuperSourceInfo
+        state.Info.SuperSources[SuperSourceId] = new SuperSourceInfo
         {
             BoxCount = BoxCount
         };

@@ -8,17 +8,17 @@ namespace AtemSharp.Tests.Commands.Settings;
 /// Tests for MultiViewerPropertiesUpdateCommand
 /// </summary>
 [TestFixture]
+// TODO: Check for data driven tests
 public class MultiViewerPropertiesUpdateCommandTests
 {
     [Test]
     public void Deserialize_ShouldReadCorrectData()
     {
         // Arrange
-        var testData = new byte[] { 1, 3, 1, 0 }; // MultiViewer 1, Layout=ProgramBottom, ProgramPreviewSwapped=true
-        using var stream = new MemoryStream(testData);
+        Span<byte> testData = [1, 3, 1, 0]; // MultiViewer 1, Layout=ProgramBottom, ProgramPreviewSwapped=true
 
         // Act
-        var command = MultiViewerPropertiesUpdateCommand.Deserialize(stream, ProtocolVersion.V8_0);
+        var command = MultiViewerPropertiesUpdateCommand.Deserialize(testData, ProtocolVersion.V8_0);
 
         // Assert
         Assert.That(command.MultiViewerId, Is.EqualTo(1), "MultiViewer ID should be read correctly");
@@ -45,11 +45,10 @@ public class MultiViewerPropertiesUpdateCommandTests
         foreach (var (layoutByte, expectedLayout) in testCases)
         {
             // Arrange
-            var testData = new byte[] { 0, layoutByte, 0, 0 };
-            using var stream = new MemoryStream(testData);
+            Span<byte> testData = [0, layoutByte, 0, 0];
 
             // Act
-            var command = MultiViewerPropertiesUpdateCommand.Deserialize(stream, ProtocolVersion.V8_0);
+            var command = MultiViewerPropertiesUpdateCommand.Deserialize(testData, ProtocolVersion.V8_0);
 
             // Assert
             Assert.That(command.Layout, Is.EqualTo(expectedLayout),
@@ -70,11 +69,10 @@ public class MultiViewerPropertiesUpdateCommandTests
         foreach (var (swapByte, expectedSwapped) in testCases)
         {
             // Arrange
-            var testData = new byte[] { 0, 0, swapByte, 0 };
-            using var stream = new MemoryStream(testData);
+            Span<byte> testData = [0, 0, swapByte, 0];
 
             // Act
-            var command = MultiViewerPropertiesUpdateCommand.Deserialize(stream, ProtocolVersion.V8_0);
+            var command = MultiViewerPropertiesUpdateCommand.Deserialize(testData, ProtocolVersion.V8_0);
 
             // Assert
             Assert.That(command.ProgramPreviewSwapped, Is.EqualTo(expectedSwapped),

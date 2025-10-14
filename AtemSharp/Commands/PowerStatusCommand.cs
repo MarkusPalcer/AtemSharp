@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands;
@@ -16,32 +17,25 @@ public class PowerStatusCommand : IDeserializedCommand
     /// Power supply status array. Each element represents the status of a power supply.
     /// true = power supply is working, false = power supply has failed or is not present.
     /// </summary>
-    public bool[] PowerSupplies { get; set; } = [];
+    public bool[] PowerSupplies { get; init; } = [];
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static PowerStatusCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static PowerStatusCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
         // Read the power status byte
-        var powerStatusByte = reader.ReadByte();
-
-        // Extract individual power supply status bits
-        // Bit 0 = first power supply, Bit 1 = second power supply
-        var powerSupplies = new[]
-        {
-            (powerStatusByte & (1 << 0)) != 0,  // First power supply
-            (powerStatusByte & (1 << 1)) != 0   // Second power supply
-        };
+        var powerStatusByte = rawCommand.ReadUInt8(0);
 
         return new PowerStatusCommand
         {
-            PowerSupplies = powerSupplies
+            PowerSupplies =
+            [
+                // Extract individual power supply status bits
+                // Bit 0 = first power supply, Bit 1 = second power supply
+                (powerStatusByte & (1 << 0)) != 0,  // First power supply
+                (powerStatusByte & (1 << 1)) != 0   // Second power supply
+            ]
         };
     }
 

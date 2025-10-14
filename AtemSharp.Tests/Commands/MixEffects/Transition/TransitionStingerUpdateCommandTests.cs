@@ -1,5 +1,4 @@
 using AtemSharp.Commands.MixEffects.Transition;
-using AtemSharp.Enums;
 using AtemSharp.State;
 using AtemSharp.Tests.TestUtilities;
 
@@ -93,44 +92,6 @@ public class TransitionStingerUpdateCommandTests : DeserializedCommandTestBase<T
             Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
                        string.Join("\n", failures));
         }
-    }
-
-    [Test]
-    public void Deserialize_ValidData_ReturnsCorrectCommand()
-    {
-        // Arrange
-        var testData = new byte[]
-        {
-            0x01,       // Mix effect index
-            0x03,       // Source
-            0x01,       // Pre-multiplied key (true)
-            0x00,       // Padding
-            0x03, 0x04, // Clip (772 / 10 = 77.2)
-            0x00, 0x0B, // Gain (11 / 10 = 1.1)
-            0x01,       // Invert (true)
-            0x00,       // Padding
-            0x13, 0x3D, // Preroll (4925)
-            0x73, 0x17, // ClipDuration (29463)
-            0x04, 0xA4, // TriggerPoint (1188)
-            0x8A, 0x3D  // MixRate (35389)
-        };
-
-        using var stream = new MemoryStream(testData);
-
-        // Act
-        var result = TransitionStingerUpdateCommand.Deserialize(stream, ProtocolVersion.V8_1_1);
-
-        // Assert
-        Assert.That(result.MixEffectId, Is.EqualTo(1));
-        Assert.That(result.Source, Is.EqualTo(3));
-        Assert.That(result.PreMultipliedKey, Is.EqualTo(true));
-        Assert.That(result.Clip, Is.EqualTo(77.2).Within(0.01));
-        Assert.That(result.Gain, Is.EqualTo(1.1).Within(0.01));
-        Assert.That(result.Invert, Is.EqualTo(true));
-        Assert.That(result.Preroll, Is.EqualTo(4925));
-        Assert.That(result.ClipDuration, Is.EqualTo(29463));
-        Assert.That(result.TriggerPoint, Is.EqualTo(1188));
-        Assert.That(result.MixRate, Is.EqualTo(35389));
     }
 
     [Test]

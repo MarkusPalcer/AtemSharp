@@ -1,6 +1,4 @@
 using AtemSharp.Enums;
-using System;
-using System.Buffers.Binary;
 
 namespace AtemSharp.Lib;
 
@@ -9,9 +7,9 @@ namespace AtemSharp.Lib;
 /// </summary>
 public class AtemPacket
 {
-    private const int PACKET_HEADER_SIZE = 12;
-    private const int LENGTH_MASK = 0x07FF; // 11 bits for length
-    private const int FLAGS_SHIFT = 11; // Flags are in the upper 5 bits (16 - 11 = 5)
+    private const int PacketHeaderSize = 12;
+    private const int LengthMask = 0x07FF; // 11 bits for length
+    private const int FlagsShift = 11; // Flags are in the upper 5 bits (16 - 11 = 5)
 
     /// <summary>
     /// Packet flags indicating the type and properties of the packet
@@ -51,14 +49,14 @@ public class AtemPacket
     /// <summary>
     /// Gets the size of the packet header in bytes
     /// </summary>
-    public static int HeaderSize => PACKET_HEADER_SIZE;
+    public static int HeaderSize => PacketHeaderSize;
 
     /// <summary>
     /// Creates a new empty ATEM packet
     /// </summary>
     public AtemPacket()
     {
-        Payload = Array.Empty<byte>();
+        Payload = [];
     }
 
     /// <summary>
@@ -67,8 +65,8 @@ public class AtemPacket
     /// <param name="payload">Payload data</param>
     public AtemPacket(byte[] payload)
     {
-        Payload = payload ?? Array.Empty<byte>();
-        Length = (ushort)(PACKET_HEADER_SIZE + Payload.Length);
+        Payload = payload;
+        Length = (ushort)(PacketHeaderSize + Payload.Length);
     }
 
     /// <summary>
@@ -80,7 +78,7 @@ public class AtemPacket
     public static bool TryParse(ReadOnlySpan<byte> packetData, out AtemPacket? packet)
     {
         packet = null;
-        
+
         try
         {
             packet = FromBytes(packetData);
@@ -100,17 +98,17 @@ public class AtemPacket
     /// <exception cref="ArgumentException">Thrown when packet data is invalid</exception>
     public static AtemPacket FromBytes(ReadOnlySpan<byte> packetData)
     {
-        if (packetData.Length < PACKET_HEADER_SIZE)
-            throw new ArgumentException($"Packet too short. Expected at least {PACKET_HEADER_SIZE} bytes, got {packetData.Length}");
+        if (packetData.Length < PacketHeaderSize)
+            throw new ArgumentException($"Packet too short. Expected at least {PacketHeaderSize} bytes, got {packetData.Length}");
 
         var packet = new AtemPacket();
 
         // Parse header using BinaryPrimitives for big-endian reading
-        var headerSpan = packetData.Slice(0, PACKET_HEADER_SIZE);
-        
+        var headerSpan = packetData.Slice(0, PacketHeaderSize);
+
         ushort flagsAndLength = headerSpan.ReadUInt16BigEndian(0);
-        packet.Flags = (PacketFlag)(flagsAndLength >> FLAGS_SHIFT);
-        packet.Length = (ushort)(flagsAndLength & LENGTH_MASK);
+        packet.Flags = (PacketFlag)(flagsAndLength >> FlagsShift);
+        packet.Length = (ushort)(flagsAndLength & LengthMask);
         packet.SessionId = headerSpan.ReadUInt16BigEndian(2);
         packet.AckPacketId = headerSpan.ReadUInt16BigEndian(4);
         packet.Reserved = headerSpan.ReadUInt16BigEndian(6);
@@ -122,9 +120,9 @@ public class AtemPacket
             throw new ArgumentException($"Packet length mismatch. Header indicates {packet.Length} bytes, but received {packetData.Length} bytes");
 
         // Extract payload
-        if (packet.Length > PACKET_HEADER_SIZE)
+        if (packet.Length > PacketHeaderSize)
         {
-            var payloadSpan = packetData.Slice(PACKET_HEADER_SIZE);
+            var payloadSpan = packetData.Slice(PacketHeaderSize);
             packet.Payload = payloadSpan.ToArray();
         }
         else
@@ -142,13 +140,13 @@ public class AtemPacket
     public byte[] ToBytes()
     {
         // Update length to match current payload
-        Length = (ushort)(PACKET_HEADER_SIZE + Payload.Length);
+        Length = (ushort)(PacketHeaderSize + Payload.Length);
 
         var buffer = new byte[Length];
         var bufferSpan = buffer.AsSpan();
 
         // Write header using BinaryPrimitives for big-endian writing
-        ushort flagsAndLength = (ushort)(((int)Flags << FLAGS_SHIFT) | (Length & LENGTH_MASK));
+        ushort flagsAndLength = (ushort)(((int)Flags << FlagsShift) | (Length & LengthMask));
         bufferSpan.WriteUInt16BigEndian(0, flagsAndLength);
         bufferSpan.WriteUInt16BigEndian(2, SessionId);
         bufferSpan.WriteUInt16BigEndian(4, AckPacketId);
@@ -159,7 +157,7 @@ public class AtemPacket
         // Write payload
         if (Payload.Length > 0)
         {
-            Payload.AsSpan().CopyTo(bufferSpan.Slice(PACKET_HEADER_SIZE));
+            Payload.AsSpan().CopyTo(bufferSpan.Slice(PacketHeaderSize));
         }
 
         return buffer;
@@ -174,11 +172,11 @@ public class AtemPacket
         try
         {
             // Check length consistency
-            if (Length != PACKET_HEADER_SIZE + Payload.Length)
+            if (Length != PacketHeaderSize + Payload.Length)
                 return false;
 
             // Check minimum length
-            if (Length < PACKET_HEADER_SIZE)
+            if (Length < PacketHeaderSize)
                 return false;
 
             // Packet structure is valid
@@ -225,8 +223,8 @@ public class AtemPacket
     public static AtemPacket CreateHello()
     {
         // Use the standard hello packet payload from constants
-        var helloPayload = new byte[Constants.AtemConstants.HELLO_PACKET.Length - PACKET_HEADER_SIZE];
-        Constants.AtemConstants.HELLO_PACKET.AsSpan(PACKET_HEADER_SIZE).CopyTo(helloPayload);
+        var helloPayload = new byte[Constants.AtemConstants.HELLO_PACKET.Length - PacketHeaderSize];
+        Constants.AtemConstants.HELLO_PACKET.AsSpan(PacketHeaderSize).CopyTo(helloPayload);
 
         return new AtemPacket(helloPayload)
         {

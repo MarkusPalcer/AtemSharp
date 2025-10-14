@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects;
@@ -12,26 +13,20 @@ public class ProgramInputUpdateCommand : IDeserializedCommand
 	/// <summary>
 	/// Mix effect index (0-based)
 	/// </summary>
-	public int MixEffectId { get; set; }
+	public int MixEffectId { get; init; }
 
 	/// <summary>
 	/// Program input source number
 	/// </summary>
-	public int Source { get; set; }
+	public int Source { get; init; }
 
 	/// <summary>
 	/// Deserialize the command from binary stream
 	/// </summary>
-	/// <param name="stream">Binary stream containing command data</param>
-	/// <param name="protocolVersion">Protocol version used for deserialization</param>
-	/// <returns>Deserialized command instance</returns>
-	public static ProgramInputUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+	public static ProgramInputUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
 	{
-		using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-		var mixEffectId = reader.ReadByte();
-		reader.ReadByte(); // Skip padding byte
-		var source = reader.ReadUInt16BigEndian();
+		var mixEffectId = rawCommand.ReadUInt8(0);
+		var source = rawCommand.ReadUInt16BigEndian(2);
 
 		return new ProgramInputUpdateCommand
 		{

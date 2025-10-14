@@ -46,15 +46,15 @@ public class MixEffectKeyFlyPropertiesGetCommandTests : DeserializedCommandTestB
         }
 
         // Compare RunningToKeyFrame (cast to enum)
-        if (!actualCommand.RunningToKeyFrame.Equals((IsAtKeyFrame)expectedData.RunningToKeyFrame))
+        if (!actualCommand.IsAtKeyFrame.Equals((IsAtKeyFrame)expectedData.RunningToKeyFrame))
         {
-            failures.Add($"RunningToKeyFrame: expected {(IsAtKeyFrame)expectedData.RunningToKeyFrame}, actual {actualCommand.RunningToKeyFrame}");
+            failures.Add($"RunningToKeyFrame: expected {(IsAtKeyFrame)expectedData.RunningToKeyFrame}, actual {actualCommand.IsAtKeyFrame}");
         }
 
         // Compare RunningToInfinite
-        if (!actualCommand.RunningToInfinite.Equals(expectedData.RunningToInfinite))
+        if (!actualCommand.RunToInfiniteIndex.Equals(expectedData.RunningToInfinite))
         {
-            failures.Add($"RunningToInfinite: expected {expectedData.RunningToInfinite}, actual {actualCommand.RunningToInfinite}");
+            failures.Add($"RunningToInfinite: expected {expectedData.RunningToInfinite}, actual {actualCommand.RunToInfiniteIndex}");
         }
 
         // Assert results

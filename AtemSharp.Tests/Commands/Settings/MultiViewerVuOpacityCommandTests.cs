@@ -1,5 +1,4 @@
 using AtemSharp.Commands.Settings;
-using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Settings;
@@ -10,7 +9,7 @@ public class MultiViewerVuOpacityCommandTests : SerializedCommandTestBase<MultiV
 {
     public class CommandData : CommandDataBase
     {
-        public int MultiviewIndex { get; set; } // Match TypeScript property name
+        public int MultiviewIndex { get; set; }
         public int Opacity { get; set; }
     }
 
@@ -129,57 +128,6 @@ public class MultiViewerVuOpacityCommandTests : SerializedCommandTestBase<MultiV
         Assert.That(command.Opacity, Is.EqualTo(validOpacity));
     }
 
-    #region Deserialization Tests
-
-    [Test]
-    public void Deserialize_WithValidData_ReturnsCorrectCommand()
-    {
-        // Arrange
-        var bytes = new byte[] { 1, 75, 0, 0 }; // multiViewerId=1, opacity=75
-        using var stream = new MemoryStream(bytes);
-
-        // Act
-        var result = MultiViewerVuOpacityCommand.Deserialize(stream, ProtocolVersion.V8_0);
-
-        // Assert
-        Assert.That(result.MultiViewerId, Is.EqualTo(1));
-        Assert.That(result.Opacity, Is.EqualTo(75));
-    }
-
-    [Test]
-    public void Deserialize_WithZeroOpacity_ReturnsCorrectCommand()
-    {
-        // Arrange
-        var bytes = new byte[] { 0, 0, 0, 0 }; // multiViewerId=0, opacity=0
-        using var stream = new MemoryStream(bytes);
-
-        // Act
-        var result = MultiViewerVuOpacityCommand.Deserialize(stream, ProtocolVersion.V8_0);
-
-        // Assert
-        Assert.That(result.MultiViewerId, Is.EqualTo(0));
-        Assert.That(result.Opacity, Is.EqualTo(0));
-    }
-
-    [Test]
-    public void Deserialize_WithMaxOpacity_ReturnsCorrectCommand()
-    {
-        // Arrange
-        var bytes = new byte[] { 2, 100, 0, 0 }; // multiViewerId=2, opacity=100
-        using var stream = new MemoryStream(bytes);
-
-        // Act
-        var result = MultiViewerVuOpacityCommand.Deserialize(stream, ProtocolVersion.V8_0);
-
-        // Assert
-        Assert.That(result.MultiViewerId, Is.EqualTo(2));
-        Assert.That(result.Opacity, Is.EqualTo(100));
-    }
-
-    #endregion
-
-    #region ApplyToState Tests
-
     [Test]
     public void ApplyToState_WithValidMultiViewer_UpdatesVuOpacity()
     {
@@ -259,6 +207,4 @@ public class MultiViewerVuOpacityCommandTests : SerializedCommandTestBase<MultiV
         // Act & Assert
         Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
     }
-
-    #endregion
 }

@@ -1,5 +1,5 @@
-using System.Text;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DownstreamKey;
@@ -13,48 +13,40 @@ public class DownstreamKeyPropertiesCommand : IDeserializedCommand
     /// <summary>
     /// Downstream keyer index (0-based)
     /// </summary>
-    public int DownstreamKeyerId { get; set; }
+    public int DownstreamKeyerId { get; init; }
 
     /// <summary>
     /// Downstream keyer properties
     /// </summary>
-    public DownstreamKeyerProperties Properties { get; set; } = new();
+    public DownstreamKeyerProperties Properties { get; init; } = new();
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static DownstreamKeyPropertiesCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static DownstreamKeyPropertiesCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
-        var downstreamKeyerId = reader.ReadByte();
-        var properties = new DownstreamKeyerProperties
-        {
-            Tie = reader.ReadBoolean(),
-            Rate = reader.ReadByte(),
-
-            PreMultiply = reader.ReadBoolean(),
-            Clip = reader.ReadUInt16BigEndian() / 10.0, // Convert from fixed-point to double
-            Gain = reader.ReadUInt16BigEndian() / 10.0, // Convert from fixed-point to double
-            Invert = reader.ReadBoolean(),
-
-            Mask = new DownstreamKeyerMask
-            {
-                Enabled = reader.ReadBoolean(),
-                Top = reader.ReadInt16BigEndian() / 1000.0,    // Convert from thousandths
-                Bottom = reader.ReadInt16BigEndian() / 1000.0, // Convert from thousandths
-                Left = reader.ReadInt16BigEndian() / 1000.0,   // Convert from thousandths
-                Right = reader.ReadInt16BigEndian() / 1000.0   // Convert from thousandths
-            }
-        };
-
         return new DownstreamKeyPropertiesCommand
         {
-            DownstreamKeyerId = downstreamKeyerId,
-            Properties = properties
+            DownstreamKeyerId = rawCommand.ReadUInt8(0),
+            Properties = new DownstreamKeyerProperties
+            {
+                Tie = rawCommand.ReadBoolean(1),
+                Rate = rawCommand.ReadUInt8(2),
+
+                PreMultiply = rawCommand.ReadBoolean(3),
+                Clip = rawCommand.ReadUInt16BigEndian(4) / 10.0, // Convert from fixed-point to double
+                Gain = rawCommand.ReadUInt16BigEndian(6) / 10.0, // Convert from fixed-point to double
+                Invert = rawCommand.ReadBoolean(8),
+
+                Mask = new DownstreamKeyerMask
+                {
+                    Enabled = rawCommand.ReadBoolean(9),
+                    Top = rawCommand.ReadInt16BigEndian(10) / 1000.0,    // Convert from thousandths
+                    Bottom = rawCommand.ReadInt16BigEndian(12) / 1000.0, // Convert from thousandths
+                    Left = rawCommand.ReadInt16BigEndian(14) / 1000.0,   // Convert from thousandths
+                    Right = rawCommand.ReadInt16BigEndian(16) / 1000.0   // Convert from thousandths
+                }
+            }
         };
     }
 

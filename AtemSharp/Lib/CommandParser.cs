@@ -31,12 +31,12 @@ public class CommandParser
 	{
 		if (_initialized) return;
 		using var scope = LockObject.EnterScope();
-		
+
 		if (_initialized) return;
 
 		// Scan the main assembly and loaded assemblies for command types
 		var assemblies = new List<Assembly> { Assembly.GetExecutingAssembly() };
-		
+
 		// Also scan any loaded assemblies that might contain test commands
 		assemblies.AddRange(AppDomain.CurrentDomain.GetAssemblies()
 			.Where(a => a.FullName?.Contains("AtemSharp") == true));
@@ -116,13 +116,15 @@ public class CommandParser
 		return highestProtoCommand;
 	}
 
+    internal delegate IDeserializedCommand DeserializeCommand(ReadOnlySpan<byte> data, ProtocolVersion version);
+
 	/// <summary>
 	/// Parse a command from raw name and binary data
 	/// </summary>
 	/// <param name="rawName">4-character command name from packet header</param>
 	/// <param name="data">Command data stream</param>
 	/// <returns>Parsed command instance or null if command is unknown/unsupported</returns>
-	public IDeserializedCommand? ParseCommand(string rawName, Stream data)
+	public IDeserializedCommand? ParseCommand(string rawName, ReadOnlySpan<byte> data)
 	{
 		var commandType = GetCommandTypeForVersion(rawName);
 		if (commandType == null)
@@ -141,8 +143,7 @@ public class CommandParser
 			if (deserializeMethod == null)
 				throw new InvalidOperationException($"Command {commandType.Name} missing static Deserialize method");
 
-			var result = deserializeMethod.Invoke(null, [data, Version]);
-			var command = (IDeserializedCommand?)result;
+            var command = deserializeMethod.CreateDelegate<DeserializeCommand>()(data, Version);
 
 			// Update parser version if this is a VersionCommand (matches TypeScript behavior)
 			if (command is VersionCommand versionCmd)
@@ -175,8 +176,8 @@ public class CommandParser
 	/// <returns>All registered command type versions</returns>
 	public IReadOnlyList<Type> GetAllCommandVersions(string rawName)
 	{
-		return CommandRegistry.TryGetValue(rawName, out var commandTypes) 
-			? commandTypes.AsReadOnly() 
+		return CommandRegistry.TryGetValue(rawName, out var commandTypes)
+			? commandTypes.AsReadOnly()
 			: new List<Type>().AsReadOnly();
 	}
 

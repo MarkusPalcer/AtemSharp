@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Transition;
@@ -12,91 +13,72 @@ public class TransitionStingerUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>
-    public int MixEffectId { get; set; }
+    public int MixEffectId { get; init; }
 
     /// <summary>
     /// Source for the stinger transition
     /// </summary>
-    public int Source { get; set; }
+    public int Source { get; init; }
 
     /// <summary>
     /// Whether the key is pre-multiplied
     /// </summary>
-    public bool PreMultipliedKey { get; set; }
+    public bool PreMultipliedKey { get; init; }
 
     /// <summary>
     /// Clip value for the stinger transition
     /// </summary>
-    public double Clip { get; set; }
+    public double Clip { get; init; }
 
     /// <summary>
     /// Gain value for the stinger transition (0-100%)
     /// </summary>
-    public double Gain { get; set; }
+    public double Gain { get; init; }
 
     /// <summary>
     /// Whether the stinger transition is inverted
     /// </summary>
-    public bool Invert { get; set; }
+    public bool Invert { get; init; }
 
     /// <summary>
     /// Preroll value for the stinger transition
     /// </summary>
-    public int Preroll { get; set; }
+    public int Preroll { get; init; }
 
     /// <summary>
     /// Clip duration for the stinger transition
     /// </summary>
-    public int ClipDuration { get; set; }
+    public int ClipDuration { get; init; }
 
     /// <summary>
     /// Trigger point for the stinger transition
     /// </summary>
-    public int TriggerPoint { get; set; }
+    public int TriggerPoint { get; init; }
 
     /// <summary>
     /// Mix rate for the stinger transition
     /// </summary>
-    public int MixRate { get; set; }
+    public int MixRate { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static TransitionStingerUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static TransitionStingerUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var mixEffectId = reader.ReadByte();
-        var source = reader.ReadByte();
-        var preMultipliedKey = reader.ReadBoolean();;
-        reader.ReadByte(); // Skip 1 byte padding (offset 3)
-
-        var clip = reader.ReadUInt16BigEndian() / 10.0;    // Convert from value * 10 to double
-        var gain = reader.ReadUInt16BigEndian() / 10.0;    // Convert from value * 10 to double
-        var invert = reader.ReadBoolean();;
-        reader.ReadByte(); // Skip 1 byte padding (offset 9)
-
         // According to TypeScript: these use bit shifting to combine bytes (big endian manual reconstruction)
-        var preroll = (reader.ReadByte() << 8) | reader.ReadByte();
-        var clipDuration = (reader.ReadByte() << 8) | reader.ReadByte();
-        var triggerPoint = (reader.ReadByte() << 8) | reader.ReadByte();
-        var mixRate = (reader.ReadByte() << 8) | reader.ReadByte();
-
+        // TODO: Check if helper Method can be used instead of manual bit-shifting
         return new TransitionStingerUpdateCommand
         {
-            MixEffectId = mixEffectId,
-            Source = source,
-            PreMultipliedKey = preMultipliedKey,
-            Clip = clip,
-            Gain = gain,
-            Invert = invert,
-            Preroll = preroll,
-            ClipDuration = clipDuration,
-            TriggerPoint = triggerPoint,
-            MixRate = mixRate
+            MixEffectId = rawCommand.ReadUInt8(0),
+            Source = rawCommand.ReadUInt8(1),
+            PreMultipliedKey = rawCommand.ReadBoolean(2),
+            Clip = rawCommand.ReadUInt16BigEndian(4) / 10.0,
+            Gain = rawCommand.ReadUInt16BigEndian(6) / 10.0,
+            Invert = rawCommand.ReadBoolean(8),
+            Preroll = (rawCommand.ReadUInt8(10) << 8) | rawCommand.ReadUInt8(11),
+            ClipDuration = (rawCommand.ReadUInt8(12) << 8) | rawCommand.ReadUInt8(13),
+            TriggerPoint = (rawCommand.ReadUInt8(14) << 8) | rawCommand.ReadUInt8(15),
+            MixRate = (rawCommand.ReadUInt8(16) << 8) | rawCommand.ReadUInt8(17)
         };
     }
 
@@ -110,16 +92,10 @@ public class TransitionStingerUpdateCommand : IDeserializedCommand
         }
 
         // Initialize transition settings if not present
-        if (mixEffect.TransitionSettings == null)
-        {
-            mixEffect.TransitionSettings = new TransitionSettings();
-        }
+        mixEffect.TransitionSettings ??= new TransitionSettings();
 
         // Initialize stinger settings if not present
-        if (mixEffect.TransitionSettings.Stinger == null)
-        {
-            mixEffect.TransitionSettings.Stinger = new StingerTransitionSettings();
-        }
+        mixEffect.TransitionSettings.Stinger ??= new StingerTransitionSettings();
 
         // Update the stinger settings
         mixEffect.TransitionSettings.Stinger.Source = Source;

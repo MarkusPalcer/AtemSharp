@@ -28,6 +28,18 @@ public static class SpanExtensions
         return BinaryPrimitives.ReadUInt16BigEndian(span.Slice(offset, sizeof(ushort)));
     }
 
+    public static byte ReadUInt8(this ReadOnlySpan<byte> span, int offset)
+    {
+        return span[offset];
+    }
+
+    public static sbyte ReadInt8(this ReadOnlySpan<byte> span, int offset)
+    {
+        return unchecked((sbyte)span[offset]);
+    }
+
+    public static bool ReadBoolean(this ReadOnlySpan<byte> span, int offset) => ReadUInt8(span, offset) != 0;
+
     /// <summary>
     /// Reads a big-endian UInt32 from the specified offset in the span
     /// </summary>
@@ -103,5 +115,11 @@ public static class SpanExtensions
     public static void WriteInt32BigEndian(this Span<byte> span, int offset, int value)
     {
         BinaryPrimitives.WriteInt32BigEndian(span.Slice(offset, sizeof(int)), value);
+    }
+
+    public static string ReadNullTerminatedString(this ReadOnlySpan<byte> span, int offset, int maxLength)
+    {
+        var subSpan = span.Slice(offset, maxLength);
+        return System.Text.Encoding.UTF8.GetString(subSpan).TrimEnd('\0');
     }
 }

@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Transition;
@@ -12,31 +13,26 @@ public class TransitionDipUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>
-    public int MixEffectId { get; set; }
+    public int MixEffectId { get; init; }
 
     /// <summary>
     /// Rate of the dip transition in frames
     /// </summary>
-    public int Rate { get; set; }
+    public int Rate { get; init; }
 
     /// <summary>
     /// Input source for the dip transition
     /// </summary>
-    public int Input { get; set; }
+    public int Input { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static TransitionDipUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static TransitionDipUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var mixEffectId = reader.ReadByte();
-        var rate = reader.ReadByte();
-        var input = reader.ReadUInt16BigEndian();
+        var mixEffectId = rawCommand.ReadUInt8(0);
+        var rate = rawCommand.ReadUInt8(1);
+        var input = rawCommand.ReadUInt16BigEndian(2);
 
         return new TransitionDipUpdateCommand
         {
@@ -56,16 +52,10 @@ public class TransitionDipUpdateCommand : IDeserializedCommand
         }
 
         // Initialize transition settings if not present
-        if (mixEffect.TransitionSettings == null)
-        {
-            mixEffect.TransitionSettings = new TransitionSettings();
-        }
+        mixEffect.TransitionSettings ??= new TransitionSettings();
 
         // Initialize dip settings if not present
-        if (mixEffect.TransitionSettings.Dip == null)
-        {
-            mixEffect.TransitionSettings.Dip = new DipTransitionSettings();
-        }
+        mixEffect.TransitionSettings.Dip ??= new DipTransitionSettings();
 
         // Update the dip settings
         mixEffect.TransitionSettings.Dip.Rate = Rate;

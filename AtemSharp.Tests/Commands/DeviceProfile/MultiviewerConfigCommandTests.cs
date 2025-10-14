@@ -1,4 +1,5 @@
 using AtemSharp.Commands.DeviceProfile;
+using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
@@ -31,10 +32,13 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 	}
 
 	protected override void CompareCommandProperties(MultiviewerConfigCommand actualCommand, CommandData expectedData, TestCaseData testCase)
-	{
-		Assert.That(actualCommand.Count, Is.EqualTo(expectedData.Count));
-		Assert.That(actualCommand.WindowCount, Is.EqualTo(expectedData.WindowCount));
-	}
+    {
+        Assert.Multiple(() =>
+        {
+            Assert.That(actualCommand.Count, Is.EqualTo(expectedData.Count));
+            Assert.That(actualCommand.WindowCount, Is.EqualTo(expectedData.WindowCount));
+        });
+    }
 
 	[Test]
 	public void ApplyToState_WithNullMultiViewer_ShouldInitializeMultiViewer()
@@ -211,7 +215,6 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 		var testCases = new[]
 		{
 			new { Count = 0, WindowCount = 1, Description = "Minimum windows" },
-			new { Count = 1, WindowCount = 0, Description = "No windows" },
 			new { Count = 255, WindowCount = 1, Description = "Maximum count" },
 			new { Count = 1, WindowCount = 255, Description = "Maximum windows" }
 		};

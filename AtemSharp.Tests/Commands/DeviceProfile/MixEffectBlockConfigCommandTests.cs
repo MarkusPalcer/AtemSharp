@@ -57,66 +57,6 @@ public class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixE
     }
 
     [Test]
-    public void Deserialize_WithTypicalValues_ShouldDeserializeCorrectly()
-    {
-        // Arrange - from test data: Index 3, KeyCount 22
-        var data = new byte[] { 0x03, 0x16 };
-        using var stream = new MemoryStream(data);
-
-        // Act
-        var command = MixEffectBlockConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-        // Assert
-        Assert.That(command.Index, Is.EqualTo(3));
-        Assert.That(command.KeyCount, Is.EqualTo(22));
-    }
-
-    [Test]
-    public void Deserialize_WithZeroValues_ShouldDeserializeCorrectly()
-    {
-        // Arrange
-        var data = new byte[] { 0x00, 0x00 };
-        using var stream = new MemoryStream(data);
-
-        // Act
-        var command = MixEffectBlockConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-        // Assert
-        Assert.That(command.Index, Is.EqualTo(0));
-        Assert.That(command.KeyCount, Is.EqualTo(0));
-    }
-
-    [Test]
-    public void Deserialize_WithMaxValues_ShouldDeserializeCorrectly()
-    {
-        // Arrange
-        var data = new byte[] { 0xFF, 0xFF };
-        using var stream = new MemoryStream(data);
-
-        // Act
-        var command = MixEffectBlockConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-        // Assert
-        Assert.That(command.Index, Is.EqualTo(255));
-        Assert.That(command.KeyCount, Is.EqualTo(255));
-    }
-
-    [Test]
-    public void Deserialize_WithRealWorldValues_ShouldDeserializeCorrectly()
-    {
-        // Arrange - from test data: Index 0, KeyCount 106
-        var data = new byte[] { 0x00, 0x6A };
-        using var stream = new MemoryStream(data);
-
-        // Act
-        var command = MixEffectBlockConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-        // Assert
-        Assert.That(command.Index, Is.EqualTo(0));
-        Assert.That(command.KeyCount, Is.EqualTo(106));
-    }
-
-    [Test]
     public void ApplyToState_MultipleMixEffects_ShouldHandleMultipleIndices()
     {
         // Arrange

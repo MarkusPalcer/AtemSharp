@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Audio;
@@ -26,7 +27,7 @@ public class AudioMixerPropertiesCommand : SerializedCommand
         }
 
         // Initialize from current state (direct field access = no flags set)
-        _audioFollowVideo = currentState.Audio.AudioFollowVideoCrossfadeTransitionEnabled ?? false;
+        _audioFollowVideo = currentState.Audio.AudioFollowsVideo ?? false;
     }
 
     /// <summary>

@@ -1,5 +1,4 @@
 using AtemSharp.Commands.MixEffects.Transition;
-using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
@@ -46,26 +45,6 @@ public class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<Trans
     }
 
     [Test]
-    public void Deserialize_ValidData_ProducesCorrectCommand()
-    {
-        // Arrange - create binary data matching the ATEM protocol
-        using var stream = new MemoryStream(new byte[] {
-            0x01,       // MixEffectId = 1
-            0x32,       // Rate = 50
-            0x04,       // Input high byte (0x0444 = 1092)
-            0x44        // Input low byte
-        });
-
-        // Act
-        var command = TransitionDipUpdateCommand.Deserialize(stream, ProtocolVersion.V8_1_1);
-
-        // Assert
-        Assert.That(command.MixEffectId, Is.EqualTo(1));
-        Assert.That(command.Rate, Is.EqualTo(50));
-        Assert.That(command.Input, Is.EqualTo(1092)); // 0x0444
-    }
-
-    [Test]
     public void ApplyToState_ValidState_UpdatesDipSettings()
     {
         // Arrange
@@ -95,9 +74,9 @@ public class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<Trans
         command.ApplyToState(state);
 
         // Assert
-        Assert.That(state.Video.MixEffects[0].TransitionSettings.Dip, Is.Not.Null);
-        Assert.That(state.Video.MixEffects[0].TransitionSettings.Dip.Rate, Is.EqualTo(75));
-        Assert.That(state.Video.MixEffects[0].TransitionSettings.Dip.Input, Is.EqualTo(2048));
+        Assert.That(state.Video.MixEffects[0].TransitionSettings!.Dip, Is.Not.Null);
+        Assert.That(state.Video.MixEffects[0].TransitionSettings!.Dip!.Rate, Is.EqualTo(75));
+        Assert.That(state.Video.MixEffects[0].TransitionSettings!.Dip!.Input, Is.EqualTo(2048));
     }
 
     [Test]
@@ -159,25 +138,5 @@ public class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<Trans
         var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
         Assert.That(ex.Message, Does.Contain("MixEffect"));
         Assert.That(ex.Message, Does.Contain("99"));
-    }
-
-    [Test]
-    public void Deserialize_EdgeCaseValues_HandlesCorrectly()
-    {
-        // Arrange - test with edge case values
-        using var stream = new MemoryStream(new byte[] {
-            0xFF,       // MixEffectId = 255 (max byte value)
-            0x00,       // Rate = 0 (minimum)
-            0xFF,       // Input high byte (0xFFFF = 65535)
-            0xFF        // Input low byte
-        });
-
-        // Act
-        var command = TransitionDipUpdateCommand.Deserialize(stream, ProtocolVersion.V8_1_1);
-
-        // Assert
-        Assert.That(command.MixEffectId, Is.EqualTo(255));
-        Assert.That(command.Rate, Is.EqualTo(0));
-        Assert.That(command.Input, Is.EqualTo(65535)); // 0xFFFF
     }
 }

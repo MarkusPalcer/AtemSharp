@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Key;
@@ -7,242 +8,192 @@ namespace AtemSharp.Commands.MixEffects.Key;
 /// Command received from ATEM device containing upstream keyer DVE settings update
 /// </summary>
 [Command("KeDV")]
+// ReSharper disable once InconsistentNaming Domain Specific Acronym
 public class MixEffectKeyDVEUpdateCommand : IDeserializedCommand
 {
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>
-    public int MixEffectId { get; set; }
+    public int MixEffectId { get; init; }
 
     /// <summary>
     /// Upstream keyer index (0-based)
     /// </summary>
-    public int KeyerId { get; set; }
+    public int KeyerId { get; init; }
 
     /// <summary>
     /// Horizontal size scale factor
     /// </summary>
-    public double SizeX { get; set; }
+    public double SizeX { get; init; }
 
     /// <summary>
     /// Vertical size scale factor
     /// </summary>
-    public double SizeY { get; set; }
+    public double SizeY { get; init; }
 
     /// <summary>
     /// Horizontal position offset
     /// </summary>
-    public double PositionX { get; set; }
+    public double PositionX { get; init; }
 
     /// <summary>
     /// Vertical position offset
     /// </summary>
-    public double PositionY { get; set; }
+    public double PositionY { get; init; }
 
     /// <summary>
     /// Rotation angle in degrees
     /// </summary>
-    public double Rotation { get; set; }
+    public double Rotation { get; init; }
 
     /// <summary>
     /// Whether border effect is enabled
     /// </summary>
-    public bool BorderEnabled { get; set; }
+    public bool BorderEnabled { get; init; }
 
     /// <summary>
     /// Whether shadow effect is enabled
     /// </summary>
-    public bool ShadowEnabled { get; set; }
+    public bool ShadowEnabled { get; init; }
 
     /// <summary>
     /// Type of border bevel effect
     /// </summary>
-    public BorderBevel BorderBevel { get; set; }
+    public BorderBevel BorderBevel { get; init; }
 
     /// <summary>
     /// Outer border width
     /// </summary>
-    public double BorderOuterWidth { get; set; }
+    public double BorderOuterWidth { get; init; }
 
     /// <summary>
     /// Inner border width
     /// </summary>
-    public double BorderInnerWidth { get; set; }
+    public double BorderInnerWidth { get; init; }
 
     /// <summary>
     /// Outer border softness
     /// </summary>
-    public double BorderOuterSoftness { get; set; }
+    public double BorderOuterSoftness { get; init; }
 
     /// <summary>
     /// Inner border softness
     /// </summary>
-    public double BorderInnerSoftness { get; set; }
+    public double BorderInnerSoftness { get; init; }
 
     /// <summary>
     /// Border bevel softness
     /// </summary>
-    public double BorderBevelSoftness { get; set; }
+    public double BorderBevelSoftness { get; init; }
 
     /// <summary>
     /// Border bevel position
     /// </summary>
-    public double BorderBevelPosition { get; set; }
+    public double BorderBevelPosition { get; init; }
 
     /// <summary>
     /// Border opacity
     /// </summary>
-    public double BorderOpacity { get; set; }
+    public double BorderOpacity { get; init; }
 
     /// <summary>
     /// Border color hue
     /// </summary>
-    public double BorderHue { get; set; }
+    public double BorderHue { get; init; }
 
     /// <summary>
     /// Border color saturation
     /// </summary>
-    public double BorderSaturation { get; set; }
+    public double BorderSaturation { get; init; }
 
     /// <summary>
     /// Border color luminance
     /// </summary>
-    public double BorderLuma { get; set; }
+    public double BorderLuma { get; init; }
 
     /// <summary>
     /// Light source direction angle
     /// </summary>
-    public double LightSourceDirection { get; set; }
+    public double LightSourceDirection { get; init; }
 
     /// <summary>
     /// Light source altitude
     /// </summary>
-    public double LightSourceAltitude { get; set; }
+    public double LightSourceAltitude { get; init; }
 
     /// <summary>
     /// Whether masking is enabled
     /// </summary>
-    public bool MaskEnabled { get; set; }
+    public bool MaskEnabled { get; init; }
 
     /// <summary>
     /// Top edge of mask
     /// </summary>
-    public double MaskTop { get; set; }
+    public double MaskTop { get; init; }
 
     /// <summary>
     /// Bottom edge of mask
     /// </summary>
-    public double MaskBottom { get; set; }
+    public double MaskBottom { get; init; }
 
     /// <summary>
     /// Left edge of mask
     /// </summary>
-    public double MaskLeft { get; set; }
+    public double MaskLeft { get; init; }
 
     /// <summary>
     /// Right edge of mask
     /// </summary>
-    public double MaskRight { get; set; }
+    public double MaskRight { get; init; }
 
     /// <summary>
     /// Transition rate in frames
     /// </summary>
-    public int Rate { get; set; }
+    public int Rate { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static MixEffectKeyDVEUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static MixEffectKeyDVEUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var mixEffectId = reader.ReadByte();
-        var keyerId = reader.ReadByte();
-        reader.ReadBytes(2); // Skip padding bytes
-
-        // Size values - divide by 1000 to convert from fixed point
-        var sizeX = reader.ReadUInt32BigEndian() / 1000.0;
-        var sizeY = reader.ReadUInt32BigEndian() / 1000.0;
-
-        // Position values - divide by 1000 and treat as signed
-        var positionX = reader.ReadInt32BigEndian() / 1000.0;
-        var positionY = reader.ReadInt32BigEndian() / 1000.0;
-
-        // Rotation - divide by 10 and treat as signed
-        var rotation = reader.ReadInt32BigEndian() / 10.0;
-
-        var borderEnabled = reader.ReadBoolean();
-        var shadowEnabled = reader.ReadBoolean();
-        var borderBevel = (BorderBevel)reader.ReadByte();
-        reader.ReadByte(); // Skip padding
-
-        // Border widths - divide by 100 to convert from fixed point
-        var borderOuterWidth = reader.ReadUInt16BigEndian() / 100.0;
-        var borderInnerWidth = reader.ReadUInt16BigEndian() / 100.0;
-
         // Read softness and position values as signed bytes
-        var borderOuterSoftness = reader.ReadSByte();
-        var borderInnerSoftness = reader.ReadSByte();
-        var borderBevelSoftness = reader.ReadSByte();
-        var borderBevelPosition = reader.ReadSByte();
-
-        var borderOpacity = reader.ReadSByte();
-        reader.ReadByte(); // Skip padding
 
         // Color values - BorderHue uses complex scaling based on reverse engineering analysis
-        var borderHueRaw = reader.ReadUInt16BigEndian();
-        var borderHue = CalculateBorderHue(borderHueRaw);
-        var borderSaturation = CalculateBorderSaturation(reader.ReadUInt16BigEndian());
-        var borderLuma = CalculateBorderLuma(reader.ReadUInt16BigEndian());
 
         // Light source
-        var lightSourceDirection = CalculateLightSourceDirection(reader.ReadUInt16BigEndian());
-        var lightSourceAltitude = reader.ReadByte();
-
-        var maskEnabled = reader.ReadBoolean();
 
         // Mask values - convert from fixed point (*100/65536)
-        var maskTop = CalculateMaskValue(reader.ReadUInt16BigEndian());
-        var maskBottom = CalculateMaskValue(reader.ReadUInt16BigEndian());
-        var maskLeft = CalculateMaskValue(reader.ReadUInt16BigEndian());
-        var maskRight = CalculateMaskValue(reader.ReadUInt16BigEndian());
-
-        var rate = reader.ReadByte();
-        reader.ReadBytes(3); // Skip remaining padding bytes
 
         return new MixEffectKeyDVEUpdateCommand
         {
-            MixEffectId = mixEffectId,
-            KeyerId = keyerId,
-            SizeX = sizeX,
-            SizeY = sizeY,
-            PositionX = positionX,
-            PositionY = positionY,
-            Rotation = rotation,
-            BorderEnabled = borderEnabled,
-            ShadowEnabled = shadowEnabled,
-            BorderBevel = borderBevel,
-            BorderOuterWidth = borderOuterWidth,
-            BorderInnerWidth = borderInnerWidth,
-            BorderOuterSoftness = borderOuterSoftness,
-            BorderInnerSoftness = borderInnerSoftness,
-            BorderBevelSoftness = borderBevelSoftness,
-            BorderBevelPosition = borderBevelPosition,
-            BorderOpacity = borderOpacity,
-            BorderHue = borderHue,
-            BorderSaturation = borderSaturation,
-            BorderLuma = borderLuma,
-            LightSourceDirection = lightSourceDirection,
-            LightSourceAltitude = lightSourceAltitude,
-            MaskEnabled = maskEnabled,
-            MaskTop = maskTop,
-            MaskBottom = maskBottom,
-            MaskLeft = maskLeft,
-            MaskRight = maskRight,
-            Rate = rate
+            MixEffectId = rawCommand.ReadUInt8(0),
+            KeyerId = rawCommand.ReadUInt8(1),
+            SizeX = rawCommand.ReadUInt32BigEndian(4) / 1000.0,
+            SizeY = rawCommand.ReadUInt32BigEndian(8) / 1000.0,
+            PositionX = rawCommand.ReadInt32BigEndian(12) / 1000.0,
+            PositionY = rawCommand.ReadInt32BigEndian(16) / 1000.0,
+            Rotation = rawCommand.ReadInt32BigEndian(20) / 10.0,
+            BorderEnabled = rawCommand.ReadBoolean(24),
+            ShadowEnabled = rawCommand.ReadBoolean(25),
+            BorderBevel = (BorderBevel)rawCommand.ReadUInt8(26),
+            BorderOuterWidth = rawCommand.ReadUInt16BigEndian(28) / 100.0,
+            BorderInnerWidth = rawCommand.ReadUInt16BigEndian(30) / 100.0,
+            BorderOuterSoftness = rawCommand.ReadInt8(32),
+            BorderInnerSoftness = rawCommand.ReadInt8(33),
+            BorderBevelSoftness = rawCommand.ReadInt8(34),
+            BorderBevelPosition = rawCommand.ReadInt8(35),
+            BorderOpacity = rawCommand.ReadInt8(36),
+            BorderHue = rawCommand.ReadUInt16BigEndian(38),
+            BorderSaturation = rawCommand.ReadUInt16BigEndian(40),
+            BorderLuma = rawCommand.ReadUInt16BigEndian(42),
+            LightSourceDirection = rawCommand.ReadUInt16BigEndian(44),
+            LightSourceAltitude = rawCommand.ReadUInt8(46),
+            MaskEnabled = rawCommand.ReadBoolean(47),
+            MaskTop = rawCommand.ReadUInt16BigEndian(48),
+            MaskBottom = rawCommand.ReadUInt16BigEndian(50),
+            MaskLeft = rawCommand.ReadUInt16BigEndian(52),
+            MaskRight = rawCommand.ReadUInt16BigEndian(54),
+            Rate = rawCommand.ReadUInt8(56)
         };
     }
 
@@ -296,58 +247,5 @@ public class MixEffectKeyDVEUpdateCommand : IDeserializedCommand
         keyer.DVESettings.MaskLeft = MaskLeft;
         keyer.DVESettings.MaskRight = MaskRight;
         keyer.DVESettings.Rate = Rate;
-    }
-
-    /// <summary>
-    /// Calculate BorderHue using reverse-engineered formula from test data analysis
-    /// </summary>
-    private static double CalculateBorderHue(ushort rawValue)
-    {
-        // TODO: Fix BorderHue scaling - current implementation uses rawValue * 0.1 but this doesn't
-        // perfectly match the expected test values. The actual scaling formula is more complex
-        // and may involve offsets or non-linear scaling. Reverse engineering shows it's approximately
-        // correct but needs refinement for exact matches with TypeScript reference values.
-        return rawValue * 0.1;
-    }
-
-    /// <summary>
-    /// Calculate BorderSaturation using reverse-engineered formula from test data analysis
-    /// </summary>
-    private static double CalculateBorderSaturation(ushort rawValue)
-    {
-        // TODO: Fix BorderSaturation scaling - current rawValue * 0.1 is close but not exact.
-        // Need to determine the precise scaling formula to match TypeScript reference values.
-        return rawValue * 0.1;
-    }
-
-    /// <summary>
-    /// Calculate BorderLuma using reverse-engineered formula from test data analysis
-    /// </summary>
-    private static double CalculateBorderLuma(ushort rawValue)
-    {
-        // TODO: Fix BorderLuma scaling - current rawValue * 0.1 is close but needs refinement
-        // for exact precision matching TypeScript reference implementation.
-        return rawValue * 0.1;
-    }
-
-    /// <summary>
-    /// Calculate LightSourceDirection using reverse-engineered formula from test data analysis
-    /// </summary>
-    private static double CalculateLightSourceDirection(ushort rawValue)
-    {
-        // TODO: Fix LightSourceDirection scaling - rawValue * 0.1 is approximately correct
-        // but needs fine-tuning to exactly match TypeScript reference values.
-        return rawValue * 0.1;
-    }
-
-    /// <summary>
-    /// Calculate Mask values using reverse-engineered formula from test data analysis
-    /// </summary>
-    private static double CalculateMaskValue(ushort rawValue)
-    {
-        // TODO: Fix mask value scaling - current formula rawValue * 100.0 / 65536.0 / 1.515
-        // is an approximation. The actual scaling used by ATEM protocol needs to be determined
-        // through more detailed analysis to exactly match TypeScript reference implementation.
-        return rawValue * 100.0 / 65536.0 / 1.515;
     }
 }

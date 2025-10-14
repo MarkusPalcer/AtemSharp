@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Transition;
@@ -12,30 +13,22 @@ public class PreviewTransitionUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>
-    public int MixEffectId { get; set; }
+    public int MixEffectId { get; init; }
 
     /// <summary>
     /// Whether transition preview is enabled
     /// </summary>
-    public bool Preview { get; set; }
+    public bool Preview { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static PreviewTransitionUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static PreviewTransitionUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var mixEffectId = reader.ReadByte();
-        var preview = reader.ReadBoolean();;
-
         return new PreviewTransitionUpdateCommand
         {
-            MixEffectId = mixEffectId,
-            Preview = preview
+            MixEffectId = rawCommand.ReadUInt8(0),
+            Preview = rawCommand.ReadBoolean(1)
         };
     }
 

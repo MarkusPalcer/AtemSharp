@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Transition;
@@ -12,94 +13,76 @@ public class TransitionWipeUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>
-    public int MixEffectId { get; set; }
+    public int MixEffectId { get; init; }
 
     /// <summary>
     /// Rate of the wipe transition in frames
     /// </summary>
-    public int Rate { get; set; }
+    public int Rate { get; init; }
 
     /// <summary>
     /// Pattern for the wipe transition
     /// </summary>
-    public int Pattern { get; set; }
+    public int Pattern { get; init; }
 
     /// <summary>
     /// Width of the wipe border as percentage (0-100%)
     /// </summary>
-    public double BorderWidth { get; set; }
+    public double BorderWidth { get; init; }
 
     /// <summary>
     /// Input source for the wipe border
     /// </summary>
-    public int BorderInput { get; set; }
+    public int BorderInput { get; init; }
 
     /// <summary>
     /// Symmetry setting for the wipe transition as percentage (0-100%)
     /// </summary>
-    public double Symmetry { get; set; }
+    public double Symmetry { get; init; }
 
     /// <summary>
     /// Softness of the wipe border as percentage (0-100%)
     /// </summary>
-    public double BorderSoftness { get; set; }
+    public double BorderSoftness { get; init; }
 
     /// <summary>
     /// X position for the wipe transition (0.0-1.0)
     /// </summary>
-    public double XPosition { get; set; }
+    public double XPosition { get; init; }
 
     /// <summary>
     /// Y position for the wipe transition (0.0-1.0)
     /// </summary>
-    public double YPosition { get; set; }
+    public double YPosition { get; init; }
 
     /// <summary>
     /// Whether the wipe direction is reversed
     /// </summary>
-    public bool ReverseDirection { get; set; }
+    public bool ReverseDirection { get; init; }
 
     /// <summary>
     /// Whether flip flop mode is enabled
     /// </summary>
-    public bool FlipFlop { get; set; }
+    public bool FlipFlop { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static TransitionWipeUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static TransitionWipeUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var mixEffectId = reader.ReadByte();
-        var rate = reader.ReadByte();
-        var pattern = reader.ReadByte();
-        reader.ReadByte(); // Skip 1 byte padding (offset 3)
-        var borderWidth = reader.ReadUInt16BigEndian() / 100.0;    // Convert from percentage * 100 to double
-        var borderInput = reader.ReadUInt16BigEndian();
-        var symmetry = reader.ReadUInt16BigEndian() / 100.0;       // Convert from percentage * 100 to double
-        var borderSoftness = reader.ReadUInt16BigEndian() / 100.0; // Convert from percentage * 100 to double
-        var xPosition = reader.ReadUInt16BigEndian() / 10000.0;    // Convert from 0-1 * 10000 to double
-        var yPosition = reader.ReadUInt16BigEndian() / 10000.0;    // Convert from 0-1 * 10000 to double
-        var reverseDirection = reader.ReadBoolean();;
-        var flipFlop = reader.ReadBoolean();;
-
         return new TransitionWipeUpdateCommand
         {
-            MixEffectId = mixEffectId,
-            Rate = rate,
-            Pattern = pattern,
-            BorderWidth = borderWidth,
-            BorderInput = borderInput,
-            Symmetry = symmetry,
-            BorderSoftness = borderSoftness,
-            XPosition = xPosition,
-            YPosition = yPosition,
-            ReverseDirection = reverseDirection,
-            FlipFlop = flipFlop
+            MixEffectId = rawCommand.ReadUInt8(0),
+            Rate = rawCommand.ReadUInt8(1),
+            Pattern = rawCommand.ReadUInt8(2),
+            BorderWidth = rawCommand.ReadUInt16BigEndian(4) / 100.0,
+            BorderInput = rawCommand.ReadUInt16BigEndian(6),
+            Symmetry = rawCommand.ReadUInt16BigEndian(8) / 100.0,
+            BorderSoftness = rawCommand.ReadUInt16BigEndian(10) / 100.0,
+            XPosition = rawCommand.ReadUInt16BigEndian(12) / 10000.0,
+            YPosition = rawCommand.ReadUInt16BigEndian(14) / 10000.0,
+            ReverseDirection = rawCommand.ReadBoolean(16),
+            FlipFlop = rawCommand.ReadBoolean(17)
         };
     }
 
@@ -113,16 +96,10 @@ public class TransitionWipeUpdateCommand : IDeserializedCommand
         }
 
         // Initialize transition settings if not present
-        if (mixEffect.TransitionSettings == null)
-        {
-            mixEffect.TransitionSettings = new TransitionSettings();
-        }
+        mixEffect.TransitionSettings ??= new TransitionSettings();
 
         // Initialize wipe settings if not present
-        if (mixEffect.TransitionSettings.Wipe == null)
-        {
-            mixEffect.TransitionSettings.Wipe = new WipeTransitionSettings();
-        }
+        mixEffect.TransitionSettings.Wipe ??= new WipeTransitionSettings();
 
         // Update the wipe settings
         mixEffect.TransitionSettings.Wipe.Rate = Rate;

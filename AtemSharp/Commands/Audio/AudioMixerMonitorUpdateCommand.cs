@@ -1,4 +1,3 @@
-using System.Text;
 using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
@@ -14,61 +13,49 @@ public class AudioMixerMonitorUpdateCommand : IDeserializedCommand
 	/// <summary>
 	/// Whether the monitor is enabled
 	/// </summary>
-	public bool Enabled { get; set; }
+	public bool Enabled { get; init; }
 
 	/// <summary>
 	/// Gain in decibel, -Infinity to +6dB
 	/// </summary>
-	public double Gain { get; set; }
+	public double Gain { get; init; }
 
 	/// <summary>
 	/// Whether the monitor is muted
 	/// </summary>
-	public bool Mute { get; set; }
+	public bool Mute { get; init; }
 
 	/// <summary>
 	/// Whether solo is enabled
 	/// </summary>
-	public bool Solo { get; set; }
+	public bool Solo { get; init; }
 
 	/// <summary>
 	/// Solo source identifier
 	/// </summary>
-	public int SoloSource { get; set; }
+	public int SoloSource { get; init; }
 
 	/// <summary>
 	/// Whether dim is enabled
 	/// </summary>
-	public bool Dim { get; set; }
+	public bool Dim { get; init; }
 
 	/// <summary>
 	/// Dim level as percentage (0.0 to 1.0)
 	/// </summary>
-	public double DimLevel { get; set; }
+	public double DimLevel { get; init; }
 
-	public static AudioMixerMonitorUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+	public static AudioMixerMonitorUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
 	{
-		using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
-		var enabled = reader.ReadByte() > 0; // byte 0
-		reader.ReadByte(); // Skip byte 1 (padding)
-		var gain = reader.ReadUInt16BigEndian().UInt16ToDecibel(); // bytes 2-3
-		var mute = reader.ReadByte() > 0; // byte 4
-		var solo = reader.ReadByte() > 0; // byte 5
-		var soloSource = reader.ReadUInt16BigEndian(); // bytes 6-7
-		var dim = reader.ReadByte() > 0; // byte 8
-		reader.ReadByte(); // Skip byte 9 (padding)
-		var dimLevel = reader.ReadUInt16BigEndian() / 100.0; // bytes 10-11
-
 		return new AudioMixerMonitorUpdateCommand
 		{
-			Enabled = enabled,
-			Gain = gain,
-			Mute = mute,
-			Solo = solo,
-			SoloSource = soloSource,
-			Dim = dim,
-			DimLevel = dimLevel
+			Enabled = rawCommand.ReadBoolean(0),
+			Gain = rawCommand.ReadUInt16BigEndian(2).UInt16ToDecibel(),
+			Mute = rawCommand.ReadBoolean(4),
+			Solo = rawCommand.ReadBoolean(5),
+			SoloSource = rawCommand.ReadUInt16BigEndian(6),
+			Dim = rawCommand.ReadBoolean(8),
+			DimLevel = rawCommand.ReadUInt16BigEndian(10) / 100.0
 		};
 	}
 

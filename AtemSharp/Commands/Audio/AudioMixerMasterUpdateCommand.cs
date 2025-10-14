@@ -1,4 +1,3 @@
-using System.Text;
 using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
@@ -14,36 +13,29 @@ public class AudioMixerMasterUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Audio gain in decibels
     /// </summary>
-    public double Gain { get; set; }
+    public double Gain { get; init; }
 
     /// <summary>
     /// Audio balance (-50.0 to +50.0)
     /// </summary>
-    public double Balance { get; set; }
+    public double Balance { get; init; }
 
     /// <summary>
     /// Whether audio follows fade to black
     /// </summary>
-    public bool FollowFadeToBlack { get; set; }
+    public bool FollowFadeToBlack { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
     /// <returns>Deserialized command instance</returns>
-    public static AudioMixerMasterUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static AudioMixerMasterUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
-        var gain = reader.ReadUInt16BigEndian().UInt16ToDecibel();
-        var balance = reader.ReadInt16BigEndian().Int16ToBalance();
-        var followFadeToBlack = reader.ReadBoolean();
-
         return new AudioMixerMasterUpdateCommand
         {
-            Gain = gain,
-            Balance = balance,
-            FollowFadeToBlack = followFadeToBlack
+            Gain = rawCommand.ReadUInt16BigEndian(0).UInt16ToDecibel(),
+            Balance = rawCommand.ReadInt16BigEndian(2).Int16ToBalance(),
+            FollowFadeToBlack = rawCommand.ReadBoolean(4)
         };
     }
 

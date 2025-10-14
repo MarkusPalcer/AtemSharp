@@ -1,5 +1,5 @@
-using System.Text;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DataTransfer;
@@ -12,34 +12,14 @@ namespace AtemSharp.Commands.DataTransfer;
 public class DataTransferDataCommand : SerializedCommand, IDeserializedCommand
 {
     /// <summary>
-    /// Create command with specified transfer data
-    /// </summary>
-    /// <param name="transferId">Transfer ID</param>
-    /// <param name="body">Data content</param>
-    public DataTransferDataCommand(ushort transferId, byte[] body)
-    {
-        TransferId = transferId;
-        Body = body ?? throw new ArgumentNullException(nameof(body));
-    }
-
-    /// <summary>
-    /// Create command with default values
-    /// </summary>
-    public DataTransferDataCommand()
-    {
-        TransferId = 0;
-        Body = [];
-    }
-
-    /// <summary>
     /// Transfer ID
     /// </summary>
-    public ushort TransferId { get; set; }
+    public ushort TransferId { get; init; }
 
     /// <summary>
     /// Data content
     /// </summary>
-    public byte[] Body { get; set; }
+    public byte[] Body { get; init; } = [];
 
     /// <summary>
     /// Serialize command to binary stream for transmission to ATEM
@@ -61,17 +41,13 @@ public class DataTransferDataCommand : SerializedCommand, IDeserializedCommand
     /// <summary>
     /// Deserialize binary data into command
     /// </summary>
-    /// <param name="stream">Binary stream to read from</param>
-    /// <returns>Deserialized command</returns>
-    public static DataTransferDataCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static DataTransferDataCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
-        var transferId = reader.ReadUInt16BigEndian();
-        var size = reader.ReadUInt16BigEndian();
-        var body = reader.ReadBytes(size);
-
-        return new DataTransferDataCommand(transferId, body);
+        return new DataTransferDataCommand
+        {
+            TransferId = rawCommand.ReadUInt16BigEndian(0),
+            Body = rawCommand.Slice(4, rawCommand.ReadUInt16BigEndian(2)).ToArray()
+        };
     }
 
     /// <summary>

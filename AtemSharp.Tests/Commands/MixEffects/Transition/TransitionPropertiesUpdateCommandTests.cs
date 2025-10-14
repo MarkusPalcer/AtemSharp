@@ -56,24 +56,6 @@ public class TransitionPropertiesUpdateCommandTests : DeserializedCommandTestBas
     }
 
     [Test]
-    public void Deserialize_ValidData_ParsesCorrectly()
-    {
-        // Arrange
-        var data = new byte[] { 1, 2, 3, 4, 5 }; // mixEffect=1, style=2, selection=3, nextStyle=4, nextSelection=5
-        using var stream = new MemoryStream(data);
-
-        // Act
-        var command = TransitionPropertiesUpdateCommand.Deserialize(stream, ProtocolVersion.V8_0);
-
-        // Assert
-        Assert.That(command.MixEffectId, Is.EqualTo(1));
-        Assert.That(command.Style, Is.EqualTo((TransitionStyle)2));
-        Assert.That(command.Selection, Is.EqualTo((TransitionSelection)3));
-        Assert.That(command.NextStyle, Is.EqualTo((TransitionStyle)4));
-        Assert.That(command.NextSelection, Is.EqualTo((TransitionSelection)5));
-    }
-
-    [Test]
     public void ApplyToState_ValidMixEffect_UpdatesTransitionProperties()
     {
         // Arrange

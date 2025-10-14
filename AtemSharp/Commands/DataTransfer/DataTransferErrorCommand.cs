@@ -1,6 +1,6 @@
-using System.Text;
 using AtemSharp.Enums;
 using AtemSharp.Enums.DataTransfer;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DataTransfer;
@@ -14,26 +14,22 @@ public class DataTransferErrorCommand : IDeserializedCommand
     /// <summary>
     /// ID of the transfer that encountered an error
     /// </summary>
-    public ushort TransferId { get; set; }
+    public ushort TransferId { get; init; }
 
     /// <summary>
     /// The error code indicating what type of error occurred
     /// </summary>
-    public ErrorCode ErrorCode { get; set; }
+    public ErrorCode ErrorCode { get; init; }
 
     /// <summary>
     /// Deserialize binary data into command
     /// </summary>
-    /// <param name="stream">Binary stream to read from</param>
-    /// <returns>Deserialized command</returns>
-    public static DataTransferErrorCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static DataTransferErrorCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
         return new DataTransferErrorCommand
         {
-            TransferId = reader.ReadUInt16BigEndian(),
-            ErrorCode = (ErrorCode)reader.ReadByte()
+            TransferId = rawCommand.ReadUInt16BigEndian(0),
+            ErrorCode = (ErrorCode)rawCommand.ReadUInt8(2)
         };
     }
 

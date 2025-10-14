@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Key;
@@ -12,63 +13,46 @@ public class MixEffectKeyLumaUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>
-    public int MixEffectId { get; set; }
+    public int MixEffectId { get; init; }
 
     /// <summary>
     /// Upstream keyer index (0-based)
     /// </summary>
-    public int KeyerId { get; set; }
+    public int KeyerId { get; init; }
 
     /// <summary>
     /// Whether the key should be treated as premultiplied
     /// </summary>
-    public bool PreMultiplied { get; set; }
+    public bool PreMultiplied { get; init; }
 
     /// <summary>
     /// Clip threshold value
     /// </summary>
-    public double Clip { get; set; }
+    public double Clip { get; init; }
 
     /// <summary>
     /// Gain value for the luma key
     /// </summary>
-    public double Gain { get; set; }
+    public double Gain { get; init; }
 
     /// <summary>
     /// Whether to invert the luma key
     /// </summary>
-    public bool Invert { get; set; }
+    public bool Invert { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static MixEffectKeyLumaUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static MixEffectKeyLumaUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var mixEffectId = reader.ReadByte();
-        var keyerId = reader.ReadByte();
-        var preMultiplied = reader.ReadBoolean();
-        reader.ReadByte(); // Skip padding byte
-
-        // Read percentage values as 16-bit integers and convert (divide by 10 to match TypeScript implementation)
-        var clip = reader.ReadUInt16BigEndian() / 10.0;
-        var gain = reader.ReadUInt16BigEndian() / 10.0;
-
-        var invert = reader.ReadBoolean();
-        reader.ReadBytes(3); // Skip remaining padding bytes
-
         return new MixEffectKeyLumaUpdateCommand
         {
-            MixEffectId = mixEffectId,
-            KeyerId = keyerId,
-            PreMultiplied = preMultiplied,
-            Clip = clip,
-            Gain = gain,
-            Invert = invert
+            MixEffectId = rawCommand.ReadUInt8(0),
+            KeyerId = rawCommand.ReadUInt8(1),
+            PreMultiplied = rawCommand.ReadBoolean(2),
+            Clip = rawCommand.ReadUInt16BigEndian(4) / 10.0,
+            Gain = rawCommand.ReadUInt16BigEndian(6) / 10.0,
+            Invert = rawCommand.ReadBoolean(8)
         };
     }
 
@@ -92,8 +76,7 @@ public class MixEffectKeyLumaUpdateCommand : IDeserializedCommand
         keyer.Index = KeyerId;
 
         // Get or create the luma settings
-        if (keyer.LumaSettings == null)
-            keyer.LumaSettings = new UpstreamKeyerLumaSettings();
+        keyer.LumaSettings ??= new UpstreamKeyerLumaSettings();
 
         // Update the luma settings
         keyer.LumaSettings.PreMultiplied = PreMultiplied;

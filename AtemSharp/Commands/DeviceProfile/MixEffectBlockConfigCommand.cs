@@ -1,5 +1,5 @@
-using System.Text;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DeviceProfile;
@@ -13,24 +13,20 @@ public class MixEffectBlockConfigCommand : IDeserializedCommand
     /// <summary>
     /// Mix effect index
     /// </summary>
-    public byte Index { get; set; }
+    public byte Index { get; init; }
 
     /// <summary>
     /// Number of keyers available in this mix effect
     /// </summary>
-    public byte KeyCount { get; set; }
+    public byte KeyCount { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <returns>Deserialized command instance</returns>
-    public static MixEffectBlockConfigCommand Deserialize(Stream stream, ProtocolVersion version)
+    public static MixEffectBlockConfigCommand Deserialize(ReadOnlySpan<Byte> rawCommand, ProtocolVersion version)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
-        var index = reader.ReadByte();
-        var keyCount = reader.ReadByte();
+        var index = rawCommand.ReadUInt8(0);
+        var keyCount = rawCommand.ReadUInt8(1);
 
         return new MixEffectBlockConfigCommand
         {

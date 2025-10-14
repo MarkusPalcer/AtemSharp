@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands;
@@ -12,31 +13,22 @@ public class AuxSourceUpdateCommand : IDeserializedCommand
 	/// <summary>
 	/// Auxiliary output index (0-based)
 	/// </summary>
-	public int AuxBus { get; set; }
+	public int AuxBus { get; init; }
 
 	/// <summary>
 	/// Source input number for the auxiliary output
 	/// </summary>
-	public int Source { get; set; }
+	public int Source { get; init; }
 
 	/// <summary>
 	/// Deserialize the command from binary stream
 	/// </summary>
-	/// <param name="stream">Binary stream containing command data</param>
-	/// <param name="protocolVersion">Protocol version used for deserialization</param>
-	/// <returns>Deserialized command instance</returns>
-	public static AuxSourceUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+	public static AuxSourceUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
 	{
-		using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-		var auxBus = reader.ReadByte();
-		reader.ReadByte(); // Skip padding byte
-		var source = reader.ReadUInt16BigEndian();
-
 		return new AuxSourceUpdateCommand
 		{
-			AuxBus = auxBus,
-			Source = source
+			AuxBus = rawCommand.ReadUInt8(0),
+			Source = rawCommand.ReadUInt16BigEndian(2)
 		};
 	}
 

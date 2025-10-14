@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Settings;
@@ -12,23 +13,16 @@ public class VideoModeUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Video mode of the device
     /// </summary>
-    public VideoMode Mode { get; set; }
+    public VideoMode Mode { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static VideoModeUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static VideoModeUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var mode = reader.ReadByte();
-
         return new VideoModeUpdateCommand
         {
-            Mode = (VideoMode)mode
+            Mode = (VideoMode)rawCommand.ReadUInt8(0)
         };
     }
 

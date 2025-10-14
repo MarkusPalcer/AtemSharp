@@ -28,6 +28,6 @@ public class AudioState
     /// <summary>
     /// Whether audio follows video crossfade transition
     /// </summary>
-    public bool? AudioFollowVideoCrossfadeTransitionEnabled { get; set; }
+    public bool? AudioFollowsVideo { get; set; }
     
 }

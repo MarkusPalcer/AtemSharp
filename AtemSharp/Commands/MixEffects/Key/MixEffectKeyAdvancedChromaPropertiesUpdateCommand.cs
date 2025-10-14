@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Key;
@@ -12,112 +13,92 @@ public class MixEffectKeyAdvancedChromaPropertiesUpdateCommand : IDeserializedCo
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>
-    public int MixEffectId { get; set; }
+    public int MixEffectId { get; init; }
 
     /// <summary>
     /// Upstream keyer index (0-based)
     /// </summary>
-    public int KeyerId { get; set; }
+    public int KeyerId { get; init; }
 
     /// <summary>
     /// Foreground level value
     /// </summary>
-    public double ForegroundLevel { get; set; }
+    public double ForegroundLevel { get; init; }
 
     /// <summary>
     /// Background level value
     /// </summary>
-    public double BackgroundLevel { get; set; }
+    public double BackgroundLevel { get; init; }
 
     /// <summary>
     /// Key edge value
     /// </summary>
-    public double KeyEdge { get; set; }
+    public double KeyEdge { get; init; }
 
     /// <summary>
     /// Spill suppression value
     /// </summary>
-    public double SpillSuppression { get; set; }
+    public double SpillSuppression { get; init; }
 
     /// <summary>
     /// Flare suppression value
     /// </summary>
-    public double FlareSuppression { get; set; }
+    public double FlareSuppression { get; init; }
 
     /// <summary>
     /// Brightness adjustment value
     /// </summary>
-    public double Brightness { get; set; }
+    public double Brightness { get; init; }
 
     /// <summary>
     /// Contrast adjustment value
     /// </summary>
-    public double Contrast { get; set; }
+    public double Contrast { get; init; }
 
     /// <summary>
     /// Saturation adjustment value
     /// </summary>
-    public double Saturation { get; set; }
+    public double Saturation { get; init; }
 
     /// <summary>
     /// Red color adjustment value
     /// </summary>
-    public double Red { get; set; }
+    public double Red { get; init; }
 
     /// <summary>
     /// Green color adjustment value
     /// </summary>
-    public double Green { get; set; }
+    public double Green { get; init; }
 
     /// <summary>
     /// Blue color adjustment value
     /// </summary>
-    public double Blue { get; set; }
+    public double Blue { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static MixEffectKeyAdvancedChromaPropertiesUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static MixEffectKeyAdvancedChromaPropertiesUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var mixEffectId = reader.ReadByte();
-        var keyerId = reader.ReadByte();
-
         // Read all property values as 16-bit integers and divide by 10 (to match TypeScript implementation scaling)
-        var foregroundLevel = reader.ReadUInt16BigEndian() / 10.0;
-        var backgroundLevel = reader.ReadUInt16BigEndian() / 10.0;
-        var keyEdge = reader.ReadUInt16BigEndian() / 10.0;
-
-        var spillSuppression = reader.ReadUInt16BigEndian() / 10.0;
-        var flareSuppression = reader.ReadUInt16BigEndian() / 10.0;
 
         // Color adjustment values can be negative, so use signed 16-bit (also scaled by 10)
-        var brightness = reader.ReadInt16BigEndian() / 10.0;
-        var contrast = reader.ReadInt16BigEndian() / 10.0;
-        var saturation = reader.ReadUInt16BigEndian() / 10.0;
-        var red = reader.ReadInt16BigEndian() / 10.0;
-        var green = reader.ReadInt16BigEndian() / 10.0;
-        var blue = reader.ReadInt16BigEndian() / 10.0;
 
         return new MixEffectKeyAdvancedChromaPropertiesUpdateCommand
         {
-            MixEffectId = mixEffectId,
-            KeyerId = keyerId,
-            ForegroundLevel = foregroundLevel,
-            BackgroundLevel = backgroundLevel,
-            KeyEdge = keyEdge,
-            SpillSuppression = spillSuppression,
-            FlareSuppression = flareSuppression,
-            Brightness = brightness,
-            Contrast = contrast,
-            Saturation = saturation,
-            Red = red,
-            Green = green,
-            Blue = blue
+            MixEffectId = rawCommand.ReadUInt8(0),
+            KeyerId = rawCommand.ReadUInt8(1),
+            ForegroundLevel = rawCommand.ReadUInt16BigEndian(2) / 10.0,
+            BackgroundLevel = rawCommand.ReadUInt16BigEndian(4) / 10.0,
+            KeyEdge = rawCommand.ReadUInt16BigEndian(6) / 10.0,
+            SpillSuppression = rawCommand.ReadUInt16BigEndian(8) / 10.0,
+            FlareSuppression = rawCommand.ReadUInt16BigEndian(10) / 10.0,
+            Brightness = rawCommand.ReadInt16BigEndian(12) / 10.0,
+            Contrast = rawCommand.ReadInt16BigEndian(14) / 10.0,
+            Saturation = rawCommand.ReadUInt16BigEndian(16) / 10.0,
+            Red = rawCommand.ReadInt16BigEndian(18) / 10.0,
+            Green = rawCommand.ReadInt16BigEndian(20) / 10.0,
+            Blue = rawCommand.ReadInt16BigEndian(22) / 10.0
         };
     }
 
@@ -141,11 +122,9 @@ public class MixEffectKeyAdvancedChromaPropertiesUpdateCommand : IDeserializedCo
         keyer.Index = KeyerId;
 
         // Get or create the advanced chroma settings
-        if (keyer.AdvancedChromaSettings == null)
-            keyer.AdvancedChromaSettings = new UpstreamKeyerAdvancedChromaSettings();
+        keyer.AdvancedChromaSettings ??= new UpstreamKeyerAdvancedChromaSettings();
 
-        if (keyer.AdvancedChromaSettings.Properties == null)
-            keyer.AdvancedChromaSettings.Properties = new UpstreamKeyerAdvancedChromaProperties();
+        keyer.AdvancedChromaSettings.Properties ??= new UpstreamKeyerAdvancedChromaProperties();
 
         // Update the advanced chroma properties
         var properties = keyer.AdvancedChromaSettings.Properties;

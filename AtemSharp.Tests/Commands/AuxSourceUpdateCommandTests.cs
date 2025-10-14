@@ -1,5 +1,4 @@
 using AtemSharp.Commands;
-using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands;
@@ -101,20 +100,6 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
         Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
     }
 
-    [Test]
-    public void Deserialize_ValidBytes_CreatesCorrectCommand()
-    {
-        // Arrange
-        var bytes = new byte[] { 0x03, 0x00, 0x05, 0xDC }; // auxId = 3, source = 1500
-        using var stream = new MemoryStream(bytes);
-
-        // Act
-        var command = AuxSourceUpdateCommand.Deserialize(stream, ProtocolVersion.V8_0);
-
-        // Assert
-        Assert.That(command.AuxBus, Is.EqualTo(3));
-        Assert.That(command.Source, Is.EqualTo(1500));
-    }
 
     /// <summary>
     /// Creates an AtemState with a valid auxiliary output at the specified index

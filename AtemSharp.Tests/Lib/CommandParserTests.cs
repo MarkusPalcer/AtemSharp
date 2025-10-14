@@ -52,10 +52,9 @@ public class CommandParserTests
         // Arrange
         var parser = new CommandParser();
         Atem.UnknownCommands.Clear();
-        using var stream = new MemoryStream();
 
         // Act
-        var result = parser.ParseCommand("UNKN", stream);
+        var result = parser.ParseCommand("UNKN", Span<byte>.Empty);
 
         // Assert
         Assert.That(result, Is.Null);
@@ -67,18 +66,17 @@ public class CommandParserTests
     {
         // Arrange
         var parser = new CommandParser();
-        
+
         // Create a stream with version data (protocol version in big-endian format)
         var versionBytes = BitConverter.GetBytes((uint)ProtocolVersion.V8_1_1);
         if (BitConverter.IsLittleEndian)
         {
             Array.Reverse(versionBytes);
         }
-        using var stream = new MemoryStream(versionBytes);
 
         // Act
         var initialVersion = parser.Version;
-        var result = parser.ParseCommand("_ver", stream);
+        var result = parser.ParseCommand("_ver", versionBytes.AsSpan());
 
         // Assert
         Assert.That(result, Is.Not.Null);
@@ -92,11 +90,11 @@ public class CommandParserTests
     {
         // Arrange
         var parser = new CommandParser();
-        
+
         // Test with different protocol versions to ensure correct command selection
         parser.Version = ProtocolVersion.V7_2;
         var commandTypeV7 = parser.GetCommandType("_ver");
-        
+
         parser.Version = ProtocolVersion.V8_1_1;
         var commandTypeV8 = parser.GetCommandType("_ver");
 

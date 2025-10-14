@@ -1,5 +1,5 @@
-using AtemSharp.Commands;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Settings;
@@ -13,51 +13,40 @@ public class MultiViewerSourceUpdateCommand : IDeserializedCommand
     /// <summary>
     /// MultiViewer ID for this update
     /// </summary>
-    public int MultiViewerId { get; set; }
+    public int MultiViewerId { get; init; }
 
     /// <summary>
     /// The window index within the MultiViewer
     /// </summary>
-    public int WindowIndex { get; set; }
+    public int WindowIndex { get; init; }
 
     /// <summary>
     /// The video source assigned to this window
     /// </summary>
-    public int Source { get; set; }
+    public int Source { get; init; }
 
     /// <summary>
     /// Whether this window supports VU meter display
     /// </summary>
-    public bool SupportsVuMeter { get; set; }
+    public bool SupportsVuMeter { get; init; }
 
     /// <summary>
     /// Whether this window supports safe area overlay
     /// </summary>
-    public bool SupportsSafeArea { get; set; }
+    public bool SupportsSafeArea { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static MultiViewerSourceUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static MultiViewerSourceUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var multiViewerId = reader.ReadByte();
-        var windowIndex = reader.ReadByte();
-        var source = reader.ReadUInt16BigEndian();
-        var supportsVuMeter = reader.ReadByte() != 0;
-        var supportsSafeArea = reader.ReadByte() != 0;
-
         return new MultiViewerSourceUpdateCommand
         {
-            MultiViewerId = multiViewerId,
-            WindowIndex = windowIndex,
-            Source = source,
-            SupportsVuMeter = supportsVuMeter,
-            SupportsSafeArea = supportsSafeArea
+            MultiViewerId = rawCommand.ReadUInt8(0),
+            WindowIndex = rawCommand.ReadUInt8(1),
+            Source = rawCommand.ReadUInt16BigEndian(2),
+            SupportsVuMeter = rawCommand.ReadBoolean(4),
+            SupportsSafeArea = rawCommand.ReadBoolean(5)
         };
     }
 
@@ -87,8 +76,8 @@ public class MultiViewerSourceUpdateCommand : IDeserializedCommand
             SupportsVuMeter = SupportsVuMeter,
             SupportsSafeArea = SupportsSafeArea,
             // Preserve existing optional properties if they exist
-            SafeTitle = currentWindow?.SafeTitle,
-            AudioMeter = currentWindow?.AudioMeter
+            SafeTitle = currentWindow.SafeTitle,
+            AudioMeter = currentWindow.AudioMeter
         };
 
         // Update the window in the MultiViewer

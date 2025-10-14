@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Settings;
@@ -14,7 +15,7 @@ public class MultiViewerVuOpacityCommand : SerializedCommand, IDeserializedComma
     /// <summary>
     /// MultiViewer ID for this command
     /// </summary>
-    public int MultiViewerId { get; set; }
+    public int MultiViewerId { get; init; }
 
     /// <summary>
     /// Create command initialized with current state values
@@ -97,20 +98,12 @@ public class MultiViewerVuOpacityCommand : SerializedCommand, IDeserializedComma
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static MultiViewerVuOpacityCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static MultiViewerVuOpacityCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var multiViewerId = reader.ReadByte();
-        var opacity = reader.ReadByte();
-
         return new MultiViewerVuOpacityCommand
         {
-            MultiViewerId = multiViewerId,
-            Opacity = opacity
+            MultiViewerId = rawCommand.ReadUInt8(0),
+            Opacity = rawCommand.ReadUInt8(1)
         };
     }
 

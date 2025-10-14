@@ -1,5 +1,5 @@
-using System.Text;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DeviceProfile;
@@ -13,29 +13,22 @@ public class MediaPoolConfigCommand : IDeserializedCommand
     /// <summary>
     /// Number of still images available in the media pool
     /// </summary>
-    public byte StillCount { get; set; }
+    public byte StillCount { get; init; }
 
     /// <summary>
     /// Number of video clips available in the media pool
     /// </summary>
-    public byte ClipCount { get; set; }
+    public byte ClipCount { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <returns>Deserialized command instance</returns>
-    public static MediaPoolConfigCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static MediaPoolConfigCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
-        var stillCount = reader.ReadByte();
-        var clipCount = reader.ReadByte();
-
         return new MediaPoolConfigCommand
         {
-            StillCount = stillCount,
-            ClipCount = clipCount
+            StillCount = rawCommand.ReadUInt8(0),
+            ClipCount = rawCommand.ReadUInt8(1)
         };
     }
 

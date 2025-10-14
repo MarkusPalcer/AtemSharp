@@ -19,10 +19,9 @@ public class CommandParserVersionSelectionTests
     {
         // Arrange
         var parser = new CommandParser { Version = ProtocolVersion.V7_2 };
-        using var stream = new MemoryStream();
 
         // Act
-        var command = parser.ParseCommand("TEST", stream);
+        var command = parser.ParseCommand("TEST", Span<byte>.Empty);
 
         // Assert
         Assert.That(command, Is.Not.Null);
@@ -35,10 +34,9 @@ public class CommandParserVersionSelectionTests
     {
         // Arrange
         var parser = new CommandParser { Version = ProtocolVersion.V8_0 };
-        using var stream = new MemoryStream();
 
         // Act
-        var command = parser.ParseCommand("TEST", stream);
+        var command = parser.ParseCommand("TEST", Span<byte>.Empty);
 
         // Assert
         Assert.That(command, Is.Not.Null);
@@ -51,10 +49,9 @@ public class CommandParserVersionSelectionTests
     {
         // Arrange
         var parser = new CommandParser { Version = ProtocolVersion.V8_1_1 };
-        using var stream = new MemoryStream();
 
         // Act
-        var command = parser.ParseCommand("TEST", stream);
+        var command = parser.ParseCommand("TEST", Span<byte>.Empty);
 
         // Assert
         Assert.That(command, Is.Not.Null);
@@ -83,21 +80,18 @@ public class CommandParserVersionSelectionTests
     {
         // Arrange
         var parser = new CommandParser();
-        using var stream = new MemoryStream();
 
         // Start with high version and work backwards to test dynamic selection
         parser.Version = ProtocolVersion.V8_1_1;
-        var commandV3 = parser.ParseCommand("TEST", stream);
+        var commandV3 = parser.ParseCommand("TEST", Span<byte>.Empty);
 
         // Change to lower version
         parser.Version = ProtocolVersion.V8_0;
-        stream.Position = 0; // Reset stream
-        var commandV2 = parser.ParseCommand("TEST", stream);
+        var commandV2 = parser.ParseCommand("TEST", Span<byte>.Empty);
 
         // Change to baseline version
         parser.Version = ProtocolVersion.V7_2;
-        stream.Position = 0; // Reset stream
-        var commandV1 = parser.ParseCommand("TEST", stream);
+        var commandV1 = parser.ParseCommand("TEST", Span<byte>.Empty);
 
         // Assert
         Assert.That(commandV3, Is.TypeOf<TestCommandV3>());

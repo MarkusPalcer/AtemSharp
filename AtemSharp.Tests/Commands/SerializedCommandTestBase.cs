@@ -1,4 +1,5 @@
 using AtemSharp.Commands;
+using JetBrains.Annotations;
 
 namespace AtemSharp.Tests.Commands;
 
@@ -30,10 +31,10 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
 
 		// Read the total packet length from the first 2 bytes (big-endian)
 		var totalPacketLength = (fullPacketBytes[0] << 8) | fullPacketBytes[1];
-		
+
 		// Command payload length = total packet length - 8 bytes (4-byte packet header + 4-byte command name)
 		var commandPayloadLength = totalPacketLength - 8;
-		
+
 		// Extract exactly that many bytes after the 8-byte header
 		return ExtractCommandPayload(fullPacketBytes, commandPayloadLength);
 	}
@@ -54,7 +55,7 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
 	private bool AreApproximatelyEqual(byte[] actual, byte[] expected)
 	{
 		if (actual.Length != expected.Length) return false;
-		
+
 		for (int i = 0; i < actual.Length; i++)
 		{
 			int tolerance = IsFloatingPointByte(i, actual.Length) ? 2 : 0;
@@ -69,6 +70,7 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
 		// Inherits all properties from base, no additional properties needed
 	}
 
+    [UsedImplicitly(ImplicitUseTargetFlags.WithInheritors | ImplicitUseTargetFlags.WithMembers)]
 	public new abstract class CommandDataBase : CommandTestBase<TTestData>.CommandDataBase
 	{
 		public int Mask { get; set; }
@@ -82,9 +84,9 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
 		{
 			throw new InvalidOperationException($"Could not determine raw name for command type {typeof(TCommand).Name}");
 		}
-		
+
 		var baseTestCases = CommandTestBase<TTestData>.LoadTestData(rawName);
-		
+
 		// Convert to the derived TestCaseData type
 		return baseTestCases.Select(tc => new TestCaseData
 		{
@@ -127,13 +129,13 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
 		{
 			return;
 		}
-		
+
 		// Then try approximate match for floating-point fields
 		if (AreApproximatelyEqual(actualPayload, expectedPayload))
 		{
 			return;
 		}
-		
+
 		Assert.Fail($"Command serialization should match TypeScript reference for mask {testCase.Command.Mask:X2}. " +
 		            $"Expected: {BitConverter.ToString(expectedPayload)}, " +
 		            $"Actual: {BitConverter.ToString(actualPayload)}");

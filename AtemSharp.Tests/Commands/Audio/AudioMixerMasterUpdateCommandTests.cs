@@ -1,5 +1,4 @@
 using AtemSharp.Commands.Audio;
-using AtemSharp.Enums;
 using AtemSharp.State;
 using AtemSharp.Tests.TestUtilities;
 
@@ -119,50 +118,6 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
 		Assert.That(state.Audio.Master.Gain, Is.EqualTo(-8.0));
 		Assert.That(state.Audio.Master.Balance, Is.EqualTo(15.0));
 		Assert.That(state.Audio.Master.FollowFadeToBlack, Is.True);
-	}
-
-	[Test]
-	public void Deserialize_WithValidData_ShouldCreateCommandWithCorrectProperties()
-	{
-		// Arrange - Create test data matching the AMMO format
-		var testData = new byte[]
-		{
-			0x32, 0xEC, // Gain as UInt16 (corresponds to -8.006111663332227 dB)
-			0x10, 0xD6, // Balance as Int16 (corresponds to 21.548807421489055)
-			0x01        // FollowFadeToBlack as byte (true)
-		};
-
-		using var stream = new MemoryStream(testData);
-
-		// Act
-		var command = AudioMixerMasterUpdateCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-		// Assert - Use exact values from the test data JSON
-		Assert.That(command.Gain, Is.EqualTo(-8.006111663332227).Within(0.01));
-		Assert.That(command.Balance, Is.EqualTo(21.548807421489055).Within(0.01));
-		Assert.That(command.FollowFadeToBlack, Is.True);
-	}
-
-	[Test]
-	public void Deserialize_WithFalseFollowFadeToBlack_ShouldSetPropertyCorrectly()
-	{
-		// Arrange
-		var testData = new byte[]
-		{
-			0x2F, 0xE4, // Gain as UInt16 (corresponds to -8.539189295546434 dB)
-			0xE4, 0xCA, // Balance as Int16 (corresponds to -34.829096815003595)
-			0x00        // FollowFadeToBlack as byte (false)
-		};
-
-		using var stream = new MemoryStream(testData);
-
-		// Act
-		var command = AudioMixerMasterUpdateCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-		// Assert
-		Assert.That(command.Gain, Is.EqualTo(-8.539189295546434).Within(0.01));
-		Assert.That(command.Balance, Is.EqualTo(-34.829096815003595).Within(0.01));
-		Assert.That(command.FollowFadeToBlack, Is.False);
 	}
 
 	[Test]

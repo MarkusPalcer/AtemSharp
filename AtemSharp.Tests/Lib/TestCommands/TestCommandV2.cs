@@ -12,7 +12,7 @@ public class TestCommandV2 : IDeserializedCommand
 {
 	public string Version { get; set; } = "V2";
 
-	public static TestCommandV2 Deserialize(Stream stream, ProtocolVersion protocolVersion)
+	public static TestCommandV2 Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
 	{
 		return new TestCommandV2();
 	}

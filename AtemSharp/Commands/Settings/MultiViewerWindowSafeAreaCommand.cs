@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Settings;
@@ -12,7 +13,7 @@ public class MultiViewerWindowSafeAreaCommand : SerializedCommand, IDeserialized
     /// <summary>
     /// MultiViewer ID for this command
     /// </summary>
-    public int MultiViewerId { get; set; }
+    public int MultiViewerId { get; init; }
 
     /// <summary>
     /// The window index within the MultiViewer to update
@@ -94,22 +95,13 @@ public class MultiViewerWindowSafeAreaCommand : SerializedCommand, IDeserialized
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static MultiViewerWindowSafeAreaCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static MultiViewerWindowSafeAreaCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var multiViewerId = reader.ReadByte();
-        var windowIndex = reader.ReadByte();
-        var safeAreaEnabled = reader.ReadBoolean();
-
         return new MultiViewerWindowSafeAreaCommand
         {
-            MultiViewerId = multiViewerId,
-            WindowIndex = windowIndex,
-            SafeAreaEnabled = safeAreaEnabled
+            MultiViewerId = rawCommand.ReadUInt8(0),
+            WindowIndex = rawCommand.ReadUInt8(1),
+            SafeAreaEnabled = rawCommand.ReadBoolean(2)
         };
     }
 

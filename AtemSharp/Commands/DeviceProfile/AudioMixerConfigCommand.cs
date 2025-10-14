@@ -1,5 +1,5 @@
-using System.Text;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DeviceProfile;
@@ -13,36 +13,28 @@ public class AudioMixerConfigCommand : IDeserializedCommand
     /// <summary>
     /// Number of audio inputs available
     /// </summary>
-    public byte Inputs { get; set; }
+    public byte Inputs { get; init; }
 
     /// <summary>
     /// Number of monitor channels available
     /// </summary>
-    public byte Monitors { get; set; }
+    public byte Monitors { get; init; }
 
     /// <summary>
     /// Number of headphone channels available
     /// </summary>
-    public byte Headphones { get; set; }
+    public byte Headphones { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <returns>Deserialized command instance</returns>
-    public static AudioMixerConfigCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static AudioMixerConfigCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
-        var inputs = reader.ReadByte();
-        var monitors = reader.ReadByte();
-        var headphones = reader.ReadByte();
-
         return new AudioMixerConfigCommand
         {
-            Inputs = inputs,
-            Monitors = monitors,
-            Headphones = headphones
+            Inputs = rawCommand.ReadUInt8(0),
+            Monitors = rawCommand.ReadUInt8(1),
+            Headphones = rawCommand.ReadUInt8(2)
         };
     }
 

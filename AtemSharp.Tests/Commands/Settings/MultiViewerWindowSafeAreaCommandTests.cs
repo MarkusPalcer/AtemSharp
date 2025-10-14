@@ -1,5 +1,4 @@
 using AtemSharp.Commands.Settings;
-using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Settings;
@@ -102,44 +101,6 @@ public class MultiViewerWindowSafeAreaCommandTests : SerializedCommandTestBase<M
         Assert.That(command.SafeAreaEnabled, Is.EqualTo(safeAreaEnabled));
     }
 
-    #region Deserialization Tests
-
-    [Test]
-    public void Deserialize_WithValidData_ReturnsCorrectCommand()
-    {
-        // Arrange
-        var bytes = new byte[] { 235, 8, 1, 0 }; // From test data: multiViewerId=235, windowIndex=8, safeAreaEnabled=true
-        using var stream = new MemoryStream(bytes);
-
-        // Act
-        var result = MultiViewerWindowSafeAreaCommand.Deserialize(stream, ProtocolVersion.V8_0);
-
-        // Assert
-        Assert.That(result.MultiViewerId, Is.EqualTo(235));
-        Assert.That(result.WindowIndex, Is.EqualTo(8));
-        Assert.That(result.SafeAreaEnabled, Is.True);
-    }
-
-    [Test]
-    public void Deserialize_WithFalseValue_ReturnsCorrectCommand()
-    {
-        // Arrange
-        var bytes = new byte[] { 196, 13, 0, 0 }; // From test data: multiViewerId=196, windowIndex=13, safeAreaEnabled=false
-        using var stream = new MemoryStream(bytes);
-
-        // Act
-        var result = MultiViewerWindowSafeAreaCommand.Deserialize(stream, ProtocolVersion.V8_0);
-
-        // Assert
-        Assert.That(result.MultiViewerId, Is.EqualTo(196));
-        Assert.That(result.WindowIndex, Is.EqualTo(13));
-        Assert.That(result.SafeAreaEnabled, Is.False);
-    }
-
-    #endregion
-
-    #region ApplyToState Tests
-
     [Test]
     public void ApplyToState_WithValidMultiViewer_UpdatesWindow()
     {
@@ -233,6 +194,4 @@ public class MultiViewerWindowSafeAreaCommandTests : SerializedCommandTestBase<M
         // Act & Assert
         Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
     }
-
-    #endregion
 }

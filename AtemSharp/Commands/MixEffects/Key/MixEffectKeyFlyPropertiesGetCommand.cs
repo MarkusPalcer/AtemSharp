@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Key;
@@ -12,51 +13,44 @@ public class MixEffectKeyFlyPropertiesGetCommand : IDeserializedCommand
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>
-    public int MixEffectIndex { get; set; }
+    public int MixEffectIndex { get; init; }
 
     /// <summary>
     /// Upstream keyer index (0-based)
     /// </summary>
-    public int KeyerIndex { get; set; }
+    public int KeyerIndex { get; init; }
 
     /// <summary>
     /// Whether key frame A is set
     /// </summary>
-    public bool IsASet { get; set; }
+    public bool IsASet { get; init; }
 
     /// <summary>
     /// Whether key frame B is set
     /// </summary>
-    public bool IsBSet { get; set; }
+    public bool IsBSet { get; init; }
 
     /// <summary>
     /// Running to key frame flags
     /// </summary>
-    public IsAtKeyFrame RunningToKeyFrame { get; set; }
+    public IsAtKeyFrame IsAtKeyFrame { get; init; }
 
     /// <summary>
     /// Running to infinite index
     /// </summary>
-    public int RunningToInfinite { get; set; }
+    public int RunToInfiniteIndex { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static MixEffectKeyFlyPropertiesGetCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static MixEffectKeyFlyPropertiesGetCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var mixEffectIndex = reader.ReadByte();           // byte 0
-        var keyerIndex = reader.ReadByte();               // byte 1
-        var isASet = reader.ReadBoolean();              // byte 2
-        var isBSet = reader.ReadBoolean();              // byte 3
-        var runningToKeyFrame = (IsAtKeyFrame)reader.ReadByte(); // byte 4
-        var runningToInfinite = reader.ReadByte();       // byte 5
-        reader.ReadByte();                                // byte 6 - padding
-        reader.ReadByte();                                // byte 7 - padding
+        var mixEffectIndex = rawCommand.ReadUInt8(0);
+        var keyerIndex = rawCommand.ReadUInt8(1);
+        var isASet = rawCommand.ReadBoolean(2);
+        var isBSet = rawCommand.ReadBoolean(3);
+        var isAtKeyFrame = (IsAtKeyFrame)rawCommand.ReadUInt8(4);
+        var runToInfiniteIndex = rawCommand.ReadUInt8(5);
 
         return new MixEffectKeyFlyPropertiesGetCommand
         {
@@ -64,8 +58,8 @@ public class MixEffectKeyFlyPropertiesGetCommand : IDeserializedCommand
             KeyerIndex = keyerIndex,
             IsASet = isASet,
             IsBSet = isBSet,
-            RunningToKeyFrame = runningToKeyFrame,
-            RunningToInfinite = runningToInfinite
+            IsAtKeyFrame = isAtKeyFrame,
+            RunToInfiniteIndex = runToInfiniteIndex
         };
     }
 
@@ -93,7 +87,7 @@ public class MixEffectKeyFlyPropertiesGetCommand : IDeserializedCommand
 
         keyer.FlyProperties.IsASet = IsASet;
         keyer.FlyProperties.IsBSet = IsBSet;
-        keyer.FlyProperties.IsAtKeyFrame = RunningToKeyFrame;
-        keyer.FlyProperties.RunToInfiniteIndex = RunningToInfinite;
+        keyer.FlyProperties.IsAtKeyFrame = IsAtKeyFrame;
+        keyer.FlyProperties.RunToInfiniteIndex = RunToInfiniteIndex;
     }
 }

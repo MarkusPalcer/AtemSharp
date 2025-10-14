@@ -1,4 +1,3 @@
-using System.Text;
 using AtemSharp.Enums;
 using AtemSharp.Enums.Audio;
 using AtemSharp.Enums.Ports;
@@ -16,54 +15,43 @@ public class AudioMixerInputUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Audio input index
     /// </summary>
-    public ushort Index { get; set; }
+    public ushort Index { get; init; }
 
     /// <summary>
     /// Audio source type (readonly)
     /// </summary>
-    public AudioSourceType SourceType { get; set; }
+    public AudioSourceType SourceType { get; init; }
 
     /// <summary>
     /// External port type
     /// </summary>
-    public ExternalPortType PortType { get; set; }
+    public ExternalPortType PortType { get; init; }
 
     /// <summary>
     /// Audio mix option
     /// </summary>
-    public AudioMixOption MixOption { get; set; }
+    public AudioMixOption MixOption { get; init; }
 
     /// <summary>
     /// Gain in decibel, -Infinity to +6dB
     /// </summary>
-    public double Gain { get; set; }
+    public double Gain { get; init; }
 
     /// <summary>
     /// Balance, -50 to +50
     /// </summary>
-    public double Balance { get; set; }
+    public double Balance { get; init; }
 
-    public static AudioMixerInputUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static AudioMixerInputUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
-        var index = reader.ReadUInt16BigEndian();
-        var sourceType = (AudioSourceType)reader.ReadByte();
-        reader.ReadBytes(3); // Skip 3 bytes padding
-        var portType = (ExternalPortType)reader.ReadUInt16BigEndian();
-        var mixOption = (AudioMixOption)reader.ReadByte();
-        reader.ReadByte(); // Skip 1 byte padding
-        var gain = reader.ReadUInt16BigEndian().UInt16ToDecibel();
-        var balance = reader.ReadInt16BigEndian().Int16ToBalance();
-
         return new AudioMixerInputUpdateCommand
         {
-            Index = index,
-            SourceType = sourceType,
-            PortType = portType,
-            MixOption = mixOption,
-            Gain = gain,
-            Balance = balance
+            Index = rawCommand.ReadUInt16BigEndian(0),
+            SourceType = (AudioSourceType)rawCommand.ReadUInt8(2),
+            PortType = (ExternalPortType)rawCommand.ReadUInt16BigEndian(6),
+            MixOption = (AudioMixOption)rawCommand.ReadUInt8(8),
+            Gain = rawCommand.ReadUInt16BigEndian(10).UInt16ToDecibel(),
+            Balance = rawCommand.ReadInt16BigEndian(12).Int16ToBalance()
         };
     }
 

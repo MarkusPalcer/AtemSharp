@@ -1,6 +1,4 @@
 using AtemSharp.Commands.DataTransfer;
-using AtemSharp.Enums;
-using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DataTransfer;
 
@@ -28,64 +26,5 @@ public class DataTransferCompleteCommandTests : DeserializedCommandTestBase<Data
             Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
                        string.Join("\n", failures));
         }
-    }
-
-    [Test]
-    public void Deserialize_ShouldCorrectlyParseTransferId()
-    {
-        // Arrange
-        using var stream = new MemoryStream();
-        using var writer = new BinaryWriter(stream);
-
-        const ushort expectedTransferId = 0x1234; // 4660 in decimal
-        writer.Write((byte)0x12); // High byte first (big-endian)
-        writer.Write((byte)0x34); // Low byte
-
-        stream.Position = 0;
-
-        // Act
-        var command = DataTransferCompleteCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-        // Assert
-        Assert.That(command.TransferId, Is.EqualTo(expectedTransferId));
-    }
-
-    [Test]
-    public void Deserialize_ShouldHandleZeroTransferId()
-    {
-        // Arrange
-        using var stream = new MemoryStream();
-        using var writer = new BinaryWriter(stream);
-
-        writer.Write((byte)0x00);
-        writer.Write((byte)0x00);
-
-        stream.Position = 0;
-
-        // Act
-        var command = DataTransferCompleteCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-        // Assert
-        Assert.That(command.TransferId, Is.EqualTo(0));
-    }
-
-    [Test]
-    public void Deserialize_ShouldHandleMaxTransferId()
-    {
-        // Arrange
-        using var stream = new MemoryStream();
-        using var writer = new BinaryWriter(stream);
-
-        const ushort maxTransferId = 0xFFFF; // 65535 in decimal
-        writer.Write((byte)0xFF);
-        writer.Write((byte)0xFF);
-
-        stream.Position = 0;
-
-        // Act
-        var command = DataTransferCompleteCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-        // Assert
-        Assert.That(command.TransferId, Is.EqualTo(maxTransferId));
     }
 }

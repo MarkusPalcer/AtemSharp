@@ -1,5 +1,5 @@
-using System.Text;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Audio;
@@ -13,22 +13,17 @@ public class AudioMixerPropertiesUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Whether audio follows video crossfade transition
     /// </summary>
-    public bool AudioFollowVideo { get; set; }
+    public bool AudioFollowVideo { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
     /// <returns>Deserialized command instance</returns>
-    public static AudioMixerPropertiesUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static AudioMixerPropertiesUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
-        var audioFollowVideo = reader.ReadBoolean();
-
         return new AudioMixerPropertiesUpdateCommand
         {
-            AudioFollowVideo = audioFollowVideo
+            AudioFollowVideo = rawCommand.ReadBoolean(0)
         };
     }
 
@@ -40,12 +35,9 @@ public class AudioMixerPropertiesUpdateCommand : IDeserializedCommand
     /// <exception cref="InvalidIdError">Thrown if classic audio is not available</exception>
     public void ApplyToState(AtemState state)
     {
-        if (state.Audio is null)
-        {
-            throw new InvalidIdError("Classic Audio", "properties");
-        }
+        state.Audio ??= new AudioState();
 
         // Update property
-        state.Audio.AudioFollowVideoCrossfadeTransitionEnabled = AudioFollowVideo;
+        state.Audio.AudioFollowsVideo = AudioFollowVideo;
     }
 }

@@ -1,5 +1,4 @@
 using AtemSharp.Commands.DeviceProfile;
-using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
@@ -57,54 +56,6 @@ public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase
         Assert.That(state.Fairlight, Is.Not.Null);
         Assert.That(state.Fairlight.Inputs, Is.Not.Null);
         Assert.That(state.Fairlight.Inputs, Is.Empty);
-    }
-
-    [Test]
-    public void Deserialize_WithTypicalValues_ShouldDeserializeCorrectly()
-    {
-        // Arrange
-        var data = new byte[] { 0x18, 0x04 }; // Inputs: 24, Monitors: 4
-        using var stream = new MemoryStream(data);
-
-        // Act
-        var command = FairlightAudioMixerConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-        // Assert
-        Assert.That(command, Is.Not.Null);
-        Assert.That(command.Inputs, Is.EqualTo(24));
-        Assert.That(command.Monitors, Is.EqualTo(4));
-    }
-
-    [Test]
-    public void Deserialize_WithMinimalValues_ShouldDeserializeCorrectly()
-    {
-        // Arrange
-        var data = new byte[] { 0x00, 0x00 }; // Inputs: 0, Monitors: 0
-        using var stream = new MemoryStream(data);
-
-        // Act
-        var command = FairlightAudioMixerConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-        // Assert
-        Assert.That(command, Is.Not.Null);
-        Assert.That(command.Inputs, Is.EqualTo(0));
-        Assert.That(command.Monitors, Is.EqualTo(0));
-    }
-
-    [Test]
-    public void Deserialize_WithMaxValues_ShouldDeserializeCorrectly()
-    {
-        // Arrange
-        var data = new byte[] { 0xFF, 0xFF }; // Inputs: 255, Monitors: 255
-        using var stream = new MemoryStream(data);
-
-        // Act
-        var command = FairlightAudioMixerConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-        // Assert
-        Assert.That(command, Is.Not.Null);
-        Assert.That(command.Inputs, Is.EqualTo(255));
-        Assert.That(command.Monitors, Is.EqualTo(255));
     }
 
     [Test]

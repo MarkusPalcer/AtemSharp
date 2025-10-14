@@ -1,5 +1,6 @@
 using AtemSharp.Enums;
 using System.Text;
+using AtemSharp.Lib;
 
 namespace AtemSharp.Commands.DataTransfer;
 

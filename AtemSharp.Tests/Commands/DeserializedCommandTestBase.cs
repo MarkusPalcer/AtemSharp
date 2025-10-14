@@ -1,6 +1,7 @@
 using System.Reflection;
 using AtemSharp.Commands;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -97,16 +98,15 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 		var deserializeMethod = typeof(TCommand).GetMethod("Deserialize",
 		                                                   BindingFlags.Public | BindingFlags.Static,
 		                                                   null,
-		                                                   [typeof(Stream), typeof(ProtocolVersion)],
+		                                                   [typeof(ReadOnlySpan<Byte>), typeof(ProtocolVersion)],
 		                                                   null);
 
 		if (deserializeMethod == null)
 		{
-			throw new InvalidOperationException($"Command {typeof(TCommand).Name} must have a static Deserialize(Stream, ProtocolVersion) method");
+			throw new InvalidOperationException($"Command {typeof(TCommand).Name} must have a static Deserialize(ReadOnlySpan<Byte>, ProtocolVersion) method");
 		}
 
-		using var stream = new MemoryStream(payload);
-		var result = deserializeMethod.Invoke(null, [stream, protocolVersion]);
+        var result = deserializeMethod.CreateDelegate<CommandParser.DeserializeCommand>()(payload.AsSpan(), protocolVersion);
 
 		if (result is not TCommand command)
 		{

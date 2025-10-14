@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Key;
@@ -12,38 +13,28 @@ public class MixEffectKeyOnAirUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>
-    public int MixEffectId { get; set; }
+    public int MixEffectId { get; init; }
 
     /// <summary>
     /// Upstream keyer index (0-based)
     /// </summary>
-    public int KeyerId { get; set; }
+    public int KeyerId { get; init; }
 
     /// <summary>
     /// Whether the upstream keyer is on air
     /// </summary>
-    public bool OnAir { get; set; }
+    public bool OnAir { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static MixEffectKeyOnAirUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static MixEffectKeyOnAirUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var mixEffectId = reader.ReadByte();
-        var keyerId = reader.ReadByte();
-        var onAir = reader.ReadBoolean();;
-        reader.ReadByte(); // Skip padding byte
-
         return new MixEffectKeyOnAirUpdateCommand
         {
-            MixEffectId = mixEffectId,
-            KeyerId = keyerId,
-            OnAir = onAir
+            MixEffectId = rawCommand.ReadUInt8(0),
+            KeyerId = rawCommand.ReadUInt8(1),
+            OnAir = rawCommand.ReadBoolean(2)
         };
     }
 

@@ -13,6 +13,7 @@ public class VideoState
     /// <summary>
     /// Mix effects available on this device
     /// </summary>
+    // TODO: Convert to Array and instantiate with size from Topology command
     public Dictionary<int, MixEffect> MixEffects { get; set; } = [];
 
     /// <summary>

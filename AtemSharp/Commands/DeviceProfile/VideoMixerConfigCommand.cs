@@ -1,5 +1,5 @@
-using System.Text;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DeviceProfile;
@@ -13,37 +13,30 @@ public class VideoMixerConfigCommand : IDeserializedCommand
     /// <summary>
     /// Array of supported video modes
     /// </summary>
-    public SupportedVideoMode[] SupportedVideoModes { get; set; } = [];
+    public SupportedVideoMode[] SupportedVideoModes { get; init; } = [];
 
-    public static VideoMixerConfigCommand Deserialize(Stream stream, ProtocolVersion version)
+    public static VideoMixerConfigCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion version)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
         var hasRequiresReconfig = version >= ProtocolVersion.V8_0;
         var size = hasRequiresReconfig ? 13 : 12;
 
-        var count = reader.ReadUInt16BigEndian();
-        reader.ReadBytes(2); // Skip padding
+        var count = rawCommand.ReadUInt16BigEndian(0);
 
         var modes = new SupportedVideoMode[count];
 
         for (int i = 0; i < count; i++)
         {
-            var baseOffset = i * size;
+            var baseOffset = 4 + (i * size); // Start after the count (4 bytes) plus mode data
 
-            // Seek to the correct position for this mode
-            stream.Seek(4 + baseOffset, SeekOrigin.Begin);
+            var mode = rawCommand.ReadUInt8(baseOffset);
 
-            var mode = reader.ReadByte();
-            reader.ReadBytes(3); // Skip padding
-
-            var multiviewerModeMask = reader.ReadUInt32BigEndian();
-            var downConvertModeMask = reader.ReadUInt32BigEndian();
+            var multiviewerModeMask = rawCommand.ReadUInt32BigEndian(baseOffset + 4);
+            var downConvertModeMask = rawCommand.ReadUInt32BigEndian(baseOffset + 8);
 
             var requiresReconfig = false;
             if (hasRequiresReconfig)
             {
-                requiresReconfig = reader.ReadBoolean();
+                requiresReconfig = rawCommand.ReadBoolean(baseOffset + 12);
             }
 
             modes[i] = new SupportedVideoMode

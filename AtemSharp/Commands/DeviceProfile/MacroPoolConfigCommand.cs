@@ -1,5 +1,5 @@
-using System.Text;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DeviceProfile;
@@ -13,22 +13,16 @@ public class MacroPoolConfigCommand : IDeserializedCommand
     /// <summary>
     /// Number of macros available in the macro pool
     /// </summary>
-    public byte MacroCount { get; set; }
+    public byte MacroCount { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <returns>Deserialized command instance</returns>
-    public static MacroPoolConfigCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static MacroPoolConfigCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
-        var macroCount = reader.ReadByte();
-
         return new MacroPoolConfigCommand
         {
-            MacroCount = macroCount
+            MacroCount = rawCommand.ReadUInt8(0)
         };
     }
 

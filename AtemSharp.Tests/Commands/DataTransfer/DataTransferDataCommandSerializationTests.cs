@@ -1,5 +1,4 @@
 using AtemSharp.Commands.DataTransfer;
-using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DataTransfer;
 
@@ -18,9 +17,11 @@ public class DataTransferDataCommandSerializationTests : SerializedCommandTestBa
         var bodyBytes = Convert.FromBase64String(testCase.Command.Body);
 
         // Create command with the test data values
-        var command = new DataTransferDataCommand(
-            testCase.Command.TransferId,
-            bodyBytes);
+        var command = new DataTransferDataCommand
+        {
+            TransferId = testCase.Command.TransferId,
+            Body = bodyBytes
+        };
 
         return command;
     }

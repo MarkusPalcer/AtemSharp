@@ -4,7 +4,7 @@ namespace AtemSharp.Enums.Ports;
 /// External port types
 /// </summary>
 [Flags]
-public enum ExternalPortType
+public enum ExternalPortType : ushort
 {
     Unknown = 0,
     SDI = 1,

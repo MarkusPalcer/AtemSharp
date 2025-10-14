@@ -1,5 +1,4 @@
 using AtemSharp.Commands.Audio;
-using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Audio;
@@ -37,7 +36,7 @@ public class AudioMixerPropertiesUpdateCommandTests : DeserializedCommandTestBas
 		{
 			Audio = new AudioState
 			{
-				AudioFollowVideoCrossfadeTransitionEnabled = false
+				AudioFollowsVideo = false
 			}
 		};
 
@@ -50,11 +49,11 @@ public class AudioMixerPropertiesUpdateCommandTests : DeserializedCommandTestBas
 		command.ApplyToState(state);
 
 		// Assert
-		Assert.That(state.Audio.AudioFollowVideoCrossfadeTransitionEnabled, Is.True);
+		Assert.That(state.Audio.AudioFollowsVideo, Is.True);
 	}
 
 	[Test]
-	public void ApplyToState_WithNullAudioState_ShouldThrowInvalidIdError()
+	public void ApplyToState_WithNullAudioState_ShouldCreateAudioState()
 	{
 		// Arrange
 		var state = new AtemState(); // No audio state
@@ -64,36 +63,9 @@ public class AudioMixerPropertiesUpdateCommandTests : DeserializedCommandTestBas
 		};
 
 		// Act & Assert
-		var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-		Assert.That(ex.Message, Does.Contain("Classic Audio"));
-	}
-
-	[Test]
-	public void Deserialize_WithAudioFollowVideoTrue_ShouldDeserializeCorrectly()
-	{
-		// Arrange
-		var data = new byte[] { 0x01 }; // AudioFollowVideo: true
-		using var stream = new MemoryStream(data);
-
-		// Act
-		var command = AudioMixerPropertiesUpdateCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-		// Assert
-		Assert.That(command.AudioFollowVideo, Is.True);
-	}
-
-	[Test]
-	public void Deserialize_WithAudioFollowVideoFalse_ShouldDeserializeCorrectly()
-	{
-		// Arrange
-		var data = new byte[] { 0x00 }; // AudioFollowVideo: false
-		using var stream = new MemoryStream(data);
-
-		// Act
-		var command = AudioMixerPropertiesUpdateCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-		// Assert
-		Assert.That(command.AudioFollowVideo, Is.False);
+        command.ApplyToState(state);
+        Assert.That(state.Audio, Is.Not.Null);
+        Assert.That(state.Audio.AudioFollowsVideo, Is.True);
 	}
 
 	[Test]
@@ -104,13 +76,13 @@ public class AudioMixerPropertiesUpdateCommandTests : DeserializedCommandTestBas
 		var command1 = new AudioMixerPropertiesUpdateCommand { AudioFollowVideo = true };
 
 		command1.ApplyToState(state1);
-		Assert.That(state1.Audio.AudioFollowVideoCrossfadeTransitionEnabled, Is.True);
+		Assert.That(state1.Audio.AudioFollowsVideo, Is.True);
 
 		// Test false value
 		var state2 = new AtemState { Audio = new AudioState() };
 		var command2 = new AudioMixerPropertiesUpdateCommand { AudioFollowVideo = false };
 
 		command2.ApplyToState(state2);
-		Assert.That(state2.Audio.AudioFollowVideoCrossfadeTransitionEnabled, Is.False);
+		Assert.That(state2.Audio.AudioFollowsVideo, Is.False);
 	}
 }

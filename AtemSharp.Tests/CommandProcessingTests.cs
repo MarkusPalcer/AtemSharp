@@ -22,10 +22,10 @@ public class CommandProcessingTests
     {
         // Clear static state
         Atem.UnknownCommands.Clear();
-        
+
         // Create mock logger
         _mockLogger = Substitute.For<ILogger<Atem>>();
-        
+
         // Create Atem instance with mocked logger
         _atem = new Atem(_mockLogger);
     }
@@ -43,7 +43,7 @@ public class CommandProcessingTests
     {
         // Load all test data using the helper
         var allTestData = TestDataHelper.LoadAllTestData();
-        
+
         // Group test data by command name
         var commandDataByName = allTestData.GroupBy(t => t.Name).ToDictionary(g => g.Key, g => g.ToArray());
 
@@ -58,12 +58,12 @@ public class CommandProcessingTests
             {
                 // Take a sample of test cases to avoid excessive test execution time
                 var sampleData = commandData.Take(Math.Min(3, commandData.Length));
-                
+
                 foreach (var testCase in sampleData)
                 {
                     var testCaseData = new TestCaseData(testCase.Name, testCase.Bytes, commandType.Name)
                         .SetName($"CommandProcessing_{testCase.Name}_{testCase.Bytes[..Math.Min(16, testCase.Bytes.Length)].Replace("-", "")}");
-                    
+
                     yield return testCaseData;
                 }
             }
@@ -76,7 +76,7 @@ public class CommandProcessingTests
         if (commandAssembly == null) return [];
 
         return commandAssembly.GetTypes()
-            .Where(t => typeof(IDeserializedCommand).IsAssignableFrom(t) && 
+            .Where(t => typeof(IDeserializedCommand).IsAssignableFrom(t) &&
                         t is { IsInterface: false, IsAbstract: false } &&
                         t.GetCustomAttribute<CommandAttribute>() != null)
             .ToArray();
@@ -87,11 +87,10 @@ public class CommandProcessingTests
     {
         // Arrange
         var parser = new CommandParser();
-        var versionData = new byte[] { 0x00, 0x02, 0x00, 0x1C }; // V8_0
-        using var stream = new MemoryStream(versionData);
+        Span<byte> versionData = [0x00, 0x02, 0x00, 0x1C]; // V8_0
 
         // Act
-        var command = parser.ParseCommand("_ver", stream);
+        var command = parser.ParseCommand("_ver", versionData);
 
         // Assert
         Assert.That(command, Is.Not.Null);
@@ -104,12 +103,11 @@ public class CommandProcessingTests
     {
         // Arrange
         var parser = new CommandParser();
-        var unknownData = new byte[] { 0x01, 0x02 };
-        using var stream = new MemoryStream(unknownData);
+        Span<byte> unknownData = [0x01, 0x02];
         var initialUnknownCount = Atem.UnknownCommands.Count;
 
         // Act
-        var command = parser.ParseCommand("XXXX", stream);
+        var command = parser.ParseCommand("XXXX", unknownData);
 
         // Assert
         Assert.That(command, Is.Null);
@@ -122,64 +120,14 @@ public class CommandProcessingTests
     {
         // Arrange
         var parser = new CommandParser();
-        using var stream = new MemoryStream([]); // InitComplete has no data
-        
+        Span<byte> data = Span<byte>.Empty;
+
         // Act
-        var command = parser.ParseCommand("InCm", stream);
+        var command = parser.ParseCommand("InCm", data);
 
         // Assert
         Assert.That(command, Is.Not.Null);
         Assert.That(command, Is.TypeOf<InitCompleteCommand>());
-    }
-
-    [Test]
-    public void PacketProcessing_MultipleCommands_ShouldProcessAllCommands()
-    {
-        // Arrange
-        var payload = CreateMultiCommandPayload();
-        var parser = new CommandParser();
-        var state = new AtemSharp.State.AtemState();
-        
-        // Act - Simulate OnPacketReceived logic
-        var offset = 0;
-        var processedCommands = new List<IDeserializedCommand>();
-
-        while (offset + 8 <= payload.Length)
-        {
-            // Extract command header
-            var commandLength = (payload[offset] << 8) | payload[offset + 1];
-            var rawName = Encoding.ASCII.GetString(payload, offset + 4, 4);
-
-            if (commandLength < 8 || offset + commandLength > payload.Length)
-                break;
-
-            // Extract command data
-            var commandDataStart = offset + 8;
-            var commandDataLength = commandLength - 8;
-            using var commandDataStream = new MemoryStream(payload, commandDataStart, commandDataLength);
-
-            try
-            {
-                var command = parser.ParseCommand(rawName, commandDataStream);
-                if (command != null)
-                {
-                    command.ApplyToState(state);
-                    processedCommands.Add(command);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log but continue processing
-                Console.WriteLine($"Failed to process command {rawName}: {ex.Message}");
-            }
-
-            offset += commandLength;
-        }
-
-        // Assert
-        Assert.That(processedCommands.Count, Is.GreaterThanOrEqualTo(1)); // Should process at least the version command
-        Assert.That(processedCommands.Any(c => c is VersionCommand), Is.True, "Should contain a version command");
-        Assert.That(parser.Version, Is.EqualTo(ProtocolVersion.V8_0)); // Version should be updated
     }
 
     [Test]
@@ -189,7 +137,7 @@ public class CommandProcessingTests
         var payload = CreateMalformedCommandPayload();
         var parser = new CommandParser();
         var state = new AtemSharp.State.AtemState();
-        
+
         // Act - Simulate OnPacketReceived logic with malformed data
         var offset = 0;
         var processedCommands = 0;
@@ -210,9 +158,9 @@ public class CommandProcessingTests
 
                 var commandDataStart = offset + 8;
                 var commandDataLength = commandLength - 8;
-                using var commandDataStream = new MemoryStream(payload, commandDataStart, commandDataLength);
+                var commandData = new Span<byte>(payload, commandDataStart, commandDataLength);
 
-                var command = parser.ParseCommand(rawName, commandDataStream);
+                var command = parser.ParseCommand(rawName, commandData);
                 if (command != null)
                 {
                     command.ApplyToState(state);
@@ -237,7 +185,7 @@ public class CommandProcessingTests
     {
         // Arrange
         var payload = Array.Empty<byte>();
-        
+
         // Act - Simulate OnPacketReceived logic with empty payload
         var offset = 0;
         var processedCommands = 0;
@@ -258,11 +206,11 @@ public class CommandProcessingTests
     {
         // Arrange
         var parser = new CommandParser();
-        
+
         // Act & Assert - Test that parser correctly handles version selection
         var baselineCommand = parser.GetCommandType("_ver");
         Assert.That(baselineCommand, Is.Not.Null);
-        
+
         // Change parser version and verify it still works
         parser.Version = ProtocolVersion.V9_4;
         var versionedCommand = parser.GetCommandType("_ver");
@@ -274,18 +222,17 @@ public class CommandProcessingTests
     {
         // Arrange
         var parser = new CommandParser();
-        
+
         // Create program input command data (ME=0, Input=2)
-        var programInputData = new byte[] { 0x00, 0x00, 0x00, 0x02 };
-        using var stream = new MemoryStream(programInputData);
+        Span<byte> programInputData = [0x00, 0x00, 0x00, 0x02];
 
         // Act
-        var command = parser.ParseCommand("PrgI", stream);
-        
+        var command = parser.ParseCommand("PrgI", programInputData);
+
         // Assert
         Assert.That(command, Is.Not.Null);
         Assert.That(command, Is.TypeOf<ProgramInputUpdateCommand>());
-        
+
         // Note: We don't test ApplyToState here because it requires proper state initialization
         // The important part is that the command parsing works correctly
         var programInputCmd = (ProgramInputUpdateCommand)command;
@@ -299,7 +246,7 @@ public class CommandProcessingTests
         // Arrange
         // Initialize the state (normally done in ConnectAsync)
         _atem!.GetType().GetProperty("State")?.SetValue(_atem, new AtemSharp.State.AtemState());
-        
+
         var validPayload = CreateMultiCommandPayload();
         var packet = new AtemPacket(validPayload)
         {
@@ -323,7 +270,7 @@ public class CommandProcessingTests
         // Arrange
         // Initialize the state (normally done in ConnectAsync)
         _atem!.GetType().GetProperty("State")?.SetValue(_atem, new AtemSharp.State.AtemState());
-        
+
         var malformedPayload = CreateMalformedCommandPayload();
         var packet = new AtemPacket(malformedPayload)
         {
@@ -347,7 +294,7 @@ public class CommandProcessingTests
         // Arrange
         // Initialize the state (normally done in ConnectAsync)
         _atem!.GetType().GetProperty("State")?.SetValue(_atem, new AtemSharp.State.AtemState());
-        
+
         var emptyPacket = new AtemPacket([])
         {
             Flags = PacketFlag.AckRequest,
@@ -385,13 +332,13 @@ public class CommandProcessingTests
     {
         // Create a real version command packet using test data format
         // Based on libatem test data: "00-0C-00-00-5F-76-65-72-00-02-00-1C"
-        var commandBytes = new byte[] { 
+        var commandBytes = new byte[] {
             0x00, 0x0C,       // Command length = 12
             0x00, 0x00,       // Reserved
             0x5F, 0x76, 0x65, 0x72,  // "_ver" command name
             0x00, 0x02, 0x00, 0x1C   // Version data (protocol version)
         };
-        
+
         return new AtemPacket(commandBytes)
         {
             Flags = PacketFlag.AckRequest,
@@ -427,31 +374,31 @@ public class CommandProcessingTests
     private static byte[] CreateMultiCommandPayload()
     {
         var payload = new List<byte>();
-        
+
         // Command 1: Version command (_ver)
         payload.AddRange([0x00, 0x0C]); // Length: 12 bytes (8 header + 4 data)
         payload.AddRange([0x00, 0x00]); // Reserved
         payload.AddRange(Encoding.ASCII.GetBytes("_ver")); // Command name
         payload.AddRange([0x00, 0x02, 0x00, 0x1C]); // Version V8_0
-        
+
         // Command 2: Unknown command (TEST)
         payload.AddRange([0x00, 0x08]); // Length: 8 bytes (header only)
         payload.AddRange([0x00, 0x00]); // Reserved
         payload.AddRange(Encoding.ASCII.GetBytes("TEST")); // Unknown command name
-        
+
         return payload.ToArray();
     }
 
     private static byte[] CreateMalformedCommandPayload()
     {
         var payload = new List<byte>();
-        
+
         // Malformed command: length claims 20 bytes but we only provide 8
         payload.AddRange([0x00, 0x14]); // Length: 20 bytes (but actual data is shorter)
         payload.AddRange([0x00, 0x00]); // Reserved
         payload.AddRange(Encoding.ASCII.GetBytes("BAAD")); // Command name
         // Missing additional data - this makes it malformed
-        
+
         return payload.ToArray();
     }
 }

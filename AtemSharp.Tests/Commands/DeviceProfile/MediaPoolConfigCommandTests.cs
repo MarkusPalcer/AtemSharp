@@ -1,5 +1,4 @@
 using AtemSharp.Commands.DeviceProfile;
-using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
@@ -119,50 +118,5 @@ public class MediaPoolConfigCommandTests : DeserializedCommandTestBase<MediaPool
         Assert.That(state.Info.MediaPool, Is.Not.Null);
         Assert.That(state.Info.MediaPool.StillCount, Is.EqualTo(20));
         Assert.That(state.Info.MediaPool.ClipCount, Is.EqualTo(2));
-    }
-
-    [Test]
-    public void Deserialize_WithValidData_ShouldCreateCorrectCommand()
-    {
-        // Arrange
-        var data = new byte[] { 20, 2 }; // stillCount = 20, clipCount = 2
-        using var stream = new MemoryStream(data);
-
-        // Act
-        var command = MediaPoolConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-        // Assert
-        Assert.That(command.StillCount, Is.EqualTo(20));
-        Assert.That(command.ClipCount, Is.EqualTo(2));
-    }
-
-    [Test]
-    public void Deserialize_WithZeroValues_ShouldCreateCorrectCommand()
-    {
-        // Arrange
-        var data = new byte[] { 0, 0 }; // stillCount = 0, clipCount = 0
-        using var stream = new MemoryStream(data);
-
-        // Act
-        var command = MediaPoolConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-        // Assert
-        Assert.That(command.StillCount, Is.EqualTo(0));
-        Assert.That(command.ClipCount, Is.EqualTo(0));
-    }
-
-    [Test]
-    public void Deserialize_WithMaxValues_ShouldCreateCorrectCommand()
-    {
-        // Arrange
-        var data = new byte[] { 255, 255 }; // stillCount = 255, clipCount = 255
-        using var stream = new MemoryStream(data);
-
-        // Act
-        var command = MediaPoolConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-        // Assert
-        Assert.That(command.StillCount, Is.EqualTo(255));
-        Assert.That(command.ClipCount, Is.EqualTo(255));
     }
 }

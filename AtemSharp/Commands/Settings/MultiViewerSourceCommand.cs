@@ -1,5 +1,6 @@
 using AtemSharp.Commands;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Settings;

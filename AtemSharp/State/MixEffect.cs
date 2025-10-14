@@ -48,5 +48,6 @@ public class MixEffect
     /// <summary>
     /// Upstream keyers for this mix effect
     /// </summary>
+    // TODO: Convert to Array and create once number of UpstreamKeyers is sent
     public Dictionary<int, UpstreamKeyer> UpstreamKeyers { get; set; } = new();
 }

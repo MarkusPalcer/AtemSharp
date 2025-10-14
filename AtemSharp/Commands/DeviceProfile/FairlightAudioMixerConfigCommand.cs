@@ -1,5 +1,5 @@
-using System.Text;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DeviceProfile;
@@ -13,29 +13,22 @@ public class FairlightAudioMixerConfigCommand : IDeserializedCommand
     /// <summary>
     /// Number of Fairlight audio inputs available
     /// </summary>
-    public byte Inputs { get; set; }
+    public byte Inputs { get; init; }
 
     /// <summary>
     /// Number of Fairlight monitor channels available
     /// </summary>
-    public byte Monitors { get; set; }
+    public byte Monitors { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <returns>Deserialized command instance</returns>
-    public static FairlightAudioMixerConfigCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static FairlightAudioMixerConfigCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
-        var inputs = reader.ReadByte();
-        var monitors = reader.ReadByte();
-
         return new FairlightAudioMixerConfigCommand
         {
-            Inputs = inputs,
-            Monitors = monitors
+            Inputs = rawCommand.ReadUInt8(0),
+            Monitors = rawCommand.ReadUInt8(1)
         };
     }
 

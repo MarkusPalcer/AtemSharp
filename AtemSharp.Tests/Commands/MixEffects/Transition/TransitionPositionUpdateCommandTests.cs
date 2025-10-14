@@ -1,5 +1,4 @@
 using AtemSharp.Commands.MixEffects.Transition;
-using AtemSharp.Enums;
 using AtemSharp.State;
 using AtemSharp.Tests.TestUtilities;
 
@@ -51,28 +50,6 @@ public class TransitionPositionUpdateCommandTests : DeserializedCommandTestBase<
             Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
                        string.Join("\n", failures));
         }
-    }
-
-    [Test]
-    public void Deserialize_ValidData_ProducesCorrectCommand()
-    {
-        // Arrange - create binary data matching the ATEM protocol
-        using var stream = new MemoryStream(new byte[] {
-            0x01,       // MixEffectId = 1
-            0x01,       // InTransition = true
-            0x0A,       // RemainingFrames = 10
-            0x00,       // Padding
-            0x13, 0x88  // HandlePosition = 5000 (0x1388) = 50%
-        });
-
-        // Act
-        var command = TransitionPositionUpdateCommand.Deserialize(stream, ProtocolVersion.V8_1_1);
-
-        // Assert
-        Assert.That(command.MixEffectId, Is.EqualTo(1));
-        Assert.That(command.InTransition, Is.True);
-        Assert.That(command.RemainingFrames, Is.EqualTo(10));
-        Assert.That(command.HandlePosition, Is.EqualTo(0.5).Within(0.001)); // 5000/10000 = 0.5
     }
 
     [Test]

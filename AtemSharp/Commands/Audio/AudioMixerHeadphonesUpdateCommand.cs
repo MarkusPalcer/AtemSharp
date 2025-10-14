@@ -1,4 +1,3 @@
-using System.Text;
 using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
@@ -11,33 +10,31 @@ public class AudioMixerHeadphonesUpdateCommand : IDeserializedCommand
 	/// <summary>
 	/// Gain in decibel, -Infinity to +6dB
 	/// </summary>
-	public double Gain { get; set; }
+	public double Gain { get; init; }
 
 	/// <summary>
 	/// Program out gain in decibel, -Infinity to +6dB
 	/// </summary>
-	public double ProgramOutGain { get; set; }
+	public double ProgramOutGain { get; init; }
 
 	/// <summary>
 	/// Sidetone gain in decibel, -Infinity to +6dB
 	/// </summary>
-	public double SidetoneGain { get; set; }
+	public double SidetoneGain { get; init; }
 
 	/// <summary>
 	/// Talkback gain in decibel, -Infinity to +6dB
 	/// </summary>
-	public double TalkbackGain { get; set; }
+	public double TalkbackGain { get; init; }
 
-	public static AudioMixerHeadphonesUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+	public static AudioMixerHeadphonesUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
 	{
-		using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true) ;
-
 		return new AudioMixerHeadphonesUpdateCommand
 		{
-			Gain = reader.ReadUInt16BigEndian().UInt16ToDecibel(),
-			ProgramOutGain = reader.ReadUInt16BigEndian().UInt16ToDecibel(),
-			TalkbackGain = reader.ReadUInt16BigEndian().UInt16ToDecibel(),
-			SidetoneGain = reader.ReadUInt16BigEndian().UInt16ToDecibel()
+			Gain = rawCommand.ReadUInt16BigEndian(0).UInt16ToDecibel(),
+			ProgramOutGain = rawCommand.ReadUInt16BigEndian(2).UInt16ToDecibel(),
+			TalkbackGain = rawCommand.ReadUInt16BigEndian(4).UInt16ToDecibel(),
+			SidetoneGain = rawCommand.ReadUInt16BigEndian(6).UInt16ToDecibel()
 		};
 	}
 

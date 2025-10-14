@@ -1,5 +1,6 @@
 using System.Text;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DeviceProfile;
@@ -13,31 +14,22 @@ public class ProductIdentifierCommand : IDeserializedCommand
     /// <summary>
     /// Product identifier string from the device
     /// </summary>
-    public string ProductIdentifier { get; set; } = string.Empty;
+    public string ProductIdentifier { get; init; } = string.Empty;
 
     /// <summary>
     /// ATEM device model
     /// </summary>
-    public Model Model { get; set; }
+    public Model Model { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static ProductIdentifierCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static ProductIdentifierCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
-        // Read 40 bytes for product identifier and extract null-terminated string
-        Span<byte> productIdentifierBytes = stackalloc byte[40];
-        // ReSharper disable once MustUseReturnValue
-        reader.Read(productIdentifierBytes);
-        var productIdentifier = Encoding.UTF8.GetString(productIdentifierBytes).TrimEnd('\0');
+        var productIdentifier = rawCommand.ReadNullTerminatedString(0, 40);
 
         // Read model as single byte
-        var model = (Model)reader.ReadByte();
+        var model = (Model)rawCommand.ReadUInt8(40);
 
         return new ProductIdentifierCommand
         {

@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Transition;
@@ -12,45 +13,34 @@ public class TransitionPositionUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>
-    public int MixEffectId { get; set; }
+    public int MixEffectId { get; init; }
 
     /// <summary>
     /// Whether a transition is currently in progress
     /// </summary>
-    public bool InTransition { get; set; }
+    public bool InTransition { get; init; }
 
     /// <summary>
     /// Number of frames remaining in the transition
     /// </summary>
-    public int RemainingFrames { get; set; }
+    public int RemainingFrames { get; init; }
 
     /// <summary>
     /// Current position of the transition handle (0.0 to 1.0)
     /// </summary>
-    public double HandlePosition { get; set; }
+    public double HandlePosition { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static TransitionPositionUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static TransitionPositionUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var mixEffectId = reader.ReadByte();
-        var inTransition = reader.ReadBoolean();
-        var remainingFrames = reader.ReadByte();
-        reader.ReadByte(); // Skip 1 byte padding
-        var handlePosition = reader.ReadUInt16BigEndian();
-
         return new TransitionPositionUpdateCommand
         {
-            MixEffectId = mixEffectId,
-            InTransition = inTransition,
-            RemainingFrames = remainingFrames,
-            HandlePosition = handlePosition / 10000.0 // Convert from ushort (0-10000) to double (0.0-1.0)
+            MixEffectId = rawCommand.ReadUInt8(0),
+            InTransition = rawCommand.ReadBoolean(1),
+            RemainingFrames = rawCommand.ReadUInt8(2),
+            HandlePosition = rawCommand.ReadUInt16BigEndian(4) / 10000.0 // Convert from ushort (0-10000) to double (0.0-1.0)
         };
     }
 

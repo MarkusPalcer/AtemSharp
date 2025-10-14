@@ -1,5 +1,5 @@
-using System.Text;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DataTransfer;
@@ -13,20 +13,16 @@ public class LockObtainedCommand : IDeserializedCommand
     /// <summary>
     /// Index of the lock that was obtained
     /// </summary>
-    public ushort Index { get; set; }
+    public ushort Index { get; init; }
 
     /// <summary>
     /// Deserialize binary data into command
     /// </summary>
-    /// <param name="stream">Binary stream to read from</param>
-    /// <returns>Deserialized command</returns>
-    public static LockObtainedCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static LockObtainedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-
         return new LockObtainedCommand
         {
-            Index = reader.ReadUInt16BigEndian()
+            Index = rawCommand.ReadUInt16BigEndian(0)
         };
     }
 

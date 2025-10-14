@@ -17,7 +17,7 @@ public class Atem : IDisposable
 			_transport.PacketReceived -= OnPacketReceived;
 			_transport.ConnectionStateChanged -= OnConnectionStateChanged;
 			_transport.ErrorOccurred -= OnErrorOccurred;
-			
+
 			value.PacketReceived += OnPacketReceived;
 			value.ConnectionStateChanged += OnConnectionStateChanged;
 			value.ErrorOccurred += OnErrorOccurred;
@@ -77,9 +77,9 @@ public class Atem : IDisposable
 
 		State = new AtemState();
 		_connectionCompletionSource = new TaskCompletionSource<bool>();
-		
+
 		await Transport.ConnectAsync(remoteHost, remotePort, cancellationToken);
-		
+
 		// Wait for InitCompleteCommand to be received, indicating the connection is fully established
 		await _connectionCompletionSource.Task.WaitAsync(cancellationToken);
 	}
@@ -135,17 +135,17 @@ public class Atem : IDisposable
 				// Extract command data (excluding the 8-byte header)
 				var commandDataStart = offset + Constants.AtemConstants.COMMAND_HEADER_SIZE;
 				var commandDataLength = commandLength - Constants.AtemConstants.COMMAND_HEADER_SIZE;
-				using var commandDataStream = new MemoryStream(payload, commandDataStart, commandDataLength);
+                var commandData = new Span<Byte>(payload, commandDataStart, commandDataLength);
 
 				try
 				{
 					// Try to parse the command using CommandParser
-					var command = _commandParser.ParseCommand(rawName, commandDataStream);
+					var command = _commandParser.ParseCommand(rawName, commandData);
 					if (command != null)
 					{
 						// Apply the command to the current state
 						command.ApplyToState(State!);
-						
+
 						// Check if this is the InitCompleteCommand
 						if (command is Commands.InitCompleteCommand)
 						{
@@ -181,7 +181,7 @@ public class Atem : IDisposable
 		// Handle connection state transitions
 		// This is primarily driven by the transport layer (UDP handshake)
 		// but may be further refined by command processing (e.g., InitComplete)
-		
+
 		_logger.LogInformation("Connection state changed: {PreviousState} -> {NewState}", e.PreviousState, e.State);
 	}
 
@@ -205,7 +205,7 @@ public class Atem : IDisposable
 		Transport.ConnectionStateChanged -= OnConnectionStateChanged;
 		Transport.ErrorOccurred -= OnErrorOccurred;
 		Transport.Dispose();
-		
+
 		// Clean up any pending connection completion
 		_connectionCompletionSource?.TrySetCanceled();
 	}

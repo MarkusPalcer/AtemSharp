@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Transition;
@@ -12,53 +13,42 @@ public class TransitionPropertiesUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>
-    public int MixEffectId { get; set; }
+    public int MixEffectId { get; init; }
 
     /// <summary>
     /// If in a transition, this is the style of the running transition.
     /// If no transition is active it will mirror NextStyle
     /// </summary>
-    public TransitionStyle Style { get; set; }
+    public TransitionStyle Style { get; init; }
 
     /// <summary>
     /// If in a transition, this is the selection of the running transition.
     /// If no transition is active it will mirror NextSelection
     /// </summary>
-    public TransitionSelection Selection { get; set; }
+    public TransitionSelection Selection { get; init; }
 
     /// <summary>
     /// The style for the next transition
     /// </summary>
-    public TransitionStyle NextStyle { get; set; }
+    public TransitionStyle NextStyle { get; init; }
 
     /// <summary>
     /// The selection for the next transition
     /// </summary>
-    public TransitionSelection NextSelection { get; set; }
+    public TransitionSelection NextSelection { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static TransitionPropertiesUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static TransitionPropertiesUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var mixEffectId = reader.ReadByte();
-        var style = (TransitionStyle)reader.ReadByte();
-        var selection = (TransitionSelection)reader.ReadByte();
-        var nextStyle = (TransitionStyle)reader.ReadByte();
-        var nextSelection = (TransitionSelection)reader.ReadByte();
-
         return new TransitionPropertiesUpdateCommand
         {
-            MixEffectId = mixEffectId,
-            Style = style,
-            Selection = selection,
-            NextStyle = nextStyle,
-            NextSelection = nextSelection
+            MixEffectId = rawCommand.ReadUInt8(0),
+            Style = (TransitionStyle)rawCommand.ReadUInt8(1),
+            Selection = (TransitionSelection)rawCommand.ReadUInt8(2),
+            NextStyle = (TransitionStyle)rawCommand.ReadUInt8(3),
+            NextSelection = (TransitionSelection)rawCommand.ReadUInt8(4)
         };
     }
 
@@ -75,10 +65,7 @@ public class TransitionPropertiesUpdateCommand : IDeserializedCommand
         var mixEffect = state.Video.MixEffects.GetOrCreate(MixEffectId);
 
         // Create or update transition properties
-        if (mixEffect.TransitionProperties == null)
-        {
-            mixEffect.TransitionProperties = new TransitionProperties();
-        }
+        mixEffect.TransitionProperties ??= new TransitionProperties();
 
         // Update the transition properties
         mixEffect.TransitionProperties.Style = Style;

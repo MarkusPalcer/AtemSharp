@@ -1,5 +1,4 @@
 using AtemSharp.Commands.Settings;
-using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands;
@@ -146,34 +145,6 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
 
         // Act & Assert
         Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-    }
-
-    [Test]
-    public void Deserialize_WithValidData_ParsesCorrectly()
-    {
-        // Arrange
-        var testData = new byte[]
-        {
-            2,    // MultiViewer ID
-            7,    // Window Index
-            0x05, 0xDC, // Source 1500 as big-endian UInt16
-            1,    // SupportsVuMeter (true)
-            0     // SupportsSafeArea (false)
-        };
-
-        // Act
-        MultiViewerSourceUpdateCommand result;
-        using (var stream = new MemoryStream(testData))
-        {
-            result = MultiViewerSourceUpdateCommand.Deserialize(stream, ProtocolVersion.V8_0);
-        }
-
-        // Assert
-        Assert.That(result.MultiViewerId, Is.EqualTo(2));
-        Assert.That(result.WindowIndex, Is.EqualTo(7));
-        Assert.That(result.Source, Is.EqualTo(1500));
-        Assert.That(result.SupportsVuMeter, Is.True);
-        Assert.That(result.SupportsSafeArea, Is.False);
     }
 
     /// <summary>

@@ -48,10 +48,8 @@ public class VideoMixerConfigCommandTests
         if (BitConverter.IsLittleEndian) Array.Reverse(downconvert2);
         data.AddRange(downconvert2);   // downconvert modes (bits 1 and 3 set)
 
-        using var stream = new MemoryStream(data.ToArray());
-
         // Act
-        var command = VideoMixerConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
+        var command = VideoMixerConfigCommand.Deserialize(data.ToArray().AsSpan(), ProtocolVersion.V7_2);
 
         // Assert
         Assert.That(command.SupportedVideoModes, Is.Not.Null);
@@ -101,10 +99,8 @@ public class VideoMixerConfigCommandTests
 
         data.Add(1);                           // requires reconfig = true
 
-        using var stream = new MemoryStream(data.ToArray());
-
         // Act
-        var command = VideoMixerConfigCommand.Deserialize(stream, ProtocolVersion.V8_0);
+        var command = VideoMixerConfigCommand.Deserialize(data.ToArray().AsSpan(), ProtocolVersion.V8_0);
 
         // Assert
         Assert.That(command.SupportedVideoModes.Length, Is.EqualTo(1));

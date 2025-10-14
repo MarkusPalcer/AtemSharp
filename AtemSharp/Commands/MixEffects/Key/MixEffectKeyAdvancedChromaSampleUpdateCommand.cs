@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Key;
@@ -12,92 +13,70 @@ public class MixEffectKeyAdvancedChromaSampleUpdateCommand : IDeserializedComman
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>
-    public int MixEffectId { get; set; }
+    public int MixEffectId { get; init; }
 
     /// <summary>
     /// Upstream keyer index (0-based)
     /// </summary>
-    public int KeyerId { get; set; }
+    public int KeyerId { get; init; }
 
     /// <summary>
     /// Whether the cursor is enabled
     /// </summary>
-    public bool EnableCursor { get; set; }
+    public bool EnableCursor { get; init; }
 
     /// <summary>
     /// Whether to show preview
     /// </summary>
-    public bool Preview { get; set; }
+    public bool Preview { get; init; }
 
     /// <summary>
     /// Cursor X position
     /// </summary>
-    public double CursorX { get; set; }
+    public double CursorX { get; init; }
 
     /// <summary>
     /// Cursor Y position
     /// </summary>
-    public double CursorY { get; set; }
+    public double CursorY { get; init; }
 
     /// <summary>
     /// Cursor size
     /// </summary>
-    public double CursorSize { get; set; }
+    public double CursorSize { get; init; }
 
     /// <summary>
     /// Sampled Y (luminance) value
     /// </summary>
-    public double SampledY { get; set; }
+    public double SampledY { get; init; }
 
     /// <summary>
     /// Sampled Cb (blue-difference chroma) value
     /// </summary>
-    public double SampledCb { get; set; }
+    public double SampledCb { get; init; }
 
     /// <summary>
     /// Sampled Cr (red-difference chroma) value
     /// </summary>
-    public double SampledCr { get; set; }
+    public double SampledCr { get; init; }
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    /// <param name="stream">Binary stream containing command data</param>
-    /// <param name="protocolVersion">Protocol version used for deserialization</param>
-    /// <returns>Deserialized command instance</returns>
-    public static MixEffectKeyAdvancedChromaSampleUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
+    public static MixEffectKeyAdvancedChromaSampleUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
-
-        var mixEffectId = reader.ReadByte();
-        var keyerId = reader.ReadByte();
-        var enableCursor = reader.ReadBoolean();
-        var preview = reader.ReadBoolean();
-
-        // Read position values and divide by scaling factors (to match TypeScript implementation scaling)
-        var cursorX = reader.ReadInt16BigEndian() / 1000.0;
-        var cursorY = reader.ReadInt16BigEndian() / 1000.0;
-
-        // Read cursor size and divide by 100
-        var cursorSize = reader.ReadUInt16BigEndian() / 100.0;
-
-        // Read sampled values and divide by 10000
-        var sampledY = reader.ReadUInt16BigEndian() / 10000.0;
-        var sampledCb = reader.ReadInt16BigEndian() / 10000.0;
-        var sampledCr = reader.ReadInt16BigEndian() / 10000.0;
-
         return new MixEffectKeyAdvancedChromaSampleUpdateCommand
         {
-            MixEffectId = mixEffectId,
-            KeyerId = keyerId,
-            EnableCursor = enableCursor,
-            Preview = preview,
-            CursorX = cursorX,
-            CursorY = cursorY,
-            CursorSize = cursorSize,
-            SampledY = sampledY,
-            SampledCb = sampledCb,
-            SampledCr = sampledCr
+            MixEffectId = rawCommand.ReadUInt8(0),
+            KeyerId = rawCommand.ReadUInt8(1),
+            EnableCursor = rawCommand.ReadBoolean(2),
+            Preview = rawCommand.ReadBoolean(3),
+            CursorX = rawCommand.ReadInt16BigEndian(4) / 1000.0,
+            CursorY = rawCommand.ReadInt16BigEndian(6) / 1000.0,
+            CursorSize = rawCommand.ReadUInt16BigEndian(8) / 100.0,
+            SampledY = rawCommand.ReadUInt16BigEndian(10) / 10000.0,
+            SampledCb = rawCommand.ReadInt16BigEndian(12) / 10000.0,
+            SampledCr = rawCommand.ReadInt16BigEndian(14) / 10000.0
         };
     }
 
@@ -121,11 +100,9 @@ public class MixEffectKeyAdvancedChromaSampleUpdateCommand : IDeserializedComman
         keyer.Index = KeyerId;
 
         // Get or create the advanced chroma settings
-        if (keyer.AdvancedChromaSettings == null)
-            keyer.AdvancedChromaSettings = new UpstreamKeyerAdvancedChromaSettings();
+        keyer.AdvancedChromaSettings ??= new UpstreamKeyerAdvancedChromaSettings();
 
-        if (keyer.AdvancedChromaSettings.Sample == null)
-            keyer.AdvancedChromaSettings.Sample = new UpstreamKeyerAdvancedChromaSample();
+        keyer.AdvancedChromaSettings.Sample ??= new UpstreamKeyerAdvancedChromaSample();
 
         // Update the advanced chroma sample settings
         var sample = keyer.AdvancedChromaSettings.Sample;

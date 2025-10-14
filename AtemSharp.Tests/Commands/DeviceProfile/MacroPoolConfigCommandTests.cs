@@ -1,5 +1,4 @@
 using AtemSharp.Commands.DeviceProfile;
-using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
@@ -44,48 +43,6 @@ public class MacroPoolConfigCommandTests : DeserializedCommandTestBase<MacroPool
         // Assert
         Assert.That(state.Info.MacroPool, Is.Not.Null);
         Assert.That(state.Info.MacroPool.MacroCount, Is.EqualTo(172));
-    }
-
-    [Test]
-    public void Deserialize_WithTypicalValues_ShouldDeserializeCorrectly()
-    {
-        // Arrange
-        var data = new byte[] { 0xAC }; // MacroCount: 172 (0xAC in hex)
-        using var stream = new MemoryStream(data);
-
-        // Act
-        var command = MacroPoolConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-        // Assert
-        Assert.That(command.MacroCount, Is.EqualTo(172));
-    }
-
-    [Test]
-    public void Deserialize_WithMaxValue_ShouldDeserializeCorrectly()
-    {
-        // Arrange
-        var data = new byte[] { 0xFE }; // MacroCount: 254 (0xFE in hex)
-        using var stream = new MemoryStream(data);
-
-        // Act
-        var command = MacroPoolConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-        // Assert
-        Assert.That(command.MacroCount, Is.EqualTo(254));
-    }
-
-    [Test]
-    public void Deserialize_WithMinValue_ShouldDeserializeCorrectly()
-    {
-        // Arrange
-        var data = new byte[] { 0x00 }; // MacroCount: 0
-        using var stream = new MemoryStream(data);
-
-        // Act
-        var command = MacroPoolConfigCommand.Deserialize(stream, ProtocolVersion.V7_2);
-
-        // Assert
-        Assert.That(command.MacroCount, Is.EqualTo(0));
     }
 
     [Test]

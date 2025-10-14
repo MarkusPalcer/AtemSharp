@@ -1,5 +1,4 @@
 using AtemSharp.Commands.MixEffects.Transition;
-using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
@@ -36,23 +35,6 @@ public class TransitionMixUpdateCommandTests : DeserializedCommandTestBase<Trans
             Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
                        string.Join("\n", failures));
         }
-    }
-
-    [Test]
-    public void Deserialize_ValidData_ProducesCorrectCommand()
-    {
-        // Arrange - create binary data matching the ATEM protocol
-        using var stream = new MemoryStream(new byte[] {
-            0x01,       // MixEffectId = 1
-            0x32        // Rate = 50
-        });
-
-        // Act
-        var command = TransitionMixUpdateCommand.Deserialize(stream, ProtocolVersion.V8_1_1);
-
-        // Assert
-        Assert.That(command.MixEffectId, Is.EqualTo(1));
-        Assert.That(command.Rate, Is.EqualTo(50));
     }
 
     [Test]
