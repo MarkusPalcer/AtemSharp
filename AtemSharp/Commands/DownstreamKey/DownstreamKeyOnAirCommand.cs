@@ -26,14 +26,12 @@ public class DownstreamKeyOnAirCommand : SerializedCommand
     {
         DownstreamKeyerId = downstreamKeyerId;
 
-        // If no video state or downstream keyer array exists, initialize with defaults
-        if (!currentState.Video.DownstreamKeyers.TryGetValue(downstreamKeyerId, out var dsk))
-        
+        if (downstreamKeyerId >= currentState.Video.DownstreamKeyers.Length)
         {
-            // Set default value and flag (like TypeScript pattern)
-            OnAir = false;
-            return;
+            throw new IndexOutOfRangeException("DownstreamKeyerId is out of range");
         }
+
+        var dsk = currentState.Video.DownstreamKeyers[downstreamKeyerId];
 
         // Initialize from current state (direct field access = no flags set)
         _onAir = dsk.OnAir;

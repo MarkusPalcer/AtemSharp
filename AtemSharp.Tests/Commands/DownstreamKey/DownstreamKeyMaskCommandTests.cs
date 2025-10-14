@@ -22,7 +22,7 @@ public class DownstreamKeyMaskCommandTests : SerializedCommandTestBase<Downstrea
     {
         // Create state with the required downstream keyer
         var state = CreateStateWithDownstreamKeyer(testCase.Command.Index);
-        
+
         // Create command with the keyer ID
         var command = new DownstreamKeyMaskCommand(testCase.Command.Index, state);
 
@@ -32,7 +32,7 @@ public class DownstreamKeyMaskCommandTests : SerializedCommandTestBase<Downstrea
         command.Bottom = testCase.Command.MaskBottom;
         command.Left = testCase.Command.MaskLeft;
         command.Right = testCase.Command.MaskRight;
-        
+
         return command;
     }
 
@@ -41,7 +41,7 @@ public class DownstreamKeyMaskCommandTests : SerializedCommandTestBase<Downstrea
     /// </summary>
     private static AtemState CreateStateWithDownstreamKeyer(int keyerId)
     {
-        Dictionary<int, DownstreamKeyer> downstreamKeyers = new Dictionary<int, DownstreamKeyer>();
+        var downstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(keyerId + 1);
         downstreamKeyers[keyerId] = new DownstreamKeyer
         {
             InTransition = false,
@@ -106,16 +106,7 @@ public class DownstreamKeyMaskCommandTests : SerializedCommandTestBase<Downstrea
         var state = new AtemState(); // No video state
 
         // Act
-        var command = new DownstreamKeyMaskCommand(keyerId, state);
-
-        // Assert
-        Assert.That(command.DownstreamKeyerId, Is.EqualTo(keyerId));
-        Assert.That(command.Enabled, Is.False); // Default value
-        Assert.That(command.Top, Is.EqualTo(0.0)); // Default value
-        Assert.That(command.Bottom, Is.EqualTo(0.0)); // Default value
-        Assert.That(command.Left, Is.EqualTo(0.0)); // Default value
-        Assert.That(command.Right, Is.EqualTo(0.0)); // Default value
-        Assert.That(command.Flag, Is.EqualTo(31)); // All flags should be set due to property assignment (bits 0-4)
+        Assert.Throws<IndexOutOfRangeException>( ()=> new DownstreamKeyMaskCommand(keyerId, state));
     }
 
     [Test]
@@ -123,7 +114,7 @@ public class DownstreamKeyMaskCommandTests : SerializedCommandTestBase<Downstrea
     {
         // Arrange
         var command = new DownstreamKeyMaskCommand(0, CreateStateWithDownstreamKeyer(0));
-        
+
         // Act
         command.Enabled = true;
 
@@ -137,7 +128,7 @@ public class DownstreamKeyMaskCommandTests : SerializedCommandTestBase<Downstrea
     {
         // Arrange
         var command = new DownstreamKeyMaskCommand(0, CreateStateWithDownstreamKeyer(0));
-        
+
         // Act
         command.Top = 100.0;
 
@@ -151,7 +142,7 @@ public class DownstreamKeyMaskCommandTests : SerializedCommandTestBase<Downstrea
     {
         // Arrange
         var command = new DownstreamKeyMaskCommand(0, CreateStateWithDownstreamKeyer(0));
-        
+
         // Act
         command.Bottom = 200.0;
 
@@ -165,7 +156,7 @@ public class DownstreamKeyMaskCommandTests : SerializedCommandTestBase<Downstrea
     {
         // Arrange
         var command = new DownstreamKeyMaskCommand(0, CreateStateWithDownstreamKeyer(0));
-        
+
         // Act
         command.Left = 150.0;
 
@@ -179,7 +170,7 @@ public class DownstreamKeyMaskCommandTests : SerializedCommandTestBase<Downstrea
     {
         // Arrange
         var command = new DownstreamKeyMaskCommand(0, CreateStateWithDownstreamKeyer(0));
-        
+
         // Act
         command.Right = 300.0;
 
@@ -193,7 +184,7 @@ public class DownstreamKeyMaskCommandTests : SerializedCommandTestBase<Downstrea
     {
         // Arrange
         var command = new DownstreamKeyMaskCommand(0, CreateStateWithDownstreamKeyer(0));
-        
+
         // Act
         command.Enabled = true;  // Flag bit 0
         command.Top = 50.0;      // Flag bit 1
@@ -226,13 +217,13 @@ public class DownstreamKeyMaskCommandTests : SerializedCommandTestBase<Downstrea
         Assert.That(result[1], Is.EqualTo(1));  // Downstream keyer ID
         Assert.That(result[2], Is.EqualTo(1));  // Enabled = true
         Assert.That(result[3], Is.EqualTo(0));  // Padding
-        
+
         // Check the 16-bit signed values (big-endian) - they should be multiplied by 1000
         var top = (short)((result[4] << 8) | result[5]);
         var bottom = (short)((result[6] << 8) | result[7]);
         var left = (short)((result[8] << 8) | result[9]);
         var right = (short)((result[10] << 8) | result[11]);
-        
+
         Assert.That(top, Is.EqualTo(100));     // 0.1 * 1000
         Assert.That(bottom, Is.EqualTo(-50));  // -0.05 * 1000
         Assert.That(left, Is.EqualTo(200));    // 0.2 * 1000

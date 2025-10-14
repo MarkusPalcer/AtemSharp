@@ -44,14 +44,12 @@ public class MixEffectBlockConfigCommand : IDeserializedCommand
     /// </summary>
     /// <param name="state">Current ATEM state to update</param>
     /// <returns>Paths indicating what was changed in the state</returns>
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Update device info mix effect configuration
         state.Info.MixEffects[Index] = new MixEffectInfo
         {
             KeyCount = KeyCount
         };
-
-        return [$"info.mixEffects.{Index}"];
     }
 }

@@ -167,11 +167,9 @@ public class TransitionStingerUpdateCommandTests : DeserializedCommandTestBase<T
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
-        Assert.That(result, Is.EqualTo(new[] { "video.mixEffects.1.transitionSettings.stinger" }));
-        
         var stingerSettings = state.Video.MixEffects[1].TransitionSettings!.Stinger;
         Assert.That(stingerSettings, Is.Not.Null);
         Assert.That(stingerSettings!.Source, Is.EqualTo(5));

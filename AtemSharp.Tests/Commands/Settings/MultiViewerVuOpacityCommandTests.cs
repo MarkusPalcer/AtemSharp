@@ -186,7 +186,7 @@ public class MultiViewerVuOpacityCommandTests : SerializedCommandTestBase<MultiV
         // Arrange
         const int multiViewerId = 1;
         const int opacity = 85;
-        
+
         var state = CreateStateWithMultiViewer(multiViewerId);
         var command = new MultiViewerVuOpacityCommand
         {
@@ -195,16 +195,11 @@ public class MultiViewerVuOpacityCommandTests : SerializedCommandTestBase<MultiV
         };
 
         // Act
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         var multiViewer = AtemStateUtil.GetMultiViewer(state, multiViewerId);
         Assert.That(multiViewer.VuOpacity, Is.EqualTo(opacity), "VuOpacity should be updated");
-        
-        // Verify the returned path
-        Assert.That(changedPaths, Is.Not.Null);
-        Assert.That(changedPaths.Length, Is.EqualTo(1));
-        Assert.That(changedPaths[0], Is.EqualTo($"settings.multiViewers.{multiViewerId}.vuOpacity"));
     }
 
     [Test]
@@ -214,10 +209,10 @@ public class MultiViewerVuOpacityCommandTests : SerializedCommandTestBase<MultiV
         const int multiViewerId = 1;
         const int oldOpacity = 50;
         const int newOpacity = 90;
-        
+
         var state = CreateStateWithMultiViewer(multiViewerId);
         var multiViewer = AtemStateUtil.GetMultiViewer(state, multiViewerId);
-        
+
         // Pre-populate with existing opacity
         multiViewer.VuOpacity = oldOpacity;
 
@@ -228,7 +223,7 @@ public class MultiViewerVuOpacityCommandTests : SerializedCommandTestBase<MultiV
         };
 
         // Act
-        _ = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(multiViewer.VuOpacity, Is.EqualTo(newOpacity), "VuOpacity should be updated to new value");

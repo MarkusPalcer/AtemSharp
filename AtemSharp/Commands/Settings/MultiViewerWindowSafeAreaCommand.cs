@@ -75,19 +75,19 @@ public class MultiViewerWindowSafeAreaCommand : SerializedCommand, IDeserialized
     {
         using var memoryStream = new MemoryStream(4);
         using var writer = new BinaryWriter(memoryStream);
-        
+
         // Write MultiViewer ID
         writer.Write((byte)MultiViewerId);
-        
+
         // Write window index
         writer.Write((byte)WindowIndex);
-        
+
         // Write safe area enabled flag
         writer.WriteBoolean(SafeAreaEnabled);
-        
+
         // Pad to 4 bytes total
         writer.Pad(1);
-        
+
         return memoryStream.ToArray();
     }
 
@@ -114,7 +114,7 @@ public class MultiViewerWindowSafeAreaCommand : SerializedCommand, IDeserialized
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Validate state prerequisites (same pattern as TypeScript update commands)
         if (state.Info.MultiViewer.Count == 0 || MultiViewerId >= state.Info.MultiViewer.Count)
@@ -124,7 +124,7 @@ public class MultiViewerWindowSafeAreaCommand : SerializedCommand, IDeserialized
 
         // Get the MultiViewer and update its window
         var multiViewer = AtemStateUtil.GetMultiViewer(state, MultiViewerId);
-        
+
         // Get the current window state or create a new one
         if (!multiViewer.Windows.TryGetValue(WindowIndex, out var currentWindow))
         {
@@ -134,8 +134,5 @@ public class MultiViewerWindowSafeAreaCommand : SerializedCommand, IDeserialized
 
         // Update the safe area state
         currentWindow.SafeTitle = SafeAreaEnabled;
-
-        // Return the state path that was modified for change tracking
-        return new[] { $"settings.multiViewers.{MultiViewerId}.windows.{WindowIndex}.safeTitle" };
     }
 }

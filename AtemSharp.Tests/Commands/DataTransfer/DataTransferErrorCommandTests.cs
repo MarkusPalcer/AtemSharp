@@ -38,24 +38,7 @@ public class DataTransferErrorCommandTests : DeserializedCommandTestBase<DataTra
         }
     }
 
-    [Test]
-    public void ApplyToState_ShouldReturnEmptyArray()
-    {
-        // Arrange
-        var command = new DataTransferErrorCommand
-        {
-            TransferId = 12345,
-            ErrorCode = ErrorCode.Retry
-        };
-        var state = new AtemState();
 
-        // Act
-        var result = command.ApplyToState(state);
-
-        // Assert
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result, Is.Empty, "DataTransferErrorCommand should not modify state and return empty array");
-    }
 
     [Test]
     public void Deserialize_ShouldCorrectlyParseTransferIdAndErrorCode()
@@ -63,14 +46,14 @@ public class DataTransferErrorCommandTests : DeserializedCommandTestBase<DataTra
         // Arrange
         using var stream = new MemoryStream();
         using var writer = new BinaryWriter(stream);
-        
+
         const ushort expectedTransferId = 0x1234; // 4660 in decimal
         const ErrorCode expectedErrorCode = ErrorCode.NotFound;
-        
+
         writer.Write((byte)0x12); // High byte first (big-endian)
         writer.Write((byte)0x34); // Low byte
         writer.Write((byte)expectedErrorCode); // Error code as byte
-        
+
         stream.Position = 0;
 
         // Act
@@ -87,11 +70,11 @@ public class DataTransferErrorCommandTests : DeserializedCommandTestBase<DataTra
         // Arrange
         using var stream = new MemoryStream();
         using var writer = new BinaryWriter(stream);
-        
+
         writer.Write((byte)0x00);
         writer.Write((byte)0x00);
         writer.Write((byte)ErrorCode.Retry);
-        
+
         stream.Position = 0;
 
         // Act
@@ -108,12 +91,12 @@ public class DataTransferErrorCommandTests : DeserializedCommandTestBase<DataTra
         // Arrange
         using var stream = new MemoryStream();
         using var writer = new BinaryWriter(stream);
-        
+
         const ushort maxTransferId = 0xFFFF; // 65535 in decimal
         writer.Write((byte)0xFF);
         writer.Write((byte)0xFF);
         writer.Write((byte)ErrorCode.NotLocked);
-        
+
         stream.Position = 0;
 
         // Act
@@ -133,12 +116,12 @@ public class DataTransferErrorCommandTests : DeserializedCommandTestBase<DataTra
         // Arrange
         using var stream = new MemoryStream();
         using var writer = new BinaryWriter(stream);
-        
+
         const ushort transferId = 0x1000;
         writer.Write((byte)0x10);
         writer.Write((byte)0x00);
         writer.Write(errorCodeByte);
-        
+
         stream.Position = 0;
 
         // Act
@@ -155,14 +138,14 @@ public class DataTransferErrorCommandTests : DeserializedCommandTestBase<DataTra
         // Arrange
         using var stream = new MemoryStream();
         using var writer = new BinaryWriter(stream);
-        
+
         const ushort transferId = 0x1000;
         const byte unknownErrorCode = 99; // Unknown error code
-        
+
         writer.Write((byte)0x10);
         writer.Write((byte)0x00);
         writer.Write(unknownErrorCode);
-        
+
         stream.Position = 0;
 
         // Act
@@ -170,7 +153,7 @@ public class DataTransferErrorCommandTests : DeserializedCommandTestBase<DataTra
 
         // Assert
         Assert.That(command.TransferId, Is.EqualTo(transferId));
-        Assert.That((byte)command.ErrorCode, Is.EqualTo(unknownErrorCode), 
+        Assert.That((byte)command.ErrorCode, Is.EqualTo(unknownErrorCode),
                    "Unknown error codes should be preserved as their byte value");
     }
 
@@ -180,12 +163,12 @@ public class DataTransferErrorCommandTests : DeserializedCommandTestBase<DataTra
         // Arrange - Test with specific byte values to ensure big-endian parsing
         using var stream = new MemoryStream();
         using var writer = new BinaryWriter(stream);
-        
+
         // Write bytes in big-endian order: 0xABCD should result in decimal 43981
         writer.Write((byte)0xAB); // High byte
         writer.Write((byte)0xCD); // Low byte
         writer.Write((byte)ErrorCode.NotFound);
-        
+
         stream.Position = 0;
 
         // Act

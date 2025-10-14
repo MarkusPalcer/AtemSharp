@@ -47,18 +47,16 @@ public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.FairlightMixer, Is.Not.Null);
         Assert.That(state.Info.FairlightMixer.Inputs, Is.EqualTo(24));
         Assert.That(state.Info.FairlightMixer.Monitors, Is.EqualTo(4));
-        
+
         Assert.That(state.Fairlight, Is.Not.Null);
         Assert.That(state.Fairlight.Inputs, Is.Not.Null);
         Assert.That(state.Fairlight.Inputs, Is.Empty);
-        
-        Assert.That(result, Is.EqualTo(new[] { "info.fairlightMixer", "fairlight.inputs" }));
     }
 
     [Test]
@@ -136,7 +134,7 @@ public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase
         // Assert - Classic audio state should remain unchanged
         Assert.That(state.Audio, Is.Not.Null);
         Assert.That(state.Audio.Channels, Contains.Key(1));
-        
+
         // Fairlight state should be initialized
         Assert.That(state.Fairlight, Is.Not.Null);
         Assert.That(state.Info.FairlightMixer, Is.Not.Null);

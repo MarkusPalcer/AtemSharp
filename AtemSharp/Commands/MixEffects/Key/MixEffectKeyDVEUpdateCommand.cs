@@ -171,7 +171,7 @@ public class MixEffectKeyDVEUpdateCommand : IDeserializedCommand
         var positionX = reader.ReadInt32BigEndian() / 1000.0;
         var positionY = reader.ReadInt32BigEndian() / 1000.0;
 
-        // Rotation - divide by 10 and treat as signed  
+        // Rotation - divide by 10 and treat as signed
         var rotation = reader.ReadInt32BigEndian() / 10.0;
 
         var borderEnabled = reader.ReadBoolean();
@@ -247,7 +247,7 @@ public class MixEffectKeyDVEUpdateCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Validate mix effect index - need to get capabilities info
         if (state.Info.Capabilities == null || MixEffectId >= state.Info.Capabilities.MixEffects)
@@ -260,15 +260,15 @@ public class MixEffectKeyDVEUpdateCommand : IDeserializedCommand
 
         // Get or create the mix effect
         var mixEffect = state.Video.MixEffects.GetOrCreate(MixEffectId);
-        
+
         // Get or create the upstream keyer
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerId);
         keyer.Index = KeyerId;
-        
+
         // Get or create the DVE settings
         if (keyer.DVESettings == null)
             keyer.DVESettings = new UpstreamKeyerDVESettings();
-        
+
         // Update the DVE settings
         keyer.DVESettings.SizeX = SizeX;
         keyer.DVESettings.SizeY = SizeY;
@@ -296,11 +296,6 @@ public class MixEffectKeyDVEUpdateCommand : IDeserializedCommand
         keyer.DVESettings.MaskLeft = MaskLeft;
         keyer.DVESettings.MaskRight = MaskRight;
         keyer.DVESettings.Rate = Rate;
-
-        // Return the state path that was modified
-        return [
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.dveSettings"
-        ];
     }
 
     /// <summary>
@@ -350,7 +345,7 @@ public class MixEffectKeyDVEUpdateCommand : IDeserializedCommand
     /// </summary>
     private static double CalculateMaskValue(ushort rawValue)
     {
-        // TODO: Fix mask value scaling - current formula rawValue * 100.0 / 65536.0 / 1.515 
+        // TODO: Fix mask value scaling - current formula rawValue * 100.0 / 65536.0 / 1.515
         // is an approximation. The actual scaling used by ATEM protocol needs to be determined
         // through more detailed analysis to exactly match TypeScript reference implementation.
         return rawValue * 100.0 / 65536.0 / 1.515;

@@ -225,11 +225,9 @@ public class TransitionDVEUpdateCommandTests : DeserializedCommandTestBase<Trans
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
-        Assert.That(result, Is.EqualTo(new[] { "video.mixEffects.0.transitionSettings.DVE" }));
-        
         var dveSettings = state.Video.MixEffects[mixEffectId].TransitionSettings!.DVE;
         Assert.That(dveSettings, Is.Not.Null);
         Assert.That(dveSettings.Rate, Is.EqualTo(30));

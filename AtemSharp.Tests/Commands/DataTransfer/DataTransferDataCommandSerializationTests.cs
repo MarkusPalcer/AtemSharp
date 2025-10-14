@@ -16,7 +16,7 @@ public class DataTransferDataCommandSerializationTests : SerializedCommandTestBa
     {
         // Convert Base64 string back to byte array
         var bodyBytes = Convert.FromBase64String(testCase.Command.Body);
-        
+
         // Create command with the test data values
         var command = new DataTransferDataCommand(
             testCase.Command.TransferId,
@@ -25,17 +25,5 @@ public class DataTransferDataCommandSerializationTests : SerializedCommandTestBa
         return command;
     }
 
-    [Test]
-    public void ApplyToState_ShouldReturnEmptyArray()
-    {
-        // Arrange
-        var command = new DataTransferDataCommand(123, new byte[] { 1, 2, 3 });
-        var state = new AtemState();
 
-        // Act
-        var result = command.ApplyToState(state);
-
-        // Assert
-        Assert.That(result, Is.Empty);
-    }
 }

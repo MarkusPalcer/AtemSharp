@@ -51,7 +51,7 @@ public class AudioMixerConfigCommand : IDeserializedCommand
     /// </summary>
     /// <param name="state">Current ATEM state to update</param>
     /// <returns>Paths indicating what was changed in the state</returns>
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Update device info audio mixer configuration
         state.Info.AudioMixer = new AudioMixerInfo
@@ -66,7 +66,5 @@ public class AudioMixerConfigCommand : IDeserializedCommand
         {
             Channels = new Dictionary<int, ClassicAudioChannel>()
         };
-
-        return ["info.audioMixer", "audio"];
     }
 }

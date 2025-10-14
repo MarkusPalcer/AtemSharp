@@ -40,7 +40,7 @@ public class PreviewTransitionUpdateCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Validate mix effect index
         if (state.Info.Capabilities == null || MixEffectId >= state.Info.Capabilities.MixEffects)
@@ -50,11 +50,8 @@ public class PreviewTransitionUpdateCommand : IDeserializedCommand
 
         // Get or create the mix effect
         var mixEffect = state.Video.MixEffects.GetOrCreate(MixEffectId);
-        
+
         // Update the transition preview state
         mixEffect.TransitionPreview = Preview;
-
-        // Return the state path that was modified
-        return [$"video.mixEffects.{MixEffectId}.transitionPreview"];
     }
 }

@@ -17,11 +17,11 @@ public class MultiViewerWindowVuMeterUpdateCommandTests : DeserializedCommandTes
 
     protected override void CompareCommandProperties(MultiViewerWindowVuMeterUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        Assert.That(actualCommand.MultiViewerId, Is.EqualTo(expectedData.MultiviewIndex), 
+        Assert.That(actualCommand.MultiViewerId, Is.EqualTo(expectedData.MultiviewIndex),
                    $"MultiViewerId should match expected value for test case {testCase.Name}");
-        Assert.That(actualCommand.WindowIndex, Is.EqualTo(expectedData.WindowIndex), 
+        Assert.That(actualCommand.WindowIndex, Is.EqualTo(expectedData.WindowIndex),
                    $"WindowIndex should match expected value for test case {testCase.Name}");
-        Assert.That(actualCommand.VuEnabled, Is.EqualTo(expectedData.VuEnabled), 
+        Assert.That(actualCommand.VuEnabled, Is.EqualTo(expectedData.VuEnabled),
                    $"VuEnabled should match expected value for test case {testCase.Name}");
     }
 
@@ -32,7 +32,7 @@ public class MultiViewerWindowVuMeterUpdateCommandTests : DeserializedCommandTes
         const int multiViewerId = 1;
         const int windowIndex = 5;
         const bool vuEnabled = true;
-        
+
         var state = CreateStateWithMultiViewer(multiViewerId);
         var command = new MultiViewerWindowVuMeterUpdateCommand
         {
@@ -42,17 +42,14 @@ public class MultiViewerWindowVuMeterUpdateCommandTests : DeserializedCommandTes
         };
 
         // Act
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         var multiViewer = AtemStateUtil.GetMultiViewer(state, multiViewerId);
         Assert.That(multiViewer.Windows.ContainsKey(windowIndex), Is.True, "Window should exist");
-        
+
         var window = multiViewer.Windows[windowIndex];
         Assert.That(window.AudioMeter, Is.EqualTo(vuEnabled));
-        
-        Assert.That(changedPaths, Has.Length.EqualTo(1));
-        Assert.That(changedPaths[0], Is.EqualTo($"settings.multiViewers.{multiViewerId}.windows.{windowIndex}.audioMeter"));
     }
 
     [Test]
@@ -60,7 +57,7 @@ public class MultiViewerWindowVuMeterUpdateCommandTests : DeserializedCommandTes
     {
         // Arrange
         const int multiViewerId = 3;
-        
+
         var state = new AtemState(); // Empty state
         var command = new MultiViewerWindowVuMeterUpdateCommand
         {
@@ -79,7 +76,7 @@ public class MultiViewerWindowVuMeterUpdateCommandTests : DeserializedCommandTes
         // Arrange
         const int validMultiViewerId = 1;
         const int invalidMultiViewerId = 5;
-        
+
         var state = CreateStateWithMultiViewer(validMultiViewerId);
         var command = new MultiViewerWindowVuMeterUpdateCommand
         {
@@ -98,9 +95,9 @@ public class MultiViewerWindowVuMeterUpdateCommandTests : DeserializedCommandTes
         // Arrange
         const int multiViewerId = 0;
         const int windowIndex = 2;
-        
+
         var state = CreateStateWithMultiViewer(multiViewerId);
-        
+
         // Pre-populate window with different AudioMeter value
         var multiViewer = AtemStateUtil.GetMultiViewer(state, multiViewerId);
         multiViewer.Windows[windowIndex] = new MultiViewerWindowState
@@ -108,7 +105,7 @@ public class MultiViewerWindowVuMeterUpdateCommandTests : DeserializedCommandTes
             AudioMeter = false,
             WindowIndex = windowIndex
         };
-        
+
         var command = new MultiViewerWindowVuMeterUpdateCommand
         {
             MultiViewerId = multiViewerId,
@@ -117,12 +114,11 @@ public class MultiViewerWindowVuMeterUpdateCommandTests : DeserializedCommandTes
         };
 
         // Act
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         var window = multiViewer.Windows[windowIndex];
         Assert.That(window.AudioMeter, Is.True, "AudioMeter should be updated to true");
-        Assert.That(changedPaths[0], Is.EqualTo($"settings.multiViewers.{multiViewerId}.windows.{windowIndex}.audioMeter"));
     }
 
     [Test]
@@ -131,7 +127,7 @@ public class MultiViewerWindowVuMeterUpdateCommandTests : DeserializedCommandTes
         // Arrange
         const int multiViewerId = 0;
         const int windowIndex = 7;
-        
+
         var state = CreateStateWithMultiViewer(multiViewerId);
         var command = new MultiViewerWindowVuMeterUpdateCommand
         {
@@ -141,15 +137,14 @@ public class MultiViewerWindowVuMeterUpdateCommandTests : DeserializedCommandTes
         };
 
         // Act
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         var multiViewer = AtemStateUtil.GetMultiViewer(state, multiViewerId);
         Assert.That(multiViewer.Windows.ContainsKey(windowIndex), Is.True, "New window should be created");
-        
+
         var window = multiViewer.Windows[windowIndex];
         Assert.That(window.AudioMeter, Is.False, "AudioMeter should be set to false");
-        Assert.That(changedPaths[0], Is.EqualTo($"settings.multiViewers.{multiViewerId}.windows.{windowIndex}.audioMeter"));
     }
 
     /// <summary>

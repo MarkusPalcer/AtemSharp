@@ -18,7 +18,7 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
         public int Multiviewers { get; set; } = -1;
         public int SerialPort { get; set; }
         public int HyperDecks { get; set; }
-        
+
         // ReSharper disable once InconsistentNaming - Domain Specific Acronym
         public int DVE { get; set; }
         public int Stingers { get; set; }
@@ -69,7 +69,7 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
 
         // Only compare extended properties for newer protocol versions
         var isNewProtocol = testCase.FirstVersion > ProtocolVersion.V8_0_1;
-        
+
         if (isNewProtocol)
         {
             if (actualCommand.Multiviewers != expectedData.Multiviewers)
@@ -284,7 +284,7 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.Capabilities, Is.Not.Null);
@@ -306,7 +306,6 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
         Assert.That(state.Info.Capabilities.OnlyConfigurableOutputs, Is.False);
         Assert.That(state.Info.MultiViewer.Count, Is.EqualTo(0));
         Assert.That(state.Info.MultiViewer.WindowCount, Is.EqualTo(0));
-        Assert.That(result, Is.EqualTo(new[] { "info.capabilities" }));
     }
 
     [Test]
@@ -335,7 +334,7 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert - Capabilities
         Assert.That(state.Info.Capabilities, Is.Not.Null);
@@ -349,8 +348,6 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
         Assert.That(state.Info.MultiViewer, Is.Not.Null);
         Assert.That(state.Info.MultiViewer.Count, Is.EqualTo(2));
         Assert.That(state.Info.MultiViewer.WindowCount, Is.EqualTo(10)); // Default value
-
-        Assert.That(result, Is.EqualTo(new[] { "info.capabilities" }));
     }
 
     [Test]
@@ -379,13 +376,12 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.Capabilities, Is.Not.Null);
         Assert.That(state.Info.Capabilities.MultiViewers, Is.EqualTo(0));
         Assert.That(state.Info.MultiViewer.Count, Is.EqualTo(0));
         Assert.That(state.Info.MultiViewer.WindowCount, Is.EqualTo(0));
-        Assert.That(result, Is.EqualTo(new[] { "info.capabilities" }));
     }
 }

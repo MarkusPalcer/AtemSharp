@@ -47,14 +47,12 @@ public class MediaPoolConfigCommandTests : DeserializedCommandTestBase<MediaPool
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.MediaPool, Is.Not.Null);
         Assert.That(state.Info.MediaPool.StillCount, Is.EqualTo(20));
         Assert.That(state.Info.MediaPool.ClipCount, Is.EqualTo(2));
-        
-        Assert.That(result, Is.EqualTo(new[] { "info.mediaPool" }));
     }
 
     [Test]
@@ -69,14 +67,12 @@ public class MediaPoolConfigCommandTests : DeserializedCommandTestBase<MediaPool
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.MediaPool, Is.Not.Null);
         Assert.That(state.Info.MediaPool.StillCount, Is.EqualTo(0));
         Assert.That(state.Info.MediaPool.ClipCount, Is.EqualTo(0));
-        
-        Assert.That(result, Is.EqualTo(new[] { "info.mediaPool" }));
     }
 
     [Test]
@@ -91,14 +87,12 @@ public class MediaPoolConfigCommandTests : DeserializedCommandTestBase<MediaPool
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.MediaPool, Is.Not.Null);
         Assert.That(state.Info.MediaPool.StillCount, Is.EqualTo(255));
         Assert.That(state.Info.MediaPool.ClipCount, Is.EqualTo(255));
-        
-        Assert.That(result, Is.EqualTo(new[] { "info.mediaPool" }));
     }
 
     [Test]
@@ -119,14 +113,12 @@ public class MediaPoolConfigCommandTests : DeserializedCommandTestBase<MediaPool
 
         // Act
         firstCommand.ApplyToState(state);
-        var result = secondCommand.ApplyToState(state);
+        secondCommand.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.MediaPool, Is.Not.Null);
         Assert.That(state.Info.MediaPool.StillCount, Is.EqualTo(20));
         Assert.That(state.Info.MediaPool.ClipCount, Is.EqualTo(2));
-        
-        Assert.That(result, Is.EqualTo(new[] { "info.mediaPool" }));
     }
 
     [Test]

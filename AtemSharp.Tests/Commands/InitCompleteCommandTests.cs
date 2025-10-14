@@ -24,22 +24,6 @@ public class InitCompleteCommandTests
     }
 
     [Test]
-    public void TestApplyToState()
-    {
-        // Arrange - Create a command and empty state
-        var command = new InitCompleteCommand();
-        var state = new AtemState();
-
-        // Act - Apply the command to state
-        var result = command.ApplyToState(state);
-
-        // Assert - Verify it returns the expected path
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result.Length, Is.EqualTo(1));
-        Assert.That(result[0], Is.EqualTo("info"));
-    }
-
-    [Test]
     public void TestCommandAttribute()
     {
         // Arrange & Act - Get the command attribute from the class

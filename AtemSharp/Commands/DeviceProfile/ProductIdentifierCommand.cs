@@ -34,7 +34,7 @@ public class ProductIdentifierCommand : IDeserializedCommand
         Span<byte> productIdentifierBytes = stackalloc byte[40];
         // ReSharper disable once MustUseReturnValue
         reader.Read(productIdentifierBytes);
-        var productIdentifier = Encoding.UTF8.GetString(productIdentifierBytes).TrimEnd('\0'); 
+        var productIdentifier = Encoding.UTF8.GetString(productIdentifierBytes).TrimEnd('\0');
 
         // Read model as single byte
         var model = (Model)reader.ReadByte();
@@ -51,7 +51,7 @@ public class ProductIdentifierCommand : IDeserializedCommand
     /// </summary>
     /// <param name="state">Current ATEM state to update</param>
     /// <returns>Paths indicating what was changed in the state</returns>
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Update device info
         state.Info.ProductIdentifier = ProductIdentifier;
@@ -74,7 +74,5 @@ public class ProductIdentifierCommand : IDeserializedCommand
                 state.Info.Power = [false];
                 break;
         }
-
-        return ["info"];
     }
 }

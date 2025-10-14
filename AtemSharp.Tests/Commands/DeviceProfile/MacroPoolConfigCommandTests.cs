@@ -39,13 +39,11 @@ public class MacroPoolConfigCommandTests : DeserializedCommandTestBase<MacroPool
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.MacroPool, Is.Not.Null);
         Assert.That(state.Info.MacroPool.MacroCount, Is.EqualTo(172));
-        
-        Assert.That(result, Is.EqualTo(new[] { "info.macroPool" }));
     }
 
     [Test]
@@ -100,13 +98,11 @@ public class MacroPoolConfigCommandTests : DeserializedCommandTestBase<MacroPool
 
         // Act
         firstCommand.ApplyToState(state);
-        var result = secondCommand.ApplyToState(state);
+        secondCommand.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.MacroPool, Is.Not.Null);
         Assert.That(state.Info.MacroPool.MacroCount, Is.EqualTo(197));
-        
-        Assert.That(result, Is.EqualTo(new[] { "info.macroPool" }));
     }
 
     [Test]
@@ -124,18 +120,16 @@ public class MacroPoolConfigCommandTests : DeserializedCommandTestBase<MacroPool
         var command = new MacroPoolConfigCommand { MacroCount = 213 };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.MacroPool, Is.Not.Null);
         Assert.That(state.Info.MacroPool.MacroCount, Is.EqualTo(213));
-        
+
         // Verify other device info is preserved
         Assert.That(state.Info.AudioMixer, Is.Not.Null);
         Assert.That(state.Info.AudioMixer.Inputs, Is.EqualTo(20));
         Assert.That(state.Info.AudioMixer.Monitors, Is.EqualTo(2));
         Assert.That(state.Info.AudioMixer.Headphones, Is.EqualTo(1));
-        
-        Assert.That(result, Is.EqualTo(new[] { "info.macroPool" }));
     }
 }

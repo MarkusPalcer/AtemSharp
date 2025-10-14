@@ -37,14 +37,12 @@ public class MacroPoolConfigCommand : IDeserializedCommand
     /// </summary>
     /// <param name="state">Current ATEM state to update</param>
     /// <returns>Paths indicating what was changed in the state</returns>
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Update device info macro pool configuration
         state.Info.MacroPool = new MacroPoolInfo
         {
             MacroCount = MacroCount
         };
-
-        return ["info.macroPool"];
     }
 }

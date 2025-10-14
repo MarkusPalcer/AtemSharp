@@ -18,7 +18,7 @@ public class VideoState
     /// <summary>
     /// Downstream keyers available on this device
     /// </summary>
-    public Dictionary<int, DownstreamKeyer> DownstreamKeyers { get; set; } = [];
+    public DownstreamKeyer[] DownstreamKeyers { get; set; } = [];
 
     /// <summary>
     /// Auxiliary output sources

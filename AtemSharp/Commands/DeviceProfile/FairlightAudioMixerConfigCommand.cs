@@ -44,7 +44,7 @@ public class FairlightAudioMixerConfigCommand : IDeserializedCommand
     /// </summary>
     /// <param name="state">Current ATEM state to update</param>
     /// <returns>Paths indicating what was changed in the state</returns>
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Update device info fairlight mixer configuration
         state.Info.FairlightMixer = new FairlightAudioMixerInfo
@@ -58,7 +58,5 @@ public class FairlightAudioMixerConfigCommand : IDeserializedCommand
         {
             Inputs = new Dictionary<int, FairlightAudioInput>()
         };
-
-        return ["info.fairlightMixer", "fairlight.inputs"];
     }
 }

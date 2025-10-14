@@ -44,7 +44,7 @@ public class MediaPoolConfigCommand : IDeserializedCommand
     /// </summary>
     /// <param name="state">Current ATEM state to update</param>
     /// <returns>Paths indicating what was changed in the state</returns>
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Update device info media pool configuration
         state.Info.MediaPool = new MediaPoolInfo
@@ -52,7 +52,5 @@ public class MediaPoolConfigCommand : IDeserializedCommand
             StillCount = StillCount,
             ClipCount = ClipCount
         };
-
-        return ["info.mediaPool"];
     }
 }

@@ -35,12 +35,9 @@ public class VersionCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Update the API version in device info
         state.Info.ApiVersion = Version;
-
-        // Return the state path that was modified
-        return ["info.apiVersion"];
     }
 }

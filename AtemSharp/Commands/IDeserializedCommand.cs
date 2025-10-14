@@ -8,6 +8,5 @@ public interface IDeserializedCommand : ICommand
 	/// Apply this command to the ATEM state
 	/// </summary>
 	/// <param name="state">ATEM state to modify</param>
-	/// <returns>List of state paths that were changed</returns>
-	public string[] ApplyToState(AtemState state);
+	public void ApplyToState(AtemState state);
 }

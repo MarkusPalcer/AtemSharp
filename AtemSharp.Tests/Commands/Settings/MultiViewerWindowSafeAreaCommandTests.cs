@@ -147,7 +147,7 @@ public class MultiViewerWindowSafeAreaCommandTests : SerializedCommandTestBase<M
         const int multiViewerId = 1;
         const int windowIndex = 5;
         const bool safeAreaEnabled = true;
-        
+
         var state = CreateStateWithMultiViewer(multiViewerId);
         var command = new MultiViewerWindowSafeAreaCommand
         {
@@ -157,19 +157,14 @@ public class MultiViewerWindowSafeAreaCommandTests : SerializedCommandTestBase<M
         };
 
         // Act
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         var multiViewer = AtemStateUtil.GetMultiViewer(state, multiViewerId);
         Assert.That(multiViewer.Windows.ContainsKey(windowIndex), Is.True, "Window should exist");
-        
+
         var window = multiViewer.Windows[windowIndex];
         Assert.That(window.SafeTitle, Is.EqualTo(safeAreaEnabled), "SafeTitle should be updated");
-        
-        // Verify the returned path
-        Assert.That(changedPaths, Is.Not.Null);
-        Assert.That(changedPaths.Length, Is.EqualTo(1));
-        Assert.That(changedPaths[0], Is.EqualTo($"settings.multiViewers.{multiViewerId}.windows.{windowIndex}.safeTitle"));
     }
 
     [Test]
@@ -179,10 +174,10 @@ public class MultiViewerWindowSafeAreaCommandTests : SerializedCommandTestBase<M
         const int multiViewerId = 1;
         const int windowIndex = 3;
         const bool safeAreaEnabled = false;
-        
+
         var state = CreateStateWithMultiViewer(multiViewerId);
         var multiViewer = AtemStateUtil.GetMultiViewer(state, multiViewerId);
-        
+
         // Pre-populate window with existing properties
         multiViewer.Windows[windowIndex] = new MultiViewerWindowState
         {
@@ -198,7 +193,7 @@ public class MultiViewerWindowSafeAreaCommandTests : SerializedCommandTestBase<M
         };
 
         // Act
-        _ = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         var window = multiViewer.Windows[windowIndex];

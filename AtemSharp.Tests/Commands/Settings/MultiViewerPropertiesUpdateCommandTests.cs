@@ -16,10 +16,10 @@ public class MultiViewerPropertiesUpdateCommandTests
         // Arrange
         var testData = new byte[] { 1, 3, 1, 0 }; // MultiViewer 1, Layout=ProgramBottom, ProgramPreviewSwapped=true
         using var stream = new MemoryStream(testData);
-        
+
         // Act
         var command = MultiViewerPropertiesUpdateCommand.Deserialize(stream, ProtocolVersion.V8_0);
-        
+
         // Assert
         Assert.That(command.MultiViewerId, Is.EqualTo(1), "MultiViewer ID should be read correctly");
         Assert.That(command.Layout, Is.EqualTo(MultiViewerLayout.ProgramBottom), "Layout should be read correctly");
@@ -47,12 +47,12 @@ public class MultiViewerPropertiesUpdateCommandTests
             // Arrange
             var testData = new byte[] { 0, layoutByte, 0, 0 };
             using var stream = new MemoryStream(testData);
-            
+
             // Act
             var command = MultiViewerPropertiesUpdateCommand.Deserialize(stream, ProtocolVersion.V8_0);
-            
+
             // Assert
-            Assert.That(command.Layout, Is.EqualTo(expectedLayout), 
+            Assert.That(command.Layout, Is.EqualTo(expectedLayout),
                        $"Byte value {layoutByte} should deserialize to {expectedLayout}");
         }
     }
@@ -72,12 +72,12 @@ public class MultiViewerPropertiesUpdateCommandTests
             // Arrange
             var testData = new byte[] { 0, 0, swapByte, 0 };
             using var stream = new MemoryStream(testData);
-            
+
             // Act
             var command = MultiViewerPropertiesUpdateCommand.Deserialize(stream, ProtocolVersion.V8_0);
-            
+
             // Assert
-            Assert.That(command.ProgramPreviewSwapped, Is.EqualTo(expectedSwapped), 
+            Assert.That(command.ProgramPreviewSwapped, Is.EqualTo(expectedSwapped),
                        $"Byte value {swapByte} should deserialize to {expectedSwapped}");
         }
     }
@@ -105,26 +105,24 @@ public class MultiViewerPropertiesUpdateCommandTests
                 }
             }
         };
-        
+
         var command = new MultiViewerPropertiesUpdateCommand
         {
             MultiViewerId = 1,
             Layout = MultiViewerLayout.TopRightSmall,
             ProgramPreviewSwapped = true
         };
-        
+
         // Act
-        var changedPaths = command.ApplyToState(state);
-        
+        command.ApplyToState(state);
+
         // Assert
-        Assert.That(state.Settings.MultiViewers[1].Properties, Is.Not.Null, 
+        Assert.That(state.Settings.MultiViewers[1].Properties, Is.Not.Null,
                    "Properties should be created");
-        Assert.That(state.Settings.MultiViewers[1].Properties!.Layout, Is.EqualTo(MultiViewerLayout.TopRightSmall), 
+        Assert.That(state.Settings.MultiViewers[1].Properties!.Layout, Is.EqualTo(MultiViewerLayout.TopRightSmall),
                    "Layout should be updated in state");
-        Assert.That(state.Settings.MultiViewers[1].Properties!.ProgramPreviewSwapped, Is.True, 
+        Assert.That(state.Settings.MultiViewers[1].Properties!.ProgramPreviewSwapped, Is.True,
                    "ProgramPreviewSwapped should be updated in state");
-        Assert.That(changedPaths, Contains.Item("settings.multiViewers.1.properties"), 
-                   "Should return the correct changed path");
     }
 
     [Test]
@@ -142,16 +140,16 @@ public class MultiViewerPropertiesUpdateCommandTests
                 MultiViewers = new Dictionary<int, MultiViewer>()
             }
         };
-        
+
         var command = new MultiViewerPropertiesUpdateCommand
         {
             MultiViewerId = 5,
             Layout = MultiViewerLayout.Default,
             ProgramPreviewSwapped = false
         };
-        
+
         // Act & Assert
-        Assert.Throws<InvalidIdError>(() => command.ApplyToState(state), 
+        Assert.Throws<InvalidIdError>(() => command.ApplyToState(state),
                                      "Should throw exception for invalid MultiViewer ID");
     }
 
@@ -170,16 +168,16 @@ public class MultiViewerPropertiesUpdateCommandTests
                 MultiViewers = new Dictionary<int, MultiViewer>()
             }
         };
-        
+
         var command = new MultiViewerPropertiesUpdateCommand
         {
             MultiViewerId = 0,
             Layout = MultiViewerLayout.Default,
             ProgramPreviewSwapped = false
         };
-        
+
         // Act & Assert
-        Assert.Throws<InvalidIdError>(() => command.ApplyToState(state), 
+        Assert.Throws<InvalidIdError>(() => command.ApplyToState(state),
                                      "Should throw exception when no MultiViewers are available");
     }
 
@@ -198,27 +196,25 @@ public class MultiViewerPropertiesUpdateCommandTests
                 MultiViewers = new Dictionary<int, MultiViewer>()
             }
         };
-        
+
         var command = new MultiViewerPropertiesUpdateCommand
         {
             MultiViewerId = 0,
             Layout = MultiViewerLayout.ProgramLeft,
             ProgramPreviewSwapped = false
         };
-        
+
         // Act
-        var changedPaths = command.ApplyToState(state);
-        
+        command.ApplyToState(state);
+
         // Assert
-        Assert.That(state.Settings.MultiViewers.Count, Is.EqualTo(1), 
+        Assert.That(state.Settings.MultiViewers.Count, Is.EqualTo(1),
                    "MultiViewers dictionary should contain one entry");
-        Assert.That(state.Settings.MultiViewers[0], Is.Not.Null, 
+        Assert.That(state.Settings.MultiViewers[0], Is.Not.Null,
                    "MultiViewer should be created");
-        Assert.That(state.Settings.MultiViewers[0].Index, Is.EqualTo(0), 
+        Assert.That(state.Settings.MultiViewers[0].Index, Is.EqualTo(0),
                    "MultiViewer index should be set");
-        Assert.That(state.Settings.MultiViewers[0].Properties!.Layout, Is.EqualTo(MultiViewerLayout.ProgramLeft), 
+        Assert.That(state.Settings.MultiViewers[0].Properties!.Layout, Is.EqualTo(MultiViewerLayout.ProgramLeft),
                    "Layout should be set correctly");
-        Assert.That(changedPaths, Contains.Item("settings.multiViewers.0.properties"), 
-                   "Should return the correct changed path");
     }
 }

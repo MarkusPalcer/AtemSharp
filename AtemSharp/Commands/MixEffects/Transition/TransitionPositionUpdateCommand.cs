@@ -55,7 +55,7 @@ public class TransitionPositionUpdateCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Validate mix effect index
         if (state.Info.Capabilities == null || MixEffectId >= state.Info.Capabilities.MixEffects)
@@ -65,13 +65,10 @@ public class TransitionPositionUpdateCommand : IDeserializedCommand
 
         // Get or create the mix effect
         var mixEffect = state.Video.MixEffects.GetOrCreate(MixEffectId);
-        
+
         // Update the transition position
         mixEffect.TransitionPosition.InTransition = InTransition;
         mixEffect.TransitionPosition.RemainingFrames = RemainingFrames;
         mixEffect.TransitionPosition.HandlePosition = HandlePosition;
-
-        // Return the state path that was modified
-        return [$"video.mixEffects.{MixEffectId}.transitionPosition"];
     }
 }

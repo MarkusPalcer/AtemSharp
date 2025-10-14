@@ -47,7 +47,7 @@ public class TransitionDipUpdateCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Validate mix effect index
         if (!state.Video.MixEffects.TryGetValue(MixEffectId, out var mixEffect))
@@ -70,7 +70,5 @@ public class TransitionDipUpdateCommand : IDeserializedCommand
         // Update the dip settings
         mixEffect.TransitionSettings.Dip.Rate = Rate;
         mixEffect.TransitionSettings.Dip.Input = Input;
-
-        return new[] { $"video.mixEffects.{MixEffectId}.transitionSettings.dip" };
     }
 }

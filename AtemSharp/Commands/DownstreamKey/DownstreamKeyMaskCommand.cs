@@ -31,21 +31,15 @@ public class DownstreamKeyMaskCommand : SerializedCommand
     {
         DownstreamKeyerId = downstreamKeyerId;
 
-        // If no video state or downstream keyer array exists, initialize with defaults
-        if (!currentState.Video.DownstreamKeyers.TryGetValue(downstreamKeyerId, out var downstreamKeyer) ||
-            downstreamKeyer.Properties?.Mask is null)
+        if (downstreamKeyerId >= currentState.Video.DownstreamKeyers.Length)
         {
-            // Set default values and flags (like TypeScript pattern)
-            Enabled = false;
-            Top = 0.0;
-            Bottom = 0.0;
-            Left = 0.0;
-            Right = 0.0;
-            return;
+            throw new IndexOutOfRangeException("DownstreamKeyerId is out of range");
         }
 
-        var maskProps = downstreamKeyer.Properties!.Mask;
-        
+        var dsk = currentState.Video.DownstreamKeyers[downstreamKeyerId];
+
+        var maskProps = dsk.Properties!.Mask;
+
         // Initialize from current state (direct field access = no flags set)
         _enabled = maskProps.Enabled;
         _top = maskProps.Top;
@@ -124,19 +118,19 @@ public class DownstreamKeyMaskCommand : SerializedCommand
     {
         using var memoryStream = new MemoryStream(12);
         using var writer = new BinaryWriter(memoryStream);
-        
+
         // Write flag as single byte (matching TypeScript pattern)
         writer.Write((byte)Flag);
         writer.Write((byte)DownstreamKeyerId);
         writer.WriteBoolean(Enabled);
         writer.Pad(1); // Padding byte
-        
+
         // Write mask values as 16-bit signed integers (big-endian) using coordinate conversion
         writer.WriteInt16BigEndian(Top.CoordinateToInt16());
         writer.WriteInt16BigEndian(Bottom.CoordinateToInt16());
         writer.WriteInt16BigEndian(Left.CoordinateToInt16());
         writer.WriteInt16BigEndian(Right.CoordinateToInt16());
-        
+
         return memoryStream.ToArray();
     }
 }

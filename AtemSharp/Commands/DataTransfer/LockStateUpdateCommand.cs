@@ -28,7 +28,7 @@ public class LockStateUpdateCommand : IDeserializedCommand
     public static LockStateUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
     {
         using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-        
+
         return new LockStateUpdateCommand
         {
             Index = reader.ReadUInt16BigEndian(),
@@ -41,10 +41,9 @@ public class LockStateUpdateCommand : IDeserializedCommand
     /// </summary>
     /// <param name="state">ATEM state to modify</param>
     /// <returns>List of state paths that were changed (empty for this command)</returns>
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Nothing to do - this is just a notification that a lock state was updated
         // The TypeScript implementation also returns an empty array
-        return [];
     }
 }

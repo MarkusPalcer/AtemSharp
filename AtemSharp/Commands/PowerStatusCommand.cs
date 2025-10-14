@@ -30,7 +30,7 @@ public class PowerStatusCommand : IDeserializedCommand
 
         // Read the power status byte
         var powerStatusByte = reader.ReadByte();
-        
+
         // Extract individual power supply status bits
         // Bit 0 = first power supply, Bit 1 = second power supply
         var powerSupplies = new[]
@@ -46,15 +46,13 @@ public class PowerStatusCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Only update the number of power supplies that are configured for this device
         var configuredSupplyCount = state.Info.Power.Length;
-        
+
         // Take only the configured number of power supplies from our data
         // This prevents overwriting with more power supplies than the device actually has
         state.Info.Power = PowerSupplies.Take(configuredSupplyCount).ToArray();
-
-        return ["info.power"];
     }
 }

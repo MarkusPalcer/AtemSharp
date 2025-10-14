@@ -69,10 +69,9 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
 		};
 
 		// Act
-		var result = command.ApplyToState(state);
+		command.ApplyToState(state);
 
 		// Assert
-		Assert.That(result, Is.EqualTo(new[] { "audio.master" }));
 		Assert.That(state.Audio.Master.Gain, Is.EqualTo(-12.5));
 		Assert.That(state.Audio.Master.Balance, Is.EqualTo(25.0));
 		Assert.That(state.Audio.Master.FollowFadeToBlack, Is.True);
@@ -113,10 +112,9 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
 		};
 
 		// Act
-		var result = command.ApplyToState(state);
+		command.ApplyToState(state);
 
 		// Assert
-		Assert.That(result, Is.EqualTo(new[] { "audio.master" }));
 		Assert.That(state.Audio.Master, Is.Not.Null);
 		Assert.That(state.Audio.Master.Gain, Is.EqualTo(-8.0));
 		Assert.That(state.Audio.Master.Balance, Is.EqualTo(15.0));
@@ -173,7 +171,7 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
 		// Arrange
 		var state = new AtemState();
 		state.Audio = new AudioState();
-		
+
 		var command = new AudioMixerMasterUpdateCommand
 		{
 			Gain = -10.0,
@@ -193,7 +191,7 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
 		// Arrange
 		var state = new AtemState();
 		state.Audio = null; // Audio subsystem not available
-		
+
 		var command = new AudioMixerMasterUpdateCommand
 		{
 			Gain = -10.0,

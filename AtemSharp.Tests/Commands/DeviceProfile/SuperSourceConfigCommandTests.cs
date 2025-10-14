@@ -11,7 +11,7 @@ public class SuperSourceConfigCommandTests : DeserializedCommandTestBase<SuperSo
     {
         public int SsrcId { get; set; }
         public byte BoxCount { get; set; }
-        
+
         // For older protocol versions that may use "Boxes" property in test data
         public byte Boxes
         {
@@ -54,15 +54,13 @@ public class SuperSourceConfigCommandTests : DeserializedCommandTestBase<SuperSo
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.SuperSources, Is.Not.Null);
         Assert.That(state.Info.SuperSources.ContainsKey(1), Is.True);
         Assert.That(state.Info.SuperSources[1], Is.Not.Null);
         Assert.That(state.Info.SuperSources[1].BoxCount, Is.EqualTo(54));
-        
-        Assert.That(result, Is.EqualTo(new[] { "info.superSources" }));
     }
 
     [Test]
@@ -88,7 +86,7 @@ public class SuperSourceConfigCommandTests : DeserializedCommandTestBase<SuperSo
         // Assert
         Assert.That(state.Info.SuperSources.ContainsKey(0), Is.True);
         Assert.That(state.Info.SuperSources[0].BoxCount, Is.EqualTo(48));
-        
+
         Assert.That(state.Info.SuperSources.ContainsKey(2), Is.True);
         Assert.That(state.Info.SuperSources[2].BoxCount, Is.EqualTo(196));
     }

@@ -38,7 +38,7 @@ public class AudioMixerPropertiesUpdateCommand : IDeserializedCommand
     /// <param name="state">Current ATEM state to update</param>
     /// <returns>Path indicating what was changed in the state</returns>
     /// <exception cref="InvalidIdError">Thrown if classic audio is not available</exception>
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         if (state.Audio is null)
         {
@@ -47,7 +47,5 @@ public class AudioMixerPropertiesUpdateCommand : IDeserializedCommand
 
         // Update property
         state.Audio.AudioFollowVideoCrossfadeTransitionEnabled = AudioFollowVideo;
-
-        return ["audio.audioFollowVideoCrossfadeTransitionEnabled"];
     }
 }

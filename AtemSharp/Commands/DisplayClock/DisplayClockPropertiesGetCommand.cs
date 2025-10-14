@@ -70,12 +70,12 @@ public class DisplayClockPropertiesGetCommand : IDeserializedCommand
         var positionX = reader.ReadInt16BigEndian();  // bytes 6-7
         var positionY = reader.ReadInt16BigEndian();  // bytes 8-9
         var autoHide = reader.ReadBoolean(); // byte 10
-        
+
         var startFromHours = reader.ReadByte();   // byte 11
         var startFromMinutes = reader.ReadByte(); // byte 12
         var startFromSeconds = reader.ReadByte(); // byte 13
         var startFromFrames = reader.ReadByte();  // byte 14
-        
+
         var clockMode = (DisplayClockClockMode)reader.ReadByte();  // byte 15
         var clockState = (DisplayClockClockState)reader.ReadByte(); // byte 16
 
@@ -100,10 +100,10 @@ public class DisplayClockPropertiesGetCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         state.DisplayClock ??= new DisplayClockState();
-        
+
         state.DisplayClock.Enabled = Enabled;
         state.DisplayClock.Size = Size;
         state.DisplayClock.Opacity = Opacity;
@@ -113,17 +113,5 @@ public class DisplayClockPropertiesGetCommand : IDeserializedCommand
         state.DisplayClock.StartFrom = StartFrom;
         state.DisplayClock.ClockMode = ClockMode;
         state.DisplayClock.ClockState = ClockState;
-        
-        return [
-            "displayClock.enabled",
-            "displayClock.size", 
-            "displayClock.opacity",
-            "displayClock.positionX",
-            "displayClock.positionY",
-            "displayClock.autoHide",
-            "displayClock.startFrom",
-            "displayClock.clockMode",
-            "displayClock.clockState"
-        ];
     }
 }

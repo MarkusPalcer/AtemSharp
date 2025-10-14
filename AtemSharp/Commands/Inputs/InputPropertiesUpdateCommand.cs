@@ -72,25 +72,25 @@ public class InputPropertiesUpdateCommand : IDeserializedCommand
         using var reader = new BinaryReader(stream, System.Text.Encoding.Default, leaveOpen: true);
 
         var inputId = reader.ReadUInt16BigEndian();
-        
+
         // Read strings
         var longNameBytes = reader.ReadBytes(20);
         var longName = AtemUtil.ReadNullTerminatedString(longNameBytes, 0, 20);
-        
+
         var shortNameBytes = reader.ReadBytes(4);
         var shortName = AtemUtil.ReadNullTerminatedString(shortNameBytes, 0, 4);
-        
+
         var areNamesDefault = reader.ReadBoolean();;
         reader.ReadByte(); // Skip padding
-        
+
         var externalPortsValue = reader.ReadUInt16BigEndian();
         var portComponents = AtemUtil.GetComponents((ExternalPortType)externalPortsValue);
         var externalPorts = portComponents.Length == 0 ? null : portComponents;
-        
+
         var externalPortType = (ExternalPortType)reader.ReadUInt16BigEndian();
         var internalPortType = (InternalPortType)reader.ReadByte();
         reader.ReadByte(); // Skip padding
-        
+
         var sourceAvailability = (SourceAvailability)reader.ReadByte();
         var meAvailability = (MeAvailability)reader.ReadByte();
 
@@ -109,7 +109,7 @@ public class InputPropertiesUpdateCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Update the input channel state
         state.Video.Inputs[InputId] = new InputChannel
@@ -124,8 +124,5 @@ public class InputPropertiesUpdateCommand : IDeserializedCommand
             SourceAvailability = SourceAvailability,
             MeAvailability = MeAvailability
         };
-
-        // Return the state path that was modified
-        return [$"video.inputs.{InputId}"];
     }
 }

@@ -33,12 +33,12 @@ public class DataTransferUploadContinueCommand : IDeserializedCommand
     public static DataTransferUploadContinueCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
     {
         using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-        
+
         var transferId = reader.ReadUInt16BigEndian();
         reader.ReadBytes(4); // Skip 4 bytes (offsets 2-5)
         var chunkSize = reader.ReadUInt16BigEndian();
         var chunkCount = reader.ReadUInt16BigEndian();
-        
+
         return new DataTransferUploadContinueCommand
         {
             TransferId = transferId,
@@ -52,10 +52,9 @@ public class DataTransferUploadContinueCommand : IDeserializedCommand
     /// </summary>
     /// <param name="state">ATEM state to modify</param>
     /// <returns>List of state paths that were changed (empty for this command)</returns>
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Nothing to do - this is just upload flow control, no state changes
         // The TypeScript implementation also returns an empty array
-        return [];
     }
 }

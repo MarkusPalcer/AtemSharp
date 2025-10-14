@@ -40,7 +40,7 @@ public class TransitionMixUpdateCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Validate mix effect index
         if (!state.Video.MixEffects.TryGetValue(MixEffectId, out var mixEffect))
@@ -62,7 +62,5 @@ public class TransitionMixUpdateCommand : IDeserializedCommand
 
         // Update the mix rate
         mixEffect.TransitionSettings.Mix.Rate = Rate;
-
-        return new[] { $"video.mixEffects.{MixEffectId}.transitionSettings.mix.rate" };
     }
 }

@@ -26,17 +26,15 @@ public class DownstreamKeyCutSourceCommand : SerializedCommand
     {
         DownstreamKeyerId = downstreamKeyerId;
 
-        // If no video state or downstream keyer array exists, initialize with defaults
-        if (!currentState.Video.DownstreamKeyers.TryGetValue(downstreamKeyerId, out var dsk ) ||
-            dsk.Sources is null)
+        if (downstreamKeyerId >= currentState.Video.DownstreamKeyers.Length)
         {
-            // Set default value and flag (like TypeScript pattern)
-            Input = 0;
-            return;
+            throw new IndexOutOfRangeException("DownstreamKeyerId is out of range");
         }
 
+        var dsk = currentState.Video.DownstreamKeyers[downstreamKeyerId];
+
         // Initialize from current state (direct field access = no flags set)
-        _input = dsk.Sources!.CutSource;
+        _input = dsk.Sources.CutSource;
     }
 
     /// <summary>
@@ -63,9 +61,9 @@ public class DownstreamKeyCutSourceCommand : SerializedCommand
         using var writer = new BinaryWriter(memoryStream);
 
         writer.Write((byte)DownstreamKeyerId);
-        writer.Pad(1); 
+        writer.Pad(1);
         writer.WriteUInt16BigEndian((ushort)Input);
-        
+
         return memoryStream.ToArray();
     }
 }

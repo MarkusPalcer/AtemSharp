@@ -53,11 +53,11 @@ public class MixEffectKeyLumaUpdateCommand : IDeserializedCommand
         var keyerId = reader.ReadByte();
         var preMultiplied = reader.ReadBoolean();
         reader.ReadByte(); // Skip padding byte
-        
+
         // Read percentage values as 16-bit integers and convert (divide by 10 to match TypeScript implementation)
         var clip = reader.ReadUInt16BigEndian() / 10.0;
         var gain = reader.ReadUInt16BigEndian() / 10.0;
-        
+
         var invert = reader.ReadBoolean();
         reader.ReadBytes(3); // Skip remaining padding bytes
 
@@ -73,7 +73,7 @@ public class MixEffectKeyLumaUpdateCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Validate mix effect index - need to get capabilities info
         if (state.Info.Capabilities == null || MixEffectId >= state.Info.Capabilities.MixEffects)
@@ -86,27 +86,19 @@ public class MixEffectKeyLumaUpdateCommand : IDeserializedCommand
 
         // Get or create the mix effect
         var mixEffect = state.Video.MixEffects.GetOrCreate(MixEffectId);
-        
+
         // Get or create the upstream keyer
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerId);
         keyer.Index = KeyerId;
-        
+
         // Get or create the luma settings
         if (keyer.LumaSettings == null)
             keyer.LumaSettings = new UpstreamKeyerLumaSettings();
-        
+
         // Update the luma settings
         keyer.LumaSettings.PreMultiplied = PreMultiplied;
         keyer.LumaSettings.Clip = Clip;
         keyer.LumaSettings.Gain = Gain;
         keyer.LumaSettings.Invert = Invert;
-
-        // Return the state path that was modified
-        return [
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.lumaSettings.preMultiplied",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.lumaSettings.clip",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.lumaSettings.gain",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.lumaSettings.invert"
-        ];
     }
 }

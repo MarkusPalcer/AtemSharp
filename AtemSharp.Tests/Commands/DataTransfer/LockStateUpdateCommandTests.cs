@@ -37,24 +37,6 @@ public class LockStateUpdateCommandTests : DeserializedCommandTestBase<LockState
         }
     }
 
-    [Test]
-    public void ApplyToState_ShouldReturnEmptyArray()
-    {
-        // Arrange
-        var command = new LockStateUpdateCommand
-        {
-            Index = 12345,
-            Locked = true
-        };
-        var state = new AtemState();
-
-        // Act
-        var result = command.ApplyToState(state);
-
-        // Assert
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result, Is.Empty, "LockStateUpdateCommand should not modify state and return empty array");
-    }
 
     [Test]
     public void Deserialize_ShouldCorrectlyParseIndexAndLocked()

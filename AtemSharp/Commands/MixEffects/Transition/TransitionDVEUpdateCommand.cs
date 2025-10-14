@@ -128,7 +128,7 @@ public class TransitionDVEUpdateCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Validate mix effect index and capabilities
         if (!state.Video.MixEffects.TryGetValue(MixEffectId, out var mixEffect))
@@ -164,7 +164,5 @@ public class TransitionDVEUpdateCommand : IDeserializedCommand
             Reverse = Reverse,
             FlipFlop = FlipFlop
         };
-
-        return new[] { $"video.mixEffects.{MixEffectId}.transitionSettings.DVE" };
     }
 }

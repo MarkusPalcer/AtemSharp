@@ -12,26 +12,26 @@ public class AudioMixerHeadphonesUpdateCommand : IDeserializedCommand
 	/// Gain in decibel, -Infinity to +6dB
 	/// </summary>
 	public double Gain { get; set; }
-    
+
 	/// <summary>
 	/// Program out gain in decibel, -Infinity to +6dB
 	/// </summary>
 	public double ProgramOutGain { get; set; }
-    
+
 	/// <summary>
 	/// Sidetone gain in decibel, -Infinity to +6dB
 	/// </summary>
 	public double SidetoneGain { get; set; }
-    
+
 	/// <summary>
 	/// Talkback gain in decibel, -Infinity to +6dB
 	/// </summary>
 	public double TalkbackGain { get; set; }
-	
+
 	public static AudioMixerHeadphonesUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
 	{
 		using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true) ;
-		
+
 		return new AudioMixerHeadphonesUpdateCommand
 		{
 			Gain = reader.ReadUInt16BigEndian().UInt16ToDecibel(),
@@ -42,7 +42,7 @@ public class AudioMixerHeadphonesUpdateCommand : IDeserializedCommand
 	}
 
 	/// <inheritdoc />
-	public string[] ApplyToState(AtemState state)
+	public void ApplyToState(AtemState state)
 	{
 		if (state.Audio is null)
 		{
@@ -55,7 +55,5 @@ public class AudioMixerHeadphonesUpdateCommand : IDeserializedCommand
 		state.Audio.Headphones.ProgramOutGain = ProgramOutGain;
 		state.Audio.Headphones.TalkbackGain = TalkbackGain;
 		state.Audio.Headphones.SidetoneGain = SidetoneGain;
-
-		return ["audio.headphones"];
 	}
 }

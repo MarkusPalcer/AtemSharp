@@ -33,12 +33,9 @@ public class TimeConfigUpdateCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Update the state object
         state.Settings.TimeMode = Mode;
-        
-        // Return the state path that was modified for change tracking
-        return ["settings.timeMode"];
     }
 }

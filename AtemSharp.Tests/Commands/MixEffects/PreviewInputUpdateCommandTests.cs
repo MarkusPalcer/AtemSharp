@@ -15,9 +15,9 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
 
     protected override void CompareCommandProperties(PreviewInputUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index), 
+        Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index),
                    $"MixEffectId should match expected value for test case {testCase.Name}");
-        Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source), 
+        Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source),
                    $"Source should match expected value for test case {testCase.Name}");
     }
 
@@ -27,7 +27,7 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
         // Arrange
         const int mixEffectId = 1;
         const int newSource = 2000;
-        
+
         var state = CreateStateWithMixEffect(mixEffectId, 1000); // Initial source
         var command = new PreviewInputUpdateCommand
         {
@@ -36,12 +36,10 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
         };
 
         // Act
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Video.MixEffects[mixEffectId].PreviewInput, Is.EqualTo(newSource));
-        Assert.That(changedPaths, Has.Length.EqualTo(1));
-        Assert.That(changedPaths[0], Is.EqualTo($"video.mixEffects.{mixEffectId}.previewInput"));
     }
 
     [Test]
@@ -50,7 +48,7 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
         // Arrange
         const int mixEffectId = 1;
         const int newSource = 2000;
-        
+
         var state = new AtemState
         {
             Info = new DeviceInfo
@@ -61,7 +59,7 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
                 }
             }
         };
-        
+
         var command = new PreviewInputUpdateCommand
         {
             MixEffectId = mixEffectId,
@@ -69,14 +67,12 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
         };
 
         // Act
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Video, Is.Not.Null);
         Assert.That(state.Video.MixEffects[mixEffectId], Is.Not.Null);
         Assert.That(state.Video.MixEffects[mixEffectId].PreviewInput, Is.EqualTo(newSource));
-        Assert.That(changedPaths, Has.Length.EqualTo(1));
-        Assert.That(changedPaths[0], Is.EqualTo($"video.mixEffects.{mixEffectId}.previewInput"));
     }
 
     [Test]
@@ -84,7 +80,7 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
     {
         // Arrange
         const int invalidMixEffectId = 10;
-        
+
         var state = new AtemState
         {
             Info = new DeviceInfo
@@ -95,7 +91,7 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
                 }
             }
         };
-        
+
         var command = new PreviewInputUpdateCommand
         {
             MixEffectId = invalidMixEffectId,
@@ -113,7 +109,7 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
     {
         // Arrange
         const int mixEffectId = 1;
-        
+
         var state = new AtemState
         {
             Info = new DeviceInfo
@@ -121,7 +117,7 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
                 Capabilities = null // No capabilities
             }
         };
-        
+
         var command = new PreviewInputUpdateCommand
         {
             MixEffectId = mixEffectId,
@@ -178,7 +174,7 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
         {
             MixEffects = 2 // 0-1 valid
         };
-        
+
         var command = new PreviewInputUpdateCommand
         {
             MixEffectId = 1,
@@ -199,7 +195,7 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
         {
             MixEffects = 2 // 0-1 valid
         };
-        
+
         var command = new PreviewInputUpdateCommand
         {
             MixEffectId = 5, // Invalid - only 0-1 are valid

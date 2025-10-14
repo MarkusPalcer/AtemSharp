@@ -18,6 +18,15 @@ public class AudioMixerInputUpdateCommandTests : DeserializedCommandTestBase<Aud
 		public AudioMixOption MixOption { get; set; }
 		public double Gain { get; set; }
 		public double Balance { get; set; }
+
+        // TODO: Check how this is deserialized and applied
+        public bool IndexOfSourceType { get; set; }
+
+        // TODO: Check how this is deserialized and applied
+        public bool SupportsRcaToXlrEnabled { get; set; }
+
+        // TODO: Check how this is deserialized and applied
+        public bool RcaToXlrEnabled { get; set; }
 	}
 
 	protected override void CompareCommandProperties(AudioMixerInputUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
@@ -74,7 +83,7 @@ public class AudioMixerInputUpdateCommandTests : DeserializedCommandTestBase<Aud
 		// Arrange
 		var state = new AtemState();
 		state.Audio = new AudioState();
-		
+
 		var command = new AudioMixerInputUpdateCommand
 		{
 			Index = 1000,
@@ -95,7 +104,7 @@ public class AudioMixerInputUpdateCommandTests : DeserializedCommandTestBase<Aud
 		// Arrange
 		var state = new AtemState();
 		state.Audio = null; // Audio subsystem not available
-		
+
 		var command = new AudioMixerInputUpdateCommand
 		{
 			Index = 1000,

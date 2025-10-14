@@ -47,13 +47,12 @@ public class ProductIdentifierCommandTests : DeserializedCommandTestBase<Product
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.ProductIdentifier, Is.EqualTo("bbdf2a89-c79d-4b72-9460-423b6478e60ba"));
         Assert.That(state.Info.Model, Is.EqualTo(Model.TwoMEBS4K));
         Assert.That(state.Info.Power, Is.EqualTo(new[] { false, false })); // TwoMEBS4K has 2 power supplies
-        Assert.That(result, Is.EqualTo(new[] { "info" }));
     }
 
     [Test]
@@ -68,13 +67,12 @@ public class ProductIdentifierCommandTests : DeserializedCommandTestBase<Product
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.ProductIdentifier, Is.EqualTo("test-device"));
         Assert.That(state.Info.Model, Is.EqualTo(Model.OneME));
         Assert.That(state.Info.Power, Is.EqualTo(new[] { false })); // OneME has 1 power supply
-        Assert.That(result, Is.EqualTo(new[] { "info" }));
     }
 
     [Test]
@@ -89,13 +87,12 @@ public class ProductIdentifierCommandTests : DeserializedCommandTestBase<Product
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.ProductIdentifier, Is.EqualTo("constellation-device"));
         Assert.That(state.Info.Model, Is.EqualTo(Model.Constellation));
         Assert.That(state.Info.Power, Is.EqualTo(new[] { false, false })); // Constellation has 2 power supplies
-        Assert.That(result, Is.EqualTo(new[] { "info" }));
     }
 
     [Test]

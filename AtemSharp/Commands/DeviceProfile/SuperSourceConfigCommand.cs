@@ -59,14 +59,12 @@ public class SuperSourceConfigCommand : IDeserializedCommand
     /// </summary>
     /// <param name="state">Current ATEM state to update</param>
     /// <returns>Paths indicating what was changed in the state</returns>
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Update device info SuperSource configuration
         state.Info.SuperSources[SsrcId] = new SuperSourceInfo
         {
             BoxCount = BoxCount
         };
-
-        return ["info.superSources"];
     }
 }

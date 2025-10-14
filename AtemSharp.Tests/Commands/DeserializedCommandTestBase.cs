@@ -2,6 +2,8 @@ using System.Reflection;
 using AtemSharp.Commands;
 using AtemSharp.Enums;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AtemSharp.Tests.Commands;
 
@@ -19,7 +21,9 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 	public new abstract class CommandDataBase : CommandTestBase<TTestData>.CommandDataBase
 	{
 		// Base class for test data - derived classes add specific properties
-	}
+
+        [JsonExtensionData] public Dictionary<string, JToken> UnknownProperties { get; set; } = new();
+    }
 
 	private static TestCaseData[] LoadTestData()
 	{
@@ -29,15 +33,15 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 		{
 			throw new InvalidOperationException($"Command {typeof(TCommand).Name} must have a CommandAttribute");
 		}
-		
+
 		var rawName = commandAttribute.RawName;
 		if (string.IsNullOrEmpty(rawName))
 		{
 			throw new InvalidOperationException($"Command {typeof(TCommand).Name} CommandAttribute must have a RawName");
 		}
-		
+
 		var baseTestCases = CommandTestBase<TTestData>.LoadTestData(rawName);
-		
+
 		// Convert to the derived TestCaseData type
 		return baseTestCases.Select(tc => new TestCaseData
 		{
@@ -53,8 +57,8 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 		var testCases = LoadTestData();
 		var commandAttribute = typeof(TCommand).GetCustomAttribute<CommandAttribute>();
 		var rawName = commandAttribute?.RawName ?? "Unknown";
-		
-		Assert.That(testCases.Length, Is.GreaterThan(0), 
+
+		Assert.That(testCases.Length, Is.GreaterThan(0),
 		            $"Should have {rawName} test cases from libatem-data.json");
 
 		foreach (var testCase in testCases)
@@ -78,6 +82,11 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 
 		// Assert - Compare properties
 		CompareCommandProperties(actualCommand, testCase.Command, testCase);
+
+        if (testCase.Command.UnknownProperties.Count != 0)
+        {
+            Assert.Fail("Unprocessed test data:\n" + JsonConvert.SerializeObject(testCase.Command.UnknownProperties));
+        }
 	}
 
 	protected abstract void CompareCommandProperties(TCommand actualCommand, TTestData expectedData, TestCaseData testCase);
@@ -85,7 +94,7 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 	private static TCommand DeserializeCommand(byte[] payload, ProtocolVersion protocolVersion)
 	{
 		// Use reflection to call the static Deserialize method
-		var deserializeMethod = typeof(TCommand).GetMethod("Deserialize", 
+		var deserializeMethod = typeof(TCommand).GetMethod("Deserialize",
 		                                                   BindingFlags.Public | BindingFlags.Static,
 		                                                   null,
 		                                                   [typeof(Stream), typeof(ProtocolVersion)],
@@ -98,7 +107,7 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 
 		using var stream = new MemoryStream(payload);
 		var result = deserializeMethod.Invoke(null, [stream, protocolVersion]);
-		
+
 		if (result is not TCommand command)
 		{
 			throw new InvalidOperationException($"Deserialize method did not return a {typeof(TCommand).Name}");

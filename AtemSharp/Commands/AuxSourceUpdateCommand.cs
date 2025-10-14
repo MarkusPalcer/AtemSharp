@@ -41,7 +41,7 @@ public class AuxSourceUpdateCommand : IDeserializedCommand
 	}
 
 	/// <inheritdoc />
-	public string[] ApplyToState(AtemState state)
+	public void ApplyToState(AtemState state)
 	{
 		// Validate auxiliary output index
 		if (state.Info.Capabilities is null || AuxBus >= state.Info.Capabilities.Auxiliaries)
@@ -51,8 +51,5 @@ public class AuxSourceUpdateCommand : IDeserializedCommand
 
 		// Update the auxiliary source
 		state.Video.Auxiliaries[AuxBus] = Source;
-
-		// Return the state path that was modified
-		return [$"video.auxiliaries.{AuxBus}"];
 	}
 }

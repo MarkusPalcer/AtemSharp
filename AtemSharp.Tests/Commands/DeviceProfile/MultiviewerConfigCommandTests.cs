@@ -10,6 +10,24 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 	{
 		public int Count { get; set; }
 		public int WindowCount { get; set; }
+
+        // TODO: Check how this is deserialized and applied
+        public bool CanRouteInputs { get; set; }
+
+        // TODO: Check how this is deserialized and applied
+        public bool CanSwapPreviewProgram { get; set; }
+
+        // TODO: Check how this is deserialized and applied
+        public bool CanToggleSafeArea { get; set; }
+
+        // TODO: Check how this is deserialized and applied
+        public bool SupportsVuMeters { get; set; }
+
+        // TODO: Check how this is deserialized and applied
+        public bool SupportsQuadrants { get; set; }
+
+        // TODO: Check how this is deserialized and applied
+        public bool CanChangeLayout { get; set; }
 	}
 
 	protected override void CompareCommandProperties(MultiviewerConfigCommand actualCommand, CommandData expectedData, TestCaseData testCase)
@@ -30,13 +48,12 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 		};
 
 		// Act
-		var result = command.ApplyToState(state);
+		command.ApplyToState(state);
 
 		// Assert
 		Assert.That(state.MultiViewer, Is.Not.Null);
 		Assert.That(state.MultiViewer.Count, Is.EqualTo(2));
 		Assert.That(state.MultiViewer.WindowCount, Is.EqualTo(10));
-		Assert.That(result, Is.EqualTo(new[] { "multiViewer" }));
 	}
 
 	[Test]
@@ -51,7 +68,7 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 				WindowCount = 8
 			}
 		};
-		
+
 		var command = new MultiviewerConfigCommand
 		{
 			Count = 4,
@@ -59,13 +76,12 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 		};
 
 		// Act
-		var result = command.ApplyToState(state);
+		command.ApplyToState(state);
 
 		// Assert
 		Assert.That(state.MultiViewer, Is.Not.Null);
 		Assert.That(state.MultiViewer.Count, Is.EqualTo(4));
 		Assert.That(state.MultiViewer.WindowCount, Is.EqualTo(16));
-		Assert.That(result, Is.EqualTo(new[] { "multiViewer" }));
 	}
 
 	[Test]
@@ -80,13 +96,12 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 		};
 
 		// Act
-		var result = command.ApplyToState(state);
+		command.ApplyToState(state);
 
 		// Assert
 		Assert.That(state.MultiViewer, Is.Not.Null);
 		Assert.That(state.MultiViewer.Count, Is.EqualTo(0));
 		Assert.That(state.MultiViewer.WindowCount, Is.EqualTo(0));
-		Assert.That(result, Is.EqualTo(new[] { "multiViewer" }));
 	}
 
 	[Test]
@@ -101,13 +116,12 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 		};
 
 		// Act
-		var result = command.ApplyToState(state);
+		command.ApplyToState(state);
 
 		// Assert
 		Assert.That(state.MultiViewer, Is.Not.Null);
 		Assert.That(state.MultiViewer.Count, Is.EqualTo(255));
 		Assert.That(state.MultiViewer.WindowCount, Is.EqualTo(255));
-		Assert.That(result, Is.EqualTo(new[] { "multiViewer" }));
 	}
 
 	[Test]
@@ -122,13 +136,12 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 		};
 
 		// Act
-		var result = command.ApplyToState(state);
+		command.ApplyToState(state);
 
 		// Assert
 		Assert.That(state.MultiViewer, Is.Not.Null);
 		Assert.That(state.MultiViewer.Count, Is.EqualTo(1));
 		Assert.That(state.MultiViewer.WindowCount, Is.EqualTo(10));
-		Assert.That(result, Is.EqualTo(new[] { "multiViewer" }));
 	}
 
 	[Test]
@@ -136,7 +149,7 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 	{
 		// Arrange
 		var state = new AtemState();
-		
+
 		var commands = new[]
 		{
 			new MultiviewerConfigCommand { Count = 1, WindowCount = 4 },
@@ -147,12 +160,11 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 		// Act & Assert each step
 		foreach (var command in commands)
 		{
-			var result = command.ApplyToState(state);
-			
+			command.ApplyToState(state);
+
 			Assert.That(state.MultiViewer, Is.Not.Null);
 			Assert.That(state.MultiViewer.Count, Is.EqualTo(command.Count));
 			Assert.That(state.MultiViewer.WindowCount, Is.EqualTo(command.WindowCount));
-			Assert.That(result, Is.EqualTo(new[] { "multiViewer" }));
 		}
 
 		// Final state should match the last command
@@ -180,15 +192,13 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 		};
 
 		// Act
-		var result1 = firstCommand.ApplyToState(state);
-		var result2 = secondCommand.ApplyToState(state);
+		firstCommand.ApplyToState(state);
+		secondCommand.ApplyToState(state);
 
 		// Assert
 		Assert.That(state.MultiViewer, Is.Not.Null);
 		Assert.That(state.MultiViewer.Count, Is.EqualTo(2)); // Should have the latest value
 		Assert.That(state.MultiViewer.WindowCount, Is.EqualTo(16)); // Should have the latest value
-		Assert.That(result1, Is.EqualTo(new[] { "multiViewer" }));
-		Assert.That(result2, Is.EqualTo(new[] { "multiViewer" }));
 	}
 
 	[Test]
@@ -196,7 +206,7 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 	{
 		// Arrange
 		var state = new AtemState();
-		
+
 		// Test cases for different boundary scenarios
 		var testCases = new[]
 		{
@@ -214,36 +224,13 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 				Count = testCase.Count,
 				WindowCount = testCase.WindowCount
 			};
-			
-			var result = command.ApplyToState(state);
+
+			command.ApplyToState(state);
 
 			// Assert
 			Assert.That(state.MultiViewer, Is.Not.Null, $"Failed for {testCase.Description}");
 			Assert.That(state.MultiViewer.Count, Is.EqualTo(testCase.Count), $"Count failed for {testCase.Description}");
 			Assert.That(state.MultiViewer.WindowCount, Is.EqualTo(testCase.WindowCount), $"WindowCount failed for {testCase.Description}");
-			Assert.That(result, Is.EqualTo(new[] { "multiViewer" }), $"Result failed for {testCase.Description}");
-		}
-	}
-
-	[Test]
-	public void ApplyToState_ReturnValue_ShouldAlwaysReturnMultiViewerPath()
-	{
-		// Arrange
-		var state = new AtemState();
-		var commands = new[]
-		{
-			new MultiviewerConfigCommand { Count = 0, WindowCount = 0 },
-			new MultiviewerConfigCommand { Count = 1, WindowCount = 10 },
-			new MultiviewerConfigCommand { Count = 255, WindowCount = 255 }
-		};
-
-		// Act & Assert
-		foreach (var command in commands)
-		{
-			var result = command.ApplyToState(state);
-			Assert.That(result, Is.EqualTo(new[] { "multiViewer" }));
-			Assert.That(result.Length, Is.EqualTo(1));
-			Assert.That(result[0], Is.EqualTo("multiViewer"));
 		}
 	}
 }

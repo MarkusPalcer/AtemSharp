@@ -15,9 +15,9 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
 
     protected override void CompareCommandProperties(ProgramInputUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index), 
+        Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index),
                    $"MixEffectId should match expected value for test case {testCase.Name}");
-        Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source), 
+        Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source),
                    $"Source should match expected value for test case {testCase.Name}");
     }
 
@@ -27,7 +27,7 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
         // Arrange
         const int mixEffectId = 1;
         const int newSource = 2000;
-        
+
         var state = CreateStateWithMixEffect(mixEffectId, 1000); // Initial source
         var command = new ProgramInputUpdateCommand
         {
@@ -36,12 +36,10 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
         };
 
         // Act
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Video.MixEffects[mixEffectId].ProgramInput, Is.EqualTo(newSource));
-        Assert.That(changedPaths, Has.Length.EqualTo(1));
-        Assert.That(changedPaths[0], Is.EqualTo($"video.mixEffects.{mixEffectId}.programInput"));
     }
 
     [Test]
@@ -50,7 +48,7 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
         // Arrange
         const int mixEffectId = 1;
         const int newSource = 2000;
-        
+
         var state = new AtemState
         {
             Info = new DeviceInfo
@@ -61,7 +59,7 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
                 }
             }
         };
-        
+
         var command = new ProgramInputUpdateCommand
         {
             MixEffectId = mixEffectId,
@@ -69,14 +67,12 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
         };
 
         // Act
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Video, Is.Not.Null);
         Assert.That(state.Video.MixEffects[mixEffectId], Is.Not.Null);
         Assert.That(state.Video.MixEffects[mixEffectId].ProgramInput, Is.EqualTo(newSource));
-        Assert.That(changedPaths, Has.Length.EqualTo(1));
-        Assert.That(changedPaths[0], Is.EqualTo($"video.mixEffects.{mixEffectId}.programInput"));
     }
 
     [Test]
@@ -84,7 +80,7 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
     {
         // Arrange
         const int invalidMixEffectId = 10;
-        
+
         var state = new AtemState
         {
             Info = new DeviceInfo
@@ -95,7 +91,7 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
                 }
             }
         };
-        
+
         var command = new ProgramInputUpdateCommand
         {
             MixEffectId = invalidMixEffectId,
@@ -113,7 +109,7 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
     {
         // Arrange
         var state = new AtemState(); // No capabilities set
-        
+
         var command = new ProgramInputUpdateCommand
         {
             MixEffectId = 0,
@@ -170,7 +166,7 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
         {
             MixEffects = 2 // 0-1 valid
         };
-        
+
         var command = new ProgramInputUpdateCommand
         {
             MixEffectId = 0,
@@ -191,7 +187,7 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
         {
             MixEffects = 2 // 0-1 valid
         };
-        
+
         var command = new ProgramInputUpdateCommand
         {
             MixEffectId = 2, // Invalid - only 0-1 are valid
@@ -210,7 +206,7 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
         // Arrange
         var state = new AtemState();
         state.Info.Capabilities = null;
-        
+
         var command = new ProgramInputUpdateCommand
         {
             MixEffectId = 0,
@@ -232,7 +228,7 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
             MixEffects = 4,  // 0-3 valid
             Auxiliaries = 5  // 0-4 valid
         };
-        
+
         var programCommand = new ProgramInputUpdateCommand
         {
             MixEffectId = 3, // Skip indices 0-2
@@ -258,7 +254,7 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
         {
             MixEffects = 2 // 0-1 valid
         };
-        
+
         // Test exactly at the boundary (last valid index)
         var command = new ProgramInputUpdateCommand
         {

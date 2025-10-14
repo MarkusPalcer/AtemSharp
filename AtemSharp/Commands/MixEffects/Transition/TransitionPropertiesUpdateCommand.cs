@@ -63,7 +63,7 @@ public class TransitionPropertiesUpdateCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Validate mix effect index
         if (state.Info.Capabilities == null || MixEffectId >= state.Info.Capabilities.MixEffects)
@@ -73,7 +73,7 @@ public class TransitionPropertiesUpdateCommand : IDeserializedCommand
 
         // Get or create the mix effect
         var mixEffect = state.Video.MixEffects.GetOrCreate(MixEffectId);
-        
+
         // Create or update transition properties
         if (mixEffect.TransitionProperties == null)
         {
@@ -85,8 +85,5 @@ public class TransitionPropertiesUpdateCommand : IDeserializedCommand
         mixEffect.TransitionProperties.Selection = Selection;
         mixEffect.TransitionProperties.NextStyle = NextStyle;
         mixEffect.TransitionProperties.NextSelection = NextSelection;
-
-        // Return the state path that was modified
-        return [$"video.mixEffects.{MixEffectId}.transitionProperties"];
     }
 }

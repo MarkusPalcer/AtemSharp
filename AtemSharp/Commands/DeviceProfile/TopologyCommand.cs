@@ -162,7 +162,7 @@ public class TopologyCommand : IDeserializedCommand
                 var currentPosition = (int)stream.Position;
                 var advancedFeaturesStart = 21 + v230offset;
                 var skipBytes = advancedFeaturesStart - currentPosition;
-                
+
                 // Skip bytes to reach advanced features if needed
                 for (var i = 0; i < skipBytes && stream.Position < stream.Length; i++)
                 {
@@ -173,7 +173,7 @@ public class TopologyCommand : IDeserializedCommand
                 if (stream.Position < stream.Length)
                 {
                     command.AdvancedChromaKeyers = reader.ReadBoolean();;
-                    
+
                     if (stream.Position < stream.Length)
                     {
                         command.OnlyConfigurableOutputs = reader.ReadBoolean();;
@@ -190,7 +190,7 @@ public class TopologyCommand : IDeserializedCommand
     /// </summary>
     /// <param name="state">Current ATEM state to update</param>
     /// <returns>Paths indicating what was changed in the state</returns>
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Create capabilities object with all the topology data
         state.Info.Capabilities = new AtemCapabilities
@@ -213,6 +213,8 @@ public class TopologyCommand : IDeserializedCommand
             OnlyConfigurableOutputs = OnlyConfigurableOutputs
         };
 
+        state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(DownstreamKeyers);
+
         // Create multiviewer info if multiviewers are available
         if (Multiviewers > 0)
         {
@@ -222,7 +224,5 @@ public class TopologyCommand : IDeserializedCommand
                 WindowCount = 10  // Default as per TypeScript implementation
             };
         }
-
-        return ["info.capabilities"];
     }
 }

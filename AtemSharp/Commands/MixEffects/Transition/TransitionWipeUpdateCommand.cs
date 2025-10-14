@@ -104,7 +104,7 @@ public class TransitionWipeUpdateCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Validate mix effect index
         if (!state.Video.MixEffects.TryGetValue(MixEffectId, out var mixEffect))
@@ -135,7 +135,5 @@ public class TransitionWipeUpdateCommand : IDeserializedCommand
         mixEffect.TransitionSettings.Wipe.YPosition = YPosition;
         mixEffect.TransitionSettings.Wipe.ReverseDirection = ReverseDirection;
         mixEffect.TransitionSettings.Wipe.FlipFlop = FlipFlop;
-
-        return new[] { $"video.mixEffects.{MixEffectId}.transitionSettings.wipe" };
     }
 }

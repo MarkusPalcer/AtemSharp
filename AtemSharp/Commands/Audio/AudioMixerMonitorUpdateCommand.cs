@@ -15,7 +15,7 @@ public class AudioMixerMonitorUpdateCommand : IDeserializedCommand
 	/// Whether the monitor is enabled
 	/// </summary>
 	public bool Enabled { get; set; }
-	
+
 	/// <summary>
 	/// Gain in decibel, -Infinity to +6dB
 	/// </summary>
@@ -30,7 +30,7 @@ public class AudioMixerMonitorUpdateCommand : IDeserializedCommand
 	/// Whether solo is enabled
 	/// </summary>
 	public bool Solo { get; set; }
-	
+
 	/// <summary>
 	/// Solo source identifier
 	/// </summary>
@@ -40,16 +40,16 @@ public class AudioMixerMonitorUpdateCommand : IDeserializedCommand
 	/// Whether dim is enabled
 	/// </summary>
 	public bool Dim { get; set; }
-	
+
 	/// <summary>
 	/// Dim level as percentage (0.0 to 1.0)
 	/// </summary>
 	public double DimLevel { get; set; }
-	
+
 	public static AudioMixerMonitorUpdateCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
 	{
 		using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-		
+
 		var enabled = reader.ReadByte() > 0; // byte 0
 		reader.ReadByte(); // Skip byte 1 (padding)
 		var gain = reader.ReadUInt16BigEndian().UInt16ToDecibel(); // bytes 2-3
@@ -59,7 +59,7 @@ public class AudioMixerMonitorUpdateCommand : IDeserializedCommand
 		var dim = reader.ReadByte() > 0; // byte 8
 		reader.ReadByte(); // Skip byte 9 (padding)
 		var dimLevel = reader.ReadUInt16BigEndian() / 100.0; // bytes 10-11
-		
+
 		return new AudioMixerMonitorUpdateCommand
 		{
 			Enabled = enabled,
@@ -73,7 +73,7 @@ public class AudioMixerMonitorUpdateCommand : IDeserializedCommand
 	}
 
 	/// <inheritdoc />
-	public string[] ApplyToState(AtemState state)
+	public void ApplyToState(AtemState state)
 	{
 		if (state.Audio is null)
 		{
@@ -89,7 +89,5 @@ public class AudioMixerMonitorUpdateCommand : IDeserializedCommand
 		state.Audio.Monitor.SoloSource = SoloSource;
 		state.Audio.Monitor.Dim = Dim;
 		state.Audio.Monitor.DimLevel = DimLevel;
-
-		return ["audio.monitor"];
 	}
 }

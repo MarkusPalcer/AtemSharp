@@ -29,20 +29,14 @@ public class DownstreamKeyGeneralCommand : SerializedCommand
     {
         DownstreamKeyerId = downstreamKeyerId;
 
-        // If no video state or downstream keyer array exists, initialize with defaults
-        if (!currentState.Video.DownstreamKeyers.TryGetValue(downstreamKeyerId, out var dsk) ||
-            dsk.Properties is null)
+        if (downstreamKeyerId >= currentState.Video.DownstreamKeyers.Length)
         {
-            // Set default values and flags (like TypeScript pattern)
-            PreMultiply = false;
-            Clip = 0.0;
-            Gain = 0.0;
-            Invert = false;
-            return;
+            throw new IndexOutOfRangeException("DownstreamKeyerId is out of range");
         }
 
+        var dsk = currentState.Video.DownstreamKeyers[downstreamKeyerId];
         var dskProps = dsk.Properties!;
-        
+
         // Initialize from current state (direct field access = no flags set)
         _preMultiply = dskProps.PreMultiply;
         _clip = dskProps.Clip;
@@ -125,7 +119,7 @@ public class DownstreamKeyGeneralCommand : SerializedCommand
         writer.Write((byte)DownstreamKeyerId);
         writer.WriteBoolean(PreMultiply);
         writer.Pad(1); // Align to 2-byte boundary
-        
+
         // Convert percentages to fixed-point integers (multiplied by 10)
         // TypeScript: Math.round(v * 10)
         writer.WriteInt16BigEndian((short)Math.Round(Clip * 10));

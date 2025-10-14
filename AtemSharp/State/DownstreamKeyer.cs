@@ -23,7 +23,7 @@ public class DownstreamKeyer : IDownstreamKeyerBase
     /// <summary>
     /// Downstream keyer source configuration
     /// </summary>
-    public DownstreamKeyerSources? Sources { get; set; }
+    public DownstreamKeyerSources Sources { get; set; } = new();
 
     /// <summary>
     /// Downstream keyer properties and configuration

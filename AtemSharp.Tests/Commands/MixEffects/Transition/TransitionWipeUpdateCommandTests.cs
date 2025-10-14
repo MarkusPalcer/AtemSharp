@@ -107,7 +107,7 @@ public class TransitionWipeUpdateCommandTests : DeserializedCommandTestBase<Tran
     {
         // Arrange - create binary data matching the ATEM protocol
         // Based on test data: "00-A1-0A-00-26-25-00-00-25-46-17-71-26-C4-03-67-00-01"
-        using var stream = new MemoryStream(new byte[] { 
+        using var stream = new MemoryStream(new byte[] {
             0x00,       // MixEffectId = 0
             0xA1,       // Rate = 161
             0x0A,       // Pattern = 10
@@ -182,13 +182,13 @@ public class TransitionWipeUpdateCommandTests : DeserializedCommandTestBase<Tran
         };
 
         // Act
-        var modifiedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         var mixEffect = state.Video.MixEffects[0];
         Assert.That(mixEffect.TransitionSettings, Is.Not.Null);
         Assert.That(mixEffect.TransitionSettings.Wipe, Is.Not.Null);
-        
+
         var wipeSettings = mixEffect.TransitionSettings.Wipe;
         Assert.That(wipeSettings.Rate, Is.EqualTo(75));
         Assert.That(wipeSettings.Pattern, Is.EqualTo(5));
@@ -200,9 +200,6 @@ public class TransitionWipeUpdateCommandTests : DeserializedCommandTestBase<Tran
         Assert.That(wipeSettings.YPosition, Is.EqualTo(0.2341));
         Assert.That(wipeSettings.ReverseDirection, Is.True);
         Assert.That(wipeSettings.FlipFlop, Is.False);
-
-        Assert.That(modifiedPaths, Has.Length.EqualTo(1));
-        Assert.That(modifiedPaths[0], Is.EqualTo("video.mixEffects.0.transitionSettings.wipe"));
     }
 
     [Test]

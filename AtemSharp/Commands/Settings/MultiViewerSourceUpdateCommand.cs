@@ -62,7 +62,7 @@ public class MultiViewerSourceUpdateCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Validate state prerequisites (same pattern as TypeScript update commands)
         if (state.Info.MultiViewer.Count == 0 || MultiViewerId >= state.Info.MultiViewer.Count)
@@ -72,7 +72,7 @@ public class MultiViewerSourceUpdateCommand : IDeserializedCommand
 
         // Get the MultiViewer and update its window
         var multiViewer = AtemStateUtil.GetMultiViewer(state, MultiViewerId);
-        
+
         // Get the current window state or create a new one
         if (!multiViewer.Windows.TryGetValue(WindowIndex, out var currentWindow))
         {
@@ -93,8 +93,5 @@ public class MultiViewerSourceUpdateCommand : IDeserializedCommand
 
         // Update the window in the MultiViewer
         multiViewer.Windows[WindowIndex] = updatedWindow;
-
-        // Return the state path that was modified for change tracking
-        return [$"settings.multiViewers.{MultiViewerId}.windows.{WindowIndex}"];
     }
 }

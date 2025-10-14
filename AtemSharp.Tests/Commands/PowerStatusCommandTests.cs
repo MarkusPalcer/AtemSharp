@@ -23,12 +23,11 @@ public class PowerStatusCommandTests
         state.Info.Power = [false]; // Single power supply, initially off
 
         // Act - Apply the command to state
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert - Only the first power supply should be updated
         Assert.That(state.Info.Power, Has.Length.EqualTo(1));
         Assert.That(state.Info.Power[0], Is.True);
-        Assert.That(changedPaths, Is.EqualTo(new[] { "info.power" }));
     }
 
     [Test]
@@ -45,13 +44,12 @@ public class PowerStatusCommandTests
         state.Info.Power = [false, false]; // Two power supplies, both initially off
 
         // Act - Apply the command to state
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert - Both power supplies should be updated
         Assert.That(state.Info.Power, Has.Length.EqualTo(2));
         Assert.That(state.Info.Power[0], Is.True);
         Assert.That(state.Info.Power[1], Is.False);
-        Assert.That(changedPaths, Is.EqualTo(new[] { "info.power" }));
     }
 
     [Test]
@@ -68,11 +66,10 @@ public class PowerStatusCommandTests
         state.Info.Power = []; // No power supplies configured
 
         // Act - Apply the command to state
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert - Power array should remain empty
         Assert.That(state.Info.Power, Has.Length.EqualTo(0));
-        Assert.That(changedPaths, Is.EqualTo(new[] { "info.power" }));
     }
 
     [Test]

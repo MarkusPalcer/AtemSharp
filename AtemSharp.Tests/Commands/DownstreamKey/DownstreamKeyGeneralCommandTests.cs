@@ -21,7 +21,7 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
     {
         // Create state with the required downstream keyer
         var state = CreateStateWithDownstreamKeyer(testCase.Command.Index);
-        
+
         // Create command with the keyer ID
         var command = new DownstreamKeyGeneralCommand(testCase.Command.Index, state);
 
@@ -30,7 +30,7 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
         command.Clip = testCase.Command.Clip;
         command.Gain = testCase.Command.Gain;
         command.Invert = testCase.Command.Invert;
-        
+
         return command;
     }
 
@@ -39,7 +39,7 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
     /// </summary>
     private static AtemState CreateStateWithDownstreamKeyer(int keyerId)
     {
-        Dictionary<int, DownstreamKeyer> downstreamKeyers = new Dictionary<int, DownstreamKeyer>();
+        var downstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(keyerId + 1);
         downstreamKeyers[keyerId] = new DownstreamKeyer
         {
             InTransition = false,
@@ -96,15 +96,8 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
         var state = new AtemState(); // No video state
 
         // Act
-        var command = new DownstreamKeyGeneralCommand(keyerId, state);
 
-        // Assert
-        Assert.That(command.DownstreamKeyerId, Is.EqualTo(keyerId));
-        Assert.That(command.PreMultiply, Is.False); // Default value
-        Assert.That(command.Clip, Is.EqualTo(0.0)); // Default value
-        Assert.That(command.Gain, Is.EqualTo(0.0)); // Default value
-        Assert.That(command.Invert, Is.False); // Default value
-        Assert.That(command.Flag, Is.EqualTo(15)); // All flags should be set due to property assignment
+        Assert.Throws<IndexOutOfRangeException>(() => new DownstreamKeyGeneralCommand(keyerId, state));
     }
 
     [Test]
@@ -112,7 +105,7 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
     {
         // Arrange
         var command = new DownstreamKeyGeneralCommand(0, CreateStateWithDownstreamKeyer(0));
-        
+
         // Act
         command.PreMultiply = true;
 
@@ -126,7 +119,7 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
     {
         // Arrange
         var command = new DownstreamKeyGeneralCommand(0, CreateStateWithDownstreamKeyer(0));
-        
+
         // Act
         command.Clip = 50.0;
 
@@ -140,7 +133,7 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
     {
         // Arrange
         var command = new DownstreamKeyGeneralCommand(0, CreateStateWithDownstreamKeyer(0));
-        
+
         // Act & Assert
         Assert.Throws<ArgumentOutOfRangeException>(() => command.Clip = -1.0);
         Assert.Throws<ArgumentOutOfRangeException>(() => command.Clip = 101.0);
@@ -151,7 +144,7 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
     {
         // Arrange
         var command = new DownstreamKeyGeneralCommand(0, CreateStateWithDownstreamKeyer(0));
-        
+
         // Act
         command.Gain = 75.0;
 
@@ -165,7 +158,7 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
     {
         // Arrange
         var command = new DownstreamKeyGeneralCommand(0, CreateStateWithDownstreamKeyer(0));
-        
+
         // Act & Assert
         Assert.Throws<ArgumentOutOfRangeException>(() => command.Gain = -1.0);
         Assert.Throws<ArgumentOutOfRangeException>(() => command.Gain = 101.0);
@@ -176,7 +169,7 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
     {
         // Arrange
         var command = new DownstreamKeyGeneralCommand(0, CreateStateWithDownstreamKeyer(0));
-        
+
         // Act
         command.Invert = true;
 
@@ -190,7 +183,7 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
     {
         // Arrange
         var command = new DownstreamKeyGeneralCommand(0, CreateStateWithDownstreamKeyer(0));
-        
+
         // Act
         command.PreMultiply = true;
         command.Clip = 25.0;
@@ -213,7 +206,7 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
         command.Clip = 25.0;
         command.Gain = 50.0;
         command.Invert = false;
-        
+
         // Override flags to test specific mask combinations
         command.Flag = 7; // Only preMultiply + clip + gain flags
 

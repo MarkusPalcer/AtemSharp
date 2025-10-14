@@ -86,15 +86,15 @@ public class MixEffectKeyAdvancedChromaPropertiesUpdateCommand : IDeserializedCo
 
         var mixEffectId = reader.ReadByte();
         var keyerId = reader.ReadByte();
-        
+
         // Read all property values as 16-bit integers and divide by 10 (to match TypeScript implementation scaling)
         var foregroundLevel = reader.ReadUInt16BigEndian() / 10.0;
         var backgroundLevel = reader.ReadUInt16BigEndian() / 10.0;
         var keyEdge = reader.ReadUInt16BigEndian() / 10.0;
-        
+
         var spillSuppression = reader.ReadUInt16BigEndian() / 10.0;
         var flareSuppression = reader.ReadUInt16BigEndian() / 10.0;
-        
+
         // Color adjustment values can be negative, so use signed 16-bit (also scaled by 10)
         var brightness = reader.ReadInt16BigEndian() / 10.0;
         var contrast = reader.ReadInt16BigEndian() / 10.0;
@@ -122,7 +122,7 @@ public class MixEffectKeyAdvancedChromaPropertiesUpdateCommand : IDeserializedCo
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Validate mix effect index - need to get capabilities info
         if (state.Info.Capabilities == null || MixEffectId >= state.Info.Capabilities.MixEffects)
@@ -135,18 +135,18 @@ public class MixEffectKeyAdvancedChromaPropertiesUpdateCommand : IDeserializedCo
 
         // Get or create the mix effect
         var mixEffect = state.Video.MixEffects.GetOrCreate(MixEffectId);
-        
+
         // Get or create the upstream keyer
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerId);
         keyer.Index = KeyerId;
-        
+
         // Get or create the advanced chroma settings
         if (keyer.AdvancedChromaSettings == null)
             keyer.AdvancedChromaSettings = new UpstreamKeyerAdvancedChromaSettings();
-        
+
         if (keyer.AdvancedChromaSettings.Properties == null)
             keyer.AdvancedChromaSettings.Properties = new UpstreamKeyerAdvancedChromaProperties();
-        
+
         // Update the advanced chroma properties
         var properties = keyer.AdvancedChromaSettings.Properties;
         properties.ForegroundLevel = ForegroundLevel;
@@ -160,20 +160,5 @@ public class MixEffectKeyAdvancedChromaPropertiesUpdateCommand : IDeserializedCo
         properties.Red = Red;
         properties.Green = Green;
         properties.Blue = Blue;
-
-        // Return the state path that was modified
-        return [
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.properties.foregroundLevel",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.properties.backgroundLevel",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.properties.keyEdge",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.properties.spillSuppression",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.properties.flareSuppression",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.properties.brightness",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.properties.contrast",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.properties.saturation",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.properties.red",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.properties.green",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.properties.blue"
-        ];
     }
 }

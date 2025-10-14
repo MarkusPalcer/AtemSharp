@@ -42,7 +42,7 @@ public class TransitionMixUpdateCommandTests : DeserializedCommandTestBase<Trans
     public void Deserialize_ValidData_ProducesCorrectCommand()
     {
         // Arrange - create binary data matching the ATEM protocol
-        using var stream = new MemoryStream(new byte[] { 
+        using var stream = new MemoryStream(new byte[] {
             0x01,       // MixEffectId = 1
             0x32        // Rate = 50
         });
@@ -61,7 +61,7 @@ public class TransitionMixUpdateCommandTests : DeserializedCommandTestBase<Trans
         // Arrange
         const int mixEffectId = 1;
         const int newRate = 100;
-        
+
         var state = CreateValidAtemState(mixEffectId);
         var command = new TransitionMixUpdateCommand
         {
@@ -70,16 +70,12 @@ public class TransitionMixUpdateCommandTests : DeserializedCommandTestBase<Trans
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert - check the state was updated
         Assert.That(state.Video.MixEffects[mixEffectId].TransitionSettings, Is.Not.Null);
         Assert.That(state.Video.MixEffects[mixEffectId].TransitionSettings!.Mix, Is.Not.Null);
         Assert.That(state.Video.MixEffects[mixEffectId].TransitionSettings!.Mix!.Rate, Is.EqualTo(newRate));
-        
-        // Assert - check the return path
-        Assert.That(result, Has.Length.EqualTo(1));
-        Assert.That(result[0], Is.EqualTo($"video.mixEffects.{mixEffectId}.transitionSettings.mix.rate"));
     }
 
     [Test]
@@ -88,10 +84,10 @@ public class TransitionMixUpdateCommandTests : DeserializedCommandTestBase<Trans
         // Arrange
         const int mixEffectId = 0;
         const int newRate = 75;
-        
+
         var state = CreateValidAtemState(mixEffectId);
         state.Video.MixEffects[mixEffectId].TransitionSettings = null; // Remove transition settings
-        
+
         var command = new TransitionMixUpdateCommand
         {
             MixEffectId = mixEffectId,
@@ -99,7 +95,7 @@ public class TransitionMixUpdateCommandTests : DeserializedCommandTestBase<Trans
         };
 
         // Act
-        _ = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert - check the settings were created and updated
         Assert.That(state.Video.MixEffects[mixEffectId].TransitionSettings, Is.Not.Null);
@@ -145,7 +141,7 @@ public class TransitionMixUpdateCommandTests : DeserializedCommandTestBase<Trans
             },
             TransitionSettings = new TransitionSettings()
         };
-        
+
         return new AtemState
         {
             Info = new DeviceInfo

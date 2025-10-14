@@ -50,11 +50,11 @@ public class DataTransferDataCommand : SerializedCommand, IDeserializedCommand
     {
         using var memoryStream = new MemoryStream(4 + Body.Length);
         using var writer = new BinaryWriter(memoryStream);
-        
+
         writer.WriteUInt16BigEndian(TransferId);
         writer.WriteUInt16BigEndian((ushort)Body.Length);
         writer.Write(Body);
-        
+
         return memoryStream.ToArray();
     }
 
@@ -66,11 +66,11 @@ public class DataTransferDataCommand : SerializedCommand, IDeserializedCommand
     public static DataTransferDataCommand Deserialize(Stream stream, ProtocolVersion protocolVersion)
     {
         using var reader = new BinaryReader(stream, Encoding.Default, leaveOpen: true);
-        
+
         var transferId = reader.ReadUInt16BigEndian();
         var size = reader.ReadUInt16BigEndian();
         var body = reader.ReadBytes(size);
-        
+
         return new DataTransferDataCommand(transferId, body);
     }
 
@@ -79,10 +79,9 @@ public class DataTransferDataCommand : SerializedCommand, IDeserializedCommand
     /// </summary>
     /// <param name="state">ATEM state to modify</param>
     /// <returns>List of state paths that were changed (empty for this command)</returns>
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Nothing to do - this is just data transport, no state changes
         // The TypeScript implementation also returns an empty array
-        return [];
     }
 }

@@ -17,5 +17,5 @@ public class TestCommandV3 : IDeserializedCommand
 		return new TestCommandV3();
 	}
 
-	public string[] ApplyToState(AtemState state) => ["test"];
+	public void ApplyToState(AtemState state) {}
 }

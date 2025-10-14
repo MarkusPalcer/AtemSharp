@@ -5,6 +5,11 @@ namespace AtemSharp.State;
 /// </summary>
 public static class AtemStateUtil
 {
+    public static T[] CreateArray<T>(int length) where T : new()
+    {
+        return Enumerable.Repeat(() => new T(), length).Select(x => x()).ToArray();
+    }
+
 	/// <summary>
 	/// Gets a MultiViewer from the state, creating it if it doesn't exist
 	/// </summary>
@@ -27,12 +32,12 @@ public static class AtemStateUtil
 	/// <param name="dict">The dictionary to search in or add to.</param>
 	/// <param name="index">The key to look up or create an entry for.</param>
 	/// <returns>
-	/// The existing value if the key is found, or a newly created instance of <typeparamref name="T"/> 
+	/// The existing value if the key is found, or a newly created instance of <typeparamref name="T"/>
 	/// that has been added to the dictionary.
 	/// </returns>
 	/// <remarks>
 	/// <para>
-	/// This extension method enables efficient sparse indexing for ATEM state collections, matching 
+	/// This extension method enables efficient sparse indexing for ATEM state collections, matching
 	/// the behavior of the TypeScript implementation where arrays can have gaps (undefined entries).
 	/// Unlike resizing arrays, this approach only creates objects for indices that are actually accessed.
 	/// </para>
@@ -50,17 +55,17 @@ public static class AtemStateUtil
 	/// <code>
 	/// // Create a dictionary for mix effects
 	/// var mixEffects = new Dictionary&lt;int, MixEffect&gt;();
-	/// 
+	///
 	/// // Get or create mix effect at index 0
 	/// var me0 = mixEffects.GetOrCreate(0);
-	/// 
+	///
 	/// // Get or create mix effect at index 5 (sparse - indices 1-4 don't exist)
 	/// var me5 = mixEffects.GetOrCreate(5);
-	/// 
+	///
 	/// // Subsequent calls return the same instance
 	/// var sameMe0 = mixEffects.GetOrCreate(0);
 	/// Assert.That(sameMe0, Is.SameAs(me0));
-	/// 
+	///
 	/// // Dictionary only contains keys 0 and 5, not 1-4
 	/// Assert.That(mixEffects.Count, Is.EqualTo(2));
 	/// Assert.That(mixEffects.ContainsKey(2), Is.False);
@@ -74,7 +79,7 @@ public static class AtemStateUtil
 	public static T GetOrCreate<T>(this Dictionary<int, T> dict, int index) where T : new()
 	{
 		ArgumentNullException.ThrowIfNull(dict);
-		
+
 		if (dict.TryGetValue(index, out var value)) return value;
 		value = new T();
 		dict[index] = value;

@@ -15,9 +15,9 @@ public class PreviewTransitionUpdateCommandTests : DeserializedCommandTestBase<P
 
     protected override void CompareCommandProperties(PreviewTransitionUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index), 
+        Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index),
                    $"MixEffectId should match expected value for test case {testCase.Name}");
-        Assert.That(actualCommand.Preview, Is.EqualTo(expectedData.PreviewTransition), 
+        Assert.That(actualCommand.Preview, Is.EqualTo(expectedData.PreviewTransition),
                    $"Preview should match expected value for test case {testCase.Name}");
     }
 
@@ -27,7 +27,7 @@ public class PreviewTransitionUpdateCommandTests : DeserializedCommandTestBase<P
         // Arrange
         const int mixEffectId = 1;
         const bool newPreview = true;
-        
+
         var state = CreateStateWithMixEffect(mixEffectId); // Initial state: preview disabled
         var command = new PreviewTransitionUpdateCommand
         {
@@ -36,12 +36,10 @@ public class PreviewTransitionUpdateCommandTests : DeserializedCommandTestBase<P
         };
 
         // Act
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Video.MixEffects[mixEffectId].TransitionPreview, Is.EqualTo(newPreview));
-        Assert.That(changedPaths, Has.Length.EqualTo(1));
-        Assert.That(changedPaths[0], Is.EqualTo($"video.mixEffects.{mixEffectId}.transitionPreview"));
     }
 
     [Test]
@@ -50,7 +48,7 @@ public class PreviewTransitionUpdateCommandTests : DeserializedCommandTestBase<P
         // Arrange
         const int mixEffectId = 1;
         const bool newPreview = true;
-        
+
         var state = new AtemState
         {
             Info = new DeviceInfo
@@ -61,7 +59,7 @@ public class PreviewTransitionUpdateCommandTests : DeserializedCommandTestBase<P
                 }
             }
         };
-        
+
         var command = new PreviewTransitionUpdateCommand
         {
             MixEffectId = mixEffectId,
@@ -69,14 +67,12 @@ public class PreviewTransitionUpdateCommandTests : DeserializedCommandTestBase<P
         };
 
         // Act
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Video, Is.Not.Null);
         Assert.That(state.Video.MixEffects[mixEffectId], Is.Not.Null);
         Assert.That(state.Video.MixEffects[mixEffectId].TransitionPreview, Is.EqualTo(newPreview));
-        Assert.That(changedPaths, Has.Length.EqualTo(1));
-        Assert.That(changedPaths[0], Is.EqualTo($"video.mixEffects.{mixEffectId}.transitionPreview"));
     }
 
     [Test]
@@ -84,7 +80,7 @@ public class PreviewTransitionUpdateCommandTests : DeserializedCommandTestBase<P
     {
         // Arrange
         const int invalidMixEffectId = 5;
-        
+
         var state = new AtemState
         {
             Info = new DeviceInfo
@@ -95,7 +91,7 @@ public class PreviewTransitionUpdateCommandTests : DeserializedCommandTestBase<P
                 }
             }
         };
-        
+
         var command = new PreviewTransitionUpdateCommand
         {
             MixEffectId = invalidMixEffectId,
@@ -113,7 +109,7 @@ public class PreviewTransitionUpdateCommandTests : DeserializedCommandTestBase<P
     {
         // Arrange
         const int mixEffectId = 0;
-        
+
         var state = new AtemState
         {
             Info = new DeviceInfo
@@ -121,7 +117,7 @@ public class PreviewTransitionUpdateCommandTests : DeserializedCommandTestBase<P
                 Capabilities = null // No capabilities defined
             }
         };
-        
+
         var command = new PreviewTransitionUpdateCommand
         {
             MixEffectId = mixEffectId,

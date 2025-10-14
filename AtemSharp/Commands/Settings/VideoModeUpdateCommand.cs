@@ -33,12 +33,9 @@ public class VideoModeUpdateCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Update the video mode
         state.Settings.VideoMode = Mode;
-
-        // Return the state path that was modified
-        return ["settings.videoMode"];
     }
 }

@@ -39,11 +39,10 @@ public class VersionCommandTests : DeserializedCommandTestBase<VersionCommand, V
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.ApiVersion, Is.EqualTo(ProtocolVersion.V8_0));
-        Assert.That(result, Is.EqualTo(new[] { "info.apiVersion" }));
     }
 
     [Test]
@@ -57,11 +56,10 @@ public class VersionCommandTests : DeserializedCommandTestBase<VersionCommand, V
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.ApiVersion, Is.EqualTo(ProtocolVersion.V9_4));
-        Assert.That(result, Is.EqualTo(new[] { "info.apiVersion" }));
     }
 
     [Test]
@@ -77,10 +75,9 @@ public class VersionCommandTests : DeserializedCommandTestBase<VersionCommand, V
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.ApiVersion, Is.EqualTo(ProtocolVersion.V9_6));
-        Assert.That(result, Is.EqualTo(new[] { "info.apiVersion" }));
     }
 }

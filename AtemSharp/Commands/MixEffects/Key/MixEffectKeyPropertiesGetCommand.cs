@@ -112,7 +112,7 @@ public class MixEffectKeyPropertiesGetCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Validate mix effect index - need to get capabilities info
         if (state.Info.Capabilities == null || MixEffectIndex >= state.Info.Capabilities.MixEffects)
@@ -125,11 +125,11 @@ public class MixEffectKeyPropertiesGetCommand : IDeserializedCommand
 
         // Get or create the mix effect
         var mixEffect = state.Video.MixEffects.GetOrCreate(MixEffectIndex);
-        
+
         // Get or create the upstream keyer
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerIndex);
         keyer.Index = KeyerIndex;
-        
+
         // Update keyer properties
         keyer.KeyType = KeyType;
         keyer.CanFlyKey = CanFlyKey;
@@ -146,15 +146,5 @@ public class MixEffectKeyPropertiesGetCommand : IDeserializedCommand
         keyer.MaskSettings.MaskBottom = MaskBottom;
         keyer.MaskSettings.MaskLeft = MaskLeft;
         keyer.MaskSettings.MaskRight = MaskRight;
-
-        // Return the state path that was modified
-        return [
-            $"video.mixEffects.{MixEffectIndex}.upstreamKeyers.{KeyerIndex}.keyType",
-            $"video.mixEffects.{MixEffectIndex}.upstreamKeyers.{KeyerIndex}.canFlyKey",
-            $"video.mixEffects.{MixEffectIndex}.upstreamKeyers.{KeyerIndex}.flyEnabled",
-            $"video.mixEffects.{MixEffectIndex}.upstreamKeyers.{KeyerIndex}.fillSource",
-            $"video.mixEffects.{MixEffectIndex}.upstreamKeyers.{KeyerIndex}.cutSource",
-            $"video.mixEffects.{MixEffectIndex}.upstreamKeyers.{KeyerIndex}.maskSettings"
-        ];
     }
 }

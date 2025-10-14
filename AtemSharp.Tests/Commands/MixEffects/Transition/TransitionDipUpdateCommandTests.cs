@@ -49,7 +49,7 @@ public class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<Trans
     public void Deserialize_ValidData_ProducesCorrectCommand()
     {
         // Arrange - create binary data matching the ATEM protocol
-        using var stream = new MemoryStream(new byte[] { 
+        using var stream = new MemoryStream(new byte[] {
             0x01,       // MixEffectId = 1
             0x32,       // Rate = 50
             0x04,       // Input high byte (0x0444 = 1092)
@@ -92,10 +92,9 @@ public class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<Trans
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
-        Assert.That(result, Is.EqualTo(new[] { "video.mixEffects.0.transitionSettings.dip" }));
         Assert.That(state.Video.MixEffects[0].TransitionSettings.Dip, Is.Not.Null);
         Assert.That(state.Video.MixEffects[0].TransitionSettings.Dip.Rate, Is.EqualTo(75));
         Assert.That(state.Video.MixEffects[0].TransitionSettings.Dip.Input, Is.EqualTo(2048));
@@ -128,10 +127,9 @@ public class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<Trans
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
-        Assert.That(result, Is.EqualTo(new[] { "video.mixEffects.1.transitionSettings.dip" }));
         Assert.That(state.Video.MixEffects[1].TransitionSettings, Is.Not.Null);
         Assert.That(state.Video.MixEffects[1].TransitionSettings!.Dip, Is.Not.Null);
         Assert.That(state.Video.MixEffects[1].TransitionSettings!.Dip!.Rate, Is.EqualTo(100));
@@ -167,7 +165,7 @@ public class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<Trans
     public void Deserialize_EdgeCaseValues_HandlesCorrectly()
     {
         // Arrange - test with edge case values
-        using var stream = new MemoryStream(new byte[] { 
+        using var stream = new MemoryStream(new byte[] {
             0xFF,       // MixEffectId = 255 (max byte value)
             0x00,       // Rate = 0 (minimum)
             0xFF,       // Input high byte (0xFFFF = 65535)

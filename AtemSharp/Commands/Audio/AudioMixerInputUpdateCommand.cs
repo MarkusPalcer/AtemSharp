@@ -68,7 +68,7 @@ public class AudioMixerInputUpdateCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         if (state.Audio is null)
         {
@@ -85,7 +85,5 @@ public class AudioMixerInputUpdateCommand : IDeserializedCommand
             RcaToXlrEnabled = false,
             SupportsRcaToXlrEnabled = false
         };
-
-        return [$"audio.channels.{Index}"];
     }
 }

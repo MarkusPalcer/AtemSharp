@@ -57,12 +57,12 @@ public class TransitionPositionUpdateCommandTests : DeserializedCommandTestBase<
     public void Deserialize_ValidData_ProducesCorrectCommand()
     {
         // Arrange - create binary data matching the ATEM protocol
-        using var stream = new MemoryStream(new byte[] { 
+        using var stream = new MemoryStream(new byte[] {
             0x01,       // MixEffectId = 1
             0x01,       // InTransition = true
             0x0A,       // RemainingFrames = 10
             0x00,       // Padding
-            0x13, 0x88  // HandlePosition = 5000 (0x1388) = 50% 
+            0x13, 0x88  // HandlePosition = 5000 (0x1388) = 50%
         });
 
         // Act
@@ -89,11 +89,9 @@ public class TransitionPositionUpdateCommandTests : DeserializedCommandTestBase<
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
-        Assert.That(result, Is.EqualTo(new[] { "video.mixEffects.0.transitionPosition" }));
-        
         var mixEffect = state.Video.MixEffects[0];
         Assert.That(mixEffect.TransitionPosition.InTransition, Is.True);
         Assert.That(mixEffect.TransitionPosition.RemainingFrames, Is.EqualTo(15));

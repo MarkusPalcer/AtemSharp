@@ -73,11 +73,11 @@ public class MixEffectKeyAdvancedChromaSampleUpdateCommand : IDeserializedComman
         var keyerId = reader.ReadByte();
         var enableCursor = reader.ReadBoolean();
         var preview = reader.ReadBoolean();
-        
+
         // Read position values and divide by scaling factors (to match TypeScript implementation scaling)
         var cursorX = reader.ReadInt16BigEndian() / 1000.0;
         var cursorY = reader.ReadInt16BigEndian() / 1000.0;
-        
+
         // Read cursor size and divide by 100
         var cursorSize = reader.ReadUInt16BigEndian() / 100.0;
 
@@ -102,7 +102,7 @@ public class MixEffectKeyAdvancedChromaSampleUpdateCommand : IDeserializedComman
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Validate mix effect index - need to get capabilities info
         if (state.Info.Capabilities == null || MixEffectId >= state.Info.Capabilities.MixEffects)
@@ -115,18 +115,18 @@ public class MixEffectKeyAdvancedChromaSampleUpdateCommand : IDeserializedComman
 
         // Get or create the mix effect
         var mixEffect = state.Video.MixEffects.GetOrCreate(MixEffectId);
-        
+
         // Get or create the upstream keyer
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerId);
         keyer.Index = KeyerId;
-        
+
         // Get or create the advanced chroma settings
         if (keyer.AdvancedChromaSettings == null)
             keyer.AdvancedChromaSettings = new UpstreamKeyerAdvancedChromaSettings();
-        
+
         if (keyer.AdvancedChromaSettings.Sample == null)
             keyer.AdvancedChromaSettings.Sample = new UpstreamKeyerAdvancedChromaSample();
-        
+
         // Update the advanced chroma sample settings
         var sample = keyer.AdvancedChromaSettings.Sample;
         sample.EnableCursor = EnableCursor;
@@ -137,17 +137,5 @@ public class MixEffectKeyAdvancedChromaSampleUpdateCommand : IDeserializedComman
         sample.SampledY = SampledY;
         sample.SampledCb = SampledCb;
         sample.SampledCr = SampledCr;
-
-        // Return the state path that was modified
-        return [
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.sample.enableCursor",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.sample.preview",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.sample.cursorX",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.sample.cursorY",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.sample.cursorSize",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.sample.sampledY",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.sample.sampledCb",
-            $"video.mixEffects.{MixEffectId}.upstreamKeyers.{KeyerId}.advancedChromaSettings.sample.sampledCr"
-        ];
     }
 }

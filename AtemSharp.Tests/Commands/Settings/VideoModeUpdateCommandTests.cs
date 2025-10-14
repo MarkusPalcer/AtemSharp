@@ -18,14 +18,14 @@ public class VideoModeUpdateCommandTests
         // Arrange
         var testData = new byte[] { 13, 0, 0, 0 }; // VideoMode.N1080p5994 = 13
         using var stream = new MemoryStream(testData);
-        
+
         // Act
         var command = VideoModeUpdateCommand.Deserialize(stream, ProtocolVersion.V7_2);
-        
+
         // Assert
         Assert.That(command.Mode, Is.EqualTo(VideoMode.N1080p5994), "Should deserialize video mode correctly");
     }
-    
+
     [Test]
     public void Deserialize_ShouldHandleDifferentVideoModes()
     {
@@ -37,21 +37,21 @@ public class VideoModeUpdateCommandTests
             (new byte[] { 13, 0, 0, 0 }, VideoMode.N1080p5994),
             (new byte[] { 25, 0, 0, 0 }, VideoMode.N8KHDp5994)
         };
-        
+
         foreach (var (data, expectedMode) in testCases)
         {
             // Arrange
             using var stream = new MemoryStream(data);
-            
+
             // Act
             var command = VideoModeUpdateCommand.Deserialize(stream, ProtocolVersion.V7_2);
-            
+
             // Assert
-            Assert.That(command.Mode, Is.EqualTo(expectedMode), 
+            Assert.That(command.Mode, Is.EqualTo(expectedMode),
                        $"Byte value {data[0]} should deserialize to {expectedMode}");
         }
     }
-    
+
     [Test]
     public void ApplyToState_ShouldUpdateVideoMode()
     {
@@ -63,19 +63,17 @@ public class VideoModeUpdateCommandTests
                 VideoMode = VideoMode.N525i5994NTSC
             }
         };
-        
+
         var command = new VideoModeUpdateCommand
         {
             Mode = VideoMode.N1080p5994
         };
-        
+
         // Act
-        var changedPaths = command.ApplyToState(state);
-        
+        command.ApplyToState(state);
+
         // Assert
-        Assert.That(state.Settings.VideoMode, Is.EqualTo(VideoMode.N1080p5994), 
+        Assert.That(state.Settings.VideoMode, Is.EqualTo(VideoMode.N1080p5994),
                    "State should be updated with new video mode");
-        Assert.That(changedPaths, Contains.Item("settings.videoMode"), 
-                   "Should return the correct changed path");
     }
 }

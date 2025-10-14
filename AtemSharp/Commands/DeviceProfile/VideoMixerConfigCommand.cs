@@ -26,20 +26,20 @@ public class VideoMixerConfigCommand : IDeserializedCommand
         reader.ReadBytes(2); // Skip padding
 
         var modes = new SupportedVideoMode[count];
-        
+
         for (int i = 0; i < count; i++)
         {
             var baseOffset = i * size;
-            
+
             // Seek to the correct position for this mode
             stream.Seek(4 + baseOffset, SeekOrigin.Begin);
-            
+
             var mode = reader.ReadByte();
             reader.ReadBytes(3); // Skip padding
-            
+
             var multiviewerModeMask = reader.ReadUInt32BigEndian();
             var downConvertModeMask = reader.ReadUInt32BigEndian();
-            
+
             var requiresReconfig = false;
             if (hasRequiresReconfig)
             {
@@ -69,7 +69,7 @@ public class VideoMixerConfigCommand : IDeserializedCommand
     private static VideoMode[] ReadVideoModeBitmask(uint rawVal)
     {
         var modes = new List<VideoMode>();
-        
+
         // Check each possible VideoMode enum value
         foreach (VideoMode possibleMode in Enum.GetValues<VideoMode>())
         {
@@ -83,9 +83,8 @@ public class VideoMixerConfigCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         state.Info.SupportedVideoModes = SupportedVideoModes;
-        return ["info.supportedVideoModes"];
     }
 }

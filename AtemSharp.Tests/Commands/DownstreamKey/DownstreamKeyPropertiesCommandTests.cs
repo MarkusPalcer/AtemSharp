@@ -110,8 +110,8 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
     {
         // Arrange
         var state = new AtemState();
-        state.Info.Capabilities = new AtemCapabilities { DownstreamKeyers = 2 };
-        
+        state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(2);
+
         var command = new DownstreamKeyPropertiesCommand
         {
             DownstreamKeyerId = 0,
@@ -135,14 +135,14 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Video, Is.Not.Null);
         Assert.That(state.Video.DownstreamKeyers.Count, Is.GreaterThan(0));
         Assert.That(state.Video.DownstreamKeyers[0], Is.Not.Null);
         Assert.That(state.Video.DownstreamKeyers[0].Properties, Is.Not.Null);
-        
+
         var properties = state.Video.DownstreamKeyers[0].Properties!;
         Assert.That(properties.Tie, Is.EqualTo(true));
         Assert.That(properties.Rate, Is.EqualTo(25));
@@ -150,14 +150,12 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         Assert.That(properties.Clip, Is.EqualTo(50.0));
         Assert.That(properties.Gain, Is.EqualTo(75.0));
         Assert.That(properties.Invert, Is.EqualTo(true));
-        
+
         Assert.That(properties.Mask.Enabled, Is.EqualTo(true));
         Assert.That(properties.Mask.Top, Is.EqualTo(-5.0));
         Assert.That(properties.Mask.Bottom, Is.EqualTo(5.0));
         Assert.That(properties.Mask.Left, Is.EqualTo(-10.0));
         Assert.That(properties.Mask.Right, Is.EqualTo(10.0));
-        
-        Assert.That(result, Is.EqualTo(new[] { "video.downstreamKeyers.0.properties" }));
     }
 
     [Test]
@@ -165,8 +163,8 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
     {
         // Arrange
         var state = new AtemState();
-        state.Info.Capabilities = new AtemCapabilities { DownstreamKeyers = 4 };
-        
+        state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(4);
+
         var command = new DownstreamKeyPropertiesCommand
         {
             DownstreamKeyerId = 2,
@@ -190,13 +188,13 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Video, Is.Not.Null);
         Assert.That(state.Video.DownstreamKeyers[2], Is.Not.Null);
         Assert.That(state.Video.DownstreamKeyers[2].Properties, Is.Not.Null);
-        
+
         var properties = state.Video.DownstreamKeyers[2].Properties!;
         Assert.That(properties.Tie, Is.EqualTo(false));
         Assert.That(properties.Rate, Is.EqualTo(50));
@@ -205,8 +203,6 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         Assert.That(properties.Gain, Is.EqualTo(30.0));
         Assert.That(properties.Invert, Is.EqualTo(false));
         Assert.That(properties.Mask.Enabled, Is.EqualTo(false));
-        
-        Assert.That(result, Is.EqualTo(new[] { "video.downstreamKeyers.2.properties" }));
     }
 
     [Test]
@@ -214,8 +210,8 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
     {
         // Arrange
         var state = new AtemState();
-        state.Info.Capabilities = new AtemCapabilities { DownstreamKeyers = 2 };
-        
+        state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(2);
+
         var command = new DownstreamKeyPropertiesCommand
         {
             DownstreamKeyerId = 5, // Invalid - beyond available keyers
@@ -223,18 +219,15 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         };
 
         // Act & Assert
-        var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-        Assert.That(ex!.Message, Does.Contain("DownstreamKeyer"));
-        Assert.That(ex.Message, Does.Contain("5"));
+        Assert.Throws<IndexOutOfRangeException>(() => command.ApplyToState(state));
     }
 
     [Test]
-    public void ApplyToState_WithNullCapabilities_ShouldThrowInvalidIdError()
+    public void ApplyToState_WithNullCapabilities_ShouldThrow()
     {
         // Arrange
         var state = new AtemState();
-        state.Info.Capabilities = null;
-        
+
         var command = new DownstreamKeyPropertiesCommand
         {
             DownstreamKeyerId = 0,
@@ -242,9 +235,7 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         };
 
         // Act & Assert
-        var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-        Assert.That(ex!.Message, Does.Contain("DownstreamKeyer"));
-        Assert.That(ex.Message, Does.Contain("0"));
+        Assert.Throws<IndexOutOfRangeException>(() => command.ApplyToState(state));
     }
 
     [Test]
@@ -252,8 +243,8 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
     {
         // Arrange
         var state = new AtemState();
-        state.Info.Capabilities = new AtemCapabilities { DownstreamKeyers = 2 };
-        state.Video = new VideoState();
+
+        state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(2);
         state.Video.DownstreamKeyers[0] = new DownstreamKeyer
         {
             Properties = new DownstreamKeyerProperties
@@ -284,7 +275,7 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         var properties = state.Video.DownstreamKeyers[0].Properties!;
@@ -299,8 +290,6 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         Assert.That(properties.Mask.Bottom, Is.EqualTo(1.0));
         Assert.That(properties.Mask.Left, Is.EqualTo(-2.0));
         Assert.That(properties.Mask.Right, Is.EqualTo(2.0));
-        
-        Assert.That(result, Is.EqualTo(new[] { "video.downstreamKeyers.0.properties" }));
     }
 
     [Test]
@@ -308,11 +297,8 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
     {
         // Arrange
         var state = new AtemState();
-        state.Info.Capabilities = new AtemCapabilities
-        {
-            DownstreamKeyers = 2 // 0-1 valid
-        };
-        
+        state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(2);
+
         var command = new DownstreamKeyPropertiesCommand
         {
             DownstreamKeyerId = 0,
@@ -330,7 +316,7 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
     }
 
     [Test]
-    public void ApplyToState_InvalidIndex_ShouldThrowInvalidIdError()
+    public void ApplyToState_InvalidIndex_ShouldThrow()
     {
         // Arrange
         var state = new AtemState();
@@ -338,7 +324,7 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         {
             DownstreamKeyers = 2 // 0-1 valid
         };
-        
+
         var command = new DownstreamKeyPropertiesCommand
         {
             DownstreamKeyerId = 3, // Invalid - only 0-1 are valid
@@ -351,8 +337,6 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         };
 
         // Act & Assert
-        var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-        Assert.That(ex.Message, Contains.Substring("DownstreamKeyer"));
-        Assert.That(ex.Message, Contains.Substring("3"));
+        Assert.Throws<IndexOutOfRangeException>(() => command.ApplyToState(state));
     }
 }

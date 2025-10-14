@@ -18,13 +18,13 @@ public class DownstreamKeyOnAirCommandTests : SerializedCommandTestBase<Downstre
     {
         // Create state with the required downstream keyer
         var state = CreateStateWithDownstreamKeyer(testCase.Command.Index);
-        
+
         // Create command with the keyer ID
         var command = new DownstreamKeyOnAirCommand(testCase.Command.Index, state);
 
         // Set the actual values that should be written
         command.OnAir = testCase.Command.OnAir;
-        
+
         return command;
     }
 
@@ -33,7 +33,7 @@ public class DownstreamKeyOnAirCommandTests : SerializedCommandTestBase<Downstre
     /// </summary>
     private static AtemState CreateStateWithDownstreamKeyer(int keyerId)
     {
-        Dictionary<int, DownstreamKeyer> downstreamKeyers = new Dictionary<int, DownstreamKeyer>();
+        var downstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(keyerId + 1);
         downstreamKeyers[keyerId] = new DownstreamKeyer
         {
             InTransition = false,
@@ -77,12 +77,7 @@ public class DownstreamKeyOnAirCommandTests : SerializedCommandTestBase<Downstre
         var state = new AtemState(); // No video state
 
         // Act
-        var command = new DownstreamKeyOnAirCommand(keyerId, state);
-
-        // Assert
-        Assert.That(command.DownstreamKeyerId, Is.EqualTo(keyerId));
-        Assert.That(command.OnAir, Is.False); // Default value
-        Assert.That(command.Flag, Is.EqualTo(1)); // Flag should be set due to property assignment
+        Assert.Throws<IndexOutOfRangeException>( () =>  new DownstreamKeyOnAirCommand(keyerId, state));
     }
 
     [Test]
@@ -90,7 +85,7 @@ public class DownstreamKeyOnAirCommandTests : SerializedCommandTestBase<Downstre
     {
         // Arrange
         var command = new DownstreamKeyOnAirCommand(0, CreateStateWithDownstreamKeyer(0));
-        
+
         // Act
         command.OnAir = true;
 
@@ -104,7 +99,7 @@ public class DownstreamKeyOnAirCommandTests : SerializedCommandTestBase<Downstre
     {
         // Arrange
         var command = new DownstreamKeyOnAirCommand(0, CreateStateWithDownstreamKeyer(0));
-        
+
         // Act
         command.OnAir = true;
         command.OnAir = false;
@@ -143,7 +138,7 @@ public class DownstreamKeyOnAirCommandTests : SerializedCommandTestBase<Downstre
         // Arrange
         var state = CreateStateWithDownstreamKeyer(0);
         state.Video.DownstreamKeyers[0].OnAir = true; // Set initial state
-        
+
         var command = new DownstreamKeyOnAirCommand(0, state);
         // Don't set any properties - use state defaults
 

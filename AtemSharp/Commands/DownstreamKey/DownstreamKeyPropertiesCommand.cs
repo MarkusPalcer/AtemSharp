@@ -35,12 +35,12 @@ public class DownstreamKeyPropertiesCommand : IDeserializedCommand
         {
             Tie = reader.ReadBoolean(),
             Rate = reader.ReadByte(),
-            
+
             PreMultiply = reader.ReadBoolean(),
             Clip = reader.ReadUInt16BigEndian() / 10.0, // Convert from fixed-point to double
             Gain = reader.ReadUInt16BigEndian() / 10.0, // Convert from fixed-point to double
             Invert = reader.ReadBoolean(),
-            
+
             Mask = new DownstreamKeyerMask
             {
                 Enabled = reader.ReadBoolean(),
@@ -59,18 +59,9 @@ public class DownstreamKeyPropertiesCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
-        // Validate downstream keyer index
-        if (state.Info.Capabilities is null || DownstreamKeyerId >= state.Info.Capabilities.DownstreamKeyers)
-        {
-            throw new InvalidIdError("DownstreamKeyer", DownstreamKeyerId);
-        }
-
         // Update the properties
-        state.Video.DownstreamKeyers.GetOrCreate(DownstreamKeyerId).Properties = Properties;
-
-        // Return the state path that was modified
-        return [$"video.downstreamKeyers.{DownstreamKeyerId}.properties"];
+        state.Video.DownstreamKeyers[DownstreamKeyerId].Properties = Properties;
     }
 }

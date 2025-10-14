@@ -19,15 +19,15 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
 
     protected override void CompareCommandProperties(MultiViewerSourceUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        Assert.That(actualCommand.MultiViewerId, Is.EqualTo(expectedData.MultiviewIndex), 
+        Assert.That(actualCommand.MultiViewerId, Is.EqualTo(expectedData.MultiviewIndex),
                    $"MultiViewerId should match expected value for test case {testCase.Name}");
-        Assert.That(actualCommand.WindowIndex, Is.EqualTo(expectedData.WindowIndex), 
+        Assert.That(actualCommand.WindowIndex, Is.EqualTo(expectedData.WindowIndex),
                    $"WindowIndex should match expected value for test case {testCase.Name}");
-        Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source), 
+        Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source),
                    $"Source should match expected value for test case {testCase.Name}");
-        Assert.That(actualCommand.SupportsVuMeter, Is.EqualTo(expectedData.SupportVuMeter), 
+        Assert.That(actualCommand.SupportsVuMeter, Is.EqualTo(expectedData.SupportVuMeter),
                    $"SupportsVuMeter should match expected value for test case {testCase.Name}");
-        Assert.That(actualCommand.SupportsSafeArea, Is.EqualTo(expectedData.SupportsSafeArea), 
+        Assert.That(actualCommand.SupportsSafeArea, Is.EqualTo(expectedData.SupportsSafeArea),
                    $"SupportsSafeArea should match expected value for test case {testCase.Name}");
     }
 
@@ -38,7 +38,7 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
         const int multiViewerId = 1;
         const int windowIndex = 5;
         const int newSource = 2000;
-        
+
         var state = CreateStateWithMultiViewer(multiViewerId);
         var command = new MultiViewerSourceUpdateCommand
         {
@@ -50,20 +50,17 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
         };
 
         // Act
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         var multiViewer = AtemStateUtil.GetMultiViewer(state, multiViewerId);
         Assert.That(multiViewer.Windows.ContainsKey(windowIndex), Is.True, "Window should exist");
-        
+
         var window = multiViewer.Windows[windowIndex];
         Assert.That(window.Source, Is.EqualTo(newSource));
         Assert.That(window.WindowIndex, Is.EqualTo(windowIndex));
         Assert.That(window.SupportsVuMeter, Is.True);
         Assert.That(window.SupportsSafeArea, Is.False);
-        
-        Assert.That(changedPaths, Has.Length.EqualTo(1));
-        Assert.That(changedPaths[0], Is.EqualTo($"settings.multiViewers.{multiViewerId}.windows.{windowIndex}"));
     }
 
     [Test]
@@ -71,7 +68,7 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
     {
         // Arrange
         const int multiViewerId = 3;
-        
+
         var state = new AtemState(); // Empty state
         var command = new MultiViewerSourceUpdateCommand
         {
@@ -93,9 +90,9 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
         const int multiViewerId = 0;
         const int windowIndex = 3;
         const int newSource = 1500;
-        
+
         var state = CreateStateWithMultiViewer(multiViewerId);
-        
+
         // Add existing window with optional properties
         var existingWindow = new MultiViewerWindowState
         {
@@ -108,7 +105,7 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
         };
         var multiViewer = AtemStateUtil.GetMultiViewer(state, multiViewerId);
         multiViewer.Windows[windowIndex] = existingWindow;
-        
+
         var command = new MultiViewerSourceUpdateCommand
         {
             MultiViewerId = multiViewerId,
@@ -119,7 +116,7 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
         };
 
         // Act
-        _ = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         var window = multiViewer.Windows[windowIndex];
@@ -136,7 +133,7 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
         // Arrange
         const int validMultiViewerId = 0;
         const int invalidMultiViewerId = 5;
-        
+
         var state = CreateStateWithMultiViewer(validMultiViewerId);
         var command = new MultiViewerSourceUpdateCommand
         {

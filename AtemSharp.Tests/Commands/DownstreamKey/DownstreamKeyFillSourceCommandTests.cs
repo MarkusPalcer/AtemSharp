@@ -19,7 +19,7 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
     {
         // Create state with the required downstream keyer
         var state = CreateStateWithDownstreamKeyer(testCase.Command.Index, testCase.Command.FillSource);
-        
+
         // Create command with the keyer ID
         var command = new DownstreamKeyFillSourceCommand(testCase.Command.Index, state)
         {
@@ -35,9 +35,8 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
     /// </summary>
     private static AtemState CreateStateWithDownstreamKeyer(int keyerId, int fillSource = 0)
     {
-        var downstreamKeyers = new Dictionary<int, DownstreamKeyer>
-        {
-	        [keyerId] = new()
+        var downstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(keyerId+1);
+        downstreamKeyers[keyerId] = new()
 	        {
 		        InTransition = false,
 		        RemainingFrames = 0,
@@ -49,7 +48,6 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
 			        FillSource = fillSource,
 			        CutSource = 1000
 		        }
-	        }
         };
 
         var state = new AtemState
@@ -87,46 +85,7 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
         var state = new AtemState(); // No video state
 
         // Act
-        var command = new DownstreamKeyFillSourceCommand(keyerId, state);
-
-        // Assert
-        Assert.That(command.DownstreamKeyerId, Is.EqualTo(keyerId));
-        Assert.That(command.Input, Is.EqualTo(0)); // Default value
-        Assert.That(command.Flag, Is.EqualTo(1)); // Flag should be set due to property assignment
-    }
-
-    [Test]
-    public void Constructor_WithMissingSources_ShouldUseDefaults()
-    {
-        // Arrange
-        const int keyerId = 1;
-        var downstreamKeyers = new Dictionary<int, DownstreamKeyer>
-        {
-	        [keyerId] = new()
-	        {
-		        InTransition = false,
-		        RemainingFrames = 0,
-		        IsAuto = false,
-		        OnAir = false,
-		        Sources = null // Missing sources
-	        }
-        };
-
-        var state = new AtemState
-        {
-            Video = new VideoState
-            {
-                DownstreamKeyers = downstreamKeyers
-            }
-        };
-
-        // Act
-        var command = new DownstreamKeyFillSourceCommand(keyerId, state);
-
-        // Assert
-        Assert.That(command.DownstreamKeyerId, Is.EqualTo(keyerId));
-        Assert.That(command.Input, Is.EqualTo(0)); // Default value
-        Assert.That(command.Flag, Is.EqualTo(1)); // Flag should be set due to property assignment
+        Assert.Throws<IndexOutOfRangeException>(() =>new DownstreamKeyFillSourceCommand(keyerId, state));
     }
 
     [Test]
@@ -182,7 +141,7 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
         Assert.That(result.Length, Is.EqualTo(4));
         Assert.That(result[0], Is.EqualTo(keyerId)); // Keyer ID
         Assert.That(result[1], Is.EqualTo(0)); // Padding
-        
+
         // Input as 16-bit big-endian (bytes 2-3)
         var expectedInputBytes = BitConverter.GetBytes((ushort)input);
         if (BitConverter.IsLittleEndian)
@@ -247,7 +206,7 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
 
         // Act
         var serialized = command.Serialize(ProtocolVersion.V8_1_1);
-        
+
         // Verify we can extract the input back from the serialized data
         var extractedKeyerId = serialized[0];
         var extractedInput = (serialized[2] << 8) | serialized[3];
@@ -276,12 +235,10 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
     {
         // Arrange
         const int keyerId = 10; // Higher than available keyers
-        var downstreamKeyers = new Dictionary<int, DownstreamKeyer>
-        {
-	        [0] = new()
+        var downstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(2);
+	        downstreamKeyers[0] = new()
 	        {
 		        Sources = new DownstreamKeyerSources { FillSource = 100, CutSource = 200 }
-	        }
         }; // Only 2 keyers available
 
         var state = new AtemState
@@ -293,11 +250,6 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
         };
 
         // Act
-        var command = new DownstreamKeyFillSourceCommand(keyerId, state);
-
-        // Assert
-        Assert.That(command.DownstreamKeyerId, Is.EqualTo(keyerId));
-        Assert.That(command.Input, Is.EqualTo(0)); // Default value since keyer doesn't exist
-        Assert.That(command.Flag, Is.EqualTo(1)); // Flag should be set due to property assignment
+        Assert.Throws<IndexOutOfRangeException>(() => new DownstreamKeyFillSourceCommand(keyerId, state));
     }
 }

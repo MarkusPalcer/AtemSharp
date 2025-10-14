@@ -34,7 +34,7 @@ public class MultiViewerVuOpacityCommand : SerializedCommand, IDeserializedComma
 
         // Initialize from current state or defaults if no existing state
         var multiViewer = AtemStateUtil.GetMultiViewer(currentState, multiViewerId);
-        
+
         // Initialize from current state (direct field access = no flags set)
         _opacity = multiViewer.VuOpacity;
     }
@@ -70,7 +70,7 @@ public class MultiViewerVuOpacityCommand : SerializedCommand, IDeserializedComma
             {
                 throw new ArgumentOutOfRangeException(nameof(value), "Opacity must be between 0 and 100");
             }
-            
+
             _opacity = value;
             Flag |= 1 << 0;  // Automatic flag setting for opacity
         }
@@ -81,16 +81,16 @@ public class MultiViewerVuOpacityCommand : SerializedCommand, IDeserializedComma
     {
         using var memoryStream = new MemoryStream(4);
         using var writer = new BinaryWriter(memoryStream);
-        
+
         // Write MultiViewer ID as single byte
         writer.Write((byte)MultiViewerId);
-        
+
         // Write opacity as single byte
         writer.Write((byte)Opacity);
-        
+
         // Pad to 4 bytes total
         writer.Pad(2);
-        
+
         return memoryStream.ToArray();
     }
 
@@ -115,7 +115,7 @@ public class MultiViewerVuOpacityCommand : SerializedCommand, IDeserializedComma
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Validate state prerequisites (same pattern as TypeScript update commands)
         if (state.Info.MultiViewer.Count == 0 || MultiViewerId >= state.Info.MultiViewer.Count)
@@ -126,8 +126,5 @@ public class MultiViewerVuOpacityCommand : SerializedCommand, IDeserializedComma
         // Get or create the MultiViewer and update its VU opacity
         var multiViewer = AtemStateUtil.GetMultiViewer(state, MultiViewerId);
         multiViewer.VuOpacity = Opacity;
-
-        // Return the state path that was modified for change tracking
-        return [$"settings.multiViewers.{MultiViewerId}.vuOpacity"];
     }
 }

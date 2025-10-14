@@ -17,7 +17,7 @@ public class TransitionPropertiesUpdateCommandTests : DeserializedCommandTestBas
         public byte NextSelection { get; set; }
     }
 
-    protected override void CompareCommandProperties(TransitionPropertiesUpdateCommand actualCommand, 
+    protected override void CompareCommandProperties(TransitionPropertiesUpdateCommand actualCommand,
         CommandData expectedData, TestCaseData testCase)
     {
         var failures = new List<string>();
@@ -89,11 +89,9 @@ public class TransitionPropertiesUpdateCommandTests : DeserializedCommandTestBas
         var state = CreateMinimalState();
 
         // Act
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
-        Assert.That(changedPaths, Is.EqualTo(new[] { "video.mixEffects.1.transitionProperties" }));
-        
         var mixEffect = state.Video.MixEffects[1];
         Assert.That(mixEffect.TransitionProperties, Is.Not.Null);
         Assert.That(mixEffect.TransitionProperties!.Style, Is.EqualTo(TransitionStyle.Wipe));
@@ -147,11 +145,9 @@ public class TransitionPropertiesUpdateCommandTests : DeserializedCommandTestBas
         };
 
         // Act
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
-        Assert.That(changedPaths, Is.EqualTo(new[] { "video.mixEffects.0.transitionProperties" }));
-        
         var mixEffect = state.Video.MixEffects[0];
         Assert.That(mixEffect.TransitionProperties, Is.Not.Null);
         Assert.That(mixEffect.TransitionProperties!.Style, Is.EqualTo(TransitionStyle.Sting));

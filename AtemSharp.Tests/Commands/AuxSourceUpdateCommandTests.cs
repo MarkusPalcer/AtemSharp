@@ -16,9 +16,9 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
 
     protected override void CompareCommandProperties(AuxSourceUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        Assert.That(actualCommand.AuxBus, Is.EqualTo(expectedData.Id), 
+        Assert.That(actualCommand.AuxBus, Is.EqualTo(expectedData.Id),
                    $"AuxBus should match expected value for test case {testCase.Name}");
-        Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source), 
+        Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source),
                    $"Source should match expected value for test case {testCase.Name}");
     }
 
@@ -28,7 +28,7 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
         // Arrange
         const int auxId = 1;
         const int newSource = 2000;
-        
+
         var state = CreateStateWithAuxiliary(auxId, 1000); // Initial source
         var command = new AuxSourceUpdateCommand
         {
@@ -37,12 +37,10 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
         };
 
         // Act
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Video.Auxiliaries[auxId], Is.EqualTo(newSource));
-        Assert.That(changedPaths, Has.Length.EqualTo(1));
-        Assert.That(changedPaths[0], Is.EqualTo($"video.auxiliaries.{auxId}"));
     }
 
     [Test]
@@ -51,7 +49,7 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
         // Arrange
         const int auxId = 3;
         const int newSource = 1500;
-        
+
         var state = new AtemState
         {
             Info = new DeviceInfo
@@ -62,7 +60,7 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
                 }
             }
         };
-        
+
         var command = new AuxSourceUpdateCommand
         {
             AuxBus = auxId,
@@ -70,12 +68,11 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
         };
 
         // Act
-        var changedPaths = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Video, Is.Not.Null, "Video state should be created");
         Assert.That(state.Video.Auxiliaries[auxId], Is.EqualTo(newSource));
-        Assert.That(changedPaths[0], Is.EqualTo($"video.auxiliaries.{auxId}"));
     }
 
     [Test]
@@ -93,7 +90,7 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
                 }
             }
         };
-        
+
         var command = new AuxSourceUpdateCommand
         {
             AuxBus = auxId,
@@ -149,7 +146,7 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
         {
             Auxiliaries = 4 // 0-3 valid
         };
-        
+
         var command = new AuxSourceUpdateCommand
         {
             AuxBus = 2,
@@ -170,7 +167,7 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
         {
             Auxiliaries = 4 // 0-3 valid
         };
-        
+
         var command = new AuxSourceUpdateCommand
         {
             AuxBus = 6, // Invalid - only 0-3 are valid
@@ -189,7 +186,7 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
         // Arrange
         var state = new AtemState();
         state.Info.Capabilities = null;
-        
+
         var command = new AuxSourceUpdateCommand
         {
             AuxBus = 0,

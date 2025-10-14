@@ -47,7 +47,7 @@ public class MultiViewerPropertiesUpdateCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Validate state prerequisites (same pattern as TypeScript update commands)
         if (state.Info.MultiViewer.Count == 0 || MultiViewerId >= state.Info.MultiViewer.Count)
@@ -62,8 +62,5 @@ public class MultiViewerPropertiesUpdateCommand : IDeserializedCommand
             Layout = Layout,
             ProgramPreviewSwapped = ProgramPreviewSwapped
         };
-
-        // Return the state path that was modified for change tracking
-        return [$"settings.multiViewers.{MultiViewerId}.properties"];
     }
 }

@@ -19,6 +19,9 @@ public class AudioMixerInputUpdateV8CommandTests : DeserializedCommandTestBase<A
 		public double Balance { get; set; }
 		public bool SupportsRcaToXlrEnabled { get; set; }
 		public bool RcaToXlrEnabled { get; set; }
+
+        // TODO: Check how this is deserialized and applied
+        public bool IndexOfSourceType { get; set; }
 	}
 
 	protected override void CompareCommandProperties(AudioMixerInputUpdateV8Command actualCommand, CommandData expectedData, TestCaseData testCase)

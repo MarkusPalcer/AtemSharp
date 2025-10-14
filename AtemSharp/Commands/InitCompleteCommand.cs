@@ -16,10 +16,9 @@ public class InitCompleteCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // This command doesn't modify state, but signals that initialization is complete
         // Return "info" to indicate that the general device information section was affected
-        return ["info"];
     }
 }

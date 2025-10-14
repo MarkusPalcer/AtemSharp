@@ -21,13 +21,12 @@ public class MultiviewerConfigCommand : IDeserializedCommand
 
 		return result;
 	}
-	
-	public string[] ApplyToState(AtemState state)
+
+	public void ApplyToState(AtemState state)
 	{
 		state.MultiViewer ??= new MultiViewerInfo();
 
 		state.MultiViewer.Count = Count;
 		state.MultiViewer.WindowCount = WindowCount;
-		return ["multiViewer"];
 	}
 }

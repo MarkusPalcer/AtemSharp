@@ -73,12 +73,12 @@ public class TransitionStingerUpdateCommand : IDeserializedCommand
         var source = reader.ReadByte();
         var preMultipliedKey = reader.ReadBoolean();;
         reader.ReadByte(); // Skip 1 byte padding (offset 3)
-        
+
         var clip = reader.ReadUInt16BigEndian() / 10.0;    // Convert from value * 10 to double
         var gain = reader.ReadUInt16BigEndian() / 10.0;    // Convert from value * 10 to double
         var invert = reader.ReadBoolean();;
         reader.ReadByte(); // Skip 1 byte padding (offset 9)
-        
+
         // According to TypeScript: these use bit shifting to combine bytes (big endian manual reconstruction)
         var preroll = (reader.ReadByte() << 8) | reader.ReadByte();
         var clipDuration = (reader.ReadByte() << 8) | reader.ReadByte();
@@ -101,7 +101,7 @@ public class TransitionStingerUpdateCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
-    public string[] ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         // Validate mix effect index
         if (!state.Video.MixEffects.TryGetValue(MixEffectId, out var mixEffect))
@@ -131,7 +131,5 @@ public class TransitionStingerUpdateCommand : IDeserializedCommand
         mixEffect.TransitionSettings.Stinger.ClipDuration = ClipDuration;
         mixEffect.TransitionSettings.Stinger.TriggerPoint = TriggerPoint;
         mixEffect.TransitionSettings.Stinger.MixRate = MixRate;
-
-        return new[] { $"video.mixEffects.{MixEffectId}.transitionSettings.stinger" };
     }
 }

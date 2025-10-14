@@ -55,19 +55,17 @@ public class AudioMixerConfigCommandTests : DeserializedCommandTestBase<AudioMix
         };
 
         // Act
-        var result = command.ApplyToState(state);
+        command.ApplyToState(state);
 
         // Assert
         Assert.That(state.Info.AudioMixer, Is.Not.Null);
         Assert.That(state.Info.AudioMixer.Inputs, Is.EqualTo(20));
         Assert.That(state.Info.AudioMixer.Monitors, Is.EqualTo(2));
         Assert.That(state.Info.AudioMixer.Headphones, Is.EqualTo(1));
-        
+
         Assert.That(state.Audio, Is.Not.Null);
         Assert.That(state.Audio.Channels, Is.Not.Null);
         Assert.That(state.Audio.Channels, Is.Empty);
-        
-        Assert.That(result, Is.EqualTo(new[] { "info.audioMixer", "audio" }));
     }
 
     [Test]
@@ -123,14 +121,14 @@ public class AudioMixerConfigCommandTests : DeserializedCommandTestBase<AudioMix
     {
         // Arrange
         var state = new AtemState();
-        
+
         var firstCommand = new AudioMixerConfigCommand
         {
             Inputs = 10,
             Monitors = 1,
             Headphones = 1
         };
-        
+
         var secondCommand = new AudioMixerConfigCommand
         {
             Inputs = 20,
@@ -140,14 +138,12 @@ public class AudioMixerConfigCommandTests : DeserializedCommandTestBase<AudioMix
 
         // Act
         firstCommand.ApplyToState(state);
-        var result = secondCommand.ApplyToState(state);
+        secondCommand.ApplyToState(state);
 
         // Assert - should have the values from the second command
         Assert.That(state.Info.AudioMixer, Is.Not.Null);
         Assert.That(state.Info.AudioMixer!.Inputs, Is.EqualTo(20));
         Assert.That(state.Info.AudioMixer.Monitors, Is.EqualTo(2));
         Assert.That(state.Info.AudioMixer.Headphones, Is.EqualTo(1));
-        
-        Assert.That(result, Is.EqualTo(new[] { "info.audioMixer", "audio" }));
     }
 }
