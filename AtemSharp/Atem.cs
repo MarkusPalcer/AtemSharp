@@ -54,7 +54,8 @@ public class Atem : IDisposable
 	/// </summary>
 	/// <param name="transport">The UDP transport to use for communication</param>
 	/// <param name="logger">Logger instance for diagnostic output</param>
-	public Atem(IUdpTransport transport, ILogger<Atem>? logger = null)
+	/// <remarks>This constructor is solely for testing purposes to mock the IUdpTransport</remarks>
+	internal Atem(IUdpTransport transport, ILogger<Atem>? logger = null)
 	{
 		_transport = transport ?? throw new ArgumentNullException(nameof(transport));
 		_logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<Atem>.Instance;
@@ -149,8 +150,8 @@ public class Atem : IDisposable
 						// Check if this is the InitCompleteCommand
 						if (command is Commands.InitCompleteCommand)
 						{
-							// Signal that the connection is fully established
-							_connectionCompletionSource?.SetResult(true);
+							// Signal that the connection is fully established (only once)
+							_connectionCompletionSource?.TrySetResult(true);
 						}
 					}
 					// Note: Unknown commands are tracked by CommandParser.ParseCommand

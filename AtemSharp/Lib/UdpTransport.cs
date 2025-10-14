@@ -15,11 +15,12 @@ public sealed class UdpTransport : IUdpTransport
     private readonly object _lockObject = new();
     private readonly CancellationTokenSource _cancellationTokenSource = new();
     private readonly SemaphoreSlim _sendSemaphore = new(1, 1);
-    
+
     private ConnectionState _connectionState = ConnectionState.Closed;
     private IPEndPoint? _remoteEndPoint;
     private Task? _receiveTask;
     private bool _disposed;
+    private ushort _sessionId = 0;
 
     /// <summary>
     /// Raised when a packet is received from the remote endpoint
@@ -56,13 +57,13 @@ public sealed class UdpTransport : IUdpTransport
                 previousState = _connectionState;
                 _connectionState = value;
             }
-            
+
             if (previousState != value)
             {
-                ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs 
-                { 
-                    State = value, 
-                    PreviousState = previousState 
+                ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs
+                {
+                    State = value,
+                    PreviousState = previousState
                 });
             }
         }
@@ -101,7 +102,7 @@ public sealed class UdpTransport : IUdpTransport
     public async Task ConnectAsync(string address, int port = AtemConstants.DEFAULT_PORT, CancellationToken cancellationToken = default)
     {
         ThrowIfDisposed();
-        
+
         if (ConnectionState != ConnectionState.Closed)
         {
             throw new InvalidOperationException($"Cannot connect when state is {ConnectionState}");
@@ -117,18 +118,18 @@ public sealed class UdpTransport : IUdpTransport
         {
             // Connect the UDP client to the remote endpoint
             _udpClient.Connect(_remoteEndPoint);
-            
+
             // Start the receive loop
             _receiveTask = ReceiveLoopAsync(_cancellationTokenSource.Token);
-            
+
             ConnectionState = ConnectionState.SendingSyn;
-            
-            // Send the initial ATEM hello packet directly (no packet wrapper)
-            // This matches the TypeScript implementation which sends COMMAND_CONNECT_HELLO raw
+
+            // Send the initial ATEM hello packet as raw bytes (matches TypeScript COMMAND_CONNECT_HELLO)
+            // This should NOT be wrapped in an AtemPacket - just send the raw hello bytes
             await _udpClient.SendAsync(AtemConstants.HELLO_PACKET, cancellationToken);
-			
+
             ConnectionState = ConnectionState.SynSent;
-            
+
             // The connection state will be set to Established when we receive the proper response
             // For now, we remain in SynSent state until the ATEM protocol handshake completes
         }
@@ -158,13 +159,13 @@ public sealed class UdpTransport : IUdpTransport
         {
             // Cancel the receive loop
             await _cancellationTokenSource.CancelAsync();
-            
+
             // Wait for receive task to complete (with timeout)
             if (_receiveTask != null)
             {
                 using var timeoutCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
                 timeoutCts.CancelAfter(TimeSpan.FromSeconds(5));
-                
+
                 try
                 {
                     await _receiveTask.WaitAsync(timeoutCts.Token);
@@ -179,6 +180,7 @@ public sealed class UdpTransport : IUdpTransport
         {
             ConnectionState = ConnectionState.Closed;
             _remoteEndPoint = null;
+            _sessionId = 0;
         }
     }
 
@@ -191,7 +193,7 @@ public sealed class UdpTransport : IUdpTransport
     public async Task SendPacketAsync(AtemPacket packet, CancellationToken cancellationToken = default)
     {
         ThrowIfDisposed();
-        
+
         if (ConnectionState == ConnectionState.Closed)
         {
             throw new InvalidOperationException("Cannot send packet when not connected");
@@ -204,7 +206,7 @@ public sealed class UdpTransport : IUdpTransport
 
         // Serialize the packet
         var packetData = packet.ToBytes();
-        
+
         // Use semaphore to ensure thread-safe sending
         await _sendSemaphore.WaitAsync(cancellationToken);
         try
@@ -245,19 +247,19 @@ public sealed class UdpTransport : IUdpTransport
                     var result = await _udpClient.ReceiveAsync(cancellationToken);
 
                     if (cancellationToken.IsCancellationRequested) return;
-                    
+
                     // Parse the received packet
                     if (AtemPacket.TryParse(result.Buffer.AsSpan(), out var packet) && packet != null)
                     {
 	                    if (cancellationToken.IsCancellationRequested) return;
                         // Update connection state based on received packet
                         UpdateConnectionStateFromPacket(packet);
-                        
+
                         // Raise packet received event
-                        PacketReceived?.Invoke(this, new PacketReceivedEventArgs 
-                        { 
-                            Packet = packet, 
-                            RemoteEndPoint = result.RemoteEndPoint 
+                        PacketReceived?.Invoke(this, new PacketReceivedEventArgs
+                        {
+                            Packet = packet,
+                            RemoteEndPoint = result.RemoteEndPoint
                         });
                     }
                     else
@@ -280,7 +282,7 @@ public sealed class UdpTransport : IUdpTransport
                 catch (Exception ex)
                 {
                     ErrorOccurred?.Invoke(this, ex);
-                    
+
                     // For serious errors, break the loop
                     if (ex is SocketException)
                     {
@@ -302,13 +304,28 @@ public sealed class UdpTransport : IUdpTransport
     /// <summary>
     /// Updates connection state based on received packet flags
     /// </summary>
-    private void UpdateConnectionStateFromPacket(AtemPacket packet)
+    private async void UpdateConnectionStateFromPacket(AtemPacket packet)
     {
-        if (ConnectionState == ConnectionState.SynSent && 
+        if (ConnectionState == ConnectionState.SynSent &&
             packet.Flags.HasFlag(PacketFlag.NewSessionId))
         {
+            // Store the session ID for future communications
+            _sessionId = packet.SessionId;
+            
             // Received response to hello packet - connection established
             ConnectionState = ConnectionState.Established;
+            
+            // Send ACK packet in response to NewSessionId (matches TypeScript implementation)
+            // This is critical - without the ACK, ATEM will keep retransmitting
+            try
+            {
+                var ackPacket = AtemPacket.CreateAck(packet.SessionId, packet.PacketId);
+                await SendPacketAsync(ackPacket, CancellationToken.None);
+            }
+            catch (Exception ex)
+            {
+                ErrorOccurred?.Invoke(this, new InvalidOperationException("Failed to send ACK packet", ex));
+            }
         }
     }
 

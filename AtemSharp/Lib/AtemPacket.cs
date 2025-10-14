@@ -106,8 +106,11 @@ public class AtemPacket
         // Parse header using BinaryPrimitives for big-endian reading
         var headerSpan = packetData.Slice(0, PacketHeaderSize);
 
+        // Extract flags and length following TypeScript implementation
+        // Flags are in the upper 5 bits of the first byte
+        // Length is in the lower 11 bits of the first two bytes
         ushort flagsAndLength = headerSpan.ReadUInt16BigEndian(0);
-        packet.Flags = (PacketFlag)(flagsAndLength >> FlagsShift);
+        packet.Flags = (PacketFlag)(headerSpan.ReadUInt8(0) >> 3); // Upper 5 bits of first byte
         packet.Length = (ushort)(flagsAndLength & LengthMask);
         packet.SessionId = headerSpan.ReadUInt16BigEndian(2);
         packet.AckPacketId = headerSpan.ReadUInt16BigEndian(4);
@@ -146,8 +149,9 @@ public class AtemPacket
         var bufferSpan = buffer.AsSpan();
 
         // Write header using BinaryPrimitives for big-endian writing
-        ushort flagsAndLength = (ushort)(((int)Flags << FlagsShift) | (Length & LengthMask));
-        bufferSpan.WriteUInt16BigEndian(0, flagsAndLength);
+        // Encode flags in upper 5 bits of first byte, length in lower 11 bits
+        bufferSpan[0] = (byte)(((int)Flags << 3) | ((Length >> 8) & 0x07)); // First byte: upper 5 bits flags + upper 3 bits of length
+        bufferSpan[1] = (byte)(Length & 0xFF); // Second byte: lower 8 bits of length
         bufferSpan.WriteUInt16BigEndian(2, SessionId);
         bufferSpan.WriteUInt16BigEndian(4, AckPacketId);
         bufferSpan.WriteUInt16BigEndian(6, Reserved);
