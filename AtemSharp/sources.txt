@@ -29,7 +29,6 @@ src\commands\Macro\MacroPropertiesCommand.ts - MPrp, CMPr
 src\commands\Macro\MacroRecordCommand.ts - MSRc
 src\commands\Macro\MacroRecordingStatusCommand.ts - MRcS
 src\commands\Macro\MacroRunStatusCommand.ts - MRPr, MRCP
-src\commands\Media\MediaPlayerSourceCommand.ts - MPSS
 src\commands\Media\MediaPlayerStatusCommand.ts - SCPS, RCPS
 src\commands\Media\MediaPoolCaptureStillCommand.ts - Capt
 src\commands\Media\MediaPoolClearClipCommand.ts - CMPC
