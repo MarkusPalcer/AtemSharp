@@ -1,7 +1,5 @@
 namespace AtemSharp.State;
 
-public abstract class AudioState;
-
 /// <summary>
 /// Audio state for classic ATEM devices
 /// </summary>

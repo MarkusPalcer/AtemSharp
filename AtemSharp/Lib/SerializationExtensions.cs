@@ -86,4 +86,6 @@ public static class SerializationExtensions
     {
         BinaryPrimitives.WriteUInt16BigEndian(self.AsSpan(offset), (ushort)value);
     }
+
+    public static void WriteBoolean(this byte[] self, bool value, int offset) => WriteUInt8(self, (byte)(value ? 1 : 0), offset);
 }

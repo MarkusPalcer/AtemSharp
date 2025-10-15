@@ -9,7 +9,6 @@ src\commands\Fairlight\FairlightMixerMasterEqualizerBandCommand.ts - CMBP, AMBP
 src\commands\Fairlight\FairlightMixerMasterEqualizerResetCommand.ts - RMOE
 src\commands\Fairlight\FairlightMixerMasterLevelsCommand.ts - FDLv
 src\commands\Fairlight\FairlightMixerMasterLimiterCommand.ts - CMLP, AMLP
-src\commands\Fairlight\FairlightMixerMasterPropertiesCommand.ts - CMPP, FMPP
 src\commands\Fairlight\FairlightMixerMonitorCommand.ts - CFMH, FMHP
 src\commands\Fairlight\FairlightMixerMonitorSoloCommand.ts - CFMS, FAMS
 src\commands\Fairlight\FairlightMixerResetPeakLevelsCommand.ts - RFLP

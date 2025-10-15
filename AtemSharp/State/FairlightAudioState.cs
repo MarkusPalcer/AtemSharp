@@ -9,4 +9,14 @@ public class FairlightAudioState : AudioState
     /// Fairlight audio inputs indexed by input number
     /// </summary>
     public Dictionary<int, FairlightAudioInput> Inputs { get; init; } = new();
+
+    public MasterProperties Master { get; } = new();
+}
+
+public class MasterProperties
+{
+    /// <summary>
+    /// Whether audio follows video during crossfade transition
+    /// </summary>
+    public bool AudioFollowsVideo { get; set; }
 }
