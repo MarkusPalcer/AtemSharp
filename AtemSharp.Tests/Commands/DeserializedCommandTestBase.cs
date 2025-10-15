@@ -2,6 +2,7 @@ using System.Reflection;
 using AtemSharp.Commands;
 using AtemSharp.Enums;
 using AtemSharp.Lib;
+using AtemSharp.Tests.TestUtilities;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -57,13 +58,27 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 	{
 		var testCases = LoadTestData();
 		var commandAttribute = typeof(TCommand).GetCustomAttribute<CommandAttribute>();
-		var rawName = commandAttribute?.RawName ?? "Unknown";
+        Assert.That(commandAttribute, Is.Not.Null, $"CommandAttribute is required on command class {typeof(TCommand).Name}");
+        var minProtocolVersion = commandAttribute.MinimumVersion;
+		var rawName = commandAttribute.RawName ?? "Unknown";
 
 		Assert.That(testCases.Length, Is.GreaterThan(0),
 		            $"Should have {rawName} test cases from libatem-data.json");
 
+        var maxProtocolVersion = typeof(TTestData).GetCustomAttribute<MaxProtocolVersionAttribute>()?.MaxVersion;
+
 		foreach (var testCase in testCases)
 		{
+            if (maxProtocolVersion is not null && testCase.FirstVersion > maxProtocolVersion)
+            {
+                continue;
+            }
+
+            if (testCase.FirstVersion < minProtocolVersion)
+            {
+                continue;
+            }
+
 			yield return new NUnit.Framework.TestCaseData(testCase)
 			            .SetName($"{rawName}_{testCase.FirstVersion}")
 			            .SetDescription(
@@ -90,6 +105,8 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
         }
 	}
 
+    public ProtocolVersion? MaxProtocolVersion { get; protected set; }
+
 	protected abstract void CompareCommandProperties(TCommand actualCommand, TTestData expectedData, TestCaseData testCase);
 
 	private static TCommand DeserializeCommand(byte[] payload, ProtocolVersion protocolVersion)
@@ -103,7 +120,7 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 
 		if (deserializeMethod == null)
 		{
-			throw new InvalidOperationException($"Command {typeof(TCommand).Name} must have a static Deserialize(ReadOnlySpan<Byte>, ProtocolVersion) method");
+			throw new InvalidOperationException($"Command {typeof(TCommand).Name} is missing public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> data, ProtocolVersion version)");
 		}
 
         var result = deserializeMethod.CreateDelegate<CommandParser.DeserializeCommand>()(payload.AsSpan(), protocolVersion);
