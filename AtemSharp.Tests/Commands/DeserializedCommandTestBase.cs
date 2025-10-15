@@ -38,8 +38,8 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 		var actualCommand = DeserializeCommand(commandPayload, testCase.FirstVersion);
 
 		// Assert - Compare properties
-		CompareCommandProperties(actualCommand, testCase.Command, testCase);
-	}
+        Assert.Multiple(() => CompareCommandProperties(actualCommand, testCase.Command, testCase));
+    }
 
 	protected abstract void CompareCommandProperties(TCommand actualCommand, TTestData expectedData, TestCaseData testCase);
 
