@@ -13,7 +13,7 @@ public class DownstreamKeyerProperties : DownstreamKeyerGeneral
 	/// <summary>
 	/// Transition rate in frames
 	/// </summary>
-	public int Rate { get; set; }
+	public byte Rate { get; set; }
 
 	/// <summary>
 	/// Mask configuration

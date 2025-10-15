@@ -74,4 +74,9 @@ public static class SerializationExtensions
 		var byteValue = value ? (byte)1 : (byte)0;
 		self.Write(byteValue);
 	}
+
+    public static void WriteUInt8(this byte[] self, byte value, int offset)
+    {
+        self[offset] = value;
+    }
 }
