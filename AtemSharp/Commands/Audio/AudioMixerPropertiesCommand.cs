@@ -19,15 +19,13 @@ public class AudioMixerPropertiesCommand : SerializedCommand
     /// <exception cref="InvalidIdError">Thrown if classic audio not available</exception>
     public AudioMixerPropertiesCommand(AtemState currentState)
     {
-        // If old state does not exist, set Properties (instead of backing fields) to default values,
-        // so all flags are set (i.e. all values are to be applied by the ATEM)
-        if (currentState.Audio is null)
+        if (currentState.Audio is not ClassicAudioState audio)
         {
-            throw new InvalidIdError("Classic Audio", "properties");
+            throw new InvalidOperationException("Classic audio state is not available");
         }
 
         // Initialize from current state (direct field access = no flags set)
-        _audioFollowVideo = currentState.Audio.AudioFollowsVideo ?? false;
+        _audioFollowVideo = audio.AudioFollowsVideo ?? false;
     }
 
     /// <summary>
@@ -52,11 +50,11 @@ public class AudioMixerPropertiesCommand : SerializedCommand
     {
         using var memoryStream = new MemoryStream(4);
         using var writer = new BinaryWriter(memoryStream);
-        
+
         writer.Write((byte)Flag);
         writer.WriteBoolean(AudioFollowVideo);
         writer.Pad(2);
-        
+
         return memoryStream.ToArray();
     }
 }

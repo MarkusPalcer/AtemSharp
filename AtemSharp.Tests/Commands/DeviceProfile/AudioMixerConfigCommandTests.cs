@@ -1,5 +1,6 @@
 using AtemSharp.Commands.DeviceProfile;
 using AtemSharp.State;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
@@ -63,7 +64,7 @@ public class AudioMixerConfigCommandTests : DeserializedCommandTestBase<AudioMix
         Assert.That(state.Info.AudioMixer.Headphones, Is.EqualTo(1));
 
         Assert.That(state.Audio, Is.Not.Null);
-        Assert.That(state.Audio.Channels, Is.Not.Null);
-        Assert.That(state.Audio.Channels, Is.Empty);
+        Assert.That(state.Audio.As<ClassicAudioState>().Channels, Is.Not.Null);
+        Assert.That(state.Audio.As<ClassicAudioState>().Channels, Is.Empty);
     }
 }

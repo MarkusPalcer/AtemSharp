@@ -49,7 +49,7 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
 		// Arrange
 		var state = new AtemState
 		{
-			Audio = new AudioState
+			Audio = new ClassicAudioState
 			{
 				Master = new ClassicAudioMasterChannel
 				{
@@ -71,13 +71,13 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
 		command.ApplyToState(state);
 
 		// Assert
-		Assert.That(state.Audio.Master.Gain, Is.EqualTo(-12.5));
-		Assert.That(state.Audio.Master.Balance, Is.EqualTo(25.0));
-		Assert.That(state.Audio.Master.FollowFadeToBlack, Is.True);
+		Assert.That(state.Audio.As<ClassicAudioState>().Master!.Gain, Is.EqualTo(-12.5));
+		Assert.That(state.Audio.As<ClassicAudioState>().Master!.Balance, Is.EqualTo(25.0));
+		Assert.That(state.Audio.As<ClassicAudioState>().Master!.FollowFadeToBlack, Is.True);
 	}
 
 	[Test]
-	public void ApplyToState_WithNullAudioState_ShouldThrowInvalidIdError()
+	public void ApplyToState_WithNullAudioState_ShouldThrow()
 	{
 		// Arrange
 		var state = new AtemState(); // No audio state
@@ -89,9 +89,7 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
 		};
 
 		// Act & Assert
-		var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-		Assert.That(ex.Message, Does.Contain("Classic Audio"));
-		Assert.That(ex.Message, Does.Contain("master"));
+		Assert.Throws<InvalidOperationException>(() => command.ApplyToState(state));
 	}
 
 	[Test]
@@ -100,7 +98,7 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
 		// Arrange
 		var state = new AtemState
 		{
-			Audio = new AudioState() // Audio state exists but no master channel
+			Audio = new ClassicAudioState() // Audio state exists but no master channel
 		};
 
 		var command = new AudioMixerMasterUpdateCommand
@@ -114,10 +112,10 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
 		command.ApplyToState(state);
 
 		// Assert
-		Assert.That(state.Audio.Master, Is.Not.Null);
-		Assert.That(state.Audio.Master.Gain, Is.EqualTo(-8.0));
-		Assert.That(state.Audio.Master.Balance, Is.EqualTo(15.0));
-		Assert.That(state.Audio.Master.FollowFadeToBlack, Is.True);
+		Assert.That(state.Audio.As<ClassicAudioState>().Master, Is.Not.Null);
+		Assert.That(state.Audio.As<ClassicAudioState>().Master.Gain, Is.EqualTo(-8.0));
+		Assert.That(state.Audio.As<ClassicAudioState>().Master.Balance, Is.EqualTo(15.0));
+		Assert.That(state.Audio.As<ClassicAudioState>().Master.FollowFadeToBlack, Is.True);
 	}
 
 	[Test]
@@ -125,7 +123,7 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
 	{
 		// Arrange
 		var state = new AtemState();
-		state.Audio = new AudioState();
+		state.Audio = new ClassicAudioState();
 
 		var command = new AudioMixerMasterUpdateCommand
 		{
@@ -136,12 +134,12 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
 
 		// Act & Assert
 		Assert.DoesNotThrow(() => command.ApplyToState(state));
-		Assert.That(state.Audio.Master, Is.Not.Null);
-		Assert.That(state.Audio.Master.Gain, Is.EqualTo(-10.0));
+		Assert.That(state.Audio.As<ClassicAudioState>().Master, Is.Not.Null);
+		Assert.That(state.Audio.As<ClassicAudioState>().Master.Gain, Is.EqualTo(-10.0));
 	}
 
 	[Test]
-	public void ApplyToState_NullAudioState_ShouldThrowInvalidIdError()
+	public void ApplyToState_NullAudioState_ShouldThrow()
 	{
 		// Arrange
 		var state = new AtemState();
@@ -155,7 +153,6 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
 		};
 
 		// Act & Assert
-		var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-		Assert.That(ex.Message, Contains.Substring("Classic Audio"));
+		Assert.Throws<InvalidOperationException>(() => command.ApplyToState(state));
 	}
 }

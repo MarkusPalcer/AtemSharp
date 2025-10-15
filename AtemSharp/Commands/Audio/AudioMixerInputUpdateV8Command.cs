@@ -71,12 +71,12 @@ public class AudioMixerInputUpdateV8Command : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        if (state.Audio is null)
+        if (state.Audio is not ClassicAudioState audio)
         {
-            throw new InvalidIdError("Classic Audio", Index);
+            throw new InvalidOperationException("Cannot apply AudioMixerInputUpdateV8Command to non-classic audio state");
         }
 
-        state.Audio.Channels[Index] = new ClassicAudioChannel
+        audio.Channels[Index] = new ClassicAudioChannel
         {
             SourceType = SourceType,
             PortType = PortType,

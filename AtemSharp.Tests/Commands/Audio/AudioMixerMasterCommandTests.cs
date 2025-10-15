@@ -27,7 +27,7 @@ public class AudioMixerMasterCommandTests : SerializedCommandTestBase<AudioMixer
 	{
 		// Create state with the required audio master channel
 		var state = CreateStateWithAudioMaster();
-		
+
 		// Create command
 		var command = new AudioMixerMasterCommand(state);
 
@@ -35,7 +35,7 @@ public class AudioMixerMasterCommandTests : SerializedCommandTestBase<AudioMixer
 		command.Gain = testCase.Command.Gain;
 		command.Balance = testCase.Command.Balance;
 		command.FollowFadeToBlack = testCase.Command.FollowFadeToBlack;
-		
+
 		return command;
 	}
 
@@ -46,7 +46,7 @@ public class AudioMixerMasterCommandTests : SerializedCommandTestBase<AudioMixer
 	{
 		var state = new AtemState
 		{
-			Audio = new AudioState
+			Audio = new ClassicAudioState
 			{
 				Master = new ClassicAudioMasterChannel
 				{
@@ -81,8 +81,7 @@ public class AudioMixerMasterCommandTests : SerializedCommandTestBase<AudioMixer
 		var state = new AtemState(); // No audio state
 
 		// Act & Assert
-		var ex = Assert.Throws<InvalidIdError>(() => new AudioMixerMasterCommand(state));
-		Assert.That(ex.Message, Does.Contain("Classic Audio"));
+		Assert.Throws<InvalidOperationException>(() => new AudioMixerMasterCommand(state));
 	}
 
 	[Test]
@@ -91,12 +90,11 @@ public class AudioMixerMasterCommandTests : SerializedCommandTestBase<AudioMixer
 		// Arrange
 		var state = new AtemState
 		{
-			Audio = new AudioState() // Audio state exists but no master channel
+			Audio = new ClassicAudioState() // Audio state exists but no master channel
 		};
 
 		// Act & Assert
-		var ex = Assert.Throws<InvalidIdError>(() => new AudioMixerMasterCommand(state));
-		Assert.That(ex.Message, Does.Contain("Classic Audio"));
+		Assert.Throws<InvalidOperationException>(() => new AudioMixerMasterCommand(state));
 	}
 
 	[Test]

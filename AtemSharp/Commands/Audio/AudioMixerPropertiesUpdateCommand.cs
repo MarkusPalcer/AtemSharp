@@ -35,9 +35,11 @@ public class AudioMixerPropertiesUpdateCommand : IDeserializedCommand
     /// <exception cref="InvalidIdError">Thrown if classic audio is not available</exception>
     public void ApplyToState(AtemState state)
     {
-        state.Audio ??= new AudioState();
+        if (state.Audio is not ClassicAudioState audio)
+        {
+            throw new InvalidOperationException("Cannot apply AudioMixerPropertiesUpdateCommand to non-classic audio state");
+        }
 
-        // Update property
-        state.Audio.AudioFollowsVideo = AudioFollowVideo;
+        audio.AudioFollowsVideo = AudioFollowVideo;
     }
 }

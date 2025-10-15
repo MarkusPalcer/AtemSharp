@@ -3,6 +3,7 @@
 using AtemSharp;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 Console.WriteLine("=== AtemSharp Demo ===\n");
 
@@ -25,7 +26,7 @@ await Task.Delay(TimeSpan.FromSeconds(2), emergencyCts.Token);
 var state = atem.State;
 
 // Serialize state to JSON
-var stateJson = JsonConvert.SerializeObject(state, Formatting.Indented);
+var stateJson = JsonConvert.SerializeObject(state, Formatting.Indented, new JsonSerializerSettings { Converters = [new StringEnumConverter()], TypeNameHandling = TypeNameHandling.Auto});
 
 Console.WriteLine();
 Console.WriteLine("Current state:");

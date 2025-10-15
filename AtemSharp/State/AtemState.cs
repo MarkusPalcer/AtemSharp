@@ -16,11 +16,6 @@ public class AtemState
     public AudioState? Audio { get; set; }
 
     /// <summary>
-    /// Fairlight audio state for ATEM devices with Fairlight audio support
-    /// </summary>
-    public FairlightAudioState? Fairlight { get; set; }
-
-    /// <summary>
     /// Multiviewer configuration and capabilities
     /// </summary>
     public MultiViewerInfo? MultiViewer { get; set; }

@@ -20,27 +20,23 @@ public class AudioMixerMonitorCommand : SerializedCommand
 
 	public AudioMixerMonitorCommand(AtemState currentState)
 	{
-		// If the audio state or monitor do not exist, initialize to default values
-		// by setting the properties, thus setting the changed-flag for each property
-		if (currentState.Audio?.Monitor is null)
-		{
-			Enabled = false;
-			Gain = 0.0;
-			Mute = false;
-			Solo = false;
-			SoloSource = 0;
-			Dim = false;
-			DimLevel = 0.0;
-			return;
-		}
+        if (currentState.Audio is not ClassicAudioState audio)
+        {
+            throw new InvalidOperationException("Classic audio state is not available");
+        }
 
-		_enabled = currentState.Audio.Monitor.Enabled;
-		_gain = currentState.Audio.Monitor.Gain;
-		_mute = currentState.Audio.Monitor.Mute;
-		_solo = currentState.Audio.Monitor.Solo;
-		_soloSource = currentState.Audio.Monitor.SoloSource;
-		_dim = currentState.Audio.Monitor.Dim;
-		_dimLevel = currentState.Audio.Monitor.DimLevel;
+        if (audio.Monitor is null)
+        {
+            throw new InvalidOperationException("Master audio channel is not available (yet)");
+        }
+
+		_enabled = audio.Monitor.Enabled;
+		_gain = audio.Monitor.Gain;
+		_mute = audio.Monitor.Mute;
+		_solo = audio.Monitor.Solo;
+		_soloSource = audio.Monitor.SoloSource;
+		_dim = audio.Monitor.Dim;
+		_dimLevel = audio.Monitor.DimLevel;
 	}
 
 	/// <summary>
@@ -139,7 +135,7 @@ public class AudioMixerMonitorCommand : SerializedCommand
 	{
 		using var memoryStream = new MemoryStream(12);
 		using var writer = new BinaryWriter(memoryStream);
-		
+
 		writer.Write((byte)Flag);
 		writer.WriteBoolean(Enabled);
 		writer.WriteUInt16BigEndian(Gain.DecibelToUInt16());
@@ -149,7 +145,7 @@ public class AudioMixerMonitorCommand : SerializedCommand
 		writer.WriteBoolean(Dim);
 		writer.Pad(1);
 		writer.WriteUInt16BigEndian((ushort)Math.Round(DimLevel * 100));
-		
+
 		return memoryStream.ToArray();
 	}
 }

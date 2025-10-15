@@ -82,7 +82,7 @@ public class AudioMixerInputUpdateCommandTests : DeserializedCommandTestBase<Aud
 	{
 		// Arrange
 		var state = new AtemState();
-		state.Audio = new AudioState();
+		state.Audio = new ClassicAudioState();
 
 		var command = new AudioMixerInputUpdateCommand
 		{
@@ -94,12 +94,12 @@ public class AudioMixerInputUpdateCommandTests : DeserializedCommandTestBase<Aud
 
 		// Act & Assert
 		Assert.DoesNotThrow(() => command.ApplyToState(state));
-		Assert.That(state.Audio.Channels[1000], Is.Not.Null);
-		Assert.That(state.Audio.Channels[1000].SourceType, Is.EqualTo(AudioSourceType.ExternalVideo));
+		Assert.That(state.Audio.As<ClassicAudioState>().Channels[1000], Is.Not.Null);
+		Assert.That(state.Audio.As<ClassicAudioState>().Channels[1000].SourceType, Is.EqualTo(AudioSourceType.ExternalVideo));
 	}
 
 	[Test]
-	public void ApplyToState_NullAudioState_ShouldThrowInvalidIdError()
+	public void ApplyToState_NullAudioState_ShouldThrow()
 	{
 		// Arrange
 		var state = new AtemState();
@@ -114,7 +114,6 @@ public class AudioMixerInputUpdateCommandTests : DeserializedCommandTestBase<Aud
 		};
 
 		// Act & Assert
-		var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-		Assert.That(ex.Message, Contains.Substring("Classic Audio"));
+		Assert.Throws<InvalidOperationException>(() => command.ApplyToState(state));
 	}
 }

@@ -1,5 +1,6 @@
 using AtemSharp.Commands.Audio;
 using AtemSharp.State;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.Audio;
 
@@ -34,7 +35,7 @@ public class AudioMixerPropertiesUpdateCommandTests : DeserializedCommandTestBas
 		// Arrange
 		var state = new AtemState
 		{
-			Audio = new AudioState
+			Audio = new ClassicAudioState
 			{
 				AudioFollowsVideo = false
 			}
@@ -49,11 +50,11 @@ public class AudioMixerPropertiesUpdateCommandTests : DeserializedCommandTestBas
 		command.ApplyToState(state);
 
 		// Assert
-		Assert.That(state.Audio.AudioFollowsVideo, Is.True);
+		Assert.That(state.Audio.As<ClassicAudioState>().AudioFollowsVideo, Is.True);
 	}
 
 	[Test]
-	public void ApplyToState_WithNullAudioState_ShouldCreateAudioState()
+	public void ApplyToState_WithNullAudioState_ShouldThrow()
 	{
 		// Arrange
 		var state = new AtemState(); // No audio state
@@ -63,26 +64,24 @@ public class AudioMixerPropertiesUpdateCommandTests : DeserializedCommandTestBas
 		};
 
 		// Act & Assert
-        command.ApplyToState(state);
-        Assert.That(state.Audio, Is.Not.Null);
-        Assert.That(state.Audio.AudioFollowsVideo, Is.True);
+        Assert.Throws<InvalidOperationException>(() => command.ApplyToState(state));
 	}
 
 	[Test]
 	public void ApplyToState_WithDifferentValues_ShouldUpdateCorrectly()
 	{
 		// Test true value
-		var state1 = new AtemState { Audio = new AudioState() };
+		var state1 = new AtemState { Audio = new ClassicAudioState() };
 		var command1 = new AudioMixerPropertiesUpdateCommand { AudioFollowVideo = true };
 
 		command1.ApplyToState(state1);
-		Assert.That(state1.Audio.AudioFollowsVideo, Is.True);
+		Assert.That(state1.Audio.As<ClassicAudioState>().AudioFollowsVideo, Is.True);
 
 		// Test false value
-		var state2 = new AtemState { Audio = new AudioState() };
+		var state2 = new AtemState { Audio = new ClassicAudioState() };
 		var command2 = new AudioMixerPropertiesUpdateCommand { AudioFollowVideo = false };
 
 		command2.ApplyToState(state2);
-		Assert.That(state2.Audio.AudioFollowsVideo, Is.False);
+		Assert.That(state2.Audio.As<ClassicAudioState>().AudioFollowsVideo, Is.False);
 	}
 }

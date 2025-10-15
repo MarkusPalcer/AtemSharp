@@ -62,19 +62,18 @@ public class AudioMixerMonitorUpdateCommand : IDeserializedCommand
 	/// <inheritdoc />
 	public void ApplyToState(AtemState state)
 	{
-		if (state.Audio is null)
-		{
-			throw new InvalidIdError("Classic Audio", "monitor");
-		}
+        if (state.Audio is not ClassicAudioState audio)
+        {
+            throw new InvalidOperationException("Classic audio state is not available");
+        }
 
-		state.Audio.Monitor ??= new ClassicAudioMonitorChannel();
-
-		state.Audio.Monitor.Enabled = Enabled;
-		state.Audio.Monitor.Gain = Gain;
-		state.Audio.Monitor.Mute = Mute;
-		state.Audio.Monitor.Solo = Solo;
-		state.Audio.Monitor.SoloSource = SoloSource;
-		state.Audio.Monitor.Dim = Dim;
-		state.Audio.Monitor.DimLevel = DimLevel;
+		audio.Monitor ??= new ClassicAudioMonitorChannel();
+		audio.Monitor.Enabled = Enabled;
+		audio.Monitor.Gain = Gain;
+		audio.Monitor.Mute = Mute;
+		audio.Monitor.Solo = Solo;
+		audio.Monitor.SoloSource = SoloSource;
+		audio.Monitor.Dim = Dim;
+		audio.Monitor.DimLevel = DimLevel;
 	}
 }

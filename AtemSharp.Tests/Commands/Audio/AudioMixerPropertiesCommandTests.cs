@@ -17,13 +17,13 @@ public class AudioMixerPropertiesCommandTests : SerializedCommandTestBase<AudioM
 	{
 		// Create state with the required audio state
 		var state = CreateStateWithAudio();
-		
+
 		// Create command
 		var command = new AudioMixerPropertiesCommand(state);
 
 		// Set the actual values that should be written
 		command.AudioFollowVideo = testCase.Command.AudioFollowVideo;
-		
+
 		return command;
 	}
 
@@ -34,7 +34,7 @@ public class AudioMixerPropertiesCommandTests : SerializedCommandTestBase<AudioM
 	{
 		var state = new AtemState
 		{
-			Audio = new AudioState
+			Audio = new ClassicAudioState
 			{
 				AudioFollowsVideo = false
 			}
@@ -56,14 +56,13 @@ public class AudioMixerPropertiesCommandTests : SerializedCommandTestBase<AudioM
 	}
 
 	[Test]
-	public void Constructor_WithNullAudioState_ShouldThrowInvalidIdError()
+	public void Constructor_WithNullAudioState_ShouldThrow()
 	{
 		// Arrange
 		var state = new AtemState(); // No audio state
 
 		// Act & Assert
-		var ex = Assert.Throws<InvalidIdError>(() => new AudioMixerPropertiesCommand(state));
-		Assert.That(ex.Message, Does.Contain("Classic Audio"));
+		Assert.Throws<InvalidOperationException>(() => new AudioMixerPropertiesCommand(state));
 	}
 
 	[Test]

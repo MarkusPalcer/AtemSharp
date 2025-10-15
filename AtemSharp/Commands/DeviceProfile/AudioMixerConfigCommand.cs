@@ -54,7 +54,7 @@ public class AudioMixerConfigCommand : IDeserializedCommand
         };
 
         // Initialize audio state with the received configuration
-        state.Audio = new AudioState
+        state.Audio = new ClassicAudioState
         {
             Channels = new Dictionary<int, ClassicAudioChannel>()
         };

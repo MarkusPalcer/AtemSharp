@@ -13,7 +13,7 @@ public class AudioMixerMonitorCommandTests : SerializedCommandTestBase<AudioMixe
 		[
 			2..4, // bytes 2-3 for Gain
 			10..12 // bytes 10-11 for DimLevel
-		]; 
+		];
 	}
 
 	public class CommandData : CommandDataBase
@@ -40,7 +40,7 @@ public class AudioMixerMonitorCommandTests : SerializedCommandTestBase<AudioMixe
 		command.SoloSource = testCase.Command.SoloSource;
 		command.Dim = testCase.Command.Dim;
 		command.DimLevel = testCase.Command.DimLevel;
-		
+
 		return command;
 	}
 
@@ -51,7 +51,7 @@ public class AudioMixerMonitorCommandTests : SerializedCommandTestBase<AudioMixe
 	{
 		var state = new AtemState
 		{
-			Audio = new AudioState
+			Audio = new ClassicAudioState
 			{
 				Monitor = new ClassicAudioMonitorChannel
 				{
@@ -89,43 +89,23 @@ public class AudioMixerMonitorCommandTests : SerializedCommandTestBase<AudioMixe
 	}
 
 	[Test]
-	public void Constructor_WithNullAudioState_ShouldInitializeToDefaultsAndSetAllFlags()
+	public void Constructor_WithNullAudioState_ShouldThrow()
 	{
 		// Arrange
 		var state = new AtemState(); // No audio state
 
 		// Act
-		var command = new AudioMixerMonitorCommand(state);
-
-		// Assert
-		Assert.That(command.Enabled, Is.EqualTo(false));
-		Assert.That(command.Gain, Is.EqualTo(0.0));
-		Assert.That(command.Mute, Is.EqualTo(false));
-		Assert.That(command.Solo, Is.EqualTo(false));
-		Assert.That(command.SoloSource, Is.EqualTo(0));
-		Assert.That(command.Dim, Is.EqualTo(false));
-		Assert.That(command.DimLevel, Is.EqualTo(0.0));
-		Assert.That(command.Flag, Is.EqualTo(0x7F), "All flags should be set (0x01 | 0x02 | 0x04 | 0x08 | 0x10 | 0x20 | 0x40)");
+        Assert.Throws<InvalidOperationException>(() => new AudioMixerMonitorCommand(state));
 	}
 
 	[Test]
-	public void Constructor_WithNullMonitor_ShouldInitializeToDefaultsAndSetAllFlags()
+	public void Constructor_WithNullMonitor_ShouldThrow()
 	{
 		// Arrange
-		var state = new AtemState { Audio = new AudioState() }; // Audio exists but no monitor
+		var state = new AtemState { Audio = new ClassicAudioState() }; // Audio exists but no monitor
 
 		// Act
-		var command = new AudioMixerMonitorCommand(state);
-
-		// Assert
-		Assert.That(command.Enabled, Is.EqualTo(false));
-		Assert.That(command.Gain, Is.EqualTo(0.0));
-		Assert.That(command.Mute, Is.EqualTo(false));
-		Assert.That(command.Solo, Is.EqualTo(false));
-		Assert.That(command.SoloSource, Is.EqualTo(0));
-		Assert.That(command.Dim, Is.EqualTo(false));
-		Assert.That(command.DimLevel, Is.EqualTo(0.0));
-		Assert.That(command.Flag, Is.EqualTo(0x7F), "All flags should be set when monitor is null");
+        Assert.Throws<InvalidOperationException>(() => new AudioMixerMonitorCommand(state));
 	}
 
 	[Test]

@@ -19,7 +19,7 @@ public class AudioMixerHeadphonesCommand : SerializedCommand
 	{
 		// If the audio state or headphones do not exist, initialize to default values
 		// by setting the properties, thus setting the changed-flag for each property
-		if (currentState.Audio?.Headphones is null)
+        if (currentState.Audio is not ClassicAudioState audio || audio.Headphones is null)
 		{
 			Gain = 0.0;
 			ProgramOutGain = 0.0;
@@ -28,10 +28,10 @@ public class AudioMixerHeadphonesCommand : SerializedCommand
 			return;
 		}
 
-		_gain = currentState.Audio.Headphones.Gain;
-		_programOutGain = currentState.Audio.Headphones.ProgramOutGain;
-		_talkbackGain = currentState.Audio.Headphones.TalkbackGain;
-		_sidetoneGain = currentState.Audio.Headphones.SidetoneGain;
+		_gain = audio.Headphones.Gain;
+		_programOutGain = audio.Headphones.ProgramOutGain;
+		_talkbackGain = audio.Headphones.TalkbackGain;
+		_sidetoneGain = audio.Headphones.SidetoneGain;
 	}
 
 	/// <summary>
@@ -91,14 +91,14 @@ public class AudioMixerHeadphonesCommand : SerializedCommand
 	{
 		using var memoryStream = new MemoryStream(12);
 		using var writer = new BinaryWriter(memoryStream);
-		
+
 		writer.Write((byte)Flag);
 		writer.Pad(1);
 		writer.WriteUInt16BigEndian(Gain.DecibelToUInt16());
 		writer.WriteUInt16BigEndian(ProgramOutGain.DecibelToUInt16());
 		writer.WriteUInt16BigEndian(TalkbackGain.DecibelToUInt16());
 		writer.WriteUInt16BigEndian(SidetoneGain.DecibelToUInt16());
-		writer.Pad(2);	
+		writer.Pad(2);
 
 		return memoryStream.ToArray();
 	}

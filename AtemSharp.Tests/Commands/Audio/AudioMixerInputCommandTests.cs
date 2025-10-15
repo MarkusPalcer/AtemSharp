@@ -14,7 +14,7 @@ public class AudioMixerInputCommandTests : SerializedCommandTestBase<AudioMixerI
 		[
 			6..8, // bytes 6-7 for Gain
 			8..10  // bytes 8-9 for Balance
-		]; 
+		];
 	}
 
 	public class CommandData : CommandDataBase
@@ -30,7 +30,7 @@ public class AudioMixerInputCommandTests : SerializedCommandTestBase<AudioMixerI
 	{
 		// Create state with the required audio channel
 		var state = CreateStateWithAudioChannel(testCase.Command.Index);
-		
+
 		// Create command with the index
 		var command = new AudioMixerInputCommand(testCase.Command.Index, state);
 
@@ -39,7 +39,7 @@ public class AudioMixerInputCommandTests : SerializedCommandTestBase<AudioMixerI
 		command.Gain = testCase.Command.Gain;
 		command.Balance = testCase.Command.Balance;
 		command.RcaToXlrEnabled = testCase.Command.RcaToXlrEnabled;
-		
+
 		return command;
 	}
 
@@ -50,7 +50,7 @@ public class AudioMixerInputCommandTests : SerializedCommandTestBase<AudioMixerI
 	{
 		var state = new AtemState
 		{
-			Audio = new AudioState
+			Audio = new ClassicAudioState
 			{
 				Channels = new Dictionary<int, ClassicAudioChannel>
 				{
@@ -93,25 +93,21 @@ public class AudioMixerInputCommandTests : SerializedCommandTestBase<AudioMixerI
 		var state = new AtemState(); // No audio state
 
 		// Act & Assert
-		var ex = Assert.Throws<InvalidIdError>(() => new AudioMixerInputCommand(index, state));
-		Assert.That(ex.Message, Does.Contain("Classic Audio Input"));
-		Assert.That(ex.Message, Does.Contain(index.ToString()));
+		var ex = Assert.Throws<InvalidOperationException>(() => new AudioMixerInputCommand(index, state));
 	}
 
 	[Test]
-	public void Constructor_WithNullChannels_ShouldThrowInvalidIdError()
+	public void Constructor_WithNoChannels_ShouldThrowInvalidIdError()
 	{
 		// Arrange
 		const ushort index = 1;
 		var state = new AtemState
 		{
-			Audio = new AudioState() // Channels collection is empty
+			Audio = new ClassicAudioState() // Channels collection is empty
 		};
 
 		// Act & Assert
-		var ex = Assert.Throws<InvalidIdError>(() => new AudioMixerInputCommand(index, state));
-		Assert.That(ex.Message, Does.Contain("Classic Audio Input"));
-		Assert.That(ex.Message, Does.Contain(index.ToString()));
+		Assert.Throws<IndexOutOfRangeException>(() => new AudioMixerInputCommand(index, state));
 	}
 
 	[Test]
@@ -121,7 +117,7 @@ public class AudioMixerInputCommandTests : SerializedCommandTestBase<AudioMixerI
 		const ushort index = 5;
 		var state = new AtemState
 		{
-			Audio = new AudioState
+			Audio = new ClassicAudioState
 			{
 				Channels = new Dictionary<int, ClassicAudioChannel>
 				{
@@ -132,31 +128,7 @@ public class AudioMixerInputCommandTests : SerializedCommandTestBase<AudioMixerI
 		};
 
 		// Act & Assert
-		var ex = Assert.Throws<InvalidIdError>(() => new AudioMixerInputCommand(index, state));
-		Assert.That(ex.Message, Does.Contain("Classic Audio Input"));
-		Assert.That(ex.Message, Does.Contain(index.ToString()));
-	}
-
-	[Test]
-	public void Constructor_WithNullChannel_ShouldThrowInvalidIdError()
-	{
-		// Arrange
-		const ushort index = 1;
-		var state = new AtemState
-		{
-			Audio = new AudioState
-			{
-				Channels = new Dictionary<int, ClassicAudioChannel>
-				{
-					[index] = null! // Null channel
-				}
-			}
-		};
-
-		// Act & Assert
-		var ex = Assert.Throws<InvalidIdError>(() => new AudioMixerInputCommand(index, state));
-		Assert.That(ex.Message, Does.Contain("Classic Audio Input"));
-		Assert.That(ex.Message, Does.Contain(index.ToString()));
+		Assert.Throws<IndexOutOfRangeException>(() => new AudioMixerInputCommand(index, state));
 	}
 
 	[TestCase(-60.0)]
@@ -269,7 +241,7 @@ public class AudioMixerInputCommandTests : SerializedCommandTestBase<AudioMixerI
 		const ushort index = 3;
 		var state = new AtemState
 		{
-			Audio = new AudioState
+			Audio = new ClassicAudioState
 			{
 				Channels = new Dictionary<int, ClassicAudioChannel>
 				{

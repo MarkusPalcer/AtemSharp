@@ -1,5 +1,6 @@
 using AtemSharp.Commands.DeviceProfile;
 using AtemSharp.State;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
@@ -53,9 +54,9 @@ public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase
         Assert.That(state.Info.FairlightMixer.Inputs, Is.EqualTo(24));
         Assert.That(state.Info.FairlightMixer.Monitors, Is.EqualTo(4));
 
-        Assert.That(state.Fairlight, Is.Not.Null);
-        Assert.That(state.Fairlight.Inputs, Is.Not.Null);
-        Assert.That(state.Fairlight.Inputs, Is.Empty);
+        Assert.That(state.Audio.As<FairlightAudioState>(), Is.Not.Null);
+        Assert.That(state.Audio.As<FairlightAudioState>().Inputs, Is.Not.Null);
+        Assert.That(state.Audio.As<FairlightAudioState>().Inputs, Is.Empty);
     }
 
     [Test]
@@ -64,7 +65,7 @@ public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase
         // Arrange
         var state = new AtemState
         {
-            Audio = new AudioState
+            Audio = new ClassicAudioState
             {
                 Channels = new Dictionary<int, ClassicAudioChannel>
                 {
@@ -82,12 +83,8 @@ public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase
         // Act
         command.ApplyToState(state);
 
-        // Assert - Classic audio state should remain unchanged
-        Assert.That(state.Audio, Is.Not.Null);
-        Assert.That(state.Audio.Channels, Contains.Key(1));
-
         // Fairlight state should be initialized
-        Assert.That(state.Fairlight, Is.Not.Null);
+        Assert.That(state.Audio, Is.InstanceOf<FairlightAudioState>());
         Assert.That(state.Info.FairlightMixer, Is.Not.Null);
     }
 
@@ -106,7 +103,7 @@ public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase
         // Assert - Should have the latest values
         Assert.That(state.Info.FairlightMixer?.Inputs, Is.EqualTo(24));
         Assert.That(state.Info.FairlightMixer?.Monitors, Is.EqualTo(4));
-        Assert.That(state.Fairlight, Is.Not.Null);
-        Assert.That(state.Fairlight.Inputs, Is.Empty);
+        Assert.That(state.Audio.As<FairlightAudioState>(), Is.Not.Null);
+        Assert.That(state.Audio.As<FairlightAudioState>().Inputs, Is.Empty);
     }
 }

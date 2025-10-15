@@ -21,15 +21,18 @@ public class AudioMixerMasterCommand : SerializedCommand
     /// <exception cref="InvalidIdError">Thrown if classic audio not available</exception>
     public AudioMixerMasterCommand(AtemState currentState)
     {
-        // If old state does not exist, set Properties (instead of backing fields) to default values,
-        // so all flags are set (i.e. all values are to be applied by the ATEM)
-        if (currentState.Audio?.Master is null)
+        if (currentState.Audio is not ClassicAudioState audio)
         {
-            throw new InvalidIdError("Classic Audio", "master");
+            throw new InvalidOperationException("Classic audio state is not available");
         }
 
-        var audioMaster = currentState.Audio.Master;
-        
+        if (audio.Master is null)
+        {
+            throw new InvalidOperationException("Master audio channel is not available (yet)");
+        }
+
+        var audioMaster = audio.Master;
+
         // Initialize from current state (direct field access = no flags set)
         _gain = audioMaster.Gain;
         _balance = audioMaster.Balance;
@@ -46,7 +49,7 @@ public class AudioMixerMasterCommand : SerializedCommand
         {
             if (value < -60.0 || value > 6.0)
                 throw new ArgumentOutOfRangeException(nameof(value), "Gain must be between -60.0 and +6.0 decibels");
-            
+
             _gain = value;
             Flag |= 1 << 0;
         }
@@ -62,7 +65,7 @@ public class AudioMixerMasterCommand : SerializedCommand
         {
             if (value < -50.0 || value > 50.0)
                 throw new ArgumentOutOfRangeException(nameof(value), "Balance must be between -50.0 and +50.0");
-            
+
             _balance = value;
             Flag |= 1 << 1;
         }
@@ -90,14 +93,14 @@ public class AudioMixerMasterCommand : SerializedCommand
     {
         using var memoryStream = new MemoryStream(8);
         using var writer = new BinaryWriter(memoryStream);
-        
+
         writer.Write((byte)Flag);
         writer.Pad(1);
         writer.WriteUInt16BigEndian(Gain.DecibelToUInt16());
         writer.WriteInt16BigEndian(Balance.BalanceToInt16());
         writer.WriteBoolean(FollowFadeToBlack);
         writer.Pad(1);
-        
+
         return memoryStream.ToArray();
     }
 }

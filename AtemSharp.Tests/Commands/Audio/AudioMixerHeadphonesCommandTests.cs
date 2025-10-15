@@ -47,7 +47,7 @@ public class AudioMixerHeadphonesCommandTests : SerializedCommandTestBase<AudioM
 	{
 		var state = new AtemState
 		{
-			Audio = new AudioState
+			Audio = new ClassicAudioState
 			{
 				Headphones = new ClassicAudioHeadphoneOutputChannel
 				{
@@ -101,7 +101,7 @@ public class AudioMixerHeadphonesCommandTests : SerializedCommandTestBase<AudioM
 		// Arrange
 		var state = new AtemState
 		{
-			Audio = new AudioState
+			Audio = new ClassicAudioState
 			{
 				Headphones = null // Null headphones
 			}
@@ -196,7 +196,7 @@ public class AudioMixerHeadphonesCommandTests : SerializedCommandTestBase<AudioM
 		// Arrange
 		var state = new AtemState
 		{
-			Audio = new AudioState
+			Audio = new ClassicAudioState
 			{
 				Headphones = new ClassicAudioHeadphoneOutputChannel
 				{

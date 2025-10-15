@@ -31,15 +31,15 @@ public class AudioMixerInputCommand : SerializedCommand
     {
         Index = index;
 
-        // Validate audio input exists (like TypeScript update command)
-        if (currentState.Audio?.Channels is null || !currentState.Audio.Channels.TryGetValue(index, out var audioChannel))
+        if (currentState.Audio is not ClassicAudioState audio)
         {
-            throw new InvalidIdError("Classic Audio Input", index);
+            throw new InvalidOperationException("Classical audio state is not available");
         }
 
-        if (audioChannel is null)
+        // Validate audio input exists (like TypeScript update command)
+        if (!audio.Channels.TryGetValue(index, out var audioChannel))
         {
-            throw new InvalidIdError("Classic Audio Input", index);
+            throw new IndexOutOfRangeException("Audio input with index {index} does not exist");
         }
 
         // Initialize from current state (direct field access = no flags)
@@ -72,7 +72,7 @@ public class AudioMixerInputCommand : SerializedCommand
         {
             if (value < -60.0 || value > 6.0)
                 throw new ArgumentOutOfRangeException(nameof(value), "Gain must be between -60.0 and +6.0 decibels");
-            
+
             _gain = value;
             Flag |= 1 << 1;
         }
@@ -88,7 +88,7 @@ public class AudioMixerInputCommand : SerializedCommand
         {
             if (value < -50.0 || value > 50.0)
                 throw new ArgumentOutOfRangeException(nameof(value), "Balance must be between -50.0 and +50.0");
-            
+
             _balance = value;
             Flag |= 1 << 2;
         }
@@ -116,7 +116,7 @@ public class AudioMixerInputCommand : SerializedCommand
     {
 	    using var memoryStream = new MemoryStream(12);
 	    using var writer = new BinaryWriter(memoryStream);
-        
+
 	    writer.Write((byte)Flag);
 	    writer.Pad(1);
 		writer.WriteUInt16BigEndian(Index);
@@ -126,7 +126,7 @@ public class AudioMixerInputCommand : SerializedCommand
 		writer.WriteInt16BigEndian(Balance.BalanceToInt16());
 		writer.WriteBoolean(RcaToXlrEnabled);
 		writer.Pad(1);
-        
+
         return memoryStream.ToArray();
     }
 }
