@@ -1,3 +1,5 @@
+using System.Buffers.Binary;
+
 namespace AtemSharp.Lib;
 
 public static class SerializationExtensions
@@ -78,5 +80,10 @@ public static class SerializationExtensions
     public static void WriteUInt8(this byte[] self, byte value, int offset)
     {
         self[offset] = value;
+    }
+
+    public static void WriteUInt16BigEndian(this byte[] self, double value, int offset)
+    {
+        BinaryPrimitives.WriteUInt16BigEndian(self.AsSpan(offset), (ushort)value);
     }
 }

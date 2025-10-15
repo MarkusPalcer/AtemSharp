@@ -34,4 +34,6 @@ public class AtemState
     /// Settings state including video mode and other device settings
     /// </summary>
     public SettingsState Settings { get; set; } = new();
+
+    public Dictionary<int, ColorGeneratorState> ColorGenerators { get; } = new();
 }
