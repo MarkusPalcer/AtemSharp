@@ -23,5 +23,5 @@ public class FadeToBlackProperties
 	/// <summary>
 	/// Fade to black rate (frames)
 	/// </summary>
-	public int Rate { get; set; }
+	public byte Rate { get; set; }
 }
