@@ -31,9 +31,4 @@
     <ItemGroup>
         <EmbeddedResource Include="TestData\libatem-data.json" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Examples\" />
-    </ItemGroup>
-
 </Project>

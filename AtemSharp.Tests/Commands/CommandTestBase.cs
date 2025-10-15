@@ -1,5 +1,7 @@
 using System.Reflection;
+using AtemSharp.Commands;
 using AtemSharp.Enums;
+using AtemSharp.Tests.TestUtilities;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -22,7 +24,7 @@ public abstract class CommandTestBase<TTestData>
 		public string Bytes { get; set; } = "";
 		public required JObject Command { get; set; }
 	}
-	
+
 	public class TestCaseData
 	{
 		public string Name { get; set; } = "";
@@ -35,23 +37,85 @@ public abstract class CommandTestBase<TTestData>
 	{
 		// Base class for test data - derived classes add specific properties
 		// SerializedCommandTestBase adds Mask property in its CommandDataBase
+
+        [JsonExtensionData] public Dictionary<string, JToken> UnknownProperties { get; set; } = new();
 	}
 
-	/// <summary>
-	/// Load test data from the embedded libatem-data.json resource file.
-	/// </summary>
-	protected static TestCaseData[] LoadTestData(string commandRawName)
+    protected static TestCaseData[] LoadTestData<TCommand>()
+    {
+        // Get the raw name from the CommandAttribute
+        var commandAttribute = typeof(TCommand).GetCustomAttribute<CommandAttribute>();
+        if (commandAttribute == null)
+        {
+            throw new InvalidOperationException($"Command {typeof(TCommand).Name} must have a CommandAttribute");
+        }
+
+        var rawName = commandAttribute.RawName;
+        if (string.IsNullOrEmpty(rawName))
+        {
+            throw new InvalidOperationException($"Command {typeof(TCommand).Name} CommandAttribute must have a RawName");
+        }
+
+        var baseTestCases = LoadTestData(rawName);
+        if (baseTestCases.Length == 0)
+        {
+            throw new InvalidOperationException($"No test cases found for command {rawName} in libatem-data.json");
+        }
+
+        // Convert to the derived TestCaseData type
+        return baseTestCases.Select(tc => new TestCaseData
+        {
+            Name = tc.Name,
+            FirstVersion = tc.FirstVersion,
+            Bytes = tc.Bytes,
+            Command = tc.Command
+        }).ToArray();
+    }
+
+    protected static IEnumerable<NUnit.Framework.TestCaseData> GetTestCases<TCommand>()
+    {
+        var testCases = LoadTestData<TCommand>();
+        var commandAttribute = typeof(TCommand).GetCustomAttribute<CommandAttribute>();
+        Assert.That(commandAttribute, Is.Not.Null, $"CommandAttribute is required on command class {typeof(TCommand).Name}");
+        var minProtocolVersion = commandAttribute.MinimumVersion;
+        var rawName = commandAttribute.RawName ?? "Unknown";
+
+        Assert.That(testCases.Length, Is.GreaterThan(0),
+                    $"Should have {rawName} test cases from libatem-data.json");
+
+        var maxProtocolVersion = typeof(TTestData).GetCustomAttribute<MaxProtocolVersionAttribute>()?.MaxVersion;
+
+        foreach (var testCase in testCases)
+        {
+            if (maxProtocolVersion is not null && testCase.FirstVersion > maxProtocolVersion)
+            {
+                continue;
+            }
+
+            if (testCase.FirstVersion < minProtocolVersion)
+            {
+                continue;
+            }
+
+            yield return new NUnit.Framework.TestCaseData(testCase)
+                        .SetName($"{rawName}_{testCase.FirstVersion}")
+                        .SetDescription(
+                             $"Test deserialization for {rawName} with protocol version {testCase.FirstVersion}");
+        }
+    }
+
+    private static TestCaseData[] LoadTestData(string commandRawName)
 	{
 		// Load the test data file from embedded resources
 		var assembly = Assembly.GetExecutingAssembly();
 		var resourceName = "AtemSharp.Tests.TestData.libatem-data.json";
-		
+
 		using var stream = assembly.GetManifestResourceStream(resourceName);
 		if (stream == null)
 		{
 			throw new FileNotFoundException($"Could not find embedded resource: {resourceName}");
 		}
-		
+
 		using var reader = new StreamReader(stream);
 		var json = reader.ReadToEnd();
 		var allTestCases = JsonConvert.DeserializeObject<PartialTestCaseData[]>(json) ?? [];
@@ -101,7 +165,7 @@ public abstract class CommandTestBase<TTestData>
 	[UsedImplicitly]
 	protected static IEnumerable<NUnit.Framework.TestCaseData> GenerateTestCases<TCommand>(TestCaseData[] testCases, string commandDisplayName)
 	{
-		Assert.That(testCases.Length, Is.GreaterThan(0), 
+		Assert.That(testCases.Length, Is.GreaterThan(0),
 		            $"Should have {commandDisplayName} test cases from libatem-data.json");
 
 		foreach (var testCase in testCases)

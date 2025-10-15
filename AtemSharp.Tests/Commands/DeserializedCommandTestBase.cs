@@ -2,10 +2,8 @@ using System.Reflection;
 using AtemSharp.Commands;
 using AtemSharp.Enums;
 using AtemSharp.Lib;
-using AtemSharp.Tests.TestUtilities;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace AtemSharp.Tests.Commands;
 
@@ -14,77 +12,15 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 	where TTestData : DeserializedCommandTestBase<TCommand, TTestData>.CommandDataBase, new()
 {
 
-	public new class TestCaseData : CommandTestBase<TTestData>.TestCaseData
-	{
-		// Inherits all properties from base, no additional properties needed
-	}
-
 	[UsedImplicitly(ImplicitUseTargetFlags.Members | ImplicitUseTargetFlags.WithInheritors)]
 	public new abstract class CommandDataBase : CommandTestBase<TTestData>.CommandDataBase
 	{
 		// Base class for test data - derived classes add specific properties
-
-        [JsonExtensionData] public Dictionary<string, JToken> UnknownProperties { get; set; } = new();
     }
 
-	private static TestCaseData[] LoadTestData()
-	{
-		// Get the raw name from the CommandAttribute
-		var commandAttribute = typeof(TCommand).GetCustomAttribute<CommandAttribute>();
-		if (commandAttribute == null)
-		{
-			throw new InvalidOperationException($"Command {typeof(TCommand).Name} must have a CommandAttribute");
-		}
 
-		var rawName = commandAttribute.RawName;
-		if (string.IsNullOrEmpty(rawName))
-		{
-			throw new InvalidOperationException($"Command {typeof(TCommand).Name} CommandAttribute must have a RawName");
-		}
-
-		var baseTestCases = CommandTestBase<TTestData>.LoadTestData(rawName);
-
-		// Convert to the derived TestCaseData type
-		return baseTestCases.Select(tc => new TestCaseData
-		{
-			Name = tc.Name,
-			FirstVersion = tc.FirstVersion,
-			Bytes = tc.Bytes,
-			Command = tc.Command
-		}).ToArray();
-	}
-
-	public static IEnumerable<NUnit.Framework.TestCaseData> GetTestCases()
-	{
-		var testCases = LoadTestData();
-		var commandAttribute = typeof(TCommand).GetCustomAttribute<CommandAttribute>();
-        Assert.That(commandAttribute, Is.Not.Null, $"CommandAttribute is required on command class {typeof(TCommand).Name}");
-        var minProtocolVersion = commandAttribute.MinimumVersion;
-		var rawName = commandAttribute.RawName ?? "Unknown";
-
-		Assert.That(testCases.Length, Is.GreaterThan(0),
-		            $"Should have {rawName} test cases from libatem-data.json");
-
-        var maxProtocolVersion = typeof(TTestData).GetCustomAttribute<MaxProtocolVersionAttribute>()?.MaxVersion;
-
-		foreach (var testCase in testCases)
-		{
-            if (maxProtocolVersion is not null && testCase.FirstVersion > maxProtocolVersion)
-            {
-                continue;
-            }
-
-            if (testCase.FirstVersion < minProtocolVersion)
-            {
-                continue;
-            }
-
-			yield return new NUnit.Framework.TestCaseData(testCase)
-			            .SetName($"{rawName}_{testCase.FirstVersion}")
-			            .SetDescription(
-				             $"Test deserialization for {rawName} with protocol version {testCase.FirstVersion}");
-		}
-	}
+    public static IEnumerable<NUnit.Framework.TestCaseData> GetTestCases()
+        => GetTestCases<TCommand>();
 
 	[Test, TestCaseSource(nameof(GetTestCases))]
 	public void TestDeserialization(TestCaseData testCase)
