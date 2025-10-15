@@ -2,7 +2,7 @@ namespace AtemSharp.State;
 
 public class MediaPoolEntry
 {
-    public byte Index { get; set; }
+    public byte Id { get; set; }
 
     public bool IsUsed { get; set; }
     public string Hash { get; set; }

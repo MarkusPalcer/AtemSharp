@@ -157,6 +157,10 @@ public class TopologyCommand : IDeserializedCommand
         };
 
         state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(DownstreamKeyers);
+        state.Video.DownstreamKeyers.ForEachWithIndex((dsk, index) => dsk.Id = (byte)index);
+
+        state.Media.Players = AtemStateUtil.CreateArray<MediaPlayer>(MediaPlayers);
+        state.Media.Players.ForEachWithIndex((player, index) => player.Id = (byte)index);
 
         // Create multiviewer info if multiviewers are available
         if (Multiviewers > 0)

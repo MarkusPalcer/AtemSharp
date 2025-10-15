@@ -1,0 +1,28 @@
+using AtemSharp.Commands.Media;
+using AtemSharp.Enums;
+
+namespace AtemSharp.Tests.Commands.Media;
+
+public class MediaPlayerSourceUpdateCommandTests : DeserializedCommandTestBase<MediaPlayerSourceUpdateCommand, MediaPlayerSourceUpdateCommandTests.CommandData>
+{
+    public class CommandData : CommandDataBase
+    {
+        public byte Index { get; set; }
+        public MediaSourceType SourceType { get; set; }
+        public uint SourceIndex { get; set; }
+    }
+
+    protected override void CompareCommandProperties(MediaPlayerSourceUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    {
+        Assert.That(actualCommand.SourceType, Is.EqualTo(expectedData.SourceType));
+        Assert.That(actualCommand.MediaPlayerId, Is.EqualTo(expectedData.Index));
+        if (expectedData.SourceType == MediaSourceType.Still)
+        {
+            Assert.That(actualCommand.StillIndex, Is.EqualTo(expectedData.SourceIndex));
+        }
+        else
+        {
+            Assert.That(actualCommand.ClipIndex, Is.EqualTo(expectedData.SourceIndex));
+        }
+    }
+}

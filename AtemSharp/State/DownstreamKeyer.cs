@@ -5,6 +5,8 @@ namespace AtemSharp.State;
 /// </summary>
 public class DownstreamKeyer : IDownstreamKeyerBase
 {
+    public byte Id { get; internal set; }
+
     /// <inheritdoc />
     public bool InTransition { get; set; }
 
