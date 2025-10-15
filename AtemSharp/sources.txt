@@ -35,7 +35,6 @@ src\commands\Media\MediaPoolCaptureStillCommand.ts - Capt
 src\commands\Media\MediaPoolClearClipCommand.ts - CMPC
 src\commands\Media\MediaPoolClearStillCommand.ts - CSTL
 src\commands\Media\MediaPoolClipDescription.ts - MPCS
-src\commands\Media\MediaPoolFrameDescription.ts - MPfe
 src\commands\Media\MediaPoolSetClipCommand.ts - SMPC
 src\commands\MixEffects\FadeToBlack\FadeToBlackAutoCommand.ts - FtbA
 src\commands\MixEffects\Key\MixEffectKeyAdvancedChromaSampleResetCommand.ts - RACK

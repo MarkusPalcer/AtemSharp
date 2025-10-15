@@ -45,5 +45,11 @@ public class MediaPoolConfigCommand : IDeserializedCommand
             StillCount = StillCount,
             ClipCount = ClipCount
         };
+
+        state.Media.Frames = AtemStateUtil.CreateArray<MediaPoolEntry>(StillCount);
+        state.Media.Clips = AtemStateUtil.CreateArray<MediaPoolEntry>(ClipCount);
+
+        state.Media.Frames.ForEachWithIndex((item, index) => item.Index = (byte)index);
+        state.Media.Clips.ForEachWithIndex((item, index) => item.Index = (byte)index);
     }
 }

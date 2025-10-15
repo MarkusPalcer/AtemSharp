@@ -10,6 +10,19 @@ public static class AtemStateUtil
         return Enumerable.Repeat(() => new T(), length).Select(x => x()).ToArray();
     }
 
+    public static void ForEachWithIndex<T>(this IEnumerable<T> source, Action<T, int> action)
+    {
+        if (source == null) throw new ArgumentNullException(nameof(source));
+        if (action == null) throw new ArgumentNullException(nameof(action));
+
+        int index = 0;
+        foreach (var item in source)
+        {
+            action(item, index);
+            index++;
+        }
+    }
+
 	/// <summary>
 	/// Gets a MultiViewer from the state, creating it if it doesn't exist
 	/// </summary>

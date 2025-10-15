@@ -36,4 +36,6 @@ public class AtemState
     public SettingsState Settings { get; set; } = new();
 
     public Dictionary<int, ColorGeneratorState> ColorGenerators { get; } = new();
+
+    public MediaState Media { get; } = new();
 }
