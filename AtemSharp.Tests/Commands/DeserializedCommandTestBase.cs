@@ -25,6 +25,11 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 	[Test, TestCaseSource(nameof(GetTestCases))]
 	public void TestDeserialization(TestCaseData testCase)
 	{
+        if (testCase.Command.UnknownProperties.Count != 0)
+        {
+            Assert.Fail("Unprocessed test data:\n" + JsonConvert.SerializeObject(testCase.Command.UnknownProperties));
+        }
+
 		// Arrange - Extract command payload from the full packet
 		var fullPacketBytes = ParseHexBytes(testCase.Bytes);
 		var commandPayload = ExtractCommandPayload(fullPacketBytes);
@@ -34,14 +39,7 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 
 		// Assert - Compare properties
 		CompareCommandProperties(actualCommand, testCase.Command, testCase);
-
-        if (testCase.Command.UnknownProperties.Count != 0)
-        {
-            Assert.Fail("Unprocessed test data:\n" + JsonConvert.SerializeObject(testCase.Command.UnknownProperties));
-        }
 	}
-
-    public ProtocolVersion? MaxProtocolVersion { get; protected set; }
 
 	protected abstract void CompareCommandProperties(TCommand actualCommand, TTestData expectedData, TestCaseData testCase);
 

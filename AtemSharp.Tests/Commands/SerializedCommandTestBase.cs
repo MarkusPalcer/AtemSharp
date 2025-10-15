@@ -80,6 +80,11 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
     [Test, TestCaseSource(nameof(GetTestCases))]
     public void TestSerialization(TestCaseData testCase)
     {
+        if (testCase.Command.UnknownProperties.Count != 0)
+        {
+            Assert.Fail("Unprocessed test data:\n" + JsonConvert.SerializeObject(testCase.Command.UnknownProperties));
+        }
+
         // Arrange - Extract expected payload from the full packet
         var fullPacketBytes = ParseHexBytes(testCase.Bytes);
         var expectedPayload = ExtractExpectedPayload(fullPacketBytes);
@@ -102,17 +107,9 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
             return;
         }
 
-        Assert.Multiple(() =>
-        {
-            Assert.Fail($"Command serialization should match TypeScript reference for mask {testCase.Command.Mask:X2}. " +
-                        $"Expected: {BitConverter.ToString(expectedPayload)}, " +
-                        $"Actual: {BitConverter.ToString(actualPayload)}");
-
-            if (testCase.Command.UnknownProperties.Count != 0)
-            {
-                Assert.Fail("Unprocessed test data:\n" + JsonConvert.SerializeObject(testCase.Command.UnknownProperties));
-            }
-        });
+        Assert.Fail($"Command serialization should match TypeScript reference for mask {testCase.Command.Mask:X2}. " +
+                    $"Expected: {BitConverter.ToString(expectedPayload)}, " +
+                    $"Actual: {BitConverter.ToString(actualPayload)}");
     }
 
     protected abstract TCommand CreateSut(TestCaseData testCase);

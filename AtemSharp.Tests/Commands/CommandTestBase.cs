@@ -78,7 +78,7 @@ public abstract class CommandTestBase<TTestData>
         var commandAttribute = typeof(TCommand).GetCustomAttribute<CommandAttribute>();
         Assert.That(commandAttribute, Is.Not.Null, $"CommandAttribute is required on command class {typeof(TCommand).Name}");
         var minProtocolVersion = commandAttribute.MinimumVersion;
-        var rawName = commandAttribute.RawName ?? "Unknown";
+        var rawName = commandAttribute.RawName;
 
         Assert.That(testCases.Length, Is.GreaterThan(0),
                     $"Should have {rawName} test cases from libatem-data.json");
