@@ -1,4 +1,4 @@
-namespace AtemSharp.State;
+namespace AtemSharp.State.Audio.Fairlight;
 
 /// <summary>
 /// Information about the Fairlight audio mixer capabilities

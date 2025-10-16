@@ -1,4 +1,4 @@
-namespace AtemSharp.State;
+namespace AtemSharp.State.Audio.ClassicAudio;
 
 /// <summary>
 /// Classic audio monitor channel properties

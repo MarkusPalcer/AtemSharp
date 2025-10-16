@@ -1,5 +1,7 @@
 using AtemSharp.Commands.DeviceProfile;
 using AtemSharp.State;
+using AtemSharp.State.Audio.ClassicAudio;
+using AtemSharp.State.Audio.Fairlight;
 using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
@@ -56,7 +58,6 @@ public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase
 
         Assert.That(state.Audio.As<FairlightAudioState>(), Is.Not.Null);
         Assert.That(state.Audio.As<FairlightAudioState>().Inputs, Is.Not.Null);
-        Assert.That(state.Audio.As<FairlightAudioState>().Inputs, Is.Empty);
     }
 
     [Test]
@@ -104,6 +105,5 @@ public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase
         Assert.That(state.Info.FairlightMixer?.Inputs, Is.EqualTo(24));
         Assert.That(state.Info.FairlightMixer?.Monitors, Is.EqualTo(4));
         Assert.That(state.Audio.As<FairlightAudioState>(), Is.Not.Null);
-        Assert.That(state.Audio.As<FairlightAudioState>().Inputs, Is.Empty);
     }
 }

@@ -1,3 +1,5 @@
+using AtemSharp.State.Audio;
+
 namespace AtemSharp.State;
 
 /// <summary>

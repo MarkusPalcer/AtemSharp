@@ -3,6 +3,7 @@ using AtemSharp.Enums.Audio;
 using AtemSharp.Enums.Ports;
 using AtemSharp.Lib;
 using AtemSharp.State;
+using AtemSharp.State.Audio.ClassicAudio;
 
 namespace AtemSharp.Commands.Audio;
 

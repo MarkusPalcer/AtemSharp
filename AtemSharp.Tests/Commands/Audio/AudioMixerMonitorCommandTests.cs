@@ -1,4 +1,5 @@
 using AtemSharp.State;
+using AtemSharp.State.Audio.ClassicAudio;
 using AudioMixerMonitorCommand = AtemSharp.Commands.Audio.AudioMixerMonitorCommand;
 
 namespace AtemSharp.Tests.Commands.Audio;

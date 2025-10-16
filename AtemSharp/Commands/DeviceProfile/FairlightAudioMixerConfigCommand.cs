@@ -1,6 +1,7 @@
 using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
+using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
@@ -47,9 +48,6 @@ public class FairlightAudioMixerConfigCommand : IDeserializedCommand
         };
 
         // Initialize fairlight state with the received configuration
-        state.Audio = new FairlightAudioState
-        {
-            Inputs = new Dictionary<int, FairlightAudioInput>()
-        };
+        state.Audio = new FairlightAudioState();
     }
 }

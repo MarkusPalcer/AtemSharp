@@ -1,5 +1,6 @@
 using AtemSharp.Commands.Fairlight;
 using AtemSharp.State;
+using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Tests.Commands.Fairlight;
 

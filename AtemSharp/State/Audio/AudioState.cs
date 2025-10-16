@@ -1,3 +1,3 @@
-namespace AtemSharp.State;
+namespace AtemSharp.State.Audio;
 
 public abstract class AudioState;

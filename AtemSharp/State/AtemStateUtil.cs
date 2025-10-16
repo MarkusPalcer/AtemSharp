@@ -10,7 +10,9 @@ public static class AtemStateUtil
         return Enumerable.Repeat(() => new T(), length).Select(x => x()).ToArray();
     }
 
-    public static void ForEachWithIndex<T>(this IEnumerable<T> source, Action<T, int> action)
+
+
+    public static T[] ForEachWithIndex<T>(this T[] source, Action<T, int> action)
     {
         if (source == null) throw new ArgumentNullException(nameof(source));
         if (action == null) throw new ArgumentNullException(nameof(action));
@@ -21,6 +23,8 @@ public static class AtemStateUtil
             action(item, index);
             index++;
         }
+
+        return source;
     }
 
 	/// <summary>

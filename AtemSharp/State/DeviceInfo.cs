@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.State;
 

@@ -28,20 +28,9 @@ var state = atem.State;
 // Serialize state to JSON
 var stateJson = JsonConvert.SerializeObject(state, Formatting.Indented, new JsonSerializerSettings { Converters = [new StringEnumConverter()], TypeNameHandling = TypeNameHandling.Auto});
 
-Console.WriteLine();
-Console.WriteLine("Current state:");
-Console.WriteLine(stateJson);
-
 // Write state to file
 await File.WriteAllTextAsync("state.json", stateJson);
 Console.WriteLine($"State written to: {Path.GetFullPath("state.json")}");
-
-Console.WriteLine();
-Console.WriteLine("Unknown commands received:");
-foreach (var cmd in Atem.UnknownCommands)
-{
-	Console.WriteLine($"  - {cmd}");
-}
 
 // Write unknown commands to file
 var unknownCommandsText = string.Join(Environment.NewLine, Atem.UnknownCommands.Select(cmd => $"- {cmd}"));

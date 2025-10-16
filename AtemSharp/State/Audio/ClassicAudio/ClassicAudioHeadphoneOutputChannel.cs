@@ -1,4 +1,4 @@
-namespace AtemSharp.State;
+namespace AtemSharp.State.Audio.ClassicAudio;
 
 /// <summary>
 /// Classic audio headphone output channel properties

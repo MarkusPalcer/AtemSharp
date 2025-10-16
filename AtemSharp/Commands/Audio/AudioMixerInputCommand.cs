@@ -2,6 +2,7 @@ using AtemSharp.Enums;
 using AtemSharp.Enums.Audio;
 using AtemSharp.Lib;
 using AtemSharp.State;
+using AtemSharp.State.Audio.ClassicAudio;
 
 namespace AtemSharp.Commands.Audio;
 
