@@ -85,10 +85,16 @@ This is now a **functional** port of the TypeScript library with significant cap
 - 🔲 Complete command implementations (hundreds more commands)
 - 🔲 Full data transfer functionality
 - 🔲 Hardware validation
+- 🔲 Publish repo to GitHub (and create issues for additional work)
+- 🔲 Publish 0.1 version to NuGet
+- 🔲 Split version aware commands
+- 🔲 Refactoring of the state structure
+- 🔲 Abstraction layer to remove manual creation of commands
+- 🔲 (Real) Sample application
+- 🔲 Publish 1.0 version to NuGet
+
 
 ## Contributing
-
-This library is part of the Sofie TV Automation system. Contributions are welcome!
 
 See the [development documentation](doc/) for detailed guides on extending the library.
 
