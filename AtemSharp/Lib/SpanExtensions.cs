@@ -28,6 +28,11 @@ public static class SpanExtensions
         return BinaryPrimitives.ReadUInt16BigEndian(span.Slice(offset, sizeof(ushort)));
     }
 
+    public static long ReadInt64BigEndian(this ReadOnlySpan<byte> span, int offset)
+    {
+        return BinaryPrimitives.ReadInt64BigEndian(span.Slice(offset, sizeof(long)));
+    }
+
     public static byte ReadUInt8(this ReadOnlySpan<byte> span, int offset)
     {
         return span[offset];
