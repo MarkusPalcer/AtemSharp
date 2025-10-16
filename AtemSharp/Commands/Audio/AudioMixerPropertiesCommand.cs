@@ -1,7 +1,6 @@
 using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
-using AtemSharp.State.Audio.ClassicAudio;
 
 namespace AtemSharp.Commands.Audio;
 
@@ -20,11 +19,7 @@ public class AudioMixerPropertiesCommand : SerializedCommand
     /// <exception cref="InvalidIdError">Thrown if classic audio not available</exception>
     public AudioMixerPropertiesCommand(AtemState currentState)
     {
-        if (currentState.Audio is not ClassicAudioState audio)
-        {
-            throw new InvalidOperationException("Classic audio state is not available");
-        }
-
+        var audio = currentState.GetClassicAudio();
         // Initialize from current state (direct field access = no flags set)
         _audioFollowVideo = audio.AudioFollowsVideo ?? false;
     }

@@ -76,7 +76,7 @@ public static class AtemUtil
     {
         var result = new List<T>();
         var intValue = Convert.ToInt32(value);
-        
+
         for (int next = 1; next <= intValue; next <<= 1)
         {
             if ((intValue & next) > 0)
@@ -84,7 +84,7 @@ public static class AtemUtil
                 result.Add((T)Enum.ToObject(typeof(T), next));
             }
         }
-        
+
         return result.ToArray();
     }
 
@@ -104,27 +104,6 @@ public static class AtemUtil
     }
 
     /// <summary>
-    /// Read a null-terminated string from a byte array
-    /// </summary>
-    /// <param name="buffer">Source byte array</param>
-    /// <param name="startIndex">Starting index in the buffer</param>
-    /// <param name="maxLength">Maximum length to read</param>
-    /// <returns>Null-terminated string</returns>
-    public static string ReadNullTerminatedString(byte[] buffer, int startIndex, int maxLength)
-    {
-        var endIndex = startIndex;
-        var maxIndex = Math.Min(startIndex + maxLength, buffer.Length);
-        
-        // Find null terminator or end of available data
-        while (endIndex < maxIndex && buffer[endIndex] != 0)
-        {
-            endIndex++;
-        }
-        
-        return System.Text.Encoding.UTF8.GetString(buffer, startIndex, endIndex - startIndex);
-    }
-
-    /// <summary>
     /// Write a string to a byte array with null termination and padding
     /// </summary>
     /// <param name="text">String to write</param>
@@ -135,10 +114,10 @@ public static class AtemUtil
     {
         var bytes = System.Text.Encoding.UTF8.GetBytes(text);
         var lengthToCopy = Math.Min(bytes.Length, maxLength - 1); // Leave space for null terminator
-        
+
         // Copy string bytes
         Array.Copy(bytes, 0, buffer, startIndex, lengthToCopy);
-        
+
         // Fill remaining space with zeros (including null terminator)
         for (int i = startIndex + lengthToCopy; i < startIndex + maxLength; i++)
         {

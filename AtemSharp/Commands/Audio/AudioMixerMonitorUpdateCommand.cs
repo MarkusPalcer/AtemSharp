@@ -63,11 +63,7 @@ public class AudioMixerMonitorUpdateCommand : IDeserializedCommand
 	/// <inheritdoc />
 	public void ApplyToState(AtemState state)
 	{
-        if (state.Audio is not ClassicAudioState audio)
-        {
-            throw new InvalidOperationException("Classic audio state is not available");
-        }
-
+        var audio = state.GetClassicAudio();
 		audio.Monitor ??= new ClassicAudioMonitorChannel();
 		audio.Monitor.Enabled = Enabled;
 		audio.Monitor.Gain = Gain;

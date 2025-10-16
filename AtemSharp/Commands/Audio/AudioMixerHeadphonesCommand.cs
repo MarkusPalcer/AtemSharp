@@ -1,7 +1,6 @@
 using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
-using AtemSharp.State.Audio.ClassicAudio;
 
 namespace AtemSharp.Commands.Audio;
 
@@ -17,10 +16,11 @@ public class AudioMixerHeadphonesCommand : SerializedCommand
 	private double _sidetoneGain;
 
 	public AudioMixerHeadphonesCommand(AtemState currentState)
-	{
+    {
+        var audio = currentState.GetClassicAudio();
 		// If the audio state or headphones do not exist, initialize to default values
 		// by setting the properties, thus setting the changed-flag for each property
-        if (currentState.Audio is not ClassicAudioState audio || audio.Headphones is null)
+        if (audio.Headphones is null)
 		{
 			Gain = 0.0;
 			ProgramOutGain = 0.0;

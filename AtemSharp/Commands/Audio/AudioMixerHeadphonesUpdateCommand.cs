@@ -41,11 +41,8 @@ public class AudioMixerHeadphonesUpdateCommand : IDeserializedCommand
 
 	/// <inheritdoc />
 	public void ApplyToState(AtemState state)
-	{
-		if (state.Audio is not ClassicAudioState audio)
-        {
-            throw new InvalidOperationException("Cannot apply AudioMixerHeadphonesUpdateCommand to non-classic audio state");
-        }
+    {
+        var audio = state.GetClassicAudio();
 
 		audio.Headphones ??= new ClassicAudioHeadphoneOutputChannel();
 		audio.Headphones.Gain = Gain;

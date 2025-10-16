@@ -12,11 +12,3 @@ public class FairlightAudioState : AudioState
 
     public MasterProperties Master { get; } = new();
 }
-
-public class MasterProperties
-{
-    /// <summary>
-    /// Whether audio follows video during crossfade transition
-    /// </summary>
-    public bool AudioFollowsVideo { get; set; }
-}

@@ -48,10 +48,7 @@ public class AudioMixerMasterUpdateCommand : IDeserializedCommand
     /// <exception cref="InvalidIdError">Thrown if classic audio is not available</exception>
     public void ApplyToState(AtemState state)
     {
-        if (state.Audio is not ClassicAudioState audio)
-        {
-            throw new InvalidOperationException("Classic audio state is not available");
-        }
+        var audio = state.GetClassicAudio();
 
         audio.Master ??= new ClassicAudioMasterChannel();
         audio.Master.Gain = Gain;

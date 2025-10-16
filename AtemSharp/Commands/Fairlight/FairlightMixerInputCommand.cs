@@ -19,12 +19,7 @@ public class FairlightMixerInputCommand : SerializedCommand
 
     public FairlightMixerInputCommand(AtemState state, ushort index)
     {
-        if (state.Audio is not FairlightAudioState audio)
-        {
-            throw new InvalidOperationException("FairlightMixer information is not available");
-        }
-
-        Init(audio.Inputs[index]);
+        Init(state.GetFairlight().Inputs[index]);
     }
 
     private void Init(FairlightAudioInput input)

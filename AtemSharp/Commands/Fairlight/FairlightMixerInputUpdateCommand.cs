@@ -44,12 +44,7 @@ public class FairlightMixerInputUpdateCommand : IDeserializedCommand
 
     public void ApplyToState(AtemState state)
     {
-        if (state.Audio is not FairlightAudioState audio)
-        {
-            throw new InvalidOperationException("Audio is not a FairlightAudioState");
-        }
-
-        var fairlightAudioInput = audio.Inputs.GetOrCreate(Id);
+        var fairlightAudioInput = state.GetFairlight().Inputs.GetOrCreate(Id);
         fairlightAudioInput.Id = Id;
         fairlightAudioInput.Properties = new FairlightAudioInputProperties
         {

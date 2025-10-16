@@ -1,5 +1,4 @@
 using AtemSharp.Commands.DeviceProfile;
-using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;

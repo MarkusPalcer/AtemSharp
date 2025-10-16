@@ -1,7 +1,6 @@
 using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
-using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Fairlight;
 
@@ -22,10 +21,7 @@ public class FairlightMixerSourceDeleteCommand : IDeserializedCommand
 
     public void ApplyToState(AtemState state)
     {
-        if (state.Audio is not FairlightAudioState audio)
-        {
-            throw new InvalidOperationException("State is not Fairlight audio");
-        }
+        var audio = state.GetFairlight();
 
         if (!audio.Inputs.TryGetValue(InputId, out var input))
         {

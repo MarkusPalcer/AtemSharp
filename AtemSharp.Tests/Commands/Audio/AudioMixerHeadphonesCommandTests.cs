@@ -16,7 +16,7 @@ public class AudioMixerHeadphonesCommandTests : SerializedCommandTestBase<AudioM
 			4..6, // bytes 4-5 for ProgramOutGain
 			6..8, // bytes 6-7 for TalkbackGain
 			8..10 // bytes 8-9 for SidetoneGain
-		]; 
+		];
 	}
 
 	public class CommandData : CommandDataBase
@@ -37,7 +37,7 @@ public class AudioMixerHeadphonesCommandTests : SerializedCommandTestBase<AudioM
 		command.ProgramOutGain = testCase.Command.ProgramOutGain;
 		command.TalkbackGain = testCase.Command.TalkbackGain;
 		command.SidetoneGain = testCase.Command.SidetoneGain;
-		
+
 		return command;
 	}
 
@@ -80,20 +80,13 @@ public class AudioMixerHeadphonesCommandTests : SerializedCommandTestBase<AudioM
 	}
 
 	[Test]
-	public void Constructor_WithNullAudioState_ShouldInitializeToDefaultsAndSetAllFlags()
+	public void Constructor_WithNullAudioState_ShouldThrow()
 	{
 		// Arrange
 		var state = new AtemState(); // No audio state
 
 		// Act
-		var command = new AudioMixerHeadphonesCommand(state);
-
-		// Assert
-		Assert.That(command.Gain, Is.EqualTo(0.0));
-		Assert.That(command.ProgramOutGain, Is.EqualTo(0.0));
-		Assert.That(command.TalkbackGain, Is.EqualTo(0.0));
-		Assert.That(command.SidetoneGain, Is.EqualTo(0.0));
-		Assert.That(command.Flag, Is.EqualTo(0x0F), "All flags should be set (0x01 | 0x02 | 0x04 | 0x08)");
+        Assert.Throws<InvalidOperationException>(() => new AudioMixerHeadphonesCommand(state));
 	}
 
 	[Test]

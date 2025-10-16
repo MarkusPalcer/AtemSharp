@@ -1,7 +1,6 @@
 using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
-using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Fairlight;
 
@@ -20,11 +19,8 @@ public class FairlightMixerMasterPropertiesUpdateCommand : IDeserializedCommand
 
     public void ApplyToState(AtemState state)
     {
-        if (state.Audio is not FairlightAudioState audio)
-        {
-            throw new InvalidOperationException("Fairlight audio state is not available");
-        }
 
-        audio.Master.AudioFollowsVideo = AudioFollowsVideo;
+
+        state.GetFairlight().Master.AudioFollowsVideo = AudioFollowsVideo;
     }
 }

@@ -59,10 +59,7 @@ public class AudioMixerInputUpdateCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        if (state.Audio is not ClassicAudioState audio)
-        {
-            throw new InvalidOperationException("Cannot apply AudioMixerInputUpdateCommand to non-classic audio state");
-        }
+        var audio = state.GetClassicAudio();
 
         audio.Channels[Index] = new ClassicAudioChannel
         {

@@ -2,7 +2,6 @@ using AtemSharp.Enums;
 using AtemSharp.Enums.Audio;
 using AtemSharp.Lib;
 using AtemSharp.State;
-using AtemSharp.State.Audio.ClassicAudio;
 
 namespace AtemSharp.Commands.Audio;
 
@@ -32,10 +31,7 @@ public class AudioMixerInputCommand : SerializedCommand
     {
         Index = index;
 
-        if (currentState.Audio is not ClassicAudioState audio)
-        {
-            throw new InvalidOperationException("Classical audio state is not available");
-        }
+        var audio = currentState.GetClassicAudio();
 
         // Validate audio input exists (like TypeScript update command)
         if (!audio.Channels.TryGetValue(index, out var audioChannel))

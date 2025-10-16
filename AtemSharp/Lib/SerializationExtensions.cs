@@ -87,5 +87,21 @@ public static class SerializationExtensions
         BinaryPrimitives.WriteUInt16BigEndian(self.AsSpan(offset), (ushort)value);
     }
 
+    public static void WriteInt64BigEndian(this byte[] self, long value, int offset)
+    {
+        BinaryPrimitives.WriteInt64BigEndian(self.AsSpan(offset), value);
+    }
+
+    public static void WriteInt32BigEndian(this byte[] self, int value, int offset)
+    {
+        BinaryPrimitives.WriteInt32BigEndian(self.AsSpan(offset), value);
+    }
+
+    public static void WriteInt16BigEndian(this byte[] self, short value, int offset)
+    {
+        BinaryPrimitives.WriteInt16BigEndian(self.AsSpan(offset), value);
+    }
+
+
     public static void WriteBoolean(this byte[] self, bool value, int offset) => WriteUInt8(self, (byte)(value ? 1 : 0), offset);
 }
