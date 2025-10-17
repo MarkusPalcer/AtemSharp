@@ -11,7 +11,7 @@ public abstract class SerializedCommand : ICommand
 	/// Property change flags
 	/// </summary>
 	public ushort Flag { get; internal set; }
-	
+
     /// <summary>
     /// Serialize command to binary stream
     /// </summary>

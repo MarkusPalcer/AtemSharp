@@ -1,0 +1,66 @@
+using AtemSharp.Enums;
+using AtemSharp.Lib;
+using AtemSharp.State;
+
+namespace AtemSharp.Commands.Fairlight;
+
+[Command("AIXP")]
+public class FairlightMixerSourceExpanderUpdateCommand : IDeserializedCommand
+{
+
+    public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion version)
+    {
+        return new FairlightMixerSourceExpanderUpdateCommand
+        {
+            InputId = rawCommand.ReadUInt16BigEndian(0),
+            SourceId = rawCommand.ReadInt64BigEndian(8),
+            ExpanderEnabled = rawCommand.ReadBoolean(16),
+            GateEnabled = rawCommand.ReadBoolean(17),
+            Threshold = rawCommand.ReadInt32BigEndian(20) / 100.0,
+            Range = rawCommand.ReadInt16BigEndian(24) / 100.0,
+            Ratio = rawCommand.ReadInt16BigEndian(26) / 100.0,
+            Attack = rawCommand.ReadInt32BigEndian(28) / 100.0,
+            Hold = rawCommand.ReadInt32BigEndian(32) / 100.0,
+            Release = rawCommand.ReadInt32BigEndian(36) / 100.0,
+        };
+    }
+
+    public double Release { get; set; }
+
+    public double Hold { get; set; }
+
+    public double Attack { get; set; }
+
+    public double Ratio { get; set; }
+
+    public double Range { get; set; }
+
+    public double Threshold { get; set; }
+
+    public bool GateEnabled { get; set; }
+
+    public bool ExpanderEnabled { get; set; }
+
+    public ushort InputId { get; set; }
+    public long SourceId { get; set; }
+
+    public void ApplyToState(AtemState state)
+    {
+        var audio = state.GetFairlight();
+        var input = audio.Inputs.GetOrCreate(InputId);
+        input.Id = InputId;
+
+        var source = input.Sources.GetOrCreate(SourceId);
+        source.Id = SourceId;
+        source.InputId = InputId;
+
+        source.Dynamics.Expander.Enabled = ExpanderEnabled;
+        source.Dynamics.Expander.GateEnabled = GateEnabled;
+        source.Dynamics.Expander.Threshold = Threshold;
+        source.Dynamics.Expander.Range = Range;
+        source.Dynamics.Expander.Ratio = Ratio;
+        source.Dynamics.Expander.Attack = Attack;
+        source.Dynamics.Expander.Hold = Hold;
+        source.Dynamics.Expander.Release = Release;
+    }
+}

@@ -44,6 +44,20 @@ public class Equalizer
 public class Dynamics
 {
     public double MakeUpGain { get; set; }
+
+    public Expander Expander { get; set; } = new();
+}
+
+public class Expander
+{
+    public bool Enabled { get; set; }
+    public bool GateEnabled { get; set; }
+    public double Threshold { get; set; }
+    public double Range { get; set; }
+    public double Ratio { get; set; }
+    public double Attack { get; set; }
+    public double Hold { get; set; }
+    public double Release { get; set; }
 }
 
 public class Band

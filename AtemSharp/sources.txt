@@ -16,7 +16,6 @@ src\commands\Fairlight\FairlightMixerSourceCommand.ts - CFSP, FASP
 src\commands\Fairlight\FairlightMixerSourceCompressorCommand.ts - CICP, AICP
 src\commands\Fairlight\FairlightMixerSourceDynamicsResetCommand.ts - RICD
 src\commands\Fairlight\FairlightMixerSourceEqualizerResetCommand.ts - RICE
-src\commands\Fairlight\FairlightMixerSourceExpanderCommand.ts - CIXP, AIXP
 src\commands\Fairlight\FairlightMixerSourceLevelsCommand.ts - FMLv
 src\commands\Fairlight\FairlightMixerSourceLimiterCommand.ts - CILP, AILP
 src\commands\Fairlight\FairlightMixerSourceResetPeakLevelsCommand.ts - RFIP

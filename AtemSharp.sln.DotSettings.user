@@ -16,6 +16,8 @@
   &lt;TestAncestor&gt;&#xD;
     &lt;TestId&gt;NUnit3x::53D9735B-3C3F-47F1-9C26-4BB183714474::net9.0::AtemSharp.Tests.Commands.Fairlight.FairlightMixerSourceEqualizerBandUpdateCommandTests&lt;/TestId&gt;&#xD;
     &lt;TestId&gt;NUnit3x::53D9735B-3C3F-47F1-9C26-4BB183714474::net9.0::AtemSharp.Tests.Commands.Fairlight.FairlightMixerSourceEqualizerBandCommandTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::53D9735B-3C3F-47F1-9C26-4BB183714474::net9.0::AtemSharp.Tests.Commands.Fairlight.FairlightMixerSourceExpanderUpdateCommandTests&lt;/TestId&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::53D9735B-3C3F-47F1-9C26-4BB183714474::net9.0::AtemSharp.Tests.Commands.Fairlight.FairlightMixerSourceExpanderCommandTests&lt;/TestId&gt;&#xD;
   &lt;/TestAncestor&gt;&#xD;
 &lt;/SessionState&gt;</s:String>
 	
