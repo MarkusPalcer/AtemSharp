@@ -28,7 +28,7 @@ public class Source
     public double StereoSimulation { get; set; }
     public double Balance { get; set; }
     public double FaderGain { get; set; }
-    public FairlightAudioMixOption[] SupportedMixOptions { get; set; }
+    public FairlightAudioMixOption[] SupportedMixOptions { get; set; } = [];
     public FairlightAudioMixOption MixOption { get; set; }
     public ushort InputId { get; set; }
 }
@@ -48,4 +48,17 @@ public class Dynamics
 
 public class Band
 {
+    public byte Index { get; internal set; }
+
+    public ushort InputId { get; internal set; }
+    public long SourceId { get; internal set; }
+
+    public bool Enabled { get; set; }
+    public uint[] SupportedShapes { get; set; } = [];
+    public byte Shape { get; set; }
+    public uint[] SupportedFrequencyRanges { get; set; } = [];
+    public byte FrequencyRange { get; set; }
+    public uint Frequency { get; set; }
+    public double Gain { get; set; }
+    public double QFactor { get; set; }
 }

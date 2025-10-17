@@ -92,6 +92,11 @@ public static class SerializationExtensions
         BinaryPrimitives.WriteInt64BigEndian(self.AsSpan(offset), value);
     }
 
+    public static void WriteUInt32BigEndian(this byte[] self, uint value, int offset)
+    {
+        BinaryPrimitives.WriteUInt32BigEndian(self.AsSpan(offset), value);
+    }
+
     public static void WriteInt32BigEndian(this byte[] self, int value, int offset)
     {
         BinaryPrimitives.WriteInt32BigEndian(self.AsSpan(offset), value);

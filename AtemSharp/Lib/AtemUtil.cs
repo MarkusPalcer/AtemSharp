@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace AtemSharp.Lib;
 
 /// <summary>
@@ -82,6 +84,21 @@ public static class AtemUtil
             if ((intValue & next) > 0)
             {
                 result.Add((T)Enum.ToObject(typeof(T), next));
+            }
+        }
+
+        return result.ToArray();
+    }
+
+    [Obsolete("Only used when the enum type is unknown, prefer using GetComponents<T>")]
+    public static uint[] GetComponents(byte value)
+    {
+        var result = new List<uint>();
+        for (uint next = 1; next <= value; next <<= 1)
+        {
+            if ((value & next) > 0)
+            {
+                result.Add(next);
             }
         }
 
