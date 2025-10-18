@@ -47,6 +47,17 @@ public class Dynamics
 
     public Expander Expander { get;  } = new();
     public Compressor Compressor { get;  } = new();
+
+    public Limiter Limiter { get; } = new();
+}
+
+public class Limiter
+{
+    public bool Enabled { get; set; }
+    public double Threshold { get; set; }
+    public double Attack { get; set; }
+    public double Hold { get; set; }
+    public double Release { get; set; }
 }
 
 public class Compressor
