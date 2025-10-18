@@ -45,7 +45,18 @@ public class Dynamics
 {
     public double MakeUpGain { get; set; }
 
-    public Expander Expander { get; set; } = new();
+    public Expander Expander { get;  } = new();
+    public Compressor Compressor { get;  } = new();
+}
+
+public class Compressor
+{
+    public bool Enabled { get; set; }
+    public double Threshold { get; set; }
+    public double Ratio { get; set; }
+    public double Attack { get; set; }
+    public double Hold { get; set; }
+    public double Release { get; set; }
 }
 
 public class Expander

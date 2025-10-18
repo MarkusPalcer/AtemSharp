@@ -7,14 +7,12 @@ using AtemSharp.State.Audio.Fairlight;
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("FASP")]
-public class FairlightMixerSourceUpdateCommand  : IDeserializedCommand
+public class FairlightMixerSourceUpdateCommand  : FairlightMixerSourceUpdateCommandBase
 {
     public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion version)
     {
         return new FairlightMixerSourceUpdateCommand
         {
-            InputId = rawCommand.ReadUInt16BigEndian(0),
-            SourceId = rawCommand.ReadInt64BigEndian(8),
             SourceType = (FairlightAudioSourceType)rawCommand.ReadUInt8(16),
             MaxFramesDelay = rawCommand.ReadUInt8(17),
             FramesDelay = rawCommand.ReadUInt8(18),
@@ -29,7 +27,7 @@ public class FairlightMixerSourceUpdateCommand  : IDeserializedCommand
             FaderGain = rawCommand.ReadInt32BigEndian(44) / 100.0,
             SupportedMixOptions = AtemUtil.GetComponents((FairlightAudioMixOption)rawCommand.ReadUInt8(48)),
             MixOption = (FairlightAudioMixOption)rawCommand.ReadUInt8(49),
-        };
+        }.DeserializeIds(rawCommand);
     }
 
     public FairlightAudioMixOption MixOption { get; set; }
@@ -56,23 +54,12 @@ public class FairlightMixerSourceUpdateCommand  : IDeserializedCommand
 
     public byte MaxFramesDelay { get; set; }
 
-    public ushort InputId { get; set; }
-    public long SourceId { get; set; }
     public FairlightAudioSourceType SourceType { get; set; }
 
     public double Gain { get; set; }
 
-    public void ApplyToState(AtemState state)
+    protected override void ApplyToSource(Source source)
     {
-        var audio = state.GetFairlight();
-
-        var input = audio.Inputs.GetOrCreate(InputId);
-        input.Id = InputId;
-
-        var source = input.Sources.GetOrCreate(SourceId);
-        source.Id = SourceId;
-        source.InputId = InputId;
-
         source.Equalizer.Enabled = EqualizerEnabled;
         source.Equalizer.Gain = EqualizerGain;
         if (source.Equalizer.Bands.Length  < BandCount)
@@ -86,7 +73,6 @@ public class FairlightMixerSourceUpdateCommand  : IDeserializedCommand
         }
 
         source.Dynamics.MakeUpGain = MakeUpGain;
-
         source.Type = SourceType;
         source.MaxFramesDelay = MaxFramesDelay;
         source.FramesDelay = FramesDelay;

@@ -13,7 +13,6 @@ src\commands\Fairlight\FairlightMixerMonitorSoloCommand.ts - CFMS, FAMS
 src\commands\Fairlight\FairlightMixerResetPeakLevelsCommand.ts - RFLP
 src\commands\Fairlight\FairlightMixerSendLevelsCommand.ts - SFLN
 src\commands\Fairlight\FairlightMixerSourceCommand.ts - CFSP, FASP
-src\commands\Fairlight\FairlightMixerSourceCompressorCommand.ts - CICP, AICP
 src\commands\Fairlight\FairlightMixerSourceDynamicsResetCommand.ts - RICD
 src\commands\Fairlight\FairlightMixerSourceEqualizerResetCommand.ts - RICE
 src\commands\Fairlight\FairlightMixerSourceLevelsCommand.ts - FMLv

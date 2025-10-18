@@ -6,10 +6,8 @@ using AtemSharp.State.Audio.Fairlight;
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("CFSP")]
-public class FairlightMixerSourceCommand : SerializedCommand
+public class FairlightMixerSourceCommand : FairlightMixerSourceCommandBase
 {
-    private readonly ushort _inputId;
-    private readonly long _sourceId;
     private byte _framesDelay;
     private double _gain;
     private double _stereoSimulation;
@@ -110,11 +108,8 @@ public class FairlightMixerSourceCommand : SerializedCommand
         }
     }
 
-    public FairlightMixerSourceCommand(Source source)
+    public FairlightMixerSourceCommand(Source source) : base(source)
     {
-        _inputId = source.InputId;
-        _sourceId = source.Id;
-
         _framesDelay = source.FramesDelay;
         _gain = source.Gain;
         _stereoSimulation = source.StereoSimulation;
@@ -130,9 +125,8 @@ public class FairlightMixerSourceCommand : SerializedCommand
     {
         var buffer = new byte[48];
 
+        SerializeIds(buffer);
         buffer.WriteUInt16BigEndian(Flag, 0);
-        buffer.WriteUInt16BigEndian(_inputId, 2);
-        buffer.WriteInt64BigEndian(_sourceId, 8);
 
         buffer.WriteUInt8(_framesDelay, 16);
         buffer.WriteInt32BigEndian((int)(_gain * 100), 20);

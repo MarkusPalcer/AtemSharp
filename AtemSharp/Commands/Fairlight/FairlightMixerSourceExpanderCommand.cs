@@ -5,7 +5,7 @@ using AtemSharp.State.Audio.Fairlight;
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("CIXP")]
-public class FairlightMixerSourceExpanderCommand : SerializedCommand
+public class FairlightMixerSourceExpanderCommand : FairlightMixerSourceCommandBase
 {
     private bool _expanderEnabled;
     private bool _gateEnabled;
@@ -15,10 +15,8 @@ public class FairlightMixerSourceExpanderCommand : SerializedCommand
     private double _attack;
     private double _hold;
     private double _release;
-    private ushort _inputId;
-    private long _sourceId;
 
-    public FairlightMixerSourceExpanderCommand(Source source)
+    public FairlightMixerSourceExpanderCommand(Source source) : base(source)
     {
         _expanderEnabled = source.Dynamics.Expander.Enabled;
         _gateEnabled = source.Dynamics.Expander.GateEnabled;
@@ -28,8 +26,6 @@ public class FairlightMixerSourceExpanderCommand : SerializedCommand
         _attack = source.Dynamics.Expander.Attack;
         _hold = source.Dynamics.Expander.Hold;
         _release = source.Dynamics.Expander.Release;
-        _inputId = source.InputId;
-        _sourceId = source.Id;
     }
 
     public bool ExpanderEnabled
@@ -117,8 +113,7 @@ public class FairlightMixerSourceExpanderCommand : SerializedCommand
     {
         var buffer = new byte[40];
         buffer.WriteUInt8((byte)Flag, 0);
-        buffer.WriteUInt16BigEndian(_inputId, 2);
-        buffer.WriteInt64BigEndian(_sourceId, 8);
+        SerializeIds(buffer);
 
         buffer.WriteBoolean(_expanderEnabled, 16);
         buffer.WriteBoolean(_gateEnabled, 17);

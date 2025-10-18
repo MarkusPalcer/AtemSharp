@@ -1,19 +1,18 @@
 using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
+using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("AIXP")]
-public class FairlightMixerSourceExpanderUpdateCommand : IDeserializedCommand
+public class FairlightMixerSourceExpanderUpdateCommand : FairlightMixerSourceUpdateCommandBase
 {
 
     public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion version)
     {
         return new FairlightMixerSourceExpanderUpdateCommand
         {
-            InputId = rawCommand.ReadUInt16BigEndian(0),
-            SourceId = rawCommand.ReadInt64BigEndian(8),
             ExpanderEnabled = rawCommand.ReadBoolean(16),
             GateEnabled = rawCommand.ReadBoolean(17),
             Threshold = rawCommand.ReadInt32BigEndian(20) / 100.0,
@@ -22,7 +21,7 @@ public class FairlightMixerSourceExpanderUpdateCommand : IDeserializedCommand
             Attack = rawCommand.ReadInt32BigEndian(28) / 100.0,
             Hold = rawCommand.ReadInt32BigEndian(32) / 100.0,
             Release = rawCommand.ReadInt32BigEndian(36) / 100.0,
-        };
+        }.DeserializeIds(rawCommand);
     }
 
     public double Release { get; set; }
@@ -41,19 +40,9 @@ public class FairlightMixerSourceExpanderUpdateCommand : IDeserializedCommand
 
     public bool ExpanderEnabled { get; set; }
 
-    public ushort InputId { get; set; }
-    public long SourceId { get; set; }
 
-    public void ApplyToState(AtemState state)
+    protected override void ApplyToSource(Source source)
     {
-        var audio = state.GetFairlight();
-        var input = audio.Inputs.GetOrCreate(InputId);
-        input.Id = InputId;
-
-        var source = input.Sources.GetOrCreate(SourceId);
-        source.Id = SourceId;
-        source.InputId = InputId;
-
         source.Dynamics.Expander.Enabled = ExpanderEnabled;
         source.Dynamics.Expander.GateEnabled = GateEnabled;
         source.Dynamics.Expander.Threshold = Threshold;
