@@ -3,7 +3,6 @@ src\commands\Fairlight\AudioRouting\AudioRoutingOutput.ts - AROC, AROP
 src\commands\Fairlight\AudioRouting\AudioRoutingSource.ts - ARSC, ARSP
 src\commands\Fairlight\FairlightMixerMasterCompressorCommand.ts - CMCP, MOCP
 src\commands\Fairlight\FairlightMixerMasterDynamicsResetCommand.ts - RMOD
-src\commands\Fairlight\FairlightMixerMasterEqualizerBandCommand.ts - CMBP, AMBP
 src\commands\Fairlight\FairlightMixerMasterEqualizerResetCommand.ts - RMOE
 src\commands\Fairlight\FairlightMixerMasterLevelsCommand.ts - FDLv
 src\commands\Fairlight\FairlightMixerMasterLimiterCommand.ts - CMLP, AMLP

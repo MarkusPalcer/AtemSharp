@@ -91,16 +91,16 @@ public class Expander
     public double Release { get; set; }
 }
 
-public class SourceEqualizerBand : Band
+public class SourceEqualizerBand : EqualizerBand
 {
     public long SourceId { get; internal set; }
 
     public ushort InputId { get; internal set; }
 }
 
-public class MasterEqualizerBand : Band;
+public class MasterEqualizerBand : EqualizerBand;
 
-public abstract class Band
+public abstract class EqualizerBand
 {
     public byte Index { get; internal set; }
 

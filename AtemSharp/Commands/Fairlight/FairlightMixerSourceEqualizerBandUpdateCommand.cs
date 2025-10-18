@@ -9,25 +9,8 @@ public class FairlightMixerSourceEqualizerBandUpdateCommand : IDeserializedComma
 {
     public ushort InputId { get; set; }
     public long SourceId { get; set; }
-    public byte BandIndex { get; set; }
 
-    public bool Enabled { get; set; }
-
-    // TODO: Create enum from ATEM Mini ISO Pro behavior
-    public uint[] SupportedShapes { get; set; } = [];
-
-    public byte Shape { get; set; }
-
-    public uint[] SupportedFrequencyRanges { get; set; } = [];
-
-    // TODO: Create enum from ATEM Mini ISO Pro behavior
-    public byte FrequencyRange { get; set; }
-
-    public uint Frequency { get; set; }
-
-    public double Gain { get; set; }
-
-    public double QFacctor { get; set; }
+    public BandUpdateParameters Parameters { get; } = new();
 
     public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion version)
     {
@@ -35,15 +18,18 @@ public class FairlightMixerSourceEqualizerBandUpdateCommand : IDeserializedComma
         {
             InputId = rawCommand.ReadUInt16BigEndian(0),
             SourceId = rawCommand.ReadInt64BigEndian(8),
-            BandIndex = rawCommand.ReadUInt8(16),
-            Enabled = rawCommand.ReadBoolean(17),
-            SupportedShapes = AtemUtil.GetComponents(rawCommand.ReadUInt8(18)),
-            Shape = rawCommand.ReadUInt8(19),
-            SupportedFrequencyRanges = AtemUtil.GetComponents(rawCommand.ReadUInt8(20)),
-            FrequencyRange = rawCommand.ReadUInt8(21),
-            Frequency = rawCommand.ReadUInt32BigEndian(24),
-            Gain = rawCommand.ReadInt32BigEndian(28) / 100.0,
-            QFacctor = rawCommand.ReadInt16BigEndian(32) / 100.0,
+            Parameters =
+            {
+                BandIndex = rawCommand.ReadUInt8(16),
+                Enabled = rawCommand.ReadBoolean(17),
+                SupportedShapes = AtemUtil.GetComponents(rawCommand.ReadUInt8(18)),
+                Shape = rawCommand.ReadUInt8(19),
+                SupportedFrequencyRanges = AtemUtil.GetComponents(rawCommand.ReadUInt8(20)),
+                FrequencyRange = rawCommand.ReadUInt8(21),
+                Frequency = rawCommand.ReadUInt32BigEndian(24),
+                Gain = rawCommand.ReadInt32BigEndian(28) / 100.0,
+                QFactor = rawCommand.ReadInt16BigEndian(32) / 100.0,
+            }
         };
     }
 
@@ -61,19 +47,12 @@ public class FairlightMixerSourceEqualizerBandUpdateCommand : IDeserializedComma
             throw new IndexOutOfRangeException($"Source ID {SourceId} does not exist on Input ID {InputId}");
         }
 
-        if (BandIndex >= source.Equalizer.Bands.Length)
+        if (Parameters.BandIndex >= source.Equalizer.Bands.Length)
         {
-            throw new IndexOutOfRangeException($"Band Index {BandIndex} does not exist on Source ID {SourceId} on Input ID {InputId}");
+            throw new IndexOutOfRangeException($"Band Index {Parameters.BandIndex} does not exist on Source ID {SourceId} on Input ID {InputId}");
         }
-        var band = source.Equalizer.Bands[BandIndex];
+        var band = source.Equalizer.Bands[Parameters.BandIndex];
 
-        band.Enabled = Enabled;
-        band.SupportedShapes = SupportedShapes;
-        band.Shape = Shape;
-        band.SupportedFrequencyRanges = SupportedFrequencyRanges;
-        band.FrequencyRange = FrequencyRange;
-        band.Frequency = Frequency;
-        band.Gain = Gain;
-        band.QFactor = QFacctor;
+        Parameters.ApplyTo(band);
     }
 }

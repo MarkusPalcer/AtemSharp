@@ -3,13 +3,10 @@ using AtemSharp.Lib;
 
 namespace AtemSharp.Tests.Commands.Fairlight;
 
-public class FairlightMixerSourceEqualizerBandUpdateCommandTests : DeserializedCommandTestBase<
-    FairlightMixerSourceEqualizerBandUpdateCommand, FairlightMixerSourceEqualizerBandUpdateCommandTests.CommandData>
+public class FairlightMixerMasterEqualizerBandUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerMasterEqualizerBandUpdateCommand, FairlightMixerMasterEqualizerBandUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
-        public int Index { get; set; }
-        public long SourceId { get; set; }
         public byte Band { get; set; }
         public bool BandEnabled { get; set; }
         public byte SupportedShapes { get; set; }
@@ -21,11 +18,10 @@ public class FairlightMixerSourceEqualizerBandUpdateCommandTests : DeserializedC
         public double QFactor { get; set; }
     }
 
-    protected override void CompareCommandProperties(FairlightMixerSourceEqualizerBandUpdateCommand actualCommand, CommandData expectedData,
+
+    protected override void CompareCommandProperties(FairlightMixerMasterEqualizerBandUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
-        Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Index));
-        Assert.That(actualCommand.SourceId, Is.EqualTo(expectedData.SourceId));
         Assert.That(actualCommand.Parameters.BandIndex, Is.EqualTo(expectedData.Band));
         Assert.That(actualCommand.Parameters.Enabled, Is.EqualTo(expectedData.BandEnabled));
         Assert.That(actualCommand.Parameters.SupportedShapes, Is.EquivalentTo(AtemUtil.GetComponents(expectedData.SupportedShapes)));
@@ -35,5 +31,6 @@ public class FairlightMixerSourceEqualizerBandUpdateCommandTests : DeserializedC
         Assert.That(actualCommand.Parameters.Frequency, Is.EqualTo(expectedData.Frequency));
         Assert.That(actualCommand.Parameters.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));
         Assert.That(actualCommand.Parameters.QFactor, Is.EqualTo(expectedData.QFactor).Within(0.01));
+
     }
 }
