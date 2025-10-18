@@ -27,7 +27,7 @@ public class FairlightMixerSourceEqualizerBandCommandTests : SerializedCommandTe
 
     protected override FairlightMixerSourceEqualizerBandCommand CreateSut(TestCaseData testCase)
     {
-        var band = new Band
+        var band = new SourceEqualizerBand
         {
             Index = testCase.Command.Band,
             InputId = (ushort)testCase.Command.Index,

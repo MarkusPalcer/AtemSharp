@@ -17,7 +17,7 @@ public class Source
 {
     public long Id { get; internal set; }
 
-    public Equalizer Equalizer { get; } = new();
+    public SourceEqualizer Equalizer { get; } = new();
 
     public Dynamics Dynamics { get; } = new();
     public FairlightAudioSourceType Type { get; set; }
@@ -33,12 +33,21 @@ public class Source
     public ushort InputId { get; set; }
 }
 
-public class Equalizer
+
+public abstract class Equalizer
 {
     public bool Enabled { get; set; }
     public double Gain { get; set; }
+}
 
-    public Band[] Bands { get; internal set; } = [];
+public class SourceEqualizer : Equalizer
+{
+    public SourceEqualizerBand[] Bands { get; internal set; } = [];
+}
+
+public class MasterEqualizer : Equalizer
+{
+    public MasterEqualizerBand[] Bands { get; internal set; } = [];
 }
 
 public class Dynamics
@@ -82,12 +91,18 @@ public class Expander
     public double Release { get; set; }
 }
 
-public class Band
+public class SourceEqualizerBand : Band
 {
-    public byte Index { get; internal set; }
+    public long SourceId { get; internal set; }
 
     public ushort InputId { get; internal set; }
-    public long SourceId { get; internal set; }
+}
+
+public class MasterEqualizerBand : Band;
+
+public abstract class Band
+{
+    public byte Index { get; internal set; }
 
     public bool Enabled { get; set; }
     public uint[] SupportedShapes { get; set; } = [];

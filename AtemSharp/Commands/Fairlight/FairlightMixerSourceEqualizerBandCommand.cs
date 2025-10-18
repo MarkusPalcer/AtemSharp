@@ -5,7 +5,7 @@ using AtemSharp.State.Audio.Fairlight;
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("CEBP")]
-public class FairlightMixerSourceEqualizerBandCommand(Band band) : SerializedCommand
+public class FairlightMixerSourceEqualizerBandCommand(SourceEqualizerBand band) : SerializedCommand
 {
     private ushort _inputId = band.InputId;
     private long _sourceId = band.SourceId;
