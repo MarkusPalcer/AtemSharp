@@ -2,12 +2,10 @@ using AtemSharp.Commands.Fairlight;
 
 namespace AtemSharp.Tests.Commands.Fairlight;
 
-public class FairlightMixerSourceCompressorUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerSourceCompressorUpdateCommand, FairlightMixerSourceCompressorUpdateCommandTests.CommandData>
+public class FairlightMixerMasterCompressorUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerMasterCompressorUpdateCommand, FairlightMixerMasterCompressorUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
-        public int Index { get; set; }
-        public long SourceId { get; set; }
         public bool CompressorEnabled { get; set; }
         public double Threshold { get; set; }
         public double Ratio { get; set; }
@@ -16,10 +14,8 @@ public class FairlightMixerSourceCompressorUpdateCommandTests : DeserializedComm
         public double Release { get; set; }
     }
 
-    protected override void CompareCommandProperties(FairlightMixerSourceCompressorUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(FairlightMixerMasterCompressorUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Index), $"{testCase.Name} - Index");
-        Assert.That(actualCommand.SourceId, Is.EqualTo(expectedData.SourceId), $"{testCase.Name} - SourceId");
         Assert.That(actualCommand.Parameters.CompressorEnabled, Is.EqualTo(expectedData.CompressorEnabled), $"{testCase.Name} - CompressorEnabled");
         Assert.That(actualCommand.Parameters.Threshold, Is.EqualTo(expectedData.Threshold).Within(0.01), $"{testCase.Name} - Threshold");
         Assert.That(actualCommand.Parameters.Ratio, Is.EqualTo(expectedData.Ratio).Within(0.01), $"{testCase.Name} - Ratio");

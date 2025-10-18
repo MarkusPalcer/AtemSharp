@@ -7,40 +7,29 @@ namespace AtemSharp.Commands.Fairlight;
 [Command("CICP")]
 public class FairlightMixerSourceCompressorCommand : FairlightMixerSourceCommandBase
 {
-    public double Release { get; set; }
-
-    public double Hold { get; set; }
-
-    public double Attack { get; set; }
-
-    public double Ratio { get; set; }
-
-    public double Threshold { get; set; }
-
-    public bool CompressorEnabled { get; set; }
-
+    public CompressorParameters Parameters { get; }
 
     public FairlightMixerSourceCompressorCommand(Source source) : base(source)
     {
-        CompressorEnabled = source.Dynamics.Compressor.Enabled;
-        Threshold = source.Dynamics.Compressor.Threshold;
-        Ratio = source.Dynamics.Compressor.Ratio;
-        Attack = source.Dynamics.Compressor.Attack;
-        Hold = source.Dynamics.Compressor.Hold;
-        Release = source.Dynamics.Compressor.Release;
+        Parameters = new CompressorParameters(source.Dynamics.Compressor);
     }
 
     public override byte[] Serialize(ProtocolVersion version)
     {
+        if (Flag != 0) // Testability: Use flags from test if present
+        {
+            Parameters.Flag = (byte)Flag;
+        }
+
         byte[] buffer = new byte[40];
-        buffer.WriteUInt8((byte)Flag, 0);
+        buffer.WriteUInt8(Parameters.Flag, 0);
         SerializeIds(buffer);
-        buffer.WriteBoolean(CompressorEnabled, 16);
-        buffer.WriteInt32BigEndian((int)(Threshold * 100), 20);
-        buffer.WriteInt16BigEndian((short)(Ratio * 100), 24);
-        buffer.WriteInt32BigEndian((int)(Attack * 100), 28);
-        buffer.WriteInt32BigEndian((int)(Hold * 100), 32);
-        buffer.WriteInt32BigEndian((int)(Release * 100), 36);
+        buffer.WriteBoolean(Parameters.CompressorEnabled, 16);
+        buffer.WriteInt32BigEndian((int)(Parameters.Threshold * 100), 20);
+        buffer.WriteInt16BigEndian((short)(Parameters.Ratio * 100), 24);
+        buffer.WriteInt32BigEndian((int)(Parameters.Attack * 100), 28);
+        buffer.WriteInt32BigEndian((int)(Parameters.Hold * 100), 32);
+        buffer.WriteInt32BigEndian((int)(Parameters.Release * 100), 36);
 
         return buffer;
     }
