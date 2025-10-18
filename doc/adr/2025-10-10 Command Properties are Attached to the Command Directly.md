@@ -1,6 +1,8 @@
 # Command Properties are Attached to the Command Directly
 
+
 Command properties in the C# implementation are defined as direct properties on the command classes themselves, rather than using separate properties classes as seen in the TypeScript implementation.
+[Bundled Parameters in Commands](2025-10-18 Bundled Parameters in Commands.md) provides an exception.
 
 ## Context
 
