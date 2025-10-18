@@ -4,7 +4,6 @@ src\commands\Fairlight\AudioRouting\AudioRoutingSource.ts - ARSC, ARSP
 src\commands\Fairlight\FairlightMixerMasterDynamicsResetCommand.ts - RMOD
 src\commands\Fairlight\FairlightMixerMasterEqualizerResetCommand.ts - RMOE
 src\commands\Fairlight\FairlightMixerMasterLevelsCommand.ts - FDLv
-src\commands\Fairlight\FairlightMixerMasterLimiterCommand.ts - CMLP, AMLP
 src\commands\Fairlight\FairlightMixerMonitorCommand.ts - CFMH, FMHP
 src\commands\Fairlight\FairlightMixerMonitorSoloCommand.ts - CFMS, FAMS
 src\commands\Fairlight\FairlightMixerResetPeakLevelsCommand.ts - RFLP
