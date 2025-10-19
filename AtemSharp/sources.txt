@@ -52,5 +52,4 @@ src\commands\SuperSource\SuperSourceBoxParametersCommand.ts - CSBP, SSBP
 src\commands\SuperSource\SuperSourcePropertiesCommand.ts - CSSc, CSSc, CSBd, SSrc, SSrc, SSBd
 src\commands\CameraControlCommand.ts - CCmd, CCdP
 src\commands\StartupStateCommand.ts - SRsv, SRcl
-src\commands\TallyBySourceCommand.ts - TlSr
 src\commands\TimeCommand.ts - Time, TiRq

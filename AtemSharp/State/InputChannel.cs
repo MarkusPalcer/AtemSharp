@@ -52,4 +52,14 @@ public class InputChannel
     /// Mix effect availability flags indicating which MEs can use this input
     /// </summary>
     public MeAvailability MeAvailability { get; set; }
+
+    /// <summary>
+    /// Whether this source is live in the program output
+    /// </summary>
+    public bool IsInProgram { get; internal set; }
+
+    /// <summary>
+    /// Whether this source is visible in the preview output
+    /// </summary>
+    public bool IsInPreview { get; internal set; }
 }
