@@ -125,6 +125,14 @@ public static class SpanExtensions
     public static string ReadNullTerminatedString(this ReadOnlySpan<byte> span, int offset, int maxLength)
     {
         var subSpan = span.Slice(offset, maxLength);
-        return System.Text.Encoding.UTF8.GetString(subSpan).TrimEnd('\0');
+
+        // Search for null terminator
+        var nullIndex = subSpan.IndexOf((byte)0);
+        if ( nullIndex > -1)
+        {
+            subSpan = subSpan[..nullIndex];
+        }
+
+        return System.Text.Encoding.UTF8.GetString(subSpan);
     }
 }
