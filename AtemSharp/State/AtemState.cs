@@ -40,4 +40,6 @@ public class AtemState
     public Dictionary<int, ColorGeneratorState> ColorGenerators { get; } = new();
 
     public MediaState Media { get; } = new();
+
+    public MacroState Macros { get; } = new();
 }
