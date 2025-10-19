@@ -30,7 +30,7 @@ public class TallyBySourceCommand : IDeserializedCommand
         {
             var source = rawCommand.ReadUInt16BigEndian(2 + i * 3);
             var value = rawCommand.ReadUInt8(4 + i * 3);
-            tallyBySource[source] = new Tally
+            tallyBySource[i] = new Tally
             {
                 Source = source,
                 IsInProgram = (value & 0x01) > 0,
