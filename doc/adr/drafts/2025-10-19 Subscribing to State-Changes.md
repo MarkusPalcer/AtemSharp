@@ -27,6 +27,7 @@ The actual value holding property is wrapped in a class which can be implicitely
 | Advantages | Disadvantages |
 |--|--|
 | Change-Detection can be wrapped inside that class (i.e. only send an event when the new value is different from the old) | Unconventional mechanism might confuse new developers |
+| | Conflicts with sending updates to the ATEM whenever setting the state, because it removes the advantage of the normal C#-Like syntax of just setting the property (`operator=` can't be overridden like in C++) |
 
 
 ### Technical implementation of events
