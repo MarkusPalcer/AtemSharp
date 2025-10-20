@@ -1,0 +1,21 @@
+using System;
+using AtemSharp;
+using AtemSharp.Enums;
+namespace {{namespace}};
+
+public partial class {{className}}
+{
+    {% for field in deserializedFields %}
+    public {{field.Type}} {{field.PropertyName}}
+    {
+        get => {{field.Name}};
+        private set => {{field.Name}} = value;
+    }
+
+    {% endfor %}
+    public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
+    {
+        // TODO: Implement deserialization logic here
+        return new {{className}}();
+    }
+}
