@@ -130,13 +130,14 @@ namespace CodeGenerators
             var fieldType = GetFieldType(f, out var isDouble);
             var extensionMethod = GetExtensionMethod(f);
             var scalingFactor = GetScalingFactor(f);
+            var isEnum = f.Type.TypeKind == Microsoft.CodeAnalysis.TypeKind.Enum;
 
             if (extensionMethod is null)
             {
                 var descriptor = new DiagnosticDescriptor(
                     id: "GEN003",
                     title: "Missing Span Extension Method",
-                    messageFormat: $"No SpanExtension method mapping found for field '{f.Name}' of type '{f.Type.ToDisplayString()}'.",
+                    messageFormat: $"No deserialization-method mapping found for field '{f.Name}' of type '{f.Type.ToDisplayString()}'.",
                     category: "SourceGenerator",
                     DiagnosticSeverity.Error,
                     isEnabledByDefault: true
@@ -150,25 +151,30 @@ namespace CodeGenerators
                 propertyName,
                 fieldType,
                 offset,
-                GenerateDeserializationExpression(isDouble, scalingFactor, extensionMethod, offset)
+                GenerateDeserializationExpression(isDouble, scalingFactor, extensionMethod, offset, fieldType, isEnum)
             );
         }
 
-        private static string GenerateDeserializationExpression(bool isDouble, double scalingFactor, string extensionMethod, uint offset)
+        private static string GenerateDeserializationExpression(bool isDouble, double scalingFactor, string extensionMethod, uint offset, string fieldType, bool isEnum)
         {
-            string deserializeExpression;
+            string expr;
             if (isDouble)
             {
                 // Always render scalingFactor as a floating-point literal
                 var scalingLiteral = scalingFactor.ToString("0.0#############################", System.Globalization.CultureInfo.InvariantCulture);
-                deserializeExpression = $"rawCommand.{extensionMethod}({offset}) / {scalingLiteral}";
+                expr = $"rawCommand.{extensionMethod}({offset}) / {scalingLiteral}";
             }
             else
             {
-                deserializeExpression = $"rawCommand.{extensionMethod}({offset})";
+                expr = $"rawCommand.{extensionMethod}({offset})";
             }
 
-            return deserializeExpression;
+            if (isEnum)
+            {
+                // Prepend cast to enum type
+                expr = $"({fieldType})({expr})";
+            }
+            return expr;
         }
 
         private static double GetScalingFactor(IFieldSymbol f)

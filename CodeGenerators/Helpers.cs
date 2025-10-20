@@ -14,6 +14,17 @@ namespace CodeGenerators
                 // Default underlying type for double is UInt16
                 return "UInt16BigEndian";
             }
+
+            // Handle enums by underlying type
+            if (typeSymbol.TypeKind == Microsoft.CodeAnalysis.TypeKind.Enum)
+            {
+                var enumUnderlying = (typeSymbol as INamedTypeSymbol)?.EnumUnderlyingType;
+                if (enumUnderlying != null)
+                {
+                    name = enumUnderlying.Name;
+                }
+            }
+
             switch (name)
             {
                 case "Boolean":

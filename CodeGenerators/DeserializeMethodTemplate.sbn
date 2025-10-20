@@ -11,7 +11,7 @@ public partial class {{className}}
     public {{field.Type}} {{field.PropertyName}}
     {
         get => {{field.Name}};
-        private set => {{field.Name}} = value;
+        internal set => {{field.Name}} = value;
     }
 
     {% endfor %}
