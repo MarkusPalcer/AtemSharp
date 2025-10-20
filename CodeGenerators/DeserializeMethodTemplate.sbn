@@ -1,6 +1,8 @@
 using System;
 using AtemSharp;
 using AtemSharp.Enums;
+using AtemSharp.Lib;
+
 namespace {{namespace}};
 
 public partial class {{className}}
@@ -15,11 +17,10 @@ public partial class {{className}}
     {% endfor %}
     public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        // TODO: Implement deserialization logic here
         return new {{className}} {
             {% for field in deserializedFields %}
-            rawCommand.Read{{field.ReadCommand}}({{field.Offset}})),
+            {{field.PropertyName}} = {{field.DeserializeExpression}},
             {% endfor %}
-        }
+        };
     }
 }

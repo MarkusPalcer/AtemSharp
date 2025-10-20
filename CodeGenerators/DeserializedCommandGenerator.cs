@@ -54,16 +54,30 @@ namespace CodeGenerators
                                 else if (!string.IsNullOrEmpty(propertyName))
                                     propertyName = propertyName.ToUpper();
 
-                                // Use the extension method helper
-                                var extensionMethod = f.GetSpanExtensionMethodName();
+                                var fieldType = f.Type.ToDisplayString();
+                                bool isDouble = fieldType == "double" || fieldType == "System.Double";
+
+                                string? baseMethod = f.GetSerializationMethod();
+                                string extensionMethod = baseMethod != null ? $"Read{baseMethod}" : "";
+
+                                string deserializeExpression;
+                                if (isDouble)
+                                {
+                                    deserializeExpression = $"rawCommand.{extensionMethod}({offset}) / 1.0";
+                                }
+                                else
+                                {
+                                    deserializeExpression = $"rawCommand.{extensionMethod}({offset})";
+                                }
+
                                 return new {
                                     Field = f,
                                     DeserializedField = new DeserializedField(
                                         f.Name,
                                         propertyName,
-                                        f.Type.ToDisplayString(),
+                                        fieldType,
                                         offset,
-                                        extensionMethod
+                                        deserializeExpression
                                     ),
                                     ExtensionMethod = extensionMethod
                                 };

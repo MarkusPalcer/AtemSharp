@@ -4,10 +4,16 @@ namespace CodeGenerators
 {
     public static class Helpers
     {
-        public static string? GetSpanExtensionMethodName(this IFieldSymbol fieldSymbol)
+        public static string? GetSerializationMethod(this IFieldSymbol fieldSymbol)
         {
             var typeSymbol = fieldSymbol.Type;
             var name = typeSymbol.Name;
+            // Handle double type specially
+            if (name == "Double" || typeSymbol.ToDisplayString() == "double" || typeSymbol.ToDisplayString() == "System.Double")
+            {
+                // Default underlying type for double is UInt16
+                return "UInt16BigEndian";
+            }
             switch (name)
             {
                 case "Boolean":
