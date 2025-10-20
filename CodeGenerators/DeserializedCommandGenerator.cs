@@ -35,7 +35,7 @@ namespace CodeGenerators
                         var className = symbol.Name;
 
                         // Find fields with DeserializedFieldAttribute
-                        var deserializedFields = symbol.GetMembers()
+                        var deserializedFieldResults = symbol.GetMembers()
                             .OfType<IFieldSymbol>()
                             .Where(f => f.GetAttributes().Any(a => a.AttributeClass?.Name == "DeserializedFieldAttribute"))
                             .Select(f => {
@@ -54,14 +54,47 @@ namespace CodeGenerators
                                 else if (!string.IsNullOrEmpty(propertyName))
                                     propertyName = propertyName.ToUpper();
 
-                                return new DeserializedField(
-                                    f.Name,
-                                    propertyName,
-                                    f.Type.ToDisplayString(),
-                                    offset
-                                );
+                                // Use the extension method helper
+                                var extensionMethod = f.GetSpanExtensionMethodName();
+                                return new {
+                                    Field = f,
+                                    DeserializedField = new DeserializedField(
+                                        f.Name,
+                                        propertyName,
+                                        f.Type.ToDisplayString(),
+                                        offset,
+                                        extensionMethod
+                                    ),
+                                    ExtensionMethod = extensionMethod
+                                };
                             })
                             .ToArray();
+
+                        // Report error for each field with missing extension method
+                        bool hasMissingExtensionMethod = false;
+                        foreach (var result in deserializedFieldResults)
+                        {
+                            if (result.ExtensionMethod == null)
+                            {
+                                hasMissingExtensionMethod = true;
+                                var descriptor = new DiagnosticDescriptor(
+                                    id: "GEN003",
+                                    title: "Missing Span Extension Method",
+                                    messageFormat: $"No SpanExtension method mapping found for field '{result.Field.Name}' of type '{result.Field.Type.ToDisplayString()}'.",
+                                    category: "SourceGenerator",
+                                    DiagnosticSeverity.Error,
+                                    isEnabledByDefault: true
+                                );
+                                spc.ReportDiagnostic(Diagnostic.Create(descriptor, result.Field.Locations.FirstOrDefault() ?? Location.None));
+                            }
+                        }
+                        if (hasMissingExtensionMethod)
+                        {
+                            // Do not generate code if any field is missing a mapping
+                            continue;
+                        }
+
+                        var deserializedFields = deserializedFieldResults.Select(r => r.DeserializedField).ToArray();
 
                         // Load template from embedded resource
                         var assembly = typeof(DeserializedCommandGenerator).Assembly;

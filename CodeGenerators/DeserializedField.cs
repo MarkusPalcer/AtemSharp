@@ -2,11 +2,12 @@ namespace CodeGenerators
 {
     public class DeserializedField
     {
-        public DeserializedField(string name, string propertyName, string type, uint offset)
+        public DeserializedField(string name, string propertyName, string type, uint offset, string? extensionMethod)
         {
             Name = name;
             Type = type;
             Offset = offset;
+            ExtensionMethod = extensionMethod;
             PropertyName = propertyName;
         }
 
@@ -32,5 +33,10 @@ namespace CodeGenerators
         /// The offset value from the DeserializedFieldAttribute
         /// </summary>
         public uint Offset { get; set; }
+
+        /// <summary>
+        /// The extension method used to read this field from a command buffer
+        /// </summary>
+        public string? ExtensionMethod { get; set; }
     }
 }

@@ -16,6 +16,10 @@ public partial class {{className}}
     public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
         // TODO: Implement deserialization logic here
-        return new {{className}}();
+        return new {{className}} {
+            {% for field in deserializedFields %}
+            rawCommand.Read{{field.ReadCommand}}({{field.Offset}})),
+            {% endfor %}
+        }
     }
 }
