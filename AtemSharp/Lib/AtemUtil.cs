@@ -141,4 +141,15 @@ public static class AtemUtil
             buffer[i] = 0;
         }
     }
+
+    public static int PadToMultiple(int value, int multiple)
+    {
+        var remainder = value % multiple;
+        if (remainder == 0)
+        {
+            return value;
+        }
+
+        return value + multiple - remainder;
+    }
 }

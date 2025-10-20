@@ -71,8 +71,8 @@ public class InputPropertiesUpdateCommand : IDeserializedCommand
         return new InputPropertiesUpdateCommand
         {
             InputId = rawCommand.ReadUInt16BigEndian(0),
-            LongName = rawCommand.ReadNullTerminatedString(2, 20),
-            ShortName = rawCommand.ReadNullTerminatedString(22, 4),
+            LongName = rawCommand.ReadString(2, 20),
+            ShortName = rawCommand.ReadString(22, 4),
             AreNamesDefault = rawCommand.ReadBoolean(26),
             ExternalPorts = portComponents.Length == 0 ? null : portComponents,
             ExternalPortType = (ExternalPortType)rawCommand.ReadUInt16BigEndian(30),

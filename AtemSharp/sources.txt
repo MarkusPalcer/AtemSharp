@@ -15,7 +15,6 @@ src\commands\Fairlight\FairlightMixerSourceLevelsCommand.ts - FMLv
 src\commands\Fairlight\FairlightMixerSourceResetPeakLevelsCommand.ts - RFIP
 src\commands\Macro\MacroActionCommand.ts - MAct
 src\commands\Macro\MacroAddTimedPauseCommand.ts - MSlp
-src\commands\Macro\MacroPropertiesCommand.ts - MPrp, CMPr
 src\commands\Macro\MacroRecordingStatusCommand.ts - MRcS
 src\commands\Media\MediaPlayerStatusCommand.ts - SCPS, RCPS
 src\commands\Media\MediaPoolCaptureStillCommand.ts - Capt

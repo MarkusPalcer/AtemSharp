@@ -38,5 +38,7 @@ public class MacroPoolConfigCommand : IDeserializedCommand
         {
             MacroCount = MacroCount
         };
+
+        state.Macros.Macros = AtemStateUtil.CreateArray<State.Macro>(MacroCount).ForEachWithIndex((macro, i) => macro.Id = (ushort)i);
     }
 }

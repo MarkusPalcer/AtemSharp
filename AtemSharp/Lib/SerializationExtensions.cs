@@ -109,4 +109,10 @@ public static class SerializationExtensions
 
 
     public static void WriteBoolean(this byte[] self, bool value, int offset) => WriteUInt8(self, (byte)(value ? 1 : 0), offset);
+
+    public static void WriteString(this byte[] self, string value, int offset)
+    {
+        var bytes = System.Text.Encoding.UTF8.GetBytes(value);
+        Array.Copy(bytes, 0, self, offset, bytes.Length);
+    }
 }

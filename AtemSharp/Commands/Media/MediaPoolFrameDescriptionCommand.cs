@@ -20,7 +20,7 @@ public class MediaPoolFrameDescriptionCommand : IDeserializedCommand
             FrameIndex = data.ReadUInt16BigEndian(2),
             IsUsed = data.ReadBoolean(4),
             Hash = Convert.ToBase64String(data.Slice(5,16)),
-            FileName = data.ReadNullTerminatedString(24, data.ReadUInt8(23))
+            FileName = data.ReadString(24, data.ReadUInt8(23))
         };
 
     public void ApplyToState(AtemState state)

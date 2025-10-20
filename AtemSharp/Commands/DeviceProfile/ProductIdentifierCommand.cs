@@ -25,7 +25,7 @@ public class ProductIdentifierCommand : IDeserializedCommand
     /// </summary>
     public static ProductIdentifierCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        var productIdentifier = rawCommand.ReadNullTerminatedString(0, 40);
+        var productIdentifier = rawCommand.ReadString(0, 40);
 
         // Read model as single byte
         var model = (Model)rawCommand.ReadUInt8(40);

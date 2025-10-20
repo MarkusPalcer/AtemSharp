@@ -122,7 +122,7 @@ public static class SpanExtensions
         BinaryPrimitives.WriteInt32BigEndian(span.Slice(offset, sizeof(int)), value);
     }
 
-    public static string ReadNullTerminatedString(this ReadOnlySpan<byte> span, int offset, int maxLength)
+    public static string ReadString(this ReadOnlySpan<byte> span, int offset, int maxLength)
     {
         var subSpan = span.Slice(offset, maxLength);
 
