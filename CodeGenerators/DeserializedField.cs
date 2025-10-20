@@ -2,11 +2,12 @@ namespace CodeGenerators
 {
     public class DeserializedField
     {
-        public DeserializedField(string name, string propertyName, string type, uint offset, string? deserializeExpression = null)
+        public DeserializedField(string name, string propertyName, string type, uint offset, string documentationComment, string? deserializeExpression)
         {
             Name = name;
             Type = type;
             Offset = offset;
+            DocumentationComment = documentationComment;
             PropertyName = propertyName;
             DeserializeExpression = deserializeExpression;
         }
@@ -34,11 +35,11 @@ namespace CodeGenerators
         /// </summary>
         public uint Offset { get; set; }
 
-
         /// <summary>
-    /// The C# expression to use for deserializing this field
-    /// </summary>
-    public string? DeserializeExpression { get; set; }
+        /// The C# expression to use for deserializing this field
+        /// </summary>
+        public string? DeserializeExpression { get; set; }
 
+        public string DocumentationComment { get; set; }
     }
 }

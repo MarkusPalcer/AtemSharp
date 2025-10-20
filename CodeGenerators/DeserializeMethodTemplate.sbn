@@ -8,6 +8,7 @@ namespace {{namespace}};
 public partial class {{className}}
 {
     {% for field in deserializedFields %}
+    {{field.DocumentationComment}}
     public {{field.Type}} {{field.PropertyName}}
     {
         get => {{field.Name}};

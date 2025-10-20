@@ -12,6 +12,44 @@ namespace CodeGenerators
     [Generator]
     public class DeserializedCommandGenerator : IIncrementalGenerator
     {
+        /// <summary>
+        /// Gets the MSDoc-comment (XML documentation comment) of a field as a multiline string.
+        /// Returns an empty string if no MSDoc-comment exists.
+        /// </summary>
+        /// <param name="field">The field symbol to get the documentation for.</param>
+        /// <returns>The MSDoc-comment as a multiline string, or empty if none exists.</returns>
+        private static string GetFieldMsDocComment(IFieldSymbol field)
+        {
+            var xml = field.GetDocumentationCommentXml();
+            if (string.IsNullOrWhiteSpace(xml))
+                return string.Empty;
+
+            try
+            {
+                var doc = System.Xml.Linq.XDocument.Parse(xml);
+                var member = doc.Root;
+                if (member == null || member.Name != "member")
+                    return string.Empty;
+
+                // Get the inner XML (everything inside <member>...</member>)
+                var innerXml = string.Concat(member.Nodes().Select(n => n.ToString()));
+                var lines = innerXml.Replace("\r\n", "\n").Replace("\r", "\n").Split('\n');
+                var sb = new StringBuilder();
+                foreach (var line in lines)
+                {
+                    var trimmed = line.TrimEnd();
+                    if (trimmed.Length > 0)
+                        sb.AppendLine($"/// {trimmed}");
+                }
+                return sb.ToString();
+            }
+            catch
+            {
+                // Fallback: return nothing if XML is malformed
+                return string.Empty;
+            }
+        }
+
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
             var classDeclarations = context.SyntaxProvider
@@ -92,7 +130,7 @@ namespace CodeGenerators
                             { "namespace", ns },
                             { "className", className },
                             { "deserializedFields", fields },
-                            { "internalDeserialization", HasInternalDeserializationMethod(classDecl) ? "result.DeserializeInternal(rawCommand, protocolVersion);": string.Empty } 
+                            { "internalDeserialization", HasInternalDeserializationMethod(classDecl) ? "result.DeserializeInternal(rawCommand, protocolVersion);": string.Empty } ,
                         });
                     }
                     catch (Exception ex)
@@ -151,6 +189,7 @@ namespace CodeGenerators
                 propertyName,
                 fieldType,
                 offset,
+                GetFieldMsDocComment(f),
                 GenerateDeserializationExpression(isDouble, scalingFactor, extensionMethod, offset, fieldType, isEnum)
             );
         }
