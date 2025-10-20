@@ -162,14 +162,17 @@ public class TopologyCommand : IDeserializedCommand
         state.Media.Players = AtemStateUtil.CreateArray<MediaPlayer>(MediaPlayers);
         state.Media.Players.ForEachWithIndex((player, index) => player.Id = (byte)index);
 
-        // Create multiviewer info if multiviewers are available
+        state.Info.MultiViewer.Count = Multiviewers;
         if (Multiviewers > 0)
         {
-            state.Info.MultiViewer = new MultiViewerInfo
-            {
-                Count = Multiviewers,
-                WindowCount = 10  // Default as per TypeScript implementation
-            };
+            state.Info.MultiViewer.WindowCount = 10;
+        } else if (Multiviewers < 0)
+        {
+            state.Info.MultiViewer.WindowCount = -1;
+        }
+        else
+        {
+            state.Info.MultiViewer.WindowCount = 0;
         }
     }
 }

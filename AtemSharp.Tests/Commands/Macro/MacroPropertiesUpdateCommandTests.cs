@@ -9,8 +9,8 @@ public class MacroPropertiesUpdateCommandTests : DeserializedCommandTestBase<Mac
         public ushort Index { get; set; }
         public bool IsUsed { get; set; }
         public bool HasUnsupportedOps { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
     }
 
     protected override void CompareCommandProperties(MacroPropertiesUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)

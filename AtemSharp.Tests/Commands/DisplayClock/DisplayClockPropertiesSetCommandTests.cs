@@ -45,7 +45,7 @@ public class DisplayClockPropertiesSetCommandTests : SerializedCommandTestBase<D
     {
         return new AtemState
         {
-            DisplayClock = new DisplayClockState
+            DisplayClock = new AtemSharp.State.DisplayClock
             {
                 Enabled = false,
                 Size = 0,
@@ -151,7 +151,7 @@ public class DisplayClockPropertiesSetCommandTests : SerializedCommandTestBase<D
     {
         // Create a new state with default display clock values
         var state = new AtemState();
-        state.DisplayClock = new DisplayClockState
+        state.DisplayClock = new AtemSharp.State.DisplayClock
         {
             Enabled = false,
             Size = 0,

@@ -9,7 +9,7 @@ namespace AtemSharp.State;
 /// Other than in the TypeScript original, the properties are directly on this class,
 /// not in a nested Properties object
 /// </remarks>
-public class DisplayClockState
+public class DisplayClock
 {
     /// <summary>
     /// Whether the display clock is enabled

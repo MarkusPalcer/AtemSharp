@@ -1,4 +1,5 @@
 using AtemSharp.State.Audio;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.State;
 
@@ -18,14 +19,9 @@ public class AtemState
     public AudioState? Audio { get; set; }
 
     /// <summary>
-    /// Multiviewer configuration and capabilities
-    /// </summary>
-    public MultiViewerInfo? MultiViewer { get; set; }
-
-    /// <summary>
     /// Display clock state and configuration
     /// </summary>
-    public DisplayClockState? DisplayClock { get; set; }
+    public DisplayClock? DisplayClock { get; set; }
 
     /// <summary>
     /// Video state including downstream keyers, mix effects, etc.

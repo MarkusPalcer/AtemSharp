@@ -37,7 +37,7 @@ public class DisplayClockCurrentTimeCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        state.DisplayClock ??= new DisplayClockState();
+        state.DisplayClock ??= new State.DisplayClock();
 
         state.DisplayClock.CurrentTime = Time;
     }

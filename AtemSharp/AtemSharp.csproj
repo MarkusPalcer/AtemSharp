@@ -18,6 +18,7 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="AtemSharp.Tests" />
+        <ProjectReference Include="..\CodeGenerators\CodeGenerators.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -25,4 +26,11 @@
         <PackageReference Include="System.Reactive" Version="6.0.1" />
     </ItemGroup>
 
+    <ItemGroup>
+        <Analyzer Include="..\CodeGenerators\bin\$(Configuration)\netstandard2.0\CodeGenerators.dll" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="State\Recording\" />
+    </ItemGroup>
 </Project>

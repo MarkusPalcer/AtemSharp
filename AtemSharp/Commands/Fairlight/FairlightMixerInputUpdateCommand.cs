@@ -13,9 +13,9 @@ public class FairlightMixerInputUpdateCommand : IDeserializedCommand
     public ushort Id { get; set; }
     public FairlightInputType InputType { get; set; }
     public ExternalPortType ExternalPortType { get; set; }
-    public FairlightInputConfiguration[] SupportedConfigurations { get; set; }
+    public FairlightInputConfiguration[] SupportedConfigurations { get; set; } = [];
     public FairlightInputConfiguration ActiveConfiguration { get; set; }
-    public FairlightAnalogInputLevel[] SupportedInputLevels { get; set; }
+    public FairlightAnalogInputLevel[] SupportedInputLevels { get; set; } = [];
     public FairlightAnalogInputLevel ActiveInputLevel { get; set; }
 
     public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)

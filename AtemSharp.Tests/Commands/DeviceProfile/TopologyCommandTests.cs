@@ -158,8 +158,8 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
         Assert.That(state.Info.Capabilities.CameraControl, Is.True);
         Assert.That(state.Info.Capabilities.AdvancedChromaKeyers, Is.False);
         Assert.That(state.Info.Capabilities.OnlyConfigurableOutputs, Is.False);
-        Assert.That(state.Info.MultiViewer.Count, Is.EqualTo(0));
-        Assert.That(state.Info.MultiViewer.WindowCount, Is.EqualTo(0));
+        Assert.That(state.Info.MultiViewer.Count, Is.EqualTo(-1));
+        Assert.That(state.Info.MultiViewer.WindowCount, Is.EqualTo(-1));
     }
 
     [Test]

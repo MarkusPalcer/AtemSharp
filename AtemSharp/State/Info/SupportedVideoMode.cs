@@ -1,6 +1,6 @@
 using AtemSharp.Enums;
 
-namespace AtemSharp.State;
+namespace AtemSharp.State.Info;
 
 /// <summary>
 /// Information about a supported video mode on the ATEM device

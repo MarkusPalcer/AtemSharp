@@ -1,5 +1,6 @@
 using AtemSharp.Enums;
 using AtemSharp.State.Audio.Fairlight;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.State;
 
@@ -28,6 +29,7 @@ public class DeviceInfo
     /// </summary>
     public bool[] Power { get; set; } = [];
 
+    // TODO: Unify - you either have the classic or the fairlight mixer, not both
     /// <summary>
     /// Audio mixer configuration and capabilities
     /// </summary>

@@ -1,5 +1,6 @@
 using AtemSharp.Commands.DeviceProfile;
 using AtemSharp.State;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
@@ -54,9 +55,8 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 		command.ApplyToState(state);
 
 		// Assert
-		Assert.That(state.MultiViewer, Is.Not.Null);
-		Assert.That(state.MultiViewer.Count, Is.EqualTo(2));
-		Assert.That(state.MultiViewer.WindowCount, Is.EqualTo(10));
+		Assert.That(state.Info.MultiViewer.Count, Is.EqualTo(2));
+		Assert.That(state.Info.MultiViewer.WindowCount, Is.EqualTo(10));
 	}
 
 	[Test]
@@ -65,11 +65,13 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 		// Arrange
 		var state = new AtemState
 		{
-			MultiViewer = new MultiViewerInfo
-			{
-				Count = 1,
-				WindowCount = 8
-			}
+            Info = {
+			    MultiViewer =
+			    {
+				    Count = 1,
+				    WindowCount = 8
+			    }
+            }
 		};
 
 		var command = new MultiviewerConfigCommand
@@ -82,9 +84,8 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 		command.ApplyToState(state);
 
 		// Assert
-		Assert.That(state.MultiViewer, Is.Not.Null);
-		Assert.That(state.MultiViewer.Count, Is.EqualTo(4));
-		Assert.That(state.MultiViewer.WindowCount, Is.EqualTo(16));
+		Assert.That(state.Info.MultiViewer.Count, Is.EqualTo(4));
+		Assert.That(state.Info.MultiViewer.WindowCount, Is.EqualTo(16));
 	}
 
 	[Test]
@@ -102,9 +103,8 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 		command.ApplyToState(state);
 
 		// Assert
-		Assert.That(state.MultiViewer, Is.Not.Null);
-		Assert.That(state.MultiViewer.Count, Is.EqualTo(0));
-		Assert.That(state.MultiViewer.WindowCount, Is.EqualTo(0));
+		Assert.That(state.Info.MultiViewer.Count, Is.EqualTo(0));
+		Assert.That(state.Info.MultiViewer.WindowCount, Is.EqualTo(0));
 	}
 
 	[Test]
@@ -122,9 +122,8 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 		command.ApplyToState(state);
 
 		// Assert
-		Assert.That(state.MultiViewer, Is.Not.Null);
-		Assert.That(state.MultiViewer.Count, Is.EqualTo(255));
-		Assert.That(state.MultiViewer.WindowCount, Is.EqualTo(255));
+		Assert.That(state.Info.MultiViewer.Count, Is.EqualTo(255));
+		Assert.That(state.Info.MultiViewer.WindowCount, Is.EqualTo(255));
 	}
 
 	[Test]
@@ -142,9 +141,8 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 		command.ApplyToState(state);
 
 		// Assert
-		Assert.That(state.MultiViewer, Is.Not.Null);
-		Assert.That(state.MultiViewer.Count, Is.EqualTo(1));
-		Assert.That(state.MultiViewer.WindowCount, Is.EqualTo(10));
+		Assert.That(state.Info.MultiViewer.Count, Is.EqualTo(1));
+		Assert.That(state.Info.MultiViewer.WindowCount, Is.EqualTo(10));
 	}
 
 	[Test]
@@ -165,15 +163,13 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 		{
 			command.ApplyToState(state);
 
-			Assert.That(state.MultiViewer, Is.Not.Null);
-			Assert.That(state.MultiViewer.Count, Is.EqualTo(command.Count));
-			Assert.That(state.MultiViewer.WindowCount, Is.EqualTo(command.WindowCount));
+			Assert.That(state.Info.MultiViewer.Count, Is.EqualTo(command.Count));
+			Assert.That(state.Info.MultiViewer.WindowCount, Is.EqualTo(command.WindowCount));
 		}
 
 		// Final state should match the last command
-		Assert.That(state.MultiViewer, Is.Not.Null);
-		Assert.That(state.MultiViewer.Count, Is.EqualTo(4));
-		Assert.That(state.MultiViewer.WindowCount, Is.EqualTo(16));
+		Assert.That(state.Info.MultiViewer.Count, Is.EqualTo(4));
+		Assert.That(state.Info.MultiViewer.WindowCount, Is.EqualTo(16));
 	}
 
 	[Test]
@@ -199,9 +195,8 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 		secondCommand.ApplyToState(state);
 
 		// Assert
-		Assert.That(state.MultiViewer, Is.Not.Null);
-		Assert.That(state.MultiViewer.Count, Is.EqualTo(2)); // Should have the latest value
-		Assert.That(state.MultiViewer.WindowCount, Is.EqualTo(16)); // Should have the latest value
+		Assert.That(state.Info.MultiViewer.Count, Is.EqualTo(2)); // Should have the latest value
+		Assert.That(state.Info.MultiViewer.WindowCount, Is.EqualTo(16)); // Should have the latest value
 	}
 
 	[Test]
@@ -230,9 +225,8 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
 			command.ApplyToState(state);
 
 			// Assert
-			Assert.That(state.MultiViewer, Is.Not.Null, $"Failed for {testCase.Description}");
-			Assert.That(state.MultiViewer.Count, Is.EqualTo(testCase.Count), $"Count failed for {testCase.Description}");
-			Assert.That(state.MultiViewer.WindowCount, Is.EqualTo(testCase.WindowCount), $"WindowCount failed for {testCase.Description}");
+			Assert.That(state.Info.MultiViewer.Count, Is.EqualTo(testCase.Count), $"Count failed for {testCase.Description}");
+			Assert.That(state.Info.MultiViewer.WindowCount, Is.EqualTo(testCase.WindowCount), $"WindowCount failed for {testCase.Description}");
 		}
 	}
 }

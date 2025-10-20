@@ -9,8 +9,8 @@ public class MediaPoolFrameDescriptionCommandTests : DeserializedCommandTestBase
         public int Bank { get; set; }
         public int Index { get; set; }
         public bool IsUsed { get; set; }
-        public string Hash { get; set; }
-        public string Filename { get; set; }
+        public string Hash { get; set; } = string.Empty;
+        public string Filename { get; set; } = string.Empty;
     }
 
     protected override void CompareCommandProperties(MediaPoolFrameDescriptionCommand actualCommand, CommandData expectedData, TestCaseData testCase)
