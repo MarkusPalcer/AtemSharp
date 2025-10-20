@@ -17,10 +17,12 @@ public partial class {{className}}
     {% endfor %}
     public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        return new {{className}} {
+        var result = new {{className}} {
             {% for field in deserializedFields %}
             {{field.PropertyName}} = {{field.DeserializeExpression}},
             {% endfor %}
         };
+        {{internalDeserialization}}
+        return result;
     }
 }

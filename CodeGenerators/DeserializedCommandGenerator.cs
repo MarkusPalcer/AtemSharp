@@ -91,7 +91,8 @@ namespace CodeGenerators
                         {
                             { "namespace", ns },
                             { "className", className },
-                            { "deserializedFields", fields }
+                            { "deserializedFields", fields },
+                            { "internalDeserialization", HasInternalDeserializationMethod(classDecl) ? "result.DeserializeInternal(rawCommand, protocolVersion);": string.Empty } 
                         });
                     }
                     catch (Exception ex)
@@ -103,6 +104,30 @@ namespace CodeGenerators
                     spc.AddSource($"{className}.g.cs", SourceText.From(source, Encoding.UTF8));
                 }
             });
+        }
+
+        private static bool HasInternalDeserializationMethod(ClassDeclarationSyntax classDecl)
+        {
+            // Look for: void DeserializeInternal(ReadOnlySpan<byte>, ProtocolVersion)
+            foreach (var member in classDecl.Members)
+            {
+                if (member is MethodDeclarationSyntax method)
+                {
+                    if (method.Identifier.Text == "DeserializeInternal" &&
+                        method.Modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword) || m.IsKind(SyntaxKind.PrivateKeyword) || m.IsKind(SyntaxKind.InternalKeyword)) &&
+                        method.ReturnType is PredefinedTypeSyntax returnType && returnType.Keyword.IsKind(SyntaxKind.VoidKeyword) &&
+                        method.ParameterList.Parameters.Count == 2)
+                    {
+                        var param1 = method.ParameterList.Parameters[0];
+                        var param2 = method.ParameterList.Parameters[1];
+                        if (param1.Type?.ToString() == "ReadOnlySpan<byte>" && param2.Type?.ToString().Contains("ProtocolVersion") == true)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
         private static DeserializedField? ProcessField(IFieldSymbol f, SourceProductionContext spc)
