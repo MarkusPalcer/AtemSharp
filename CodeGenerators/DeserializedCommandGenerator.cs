@@ -15,10 +15,12 @@ namespace CodeGenerators
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
             var classDeclarations = context.SyntaxProvider
-                .CreateSyntaxProvider(
-                    predicate: (node, _) => node is ClassDeclarationSyntax cds && cds.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)),
-                    transform: (ctx, _) => (ClassDeclarationSyntax)ctx.Node)
-                .Where(classDecl => classDecl != null);
+                                           .CreateSyntaxProvider(
+                                                predicate: (node, _) =>
+                                                    node is ClassDeclarationSyntax cds &&
+                                                    cds.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)),
+                                                transform: (ctx, _) => (ClassDeclarationSyntax)ctx.Node)
+                                           .Where(classDecl => classDecl != null);
 
             var compilationAndClasses = context.CompilationProvider.Combine(classDeclarations.Collect());
 
@@ -37,10 +39,10 @@ namespace CodeGenerators
 
                     // Find fields with DeserializedFieldAttribute
                     var fields = symbol.GetMembers()
-                                                         .OfType<IFieldSymbol>()
-                                                         .Where(f => f.GetAttributes().Any(a => a.AttributeClass?.Name == "DeserializedFieldAttribute"))
-                                                         .Select(f => ProcessField(f, spc))
-                                                         .ToArray();
+                                       .OfType<IFieldSymbol>()
+                                       .Where(f => f.GetAttributes().Any(a => a.AttributeClass?.Name == "DeserializedFieldAttribute"))
+                                       .Select(f => ProcessField(f, spc))
+                                       .ToArray();
 
                     if (fields.Contains(null))
                     {
@@ -67,28 +69,16 @@ namespace CodeGenerators
                         }
                         catch (Exception ex)
                         {
-                            var descriptor = new DiagnosticDescriptor(
-                                id: "GEN001",
-                                title: "Template Load Error",
-                                messageFormat: $"Failed to load template: {ex.Message}",
-                                category: "SourceGenerator",
-                                DiagnosticSeverity.Error,
-                                isEnabledByDefault: true
-                            );
-                            spc.ReportDiagnostic(Diagnostic.Create(descriptor, Location.None));
+                            spc.ReportDiagnostic(Diagnostic.Create(
+                                                     DiagnosticDescriptors.TemplateLoadError,
+                                                     Location.None,
+                                                     ex.Message));
                             continue;
                         }
                     }
                     else
                     {
-                        var descriptor = new DiagnosticDescriptor(
-                            id: "GEN002",
-                            title: "Template Not Found",
-                            messageFormat: "Could not find DeserializeMethodTemplate.sbn as an embedded resource.",
-                            category: "SourceGenerator",
-                            DiagnosticSeverity.Error,
-                            isEnabledByDefault: true
-                        );
+                        var descriptor = DiagnosticDescriptors.DeserializedTemplateLoadError;
                         spc.ReportDiagnostic(Diagnostic.Create(descriptor, Location.None));
                         continue;
                     }
@@ -106,15 +96,7 @@ namespace CodeGenerators
                     }
                     catch (Exception ex)
                     {
-                        var descriptor = new DiagnosticDescriptor(
-                            id: "GEN005",
-                            title: "Template Render Error",
-                            messageFormat: $"Exception while rendering template: {ex.Message}",
-                            category: "SourceGenerator",
-                            DiagnosticSeverity.Error,
-                            isEnabledByDefault: true
-                        );
-                        spc.ReportDiagnostic(Diagnostic.Create(descriptor, Location.None));
+                        spc.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.CreateRenderError(ex), Location.None));
                         continue;
                     }
 
@@ -130,23 +112,16 @@ namespace CodeGenerators
             var fieldType = GetFieldType(f, out var isDouble);
             var extensionMethod = GetExtensionMethod(f);
             var scalingFactor = GetScalingFactor(f);
-            var isEnum = f.Type.TypeKind == Microsoft.CodeAnalysis.TypeKind.Enum;
+            var isEnum = f.Type.TypeKind == TypeKind.Enum;
 
             if (extensionMethod is null)
             {
-                var descriptor = new DiagnosticDescriptor(
-                    id: "GEN003",
-                    title: "Missing Span Extension Method",
-                    messageFormat: $"No deserialization-method mapping found for field '{f.Name}' of type '{f.Type.ToDisplayString()}'.",
-                    category: "SourceGenerator",
-                    DiagnosticSeverity.Error,
-                    isEnabledByDefault: true
-                );
+                var descriptor = DiagnosticDescriptors.CreateFieldTypeError(f);
                 spc.ReportDiagnostic(Diagnostic.Create(descriptor, f.Locations.FirstOrDefault() ?? Location.None));
                 return null;
             }
 
-            return  new DeserializedField(
+            return new DeserializedField(
                 f.Name,
                 propertyName,
                 fieldType,
@@ -155,13 +130,16 @@ namespace CodeGenerators
             );
         }
 
-        private static string GenerateDeserializationExpression(bool isDouble, double scalingFactor, string extensionMethod, uint offset, string fieldType, bool isEnum)
+
+        private static string GenerateDeserializationExpression(bool isDouble, double scalingFactor, string extensionMethod, uint offset,
+                                                                string fieldType, bool isEnum)
         {
             string expr;
             if (isDouble)
             {
                 // Always render scalingFactor as a floating-point literal
-                var scalingLiteral = scalingFactor.ToString("0.0#############################", System.Globalization.CultureInfo.InvariantCulture);
+                var scalingLiteral =
+                    scalingFactor.ToString("0.0#############################", System.Globalization.CultureInfo.InvariantCulture);
                 expr = $"rawCommand.{extensionMethod}({offset}) / {scalingLiteral}";
             }
             else
@@ -174,6 +152,7 @@ namespace CodeGenerators
                 // Prepend cast to enum type
                 expr = $"({fieldType})({expr})";
             }
+
             return expr;
         }
 

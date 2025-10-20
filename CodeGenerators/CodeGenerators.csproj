@@ -4,6 +4,8 @@
         <Nullable>enable</Nullable>
         <LangVersion>8.0</LangVersion>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+        <EnableAnalyzerReleaseTracking>false</EnableAnalyzerReleaseTracking>
+        <NoWarn>RS2008</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
