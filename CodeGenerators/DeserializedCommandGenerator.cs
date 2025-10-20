@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -35,111 +36,34 @@ namespace CodeGenerators
                     var className = symbol.Name;
 
                     // Find fields with DeserializedFieldAttribute
-                    var deserializedFieldResults = symbol.GetMembers()
+                    var fields = symbol.GetMembers()
                                                          .OfType<IFieldSymbol>()
                                                          .Where(f => f.GetAttributes().Any(a => a.AttributeClass?.Name == "DeserializedFieldAttribute"))
-                                                         .Select(f => {
-                                                              var attr = f.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "DeserializedFieldAttribute");
-                                                              uint offset = 0;
-                                                              if (attr != null && attr.ConstructorArguments.Length > 0)
-                                                              {
-                                                                  var arg = attr.ConstructorArguments[0];
-                                                                  if (arg.Value is int intVal)
-                                                                      offset = (uint)intVal;
-                                                              }
-                                                              // Derive property name from field name (remove leading underscores, capitalize first letter)
-                                                              var propertyName = f.Name.TrimStart('_');
-                                                              if (!string.IsNullOrEmpty(propertyName) && propertyName.Length > 1)
-                                                                  propertyName = char.ToUpper(propertyName[0]) + propertyName.Substring(1);
-                                                              else if (!string.IsNullOrEmpty(propertyName))
-                                                                  propertyName = propertyName.ToUpper();
-
-                                                              var fieldType = f.Type.ToDisplayString();
-                                                              var isDouble = fieldType == "double" || fieldType == "System.Double";
-
-                                                              var baseMethod = f.GetSerializationMethod();
-                                                              var extensionMethod = baseMethod != null ? $"Read{baseMethod}" : "";
-
-                                                              // Check for ScalingFactorAttribute
-                                                              var scalingFactor = 1.0;
-                                                              var scalingAttr = f.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "ScalingFactorAttribute");
-                                                              if (scalingAttr != null && scalingAttr.ConstructorArguments.Length > 0)
-                                                              {
-                                                                  var arg = scalingAttr.ConstructorArguments[0];
-                                                                  if (arg.Value is double d)
-                                                                      scalingFactor = d;
-                                                                  else if (arg.Value is float fval)
-                                                                      scalingFactor = (double)fval;
-                                                                  else if (arg.Value is int ival)
-                                                                      scalingFactor = (double)ival;
-                                                              }
-
-                                                              string deserializeExpression;
-                                                              if (isDouble || scalingFactor != 1.0)
-                                                              {
-                                                                  // Always render scalingFactor as a floating-point literal
-                                                                  var scalingLiteral = scalingFactor.ToString("0.0#############################", System.Globalization.CultureInfo.InvariantCulture);
-                                                                  deserializeExpression = $"rawCommand.{extensionMethod}({offset}) / {scalingLiteral}";
-                                                              }
-                                                              else
-                                                              {
-                                                                  deserializeExpression = $"rawCommand.{extensionMethod}({offset})";
-                                                              }
-
-                                                              return new {
-                                                                  Field = f,
-                                                                  DeserializedField = new DeserializedField(
-                                                                      f.Name,
-                                                                      propertyName,
-                                                                      fieldType,
-                                                                      offset,
-                                                                      deserializeExpression
-                                                                  ),
-                                                                  ExtensionMethod = extensionMethod
-                                                              };
-                                                          })
+                                                         .Select(f => ProcessField(f, spc))
                                                          .ToArray();
 
-                    // Report error for each field with missing extension method
-                    var hasMissingExtensionMethod = false;
-                    foreach (var result in deserializedFieldResults)
-                    {
-                        if (result.ExtensionMethod == null)
-                        {
-                            hasMissingExtensionMethod = true;
-                            var descriptor = new DiagnosticDescriptor(
-                                id: "GEN003",
-                                title: "Missing Span Extension Method",
-                                messageFormat: $"No SpanExtension method mapping found for field '{result.Field.Name}' of type '{result.Field.Type.ToDisplayString()}'.",
-                                category: "SourceGenerator",
-                                DiagnosticSeverity.Error,
-                                isEnabledByDefault: true
-                            );
-                            spc.ReportDiagnostic(Diagnostic.Create(descriptor, result.Field.Locations.FirstOrDefault() ?? Location.None));
-                        }
-                    }
-                    if (hasMissingExtensionMethod)
+                    if (fields.Contains(null))
                     {
                         // Do not generate code if any field is missing a mapping
                         continue;
                     }
 
-                    var deserializedFields = deserializedFieldResults.Select(r => r.DeserializedField).ToArray();
-
                     // Load template from embedded resource
                     var assembly = typeof(DeserializedCommandGenerator).Assembly;
                     var resourceName = assembly.GetManifestResourceNames()
                                                .FirstOrDefault(n => n.EndsWith("DeserializeMethodTemplate.sbn"));
-                    string? templateText = null;
+                    string? templateText;
                     if (resourceName != null)
                     {
                         try
                         {
-                            using (var stream = assembly.GetManifestResourceStream(resourceName))
-                            using (var reader = new System.IO.StreamReader(stream))
-                            {
-                                templateText = reader.ReadToEnd();
-                            }
+                            using var stream = assembly.GetManifestResourceStream(resourceName);
+                            if (stream == null)
+                                throw new InvalidOperationException("Resource stream is null.");
+
+                            using var reader = new StreamReader(stream);
+
+                            templateText = reader.ReadToEnd();
                         }
                         catch (Exception ex)
                         {
@@ -173,13 +97,12 @@ namespace CodeGenerators
                     string source;
                     try
                     {
-                        var context = new System.Collections.Generic.Dictionary<string, object>
+                        source = ScribanLite.ScribanLite.Render(templateText, new System.Collections.Generic.Dictionary<string, object>
                         {
                             { "namespace", ns },
                             { "className", className },
-                            { "deserializedFields", deserializedFields }
-                        };
-                        source = ScribanLite.ScribanLite.Render(templateText, context);
+                            { "deserializedFields", fields }
+                        });
                     }
                     catch (Exception ex)
                     {
@@ -198,6 +121,111 @@ namespace CodeGenerators
                     spc.AddSource($"{className}.g.cs", SourceText.From(source, Encoding.UTF8));
                 }
             });
+        }
+
+        private static DeserializedField? ProcessField(IFieldSymbol f, SourceProductionContext spc)
+        {
+            var offset = GetOffset(f);
+            var propertyName = GetPropertyName(f);
+            var fieldType = GetFieldType(f, out var isDouble);
+            var extensionMethod = GetExtensionMethod(f);
+            var scalingFactor = GetScalingFactor(f);
+
+            if (extensionMethod is null)
+            {
+                var descriptor = new DiagnosticDescriptor(
+                    id: "GEN003",
+                    title: "Missing Span Extension Method",
+                    messageFormat: $"No SpanExtension method mapping found for field '{f.Name}' of type '{f.Type.ToDisplayString()}'.",
+                    category: "SourceGenerator",
+                    DiagnosticSeverity.Error,
+                    isEnabledByDefault: true
+                );
+                spc.ReportDiagnostic(Diagnostic.Create(descriptor, f.Locations.FirstOrDefault() ?? Location.None));
+                return null;
+            }
+
+            return  new DeserializedField(
+                f.Name,
+                propertyName,
+                fieldType,
+                offset,
+                GenerateDeserializationExpression(isDouble, scalingFactor, extensionMethod, offset)
+            );
+        }
+
+        private static string GenerateDeserializationExpression(bool isDouble, double scalingFactor, string extensionMethod, uint offset)
+        {
+            string deserializeExpression;
+            if (isDouble)
+            {
+                // Always render scalingFactor as a floating-point literal
+                var scalingLiteral = scalingFactor.ToString("0.0#############################", System.Globalization.CultureInfo.InvariantCulture);
+                deserializeExpression = $"rawCommand.{extensionMethod}({offset}) / {scalingLiteral}";
+            }
+            else
+            {
+                deserializeExpression = $"rawCommand.{extensionMethod}({offset})";
+            }
+
+            return deserializeExpression;
+        }
+
+        private static double GetScalingFactor(IFieldSymbol f)
+        {
+            // Check for ScalingFactorAttribute
+            var scalingFactor = 1.0;
+            var scalingAttr = f.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "ScalingFactorAttribute");
+            if (scalingAttr == null || scalingAttr.ConstructorArguments.Length <= 0) return scalingFactor;
+
+            var arg = scalingAttr.ConstructorArguments[0];
+            scalingFactor = arg.Value switch
+            {
+                double value => value,
+                float value => value,
+                int value => value,
+                _ => scalingFactor
+            };
+
+            return scalingFactor;
+        }
+
+        private static string? GetExtensionMethod(IFieldSymbol f)
+        {
+            var baseMethod = f.GetSerializationMethod();
+            return baseMethod != null ? $"Read{baseMethod}" : null;
+        }
+
+        private static string GetFieldType(IFieldSymbol f, out bool isDouble)
+        {
+            var fieldType = f.Type.ToDisplayString();
+            isDouble = fieldType == "double" || fieldType == "System.Double";
+            return fieldType;
+        }
+
+        private static string GetPropertyName(IFieldSymbol f)
+        {
+            // Derive property name from field name (remove leading underscores, capitalize first letter)
+            var propertyName = f.Name.TrimStart('_');
+            if (!string.IsNullOrEmpty(propertyName) && propertyName.Length > 1)
+                propertyName = char.ToUpper(propertyName[0]) + propertyName.Substring(1);
+            else if (!string.IsNullOrEmpty(propertyName))
+                propertyName = propertyName.ToUpper();
+            return propertyName;
+        }
+
+        private static uint GetOffset(IFieldSymbol f)
+        {
+            var attr = f.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "DeserializedFieldAttribute");
+            uint offset = 0;
+            if (attr != null && attr.ConstructorArguments.Length > 0)
+            {
+                var arg = attr.ConstructorArguments[0];
+                if (arg.Value is int intVal)
+                    offset = (uint)intVal;
+            }
+
+            return offset;
         }
     }
 }
