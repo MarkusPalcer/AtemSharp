@@ -2,7 +2,7 @@ using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
-namespace AtemSharp.Commands;
+namespace AtemSharp.Commands.ColorGenerators;
 
 [Command("ColV")]
 public class ColorGeneratorUpdateCommand : IDeserializedCommand

@@ -2,7 +2,7 @@ using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
-namespace AtemSharp.Commands;
+namespace AtemSharp.Commands.Settings;
 
 /// <summary>
 /// Update command for time configuration mode from the ATEM device

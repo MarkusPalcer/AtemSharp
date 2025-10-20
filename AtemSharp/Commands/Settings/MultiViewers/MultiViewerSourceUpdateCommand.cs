@@ -2,7 +2,7 @@ using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
-namespace AtemSharp.Commands.Settings;
+namespace AtemSharp.Commands.Settings.MultiViewers;
 
 /// <summary>
 /// Command received from ATEM device containing MultiViewer window source update

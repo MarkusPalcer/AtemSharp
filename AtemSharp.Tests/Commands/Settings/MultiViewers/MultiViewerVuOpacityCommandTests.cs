@@ -1,30 +1,28 @@
-using AtemSharp.Commands.Settings;
+using AtemSharp.Commands.Settings.MultiViewers;
 using AtemSharp.State;
 
-namespace AtemSharp.Tests.Commands.Settings;
+namespace AtemSharp.Tests.Commands.Settings.MultiViewers;
 
 [TestFixture]
-public class MultiViewerWindowSafeAreaCommandTests : SerializedCommandTestBase<MultiViewerWindowSafeAreaCommand,
-    MultiViewerWindowSafeAreaCommandTests.CommandData>
+public class MultiViewerVuOpacityCommandTests : SerializedCommandTestBase<MultiViewerVuOpacityCommand,
+    MultiViewerVuOpacityCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
-        public int MultiviewIndex { get; set; } // Match TypeScript property name
-        public int WindowIndex { get; set; }
-        public bool SafeAreaEnabled { get; set; }
+        public int MultiviewIndex { get; set; }
+        public int Opacity { get; set; }
     }
 
-    protected override MultiViewerWindowSafeAreaCommand CreateSut(TestCaseData testCase)
+    protected override MultiViewerVuOpacityCommand CreateSut(TestCaseData testCase)
     {
         // Create state with the required MultiViewer
         var state = CreateStateWithMultiViewer(testCase.Command.MultiviewIndex);
 
         // Create command with the MultiViewer ID
-        var command = new MultiViewerWindowSafeAreaCommand(testCase.Command.MultiviewIndex, state);
+        var command = new MultiViewerVuOpacityCommand(testCase.Command.MultiviewIndex, state);
 
         // Set the actual values that should be written
-        command.WindowIndex = testCase.Command.WindowIndex;
-        command.SafeAreaEnabled = testCase.Command.SafeAreaEnabled;
+        command.Opacity = testCase.Command.Opacity;
 
         return command;
     }
@@ -64,7 +62,7 @@ public class MultiViewerWindowSafeAreaCommandTests : SerializedCommandTestBase<M
         var state = new AtemState(); // Empty state
 
         // Act & Assert
-        Assert.Throws<InvalidIdError>(() => _ = new MultiViewerWindowSafeAreaCommand(multiViewerId, state));
+        Assert.Throws<InvalidIdError>(() => _ = new MultiViewerVuOpacityCommand(multiViewerId, state));
     }
 
     [Test]
@@ -75,12 +73,11 @@ public class MultiViewerWindowSafeAreaCommandTests : SerializedCommandTestBase<M
         var state = CreateStateWithMultiViewer(multiViewerId);
 
         // Act
-        var command = new MultiViewerWindowSafeAreaCommand(multiViewerId, state);
+        var command = new MultiViewerVuOpacityCommand(multiViewerId, state);
 
         // Assert
         Assert.That(command.MultiViewerId, Is.EqualTo(multiViewerId));
-        Assert.That(command.WindowIndex, Is.EqualTo(0));
-        Assert.That(command.SafeAreaEnabled, Is.False);
+        Assert.That(command.Opacity, Is.EqualTo(0)); // Default from state
     }
 
     [Test]
@@ -88,33 +85,61 @@ public class MultiViewerWindowSafeAreaCommandTests : SerializedCommandTestBase<M
     {
         // Arrange
         const int multiViewerId = 2;
-        const int windowIndex = 5;
-        const bool safeAreaEnabled = true;
+        const int opacity = 75;
         var state = CreateStateWithMultiViewer(multiViewerId);
 
         // Act
-        var command = new MultiViewerWindowSafeAreaCommand(multiViewerId, windowIndex, safeAreaEnabled, state);
+        var command = new MultiViewerVuOpacityCommand(multiViewerId, opacity, state);
 
         // Assert
         Assert.That(command.MultiViewerId, Is.EqualTo(multiViewerId));
-        Assert.That(command.WindowIndex, Is.EqualTo(windowIndex));
-        Assert.That(command.SafeAreaEnabled, Is.EqualTo(safeAreaEnabled));
+        Assert.That(command.Opacity, Is.EqualTo(opacity));
     }
 
     [Test]
-    public void ApplyToState_WithValidMultiViewer_UpdatesWindow()
+    [TestCase(-1)]
+    [TestCase(101)]
+    public void Opacity_WithInvalidValue_ThrowsArgumentOutOfRangeException(int invalidOpacity)
     {
         // Arrange
         const int multiViewerId = 1;
-        const int windowIndex = 5;
-        const bool safeAreaEnabled = true;
+        var state = CreateStateWithMultiViewer(multiViewerId);
+        var command = new MultiViewerVuOpacityCommand(multiViewerId, state);
+
+        // Act & Assert
+        Assert.Throws<ArgumentOutOfRangeException>(() => command.Opacity = invalidOpacity);
+    }
+
+    [Test]
+    [TestCase(0)]
+    [TestCase(50)]
+    [TestCase(100)]
+    public void Opacity_WithValidValue_SetsProperty(int validOpacity)
+    {
+        // Arrange
+        const int multiViewerId = 1;
+        var state = CreateStateWithMultiViewer(multiViewerId);
+        var command = new MultiViewerVuOpacityCommand(multiViewerId, state);
+
+        // Act
+        command.Opacity = validOpacity;
+
+        // Assert
+        Assert.That(command.Opacity, Is.EqualTo(validOpacity));
+    }
+
+    [Test]
+    public void ApplyToState_WithValidMultiViewer_UpdatesVuOpacity()
+    {
+        // Arrange
+        const int multiViewerId = 1;
+        const int opacity = 85;
 
         var state = CreateStateWithMultiViewer(multiViewerId);
-        var command = new MultiViewerWindowSafeAreaCommand
+        var command = new MultiViewerVuOpacityCommand
         {
             MultiViewerId = multiViewerId,
-            WindowIndex = windowIndex,
-            SafeAreaEnabled = safeAreaEnabled
+            Opacity = opacity
         };
 
         // Act
@@ -122,44 +147,34 @@ public class MultiViewerWindowSafeAreaCommandTests : SerializedCommandTestBase<M
 
         // Assert
         var multiViewer = AtemStateUtil.GetMultiViewer(state, multiViewerId);
-        Assert.That(multiViewer.Windows.ContainsKey(windowIndex), Is.True, "Window should exist");
-
-        var window = multiViewer.Windows[windowIndex];
-        Assert.That(window.SafeTitle, Is.EqualTo(safeAreaEnabled), "SafeTitle should be updated");
+        Assert.That(multiViewer.VuOpacity, Is.EqualTo(opacity), "VuOpacity should be updated");
     }
 
     [Test]
-    public void ApplyToState_WithExistingWindow_PreservesOtherProperties()
+    public void ApplyToState_WithExistingOpacity_OverwritesPreviousValue()
     {
         // Arrange
         const int multiViewerId = 1;
-        const int windowIndex = 3;
-        const bool safeAreaEnabled = false;
+        const int oldOpacity = 50;
+        const int newOpacity = 90;
 
         var state = CreateStateWithMultiViewer(multiViewerId);
         var multiViewer = AtemStateUtil.GetMultiViewer(state, multiViewerId);
 
-        // Pre-populate window with existing properties
-        multiViewer.Windows[windowIndex] = new MultiViewerWindowState
-        {
-            SafeTitle = true,
-            AudioMeter = true
-        };
+        // Pre-populate with existing opacity
+        multiViewer.VuOpacity = oldOpacity;
 
-        var command = new MultiViewerWindowSafeAreaCommand
+        var command = new MultiViewerVuOpacityCommand
         {
             MultiViewerId = multiViewerId,
-            WindowIndex = windowIndex,
-            SafeAreaEnabled = safeAreaEnabled
+            Opacity = newOpacity
         };
 
         // Act
         command.ApplyToState(state);
 
         // Assert
-        var window = multiViewer.Windows[windowIndex];
-        Assert.That(window.SafeTitle, Is.EqualTo(safeAreaEnabled), "SafeTitle should be updated");
-        Assert.That(window.AudioMeter, Is.True, "AudioMeter should be preserved");
+        Assert.That(multiViewer.VuOpacity, Is.EqualTo(newOpacity), "VuOpacity should be updated to new value");
     }
 
     [Test]
@@ -168,11 +183,10 @@ public class MultiViewerWindowSafeAreaCommandTests : SerializedCommandTestBase<M
         // Arrange
         const int multiViewerId = 5; // Not in state
         var state = CreateStateWithMultiViewer(1); // Only has MultiViewer 1
-        var command = new MultiViewerWindowSafeAreaCommand
+        var command = new MultiViewerVuOpacityCommand
         {
             MultiViewerId = multiViewerId,
-            WindowIndex = 0,
-            SafeAreaEnabled = true
+            Opacity = 50
         };
 
         // Act & Assert
@@ -184,11 +198,10 @@ public class MultiViewerWindowSafeAreaCommandTests : SerializedCommandTestBase<M
     {
         // Arrange
         var state = new AtemState(); // Empty state
-        var command = new MultiViewerWindowSafeAreaCommand
+        var command = new MultiViewerVuOpacityCommand
         {
             MultiViewerId = 0,
-            WindowIndex = 0,
-            SafeAreaEnabled = true
+            Opacity = 50
         };
 
         // Act & Assert

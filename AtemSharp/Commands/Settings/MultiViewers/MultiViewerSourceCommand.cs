@@ -2,13 +2,13 @@ using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
-namespace AtemSharp.Commands.Settings;
+namespace AtemSharp.Commands.Settings.MultiViewers;
 
 /// <summary>
-/// Command to enable or disable VU meter display for a specific MultiViewer window
+/// Command to set the video source for a specific MultiViewer window
 /// </summary>
-[Command("VuMS")]
-public class MultiViewerWindowVuMeterCommand : SerializedCommand
+[Command("CMvI")]
+public class MultiViewerSourceCommand : SerializedCommand
 {
     /// <summary>
     /// MultiViewer ID for this command
@@ -21,9 +21,9 @@ public class MultiViewerWindowVuMeterCommand : SerializedCommand
     public int WindowIndex { get; set; }
 
     /// <summary>
-    /// Whether VU meter display should be enabled for this window
+    /// The video source number to assign to this window
     /// </summary>
-    public bool VuEnabled { get; set; }
+    public int Source { get; set; }
 
     /// <summary>
     /// Create command initialized with current state values
@@ -31,7 +31,7 @@ public class MultiViewerWindowVuMeterCommand : SerializedCommand
     /// <param name="multiViewerId">MultiViewer ID (0-based)</param>
     /// <param name="currentState">Current ATEM state</param>
     /// <exception cref="InvalidIdError">Thrown if MultiViewer ID is invalid</exception>
-    public MultiViewerWindowVuMeterCommand(int multiViewerId, AtemState currentState)
+    public MultiViewerSourceCommand(int multiViewerId, AtemState currentState)
     {
         MultiViewerId = multiViewerId;
 
@@ -43,21 +43,21 @@ public class MultiViewerWindowVuMeterCommand : SerializedCommand
 
         // Initialize with defaults
         WindowIndex = 0;
-        VuEnabled = false;
+        Source = 0;
     }
 
     /// <summary>
-    /// Convenience constructor for setting window and VU meter state directly
+    /// Convenience constructor for setting window and source directly
     /// </summary>
     /// <param name="multiViewerId">MultiViewer ID (0-based)</param>
     /// <param name="windowIndex">Window index within the MultiViewer</param>
-    /// <param name="vuEnabled">Whether VU meter should be enabled</param>
+    /// <param name="source">Video source number</param>
     /// <param name="currentState">Current ATEM state</param>
-    public MultiViewerWindowVuMeterCommand(int multiViewerId, int windowIndex, bool vuEnabled, AtemState currentState)
+    public MultiViewerSourceCommand(int multiViewerId, int windowIndex, int source, AtemState currentState) 
         : this(multiViewerId, currentState)
     {
         WindowIndex = windowIndex;
-        VuEnabled = vuEnabled;
+        Source = source;
     }
 
     /// <summary>
@@ -76,11 +76,8 @@ public class MultiViewerWindowVuMeterCommand : SerializedCommand
         // Write window index
         writer.Write((byte)WindowIndex);
         
-        // Write VU meter enabled flag
-        writer.WriteBoolean(VuEnabled);
-        
-        // Pad to 4 bytes total
-        writer.Pad(1);
+        // Write source as big-endian UInt16
+        writer.WriteUInt16BigEndian((ushort)Source);
         
         return memoryStream.ToArray();
     }

@@ -2,7 +2,7 @@ using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
-namespace AtemSharp.Commands.Settings;
+namespace AtemSharp.Commands.Settings.MultiViewers;
 
 /// <summary>
 /// Command to enable or disable safe area display for a specific MultiViewer window

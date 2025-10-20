@@ -1,7 +1,7 @@
-using AtemSharp.Commands;
+using AtemSharp.Commands.Video;
 using AtemSharp.State;
 
-namespace AtemSharp.Tests.Commands;
+namespace AtemSharp.Tests.Commands.Video;
 
 [TestFixture]
 public class AuxSourceCommandTests : SerializedCommandTestBase<AuxSourceCommand,
@@ -17,13 +17,13 @@ public class AuxSourceCommandTests : SerializedCommandTestBase<AuxSourceCommand,
     {
         // Create state with the required auxiliary output
         var state = CreateStateWithAuxiliary(testCase.Command.Id, testCase.Command.Source);
-        
+
         // Create command with the auxiliary ID
         var command = new AuxSourceCommand(testCase.Command.Id, state);
 
         // Set the actual source value that should be written
         command.Source = testCase.Command.Source;
-        
+
         return command;
     }
 
@@ -93,7 +93,7 @@ public class AuxSourceCommandTests : SerializedCommandTestBase<AuxSourceCommand,
         const int auxId = 0;
         var state = CreateStateWithAuxiliary(auxId, 100);
         var command = new AuxSourceCommand(auxId, state);
-        
+
         // Reset flag after constructor
         command.Flag = 0;
 

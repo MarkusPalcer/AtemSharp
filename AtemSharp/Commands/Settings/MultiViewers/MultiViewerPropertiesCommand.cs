@@ -2,7 +2,7 @@ using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
-namespace AtemSharp.Commands.Settings;
+namespace AtemSharp.Commands.Settings.MultiViewers;
 
 /// <summary>
 /// Command to set MultiViewer properties (layout and program/preview swap)
@@ -81,19 +81,19 @@ public class MultiViewerPropertiesCommand : SerializedCommand
     {
         using var memoryStream = new MemoryStream(4);
         using var writer = new BinaryWriter(memoryStream);
-        
+
         // Write flag as single byte (matching TypeScript pattern)
         writer.Write((byte)Flag);
-        
+
         // Write MultiViewer ID
         writer.Write((byte)MultiViewerId);
-        
+
         // Write layout
         writer.Write((byte)Layout);
-        
+
         // Write program/preview swapped flag
         writer.WriteBoolean(ProgramPreviewSwapped);
-        
+
         return memoryStream.ToArray();
     }
 }

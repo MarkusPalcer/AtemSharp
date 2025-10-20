@@ -1,7 +1,7 @@
-using AtemSharp.Commands;
+using AtemSharp.Commands.Video;
 using AtemSharp.State;
 
-namespace AtemSharp.Tests.Commands;
+namespace AtemSharp.Tests.Commands.Video;
 
 [TestFixture]
 public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSourceUpdateCommand,

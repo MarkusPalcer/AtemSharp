@@ -2,7 +2,7 @@ using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
-namespace AtemSharp.Commands;
+namespace AtemSharp.Commands.Video;
 
 /// <summary>
 /// Command received from ATEM device containing auxiliary source update

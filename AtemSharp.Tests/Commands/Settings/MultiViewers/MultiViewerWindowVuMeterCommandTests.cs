@@ -1,7 +1,7 @@
-using AtemSharp.Commands.Settings;
+using AtemSharp.Commands.Settings.MultiViewers;
 using AtemSharp.State;
 
-namespace AtemSharp.Tests.Commands.Settings;
+namespace AtemSharp.Tests.Commands.Settings.MultiViewers;
 
 [TestFixture]
 public class MultiViewerWindowVuMeterCommandTests : SerializedCommandTestBase<MultiViewerWindowVuMeterCommand,

@@ -2,7 +2,7 @@ using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
-namespace AtemSharp.Commands;
+namespace AtemSharp.Commands.Settings;
 
 /// <summary>
 /// Command to set the time configuration mode for the ATEM device
@@ -36,11 +36,11 @@ public class TimeConfigCommand : SerializedCommand
     {
         using var memoryStream = new MemoryStream(4);
         using var writer = new BinaryWriter(memoryStream);
-        
+
         // Write the mode as a single byte
         writer.Write((byte)Mode);
         writer.Pad(3); // Pad to 4-byte total length to match TypeScript buffer size
-        
+
         return memoryStream.ToArray();
     }
 }

@@ -1,7 +1,7 @@
-using AtemSharp.Commands;
+using AtemSharp.Commands.ColorGenerators;
 using AtemSharp.State;
 
-namespace AtemSharp.Tests.Commands;
+namespace AtemSharp.Tests.Commands.ColorGenerators;
 
 public class ColorGeneratorCommandTests : SerializedCommandTestBase<ColorGeneratorCommand, ColorGeneratorCommandTests.CommandData>
 {

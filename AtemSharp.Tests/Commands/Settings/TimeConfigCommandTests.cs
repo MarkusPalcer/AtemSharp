@@ -1,8 +1,8 @@
-using AtemSharp.Commands;
+using AtemSharp.Commands.Settings;
 using AtemSharp.Enums;
 using AtemSharp.State;
 
-namespace AtemSharp.Tests.Commands;
+namespace AtemSharp.Tests.Commands.Settings;
 
 [TestFixture]
 public class TimeConfigCommandTests : SerializedCommandTestBase<TimeConfigCommand, TimeConfigCommandTests.CommandData>
