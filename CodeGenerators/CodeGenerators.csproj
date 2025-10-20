@@ -8,10 +8,13 @@
         <NoWarn>RS2008</NoWarn>
     </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0"/>
-    </ItemGroup>
 
+    <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.8.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.8.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Features" Version="4.8.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.8.0" />
+    </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Include="DeserializeMethodTemplate.sbn" />
