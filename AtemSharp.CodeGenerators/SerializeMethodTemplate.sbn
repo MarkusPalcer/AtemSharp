@@ -1,0 +1,27 @@
+using System;
+using AtemSharp;
+using AtemSharp.Enums;
+using AtemSharp.Lib;
+using static AtemSharp.Lib.SerializationExtensions;
+
+namespace {{namespace}};
+
+public partial class {{className}}
+{
+{% for field in serializedFields %}
+{{field.PropertyCode}}
+{% endfor %}
+
+    public override byte[] Serialize(ProtocolVersion version) {
+        var buffer = new byte[{{bufferSize}}];
+        buffer.WriteUInt8((byte)this.Flag, 0);
+
+        {% for field in serializedFields %}
+        {{field.SerializationCode}}
+        {% endfor %}
+
+        {{internalSerialization}}
+
+        return buffer;
+    }
+}

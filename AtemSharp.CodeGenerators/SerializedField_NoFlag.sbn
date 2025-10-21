@@ -1,0 +1,8 @@
+    public {{fieldType}} {{propertyName}}
+    {
+        get => {{fieldName}};
+        set {
+            {{validation}}
+            {{fieldName}} = value;
+        }
+    }

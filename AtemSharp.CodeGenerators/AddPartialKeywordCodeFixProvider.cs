@@ -8,7 +8,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace CodeGenerators
+namespace AtemSharp.CodeGenerators
 {
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(AddPartialKeywordCodeFixProvider)), Shared]
     public class AddPartialKeywordCodeFixProvider : CodeFixProvider

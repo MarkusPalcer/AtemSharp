@@ -1,0 +1,1 @@
+buffer.Write{{extensionMethod}}(({{extensionMethodType}}){{customScalingFunction}}({{fieldName}} {{scalingFactor}}), {{offset}});

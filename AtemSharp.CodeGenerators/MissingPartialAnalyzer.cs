@@ -4,12 +4,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace CodeGenerators
+namespace AtemSharp.CodeGenerators
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class DeserializedFieldPartialAnalyzer : DiagnosticAnalyzer
+    public class MissingPartialAnalyzer : DiagnosticAnalyzer
     {
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(DiagnosticDescriptors.DeserializedFieldPartialRule);
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(DiagnosticDescriptors.CodeGenClassMustBePartial);
 
         public override void Initialize(AnalysisContext context)
         {
@@ -36,9 +36,9 @@ namespace CodeGenerators
                             continue;
                         foreach (var attr in symbol.GetAttributes())
                         {
-                            if (attr.AttributeClass?.Name == "DeserializedFieldAttribute")
+                            if (attr.AttributeClass?.Name == "DeserializedFieldAttribute" || attr.AttributeClass?.Name == "SerializedFieldAttribute")
                             {
-                                var diagnostic = Diagnostic.Create(DiagnosticDescriptors.DeserializedFieldPartialRule, classDecl.Identifier.GetLocation(), classDecl.Identifier.Text);
+                                var diagnostic = Diagnostic.Create(DiagnosticDescriptors.CodeGenClassMustBePartial, classDecl.Identifier.GetLocation(), classDecl.Identifier.Text);
                                 context.ReportDiagnostic(diagnostic);
                                 return;
                             }

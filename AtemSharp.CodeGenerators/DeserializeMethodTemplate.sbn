@@ -8,21 +8,16 @@ namespace {{namespace}};
 public partial class {{className}}
 {
     {% for field in deserializedFields %}
-    {{field.DocumentationComment}}
-    public {{field.Type}} {{field.PropertyName}}
-    {
-        get => {{field.Name}};
-        internal set => {{field.Name}} = value;
-    }
-
+    {{field.PropertyCode}}
     {% endfor %}
     public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
         var result = new {{className}} {
             {% for field in deserializedFields %}
-            {{field.PropertyName}} = {{field.DeserializeExpression}},
+            {{field.DeserializationCode}}
             {% endfor %}
         };
+
         {{internalDeserialization}}
         return result;
     }

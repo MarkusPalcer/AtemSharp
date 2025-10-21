@@ -1,0 +1,10 @@
+    {{msdoc}}
+    public {{fieldType}} {{propertyName}}
+    {
+        get => {{fieldName}};
+        set {
+            {{validation}}
+            {{fieldName}} = value;
+            Flag |= 1 << {{flagBit}};
+        }
+    }
