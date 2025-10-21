@@ -1,4 +1,4 @@
-namespace AtemSharp.CodeGenerators
+namespace AtemSharp.CodeGenerators.Deserialization
 {
     public class DeserializedField
     {

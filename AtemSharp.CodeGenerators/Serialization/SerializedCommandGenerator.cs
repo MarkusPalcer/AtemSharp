@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-namespace AtemSharp.CodeGenerators
+namespace AtemSharp.CodeGenerators.Serialization
 {
     [Generator]
     public class SerializedCommandGenerator : IIncrementalGenerator
@@ -49,7 +49,7 @@ namespace AtemSharp.CodeGenerators
 
             if (propertyTemplate is null) return null;
 
-            var propertyCode = ScribanLite.ScribanLite.Render(propertyTemplate, new System.Collections.Generic.Dictionary<string, object>
+            var propertyCode = ScribanLite.Render(propertyTemplate, new System.Collections.Generic.Dictionary<string, object>
             {
                 { "propertyName", propertyName },
                 { "fieldName", f.Name },
@@ -66,17 +66,17 @@ namespace AtemSharp.CodeGenerators
                 Helpers.GetScalingFactor(f).ToString("0.0#############################", System.Globalization.CultureInfo.InvariantCulture);
 
 
-            var serializationCode = ScribanLite.ScribanLite.Render(serializationTemplate,
-                                                                   new System.Collections.Generic.Dictionary<string, object>
-                                                                   {
-                                                                       { "extensionMethod", extensionMethod },
-                                                                       { "extensionMethodType", extensionMethodType },
-                                                                       { "fieldName", f.Name },
-                                                                       { "scaling", fieldType },
-                                                                       { "offset", offset },
-                                                                       { "scalingFactor", isDouble ? $"* {scalingLiteral}" : string.Empty },
-                                                                       { "customScalingFunction", Helpers.GetAttributeStringValue(f, "CustomScalingAttribute") ?? string.Empty }
-                                                                   });
+            var serializationCode = ScribanLite.Render(serializationTemplate,
+                                                       new System.Collections.Generic.Dictionary<string, object>
+                                                       {
+                                                           { "extensionMethod", extensionMethod },
+                                                           { "extensionMethodType", extensionMethodType },
+                                                           { "fieldName", f.Name },
+                                                           { "scaling", fieldType },
+                                                           { "offset", offset },
+                                                           { "scalingFactor", isDouble ? $"* {scalingLiteral}" : string.Empty },
+                                                           { "customScalingFunction", Helpers.GetAttributeStringValue(f, "CustomScalingAttribute") ?? string.Empty }
+                                                       });
 
             return new SerializedField
             {
@@ -173,7 +173,7 @@ namespace AtemSharp.CodeGenerators
                     string source;
                     try
                     {
-                        source = ScribanLite.ScribanLite.Render(templateText, new System.Collections.Generic.Dictionary<string, object>
+                        source = ScribanLite.Render(templateText, new System.Collections.Generic.Dictionary<string, object>
                         {
                             { "namespace", ns },
                             { "className", className },

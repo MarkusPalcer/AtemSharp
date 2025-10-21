@@ -1,8 +1,9 @@
 using System.Collections.Immutable;
+using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace AtemSharp.CodeGenerators
+namespace AtemSharp.CodeGenerators.Analyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class SerializationFieldAccessibilityAnalyzer : DiagnosticAnalyzer
@@ -23,6 +24,11 @@ namespace AtemSharp.CodeGenerators
         private static void AnalyzeField(SymbolAnalysisContext context)
         {
             var fieldSymbol = (IFieldSymbol)context.Symbol;
+
+            // Ignore fields with NoPropertyAttribute
+            bool hasNoProperty = fieldSymbol.GetAttributes().Any(attr => attr.AttributeClass?.Name == "NoPropertyAttribute");
+            if (hasNoProperty)
+                return;
 
             foreach (var attribute in fieldSymbol.GetAttributes())
             {

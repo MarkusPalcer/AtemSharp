@@ -1,4 +1,4 @@
-namespace AtemSharp.CodeGenerators
+namespace AtemSharp.CodeGenerators.Serialization
 {
     public class SerializedField
     {

@@ -7,7 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-namespace AtemSharp.CodeGenerators
+namespace AtemSharp.CodeGenerators.Deserialization
 {
     [Generator]
     public class DeserializedCommandGenerator : IIncrementalGenerator
@@ -59,7 +59,7 @@ namespace AtemSharp.CodeGenerators
                     string source;
                     try
                     {
-                        source = ScribanLite.ScribanLite.Render(templateText, new Dictionary<string, object>
+                        source = ScribanLite.Render(templateText, new Dictionary<string, object>
                         {
                             { "namespace", ns },
                             { "className", className },
@@ -124,7 +124,7 @@ namespace AtemSharp.CodeGenerators
             {
                 var template = Helpers.LoadTemplate("DeserializedField_FullProperty.sbn", spc);
                 if (template is null) return null;
-                propertyCode = ScribanLite.ScribanLite.Render(template, new Dictionary<string, object>()
+                propertyCode = ScribanLite.Render(template, new Dictionary<string, object>()
                 {
                     { "propertyName", propertyName },
                     { "fieldName", f.Name },
@@ -141,7 +141,7 @@ namespace AtemSharp.CodeGenerators
             var serializationTemplate = Helpers.LoadTemplate("DeserializedField_Deserialization.sbn", spc);
             if (serializationTemplate is null) return null;
 
-            var serializationCode = ScribanLite.ScribanLite.Render(serializationTemplate, new Dictionary<string, object>
+            var serializationCode = ScribanLite.Render(serializationTemplate, new Dictionary<string, object>
             {
                 { "propertyName", propertyName },
                 { "fieldType", fieldType },

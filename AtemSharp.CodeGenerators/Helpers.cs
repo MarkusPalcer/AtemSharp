@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using AtemSharp.CodeGenerators.Serialization;
 using Microsoft.CodeAnalysis;
 
 namespace AtemSharp.CodeGenerators

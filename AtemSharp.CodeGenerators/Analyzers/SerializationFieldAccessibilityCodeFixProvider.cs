@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace AtemSharp.CodeGenerators
+namespace AtemSharp.CodeGenerators.Analyzers
 {
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(SerializationFieldAccessibilityCodeFixProvider)), Shared]
     public class SerializationFieldAccessibilityCodeFixProvider : CodeFixProvider

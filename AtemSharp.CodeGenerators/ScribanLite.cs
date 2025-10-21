@@ -1,11 +1,11 @@
 // ScribanLite v1.0.0 (MIT License)
 // Source: https://github.com/atifaziz/ScribanLite/blob/main/ScribanLite.cs
 // (Truncated for brevity. In production, use the full file from the official repo.)
-using System;
+
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace ScribanLite
+namespace AtemSharp.CodeGenerators
 {
     public static class ScribanLite
     {

@@ -1,10 +1,10 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace AtemSharp.CodeGenerators
+namespace AtemSharp.CodeGenerators.Analyzers
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class MissingPartialAnalyzer : DiagnosticAnalyzer
