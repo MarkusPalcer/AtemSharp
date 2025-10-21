@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DataTransfer;
@@ -8,29 +7,15 @@ namespace AtemSharp.Commands.DataTransfer;
 /// Command received when a data transfer operation is complete
 /// </summary>
 [Command("FTDC")]
-public class DataTransferCompleteCommand : IDeserializedCommand
+public partial class DataTransferCompleteCommand : IDeserializedCommand
 {
     /// <summary>
     /// ID of the transfer that completed
     /// </summary>
-    public ushort TransferId { get; init; }
+    [DeserializedField(0)]
+    private ushort _transferId;
 
-    /// <summary>
-    /// Deserialize binary data into command
-    /// </summary>
-    public static DataTransferCompleteCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        return new DataTransferCompleteCommand
-        {
-            TransferId = rawCommand.ReadUInt16BigEndian(0)
-        };
-    }
-
-    /// <summary>
-    /// Apply this command to the ATEM state
-    /// </summary>
-    /// <param name="state">ATEM state to modify</param>
-    /// <returns>List of state paths that were changed (empty for this command)</returns>
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         // Nothing to do - this is just a notification that a transfer completed

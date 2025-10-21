@@ -18,7 +18,7 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="AtemSharp.Tests" />
-        <ProjectReference Include="..\CodeGenerators\CodeGenerators.csproj" />
+        <ProjectReference Include="..\AtemSharp.CodeGenerators\AtemSharp.CodeGenerators.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -27,7 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Analyzer Include="..\CodeGenerators\bin\$(Configuration)\netstandard2.0\CodeGenerators.dll" />
+        <Analyzer Include="..\AtemSharp.CodeGenerators\bin\$(Configuration)\netstandard2.0\AtemSharp.CodeGenerators.dll" />
     </ItemGroup>
 
     <ItemGroup>

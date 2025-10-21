@@ -1,4 +1,4 @@
-using AtemSharp.Enums;
+using AtemSharp.Helpers;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
@@ -8,12 +8,32 @@ namespace AtemSharp.Commands.Audio;
 /// Command to update audio mixer headphones properties
 /// </summary>
 [Command("CAMH")]
-public class AudioMixerHeadphonesCommand : SerializedCommand
+[BufferSize(12)]
+public partial class AudioMixerHeadphonesCommand : SerializedCommand
 {
-	private double _gain;
-	private double _programOutGain;
-	private double _talkbackGain;
-	private double _sidetoneGain;
+    /// <summary>
+    /// Gain in decibel
+    /// </summary>
+	[SerializedField(2, 0)][CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.DecibelToUInt16)}")]
+    private double _gain;
+
+    /// <summary>
+    /// Program out gain in decibel
+    /// </summary>
+    [SerializedField(4, 1)][CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.DecibelToUInt16)}")]
+    private double _programOutGain;
+
+    /// <summary>
+    /// Talkback gain in decibel
+    /// </summary>
+    [SerializedField(6, 2)][CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.DecibelToUInt16)}")]
+    private double _talkbackGain;
+
+    /// <summary>
+    /// Sidetone gain in decibel
+    /// </summary>
+    [SerializedField(8, 3)][CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.DecibelToUInt16)}")]
+    private double _sidetoneGain;
 
 	public AudioMixerHeadphonesCommand(AtemState currentState)
     {
@@ -33,74 +53,5 @@ public class AudioMixerHeadphonesCommand : SerializedCommand
 		_programOutGain = audio.Headphones.ProgramOutGain;
 		_talkbackGain = audio.Headphones.TalkbackGain;
 		_sidetoneGain = audio.Headphones.SidetoneGain;
-	}
-
-	/// <summary>
-	/// Gain in decibel, -Infinity to +6dB
-	/// </summary>
-	public double Gain
-	{
-		get => _gain;
-		set
-		{
-			_gain = value;
-			Flag |= 1 << 0;
-		}
-	}
-
-	/// <summary>
-	/// Program out gain in decibel, -Infinity to +6dB
-	/// </summary>
-	public double ProgramOutGain
-	{
-		get => _programOutGain;
-		set
-		{
-			_programOutGain = value;
-			Flag |= 1 << 1;
-		}
-	}
-
-	/// <summary>
-	/// Talkback gain in decibel, -Infinity to +6dB
-	/// </summary>
-	public double TalkbackGain
-	{
-		get => _talkbackGain;
-		set
-		{
-			_talkbackGain = value;
-			Flag |= 1 << 2;
-		}
-	}
-
-	/// <summary>
-	/// Sidetone gain in decibel, -Infinity to +6dB
-	/// </summary>
-	public double SidetoneGain
-	{
-		get => _sidetoneGain;
-		set
-		{
-			_sidetoneGain = value;
-			Flag |= 1 << 3;
-		}
-	}
-
-	/// <inheritdoc />
-	public override byte[] Serialize(ProtocolVersion version)
-	{
-		using var memoryStream = new MemoryStream(12);
-		using var writer = new BinaryWriter(memoryStream);
-
-		writer.Write((byte)Flag);
-		writer.Pad(1);
-		writer.WriteUInt16BigEndian(Gain.DecibelToUInt16());
-		writer.WriteUInt16BigEndian(ProgramOutGain.DecibelToUInt16());
-		writer.WriteUInt16BigEndian(TalkbackGain.DecibelToUInt16());
-		writer.WriteUInt16BigEndian(SidetoneGain.DecibelToUInt16());
-		writer.Pad(2);
-
-		return memoryStream.ToArray();
 	}
 }

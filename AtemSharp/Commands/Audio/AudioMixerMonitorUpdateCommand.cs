@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Helpers;
 using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Audio.ClassicAudio;
@@ -9,56 +10,56 @@ namespace AtemSharp.Commands.Audio;
 /// Update command for audio mixer monitor properties
 /// </summary>
 [Command("AMmO")]
-public class AudioMixerMonitorUpdateCommand : IDeserializedCommand
+public partial class AudioMixerMonitorUpdateCommand : IDeserializedCommand
 {
-	/// <summary>
-	/// Whether the monitor is enabled
-	/// </summary>
-	public bool Enabled { get; init; }
+    /// <summary>
+    /// Whether the monitor is enabled
+    /// </summary>
+    [DeserializedField(0)]
+    private bool _enabled;
 
-	/// <summary>
-	/// Gain in decibel, -Infinity to +6dB
-	/// </summary>
-	public double Gain { get; init; }
+    /// <summary>
+    /// Gain in decibel, -Infinity to +6dB
+    /// </summary>
+    public double Gain { get; internal set; }
 
-	/// <summary>
-	/// Whether the monitor is muted
-	/// </summary>
-	public bool Mute { get; init; }
+    /// <summary>
+    /// Whether the monitor is muted
+    /// </summary>
+    [DeserializedField(4)]
+    private bool _mute;
 
-	/// <summary>
-	/// Whether solo is enabled
-	/// </summary>
-	public bool Solo { get; init; }
+    /// <summary>
+    /// Whether solo is enabled
+    /// </summary>
+    [DeserializedField(5)]
+    private bool _solo;
 
-	/// <summary>
-	/// Solo source identifier
-	/// </summary>
-	public int SoloSource { get; init; }
+    /// <summary>
+    /// Solo source identifier
+    /// </summary>
+    [DeserializedField(6)]
+    private ushort _soloSource;
 
-	/// <summary>
-	/// Whether dim is enabled
-	/// </summary>
-	public bool Dim { get; init; }
+    /// <summary>
+    /// Whether dim is enabled
+    /// </summary>
+    [DeserializedField(8)]
+    private bool _dim;
 
-	/// <summary>
-	/// Dim level as percentage (0.0 to 1.0)
-	/// </summary>
-	public double DimLevel { get; init; }
+    /// <summary>
+    /// Dim level as percentage (0.0 to 1.0)
+    /// </summary>
+    [DeserializedField(10)]
+    [ScalingFactor(100.0)]
+    private double _dimLevel;
 
-	public static AudioMixerMonitorUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-	{
-		return new AudioMixerMonitorUpdateCommand
-		{
-			Enabled = rawCommand.ReadBoolean(0),
-			Gain = rawCommand.ReadUInt16BigEndian(2).UInt16ToDecibel(),
-			Mute = rawCommand.ReadBoolean(4),
-			Solo = rawCommand.ReadBoolean(5),
-			SoloSource = rawCommand.ReadUInt16BigEndian(6),
-			Dim = rawCommand.ReadBoolean(8),
-			DimLevel = rawCommand.ReadUInt16BigEndian(10) / 100.0
-		};
-	}
+
+
+    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand, ProtocolVersion _)
+    {
+        Gain = rawCommand.ReadUInt16BigEndian(2).UInt16ToDecibel();
+    }
 
 	/// <inheritdoc />
 	public void ApplyToState(AtemState state)

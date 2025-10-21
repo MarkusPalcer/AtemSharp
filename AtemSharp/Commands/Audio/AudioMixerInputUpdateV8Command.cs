@@ -1,73 +1,69 @@
 using AtemSharp.Enums;
 using AtemSharp.Enums.Audio;
 using AtemSharp.Enums.Ports;
+using AtemSharp.Helpers;
 using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Audio.ClassicAudio;
 
 namespace AtemSharp.Commands.Audio;
 
-
 /// <summary>
 /// Update command for audio mixer input properties (V8+ protocol version)
 /// </summary>
 [Command("AMIP", ProtocolVersion.V8_0)]
-public class AudioMixerInputUpdateV8Command : IDeserializedCommand
+public partial class AudioMixerInputUpdateV8Command : IDeserializedCommand
 {
     /// <summary>
     /// Audio input index
     /// </summary>
-    public ushort Index { get; init; }
+    [DeserializedField(0)]
+    private ushort _index;
 
     /// <summary>
     /// Audio source type (readonly)
     /// </summary>
-    public AudioSourceType SourceType { get; init; }
+    [DeserializedField(2)]
+    private AudioSourceType _sourceType;
 
     /// <summary>
     /// External port type
     /// </summary>
-    public ExternalPortType PortType { get; init; }
+    [DeserializedField(6)]
+    private ExternalPortType _portType;
 
     /// <summary>
     /// Audio mix option
     /// </summary>
-    public AudioMixOption MixOption { get; init; }
+    [DeserializedField(8)]
+    private AudioMixOption _mixOption;
 
     /// <summary>
     /// Gain in decibel, -Infinity to +6dB
     /// </summary>
-    public double Gain { get; init; }
+    [DeserializedField(10)]
+    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.UInt16ToDecibel)}")]
+    private double _gain;
 
     /// <summary>
     /// Balance, -50 to +50
     /// </summary>
-    public double Balance { get; init; }
+    [DeserializedField(12)]
+    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.Int16ToBalance)}")]
+    [SerializedType(typeof(short))]
+    private double _balance;
 
     /// <summary>
     /// Whether this channel supports RCA to XLR enabled setting (readonly)
     /// </summary>
-    public bool SupportsRcaToXlrEnabled { get; init; }
+    [DeserializedField(14)]
+    private bool _supportsRcaToXlrEnabled;
 
     /// <summary>
     /// RCA to XLR enabled
     /// </summary>
-    public bool RcaToXlrEnabled { get; init; }
-
-    public static AudioMixerInputUpdateV8Command Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        return new AudioMixerInputUpdateV8Command
-        {
-            Index = rawCommand.ReadUInt16BigEndian(0),
-            SourceType = (AudioSourceType)rawCommand.ReadUInt8(2),
-            PortType = (ExternalPortType)rawCommand.ReadUInt16BigEndian(6),
-            MixOption = (AudioMixOption)rawCommand.ReadUInt8(8),
-            Gain = rawCommand.ReadUInt16BigEndian(10).UInt16ToDecibel(),
-            Balance = rawCommand.ReadInt16BigEndian(12).Int16ToBalance(),
-            SupportsRcaToXlrEnabled = rawCommand.ReadBoolean(14),
-            RcaToXlrEnabled = rawCommand.ReadBoolean(15)
-        };
-    }
+    [DeserializedField(15)]
+    private bool _rcaToXlrEnabled;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)

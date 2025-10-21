@@ -1,6 +1,6 @@
-using AtemSharp.Enums;
 using AtemSharp.Enums.Audio;
 using AtemSharp.Enums.Ports;
+using AtemSharp.Helpers;
 using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Audio.ClassicAudio;
@@ -11,50 +11,47 @@ namespace AtemSharp.Commands.Audio;
 /// Update command for audio mixer input properties
 /// </summary>
 [Command("AMIP")]
-public class AudioMixerInputUpdateCommand : IDeserializedCommand
+public partial class AudioMixerInputUpdateCommand : IDeserializedCommand
 {
     /// <summary>
     /// Audio input index
     /// </summary>
-    public ushort Index { get; init; }
+    [DeserializedField(0)]
+    private ushort _index;
 
     /// <summary>
     /// Audio source type (readonly)
     /// </summary>
-    public AudioSourceType SourceType { get; init; }
+    [DeserializedField(2)]
+    private AudioSourceType _sourceType;
+
 
     /// <summary>
     /// External port type
     /// </summary>
-    public ExternalPortType PortType { get; init; }
+    [DeserializedField(6)]
+    private ExternalPortType _portType;
 
     /// <summary>
     /// Audio mix option
     /// </summary>
-    public AudioMixOption MixOption { get; init; }
+    [DeserializedField(8)]
+    private AudioMixOption _mixOption;
 
     /// <summary>
-    /// Gain in decibel, -Infinity to +6dB
+    /// Gain in decibel
     /// </summary>
-    public double Gain { get; init; }
+    [DeserializedField(10)]
+    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.UInt16ToDecibel)}")]
+    private double _gain;
 
     /// <summary>
     /// Balance, -50 to +50
     /// </summary>
-    public double Balance { get; init; }
-
-    public static AudioMixerInputUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        return new AudioMixerInputUpdateCommand
-        {
-            Index = rawCommand.ReadUInt16BigEndian(0),
-            SourceType = (AudioSourceType)rawCommand.ReadUInt8(2),
-            PortType = (ExternalPortType)rawCommand.ReadUInt16BigEndian(6),
-            MixOption = (AudioMixOption)rawCommand.ReadUInt8(8),
-            Gain = rawCommand.ReadUInt16BigEndian(10).UInt16ToDecibel(),
-            Balance = rawCommand.ReadInt16BigEndian(12).Int16ToBalance()
-        };
-    }
+    [DeserializedField(12)]
+    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.Int16ToBalance)}")]
+    [SerializedType(typeof(short))]
+    private double _balance;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
@@ -64,8 +61,8 @@ public class AudioMixerInputUpdateCommand : IDeserializedCommand
         audio.Channels[Index] = new ClassicAudioChannel
         {
             SourceType = SourceType,
-            PortType = PortType,
-            MixOption = MixOption,
+            PortType = _portType,
+            MixOption = _mixOption,
             Gain = Gain,
             Balance = Balance,
             RcaToXlrEnabled = false,

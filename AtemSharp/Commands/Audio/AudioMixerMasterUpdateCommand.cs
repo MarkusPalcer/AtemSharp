@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Helpers;
 using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Audio.ClassicAudio;
@@ -9,43 +10,31 @@ namespace AtemSharp.Commands.Audio;
 /// Update command for audio mixer master properties
 /// </summary>
 [Command("AMMO")]
-public class AudioMixerMasterUpdateCommand : IDeserializedCommand
+public partial class AudioMixerMasterUpdateCommand : IDeserializedCommand
 {
     /// <summary>
     /// Audio gain in decibels
     /// </summary>
-    public double Gain { get; init; }
+    public double Gain { get; internal set; }
 
     /// <summary>
     /// Audio balance (-50.0 to +50.0)
     /// </summary>
-    public double Balance { get; init; }
+    public double Balance { get; internal set; }
 
     /// <summary>
     /// Whether audio follows fade to black
     /// </summary>
-    public bool FollowFadeToBlack { get; init; }
+    [DeserializedField(4)]
+    private bool _followFadeToBlack;
 
-    /// <summary>
-    /// Deserialize the command from binary stream
-    /// </summary>
-    /// <returns>Deserialized command instance</returns>
-    public static AudioMixerMasterUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
+    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand, ProtocolVersion _)
     {
-        return new AudioMixerMasterUpdateCommand
-        {
-            Gain = rawCommand.ReadUInt16BigEndian(0).UInt16ToDecibel(),
-            Balance = rawCommand.ReadInt16BigEndian(2).Int16ToBalance(),
-            FollowFadeToBlack = rawCommand.ReadBoolean(4)
-        };
+        Gain = rawCommand.ReadUInt16BigEndian(0).UInt16ToDecibel();
+        Balance = rawCommand.ReadInt16BigEndian(2).Int16ToBalance();
     }
 
-    /// <summary>
-    /// Apply the command's values to the ATEM state
-    /// </summary>
-    /// <param name="state">Current ATEM state to update</param>
-    /// <returns>Path indicating what was changed in the state</returns>
-    /// <exception cref="InvalidIdError">Thrown if classic audio is not available</exception>
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         var audio = state.GetClassicAudio();

@@ -1,4 +1,4 @@
-using AtemSharp.Enums;
+using AtemSharp.Helpers;
 using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Audio.ClassicAudio;
@@ -6,48 +6,41 @@ using AtemSharp.State.Audio.ClassicAudio;
 namespace AtemSharp.Commands.Audio;
 
 [Command("AMHP")]
-public class AudioMixerHeadphonesUpdateCommand : IDeserializedCommand
+public partial class AudioMixerHeadphonesUpdateCommand : IDeserializedCommand
 {
-	/// <summary>
-	/// Gain in decibel, -Infinity to +6dB
-	/// </summary>
-	public double Gain { get; init; }
+    /// <summary>
+    /// Gain in decibel
+    /// </summary>
+    [DeserializedField(0)] [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.UInt16ToDecibel)}")]
+    private double _gain;
 
-	/// <summary>
-	/// Program out gain in decibel, -Infinity to +6dB
-	/// </summary>
-	public double ProgramOutGain { get; init; }
+    /// <summary>
+    /// Program out gain in decibel, -Infinity to +6dB
+    /// </summary>
+    [DeserializedField(2)] [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.UInt16ToDecibel)}")]
+    private double _programOutGain;
 
-	/// <summary>
-	/// Sidetone gain in decibel, -Infinity to +6dB
-	/// </summary>
-	public double SidetoneGain { get; init; }
+    /// <summary>
+    /// Sidetone gain in decibel, -Infinity to +6dB
+    /// </summary>
+    [DeserializedField(6)] [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.UInt16ToDecibel)}")]
+    private double _sidetoneGain;
 
-	/// <summary>
-	/// Talkback gain in decibel, -Infinity to +6dB
-	/// </summary>
-	public double TalkbackGain { get; init; }
+    /// <summary>
+    /// Talkback gain in decibel, -Infinity to +6dB
+    /// </summary>
+    [DeserializedField(4)] [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.UInt16ToDecibel)}")]
+    private double _talkbackGain;
 
-	public static AudioMixerHeadphonesUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-	{
-		return new AudioMixerHeadphonesUpdateCommand
-		{
-			Gain = rawCommand.ReadUInt16BigEndian(0).UInt16ToDecibel(),
-			ProgramOutGain = rawCommand.ReadUInt16BigEndian(2).UInt16ToDecibel(),
-			TalkbackGain = rawCommand.ReadUInt16BigEndian(4).UInt16ToDecibel(),
-			SidetoneGain = rawCommand.ReadUInt16BigEndian(6).UInt16ToDecibel()
-		};
-	}
-
-	/// <inheritdoc />
-	public void ApplyToState(AtemState state)
+    /// <inheritdoc />
+    public void ApplyToState(AtemState state)
     {
         var audio = state.GetClassicAudio();
 
-		audio.Headphones ??= new ClassicAudioHeadphoneOutputChannel();
-		audio.Headphones.Gain = Gain;
-		audio.Headphones.ProgramOutGain = ProgramOutGain;
-		audio.Headphones.TalkbackGain = TalkbackGain;
-		audio.Headphones.SidetoneGain = SidetoneGain;
-	}
+        audio.Headphones ??= new ClassicAudioHeadphoneOutputChannel();
+        audio.Headphones.Gain = Gain;
+        audio.Headphones.ProgramOutGain = ProgramOutGain;
+        audio.Headphones.TalkbackGain = TalkbackGain;
+        audio.Headphones.SidetoneGain = SidetoneGain;
+    }
 }

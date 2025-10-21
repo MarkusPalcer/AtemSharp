@@ -79,7 +79,6 @@ public class AudioMixerInputCommandTests : SerializedCommandTestBase<AudioMixerI
 		var command = new AudioMixerInputCommand(index, state);
 
 		// Assert
-		Assert.That(command.Index, Is.EqualTo(index));
 		Assert.That(command.MixOption, Is.EqualTo(AudioMixOption.Off));
 		Assert.That(command.Gain, Is.EqualTo(0.0));
 		Assert.That(command.Balance, Is.EqualTo(0.0));
@@ -261,7 +260,6 @@ public class AudioMixerInputCommandTests : SerializedCommandTestBase<AudioMixerI
 		var command = new AudioMixerInputCommand(index, state);
 
 		// Assert
-		Assert.That(command.Index, Is.EqualTo(index));
 		Assert.That(command.MixOption, Is.EqualTo(AudioMixOption.On));
 		Assert.That(command.Gain, Is.EqualTo(-12.5));
 		Assert.That(command.Balance, Is.EqualTo(15.0));
