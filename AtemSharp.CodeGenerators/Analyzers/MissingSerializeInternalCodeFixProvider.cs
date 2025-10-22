@@ -37,12 +37,6 @@ namespace AtemSharp.CodeGenerators.Analyzers
                     c => AddSerializeInternalAsync(context.Document, classDecl, c, useSpan: false),
                     nameof(MissingSerializeInternalCodeFixProvider) + ".AddByteArray"),
                 diagnostic);
-            context.RegisterCodeFix(
-                Microsoft.CodeAnalysis.CodeActions.CodeAction.Create(
-                    "Add SerializeInternal(Span<byte> buffer) method",
-                    c => AddSerializeInternalAsync(context.Document, classDecl, c, useSpan: true),
-                    nameof(MissingSerializeInternalCodeFixProvider) + ".AddSpan"),
-                diagnostic);
         }
 
         private async Task<Document> AddSerializeInternalAsync(Document document, ClassDeclarationSyntax classDecl, CancellationToken cancellationToken, bool useSpan)

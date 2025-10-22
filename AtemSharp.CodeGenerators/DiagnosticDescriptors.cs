@@ -18,11 +18,11 @@ namespace AtemSharp.CodeGenerators
         public static readonly DiagnosticDescriptor MissingSerializeInternalMethod = new DiagnosticDescriptor(
             "GEN011",
             "Missing SerializeInternal method",
-            "Class '{0}' contains a field with CustomSerializationAttribute but does not have a void SerializeInternal(byte[]) or void SerializeInternal(Span<byte>) method",
+            "Class '{0}' contains a field with CustomSerializationAttribute but does not have a SerializeInternal method",
             "Usage",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true,
-            description: "Any class with a field marked with CustomSerializationAttribute must have a void SerializeInternal(byte[]) or void SerializeInternal(Span<byte>) method."
+            description: "Any class with a field marked with CustomSerializationAttribute must have a SerializeInternal method."
         );
         public static DiagnosticDescriptor TemplateLoadError(string template) => new DiagnosticDescriptor(
             id: "GEN001",

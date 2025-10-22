@@ -38,7 +38,6 @@ namespace AtemSharp.CodeGenerators.Analyzers
             var hasSerializeInternal = classSymbol.GetMembers()
                 .OfType<IMethodSymbol>()
                 .Any(m => m.Name == "SerializeInternal"
-                    && m.DeclaredAccessibility == Accessibility.Public
                     && m.ReturnsVoid
                     && m.Parameters.Length == 1
                     && (

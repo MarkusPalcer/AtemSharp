@@ -33,30 +33,14 @@ namespace AtemSharp.CodeGenerators.Analyzers
 
             var methods = classSymbol.GetMembers().OfType<IMethodSymbol>().Where(m => m.Name == "SerializeInternal").ToList();
             if (!methods.Any())
-                return;
-
-            foreach (var method in methods)
             {
-                if (!method.ReturnsVoid || method.Parameters.Length != 1)
-                {
-                    ReportDiagnostic(method, "invalid signature");
-                    continue;
-                }
-                var param = method.Parameters[0];
-                var isByteArray = param.Type is IArrayTypeSymbol arr && arr.ElementType.SpecialType == SpecialType.System_Byte;
-                if (!isByteArray)
-                {
-                    ReportDiagnostic(method, param.Type.ToDisplayString());
-                }
-            }
-
-            void ReportDiagnostic(IMethodSymbol method, string paramType)
-            {
-                var location = method.Locations.FirstOrDefault();
+                // Report diagnostic if no SerializeInternal method exists
+                var location = classSymbol.Locations.FirstOrDefault();
                 if (location != null)
                 {
                     var descriptor = DiagnosticDescriptors.CustomSerializationSignature;
-                    var message = string.Format(descriptor.MessageFormat.ToString(), classSymbol.Name, paramType);
+                    // Update message: do not mention Span<byte>, only require SerializeInternal exists
+                    var message = $"Class '{classSymbol.Name}' contains a field with CustomSerializationAttribute but does not have a SerializeInternal method.";
                     var customDescriptor = new DiagnosticDescriptor(
                         descriptor.Id,
                         descriptor.Title.ToString(),
