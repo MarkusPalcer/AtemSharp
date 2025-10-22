@@ -11,24 +11,10 @@ namespace AtemSharp.CodeGenerators
     {
         public static string? GetSerializationMethod(IFieldSymbol fieldSymbol)
         {
-            // Check for SerializedTypeAttribute and use its constructor parameter as the type if present
-            var serializedTypeAttr = fieldSymbol.GetAttributes()
-                .FirstOrDefault(a => a.AttributeClass?.Name == "SerializedTypeAttribute");
-            ITypeSymbol? typeSymbol = null;
-
-            if (serializedTypeAttr != null && serializedTypeAttr.ConstructorArguments.Length > 0)
-            {
-                var arg = serializedTypeAttr.ConstructorArguments[0];
-                if (arg.Value is ITypeSymbol typeArg)
-                {
-                    typeSymbol = typeArg;
-                }
-            }
-
-            // Fallback to the field's type if no attribute or invalid argument
-            typeSymbol ??= fieldSymbol.Type;
+            var typeSymbol = GetSerializedFieldType(fieldSymbol);
 
             var name = typeSymbol.Name;
+
             // Handle double type specially
             if (name == "Double" || typeSymbol.ToDisplayString() == "double" || typeSymbol.ToDisplayString() == "System.Double")
             {
@@ -70,6 +56,27 @@ namespace AtemSharp.CodeGenerators
                 default:
                     return null;
             }
+        }
+
+        public static ITypeSymbol GetSerializedFieldType(IFieldSymbol fieldSymbol)
+        {
+            // Check for SerializedTypeAttribute and use its constructor parameter as the type if present
+            var serializedTypeAttr = fieldSymbol.GetAttributes()
+                                                .FirstOrDefault(a => a.AttributeClass?.Name == "SerializedTypeAttribute");
+            ITypeSymbol? typeSymbol = null;
+
+            if (serializedTypeAttr != null && serializedTypeAttr.ConstructorArguments.Length > 0)
+            {
+                var arg = serializedTypeAttr.ConstructorArguments[0];
+                if (arg.Value is ITypeSymbol typeArg)
+                {
+                    typeSymbol = typeArg;
+                }
+            }
+
+            // Fallback to the field's type if no attribute or invalid argument
+            typeSymbol ??= fieldSymbol.Type;
+            return typeSymbol;
         }
 
         /// <summary>
@@ -234,6 +241,22 @@ namespace AtemSharp.CodeGenerators
             }
 
             return arg.Value?.ToString();
+        }
+
+        public static string GetExtensionMethodType(string extensionMethodName)
+        {
+            // Simple mapping for known extension method names
+            // Extend this mapping as needed for new methods
+            return extensionMethodName switch
+            {
+                "Boolean" => "bool",
+                "UInt8" => "byte",
+                "UInt16BigEndian" => "ushort",
+                "Int16BigEndian" => "short",
+                "UInt32BigEndian" => "uint",
+                "Int32BigEndian" => "int",
+                _ => "object" // fallback type
+            };
         }
     }
 }

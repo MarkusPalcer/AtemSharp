@@ -13,24 +13,12 @@ namespace AtemSharp.CodeGenerators.Serialization
     {
         private const string Template = "SerializeMethodTemplate.sbn";
 
-        private static SerializedField? ProcessField(IFieldSymbol f, SourceProductionContext spc)
+        private static string? GetPropertyCode(IFieldSymbol f, SourceProductionContext spc)
         {
-            var propertyName = Helpers.GetPropertyName(f);
-            var offset = Helpers.GetSerializationOffest(f);
             var flag = GetFlag(f);
-            var fieldType = Helpers.GetFieldType(f);
-            var isDouble = fieldType == "double" || fieldType == "System.Double";
+            var propertyName = Helpers.GetPropertyName(f);
             var validationMethod = GetValidationMethod(f);
-            var extensionMethod = Helpers.GetSerializationMethod(f);
-
-            if (extensionMethod is null)
-            {
-                var descriptor = DiagnosticDescriptors.CreateFieldTypeError(f);
-                spc.ReportDiagnostic(Diagnostic.Create(descriptor, f.Locations.FirstOrDefault() ?? Location.None));
-                return null;
-            }
-
-            var extensionMethodType = GetExtensionMethodType(extensionMethod);
+            var fieldType = Helpers.GetFieldType(f);
 
             // Determine Property-Template
             string? propertyTemplate;
@@ -49,7 +37,7 @@ namespace AtemSharp.CodeGenerators.Serialization
 
             if (propertyTemplate is null) return null;
 
-            var propertyCode = ScribanLite.Render(propertyTemplate, new System.Collections.Generic.Dictionary<string, object>
+            return ScribanLite.Render(propertyTemplate, new System.Collections.Generic.Dictionary<string, object>
             {
                 { "propertyName", propertyName },
                 { "fieldName", f.Name },
@@ -58,13 +46,45 @@ namespace AtemSharp.CodeGenerators.Serialization
                 { "validation", validationMethod is null ? string.Empty : $"{validationMethod}(value);" },
                 { "msdoc", Helpers.GetFieldMsDocComment(f) }
             });
+        }
+
+        private static SerializedField? ProcessField(IFieldSymbol f, SourceProductionContext spc)
+        {
+            var propertyCode = GetPropertyCode(f, spc);
+            var serializationCode = GetSerializationCode(f, spc);
+
+            if (serializationCode is null || propertyCode is null) return null;
+
+            return new SerializedField
+            {
+                SerializationCode = serializationCode,
+                PropertyCode = propertyCode,
+            };
+        }
+
+        private static string? GetSerializationCode(IFieldSymbol f, SourceProductionContext spc)
+        {
+            if (f.GetAttributes().Any(a => a.AttributeClass?.Name == "CustomSerializationAttribute")) return string.Empty;
+
+            var offset = Helpers.GetSerializationOffest(f);
+            var fieldType = Helpers.GetFieldType(f);
+            var isDouble = fieldType == "double" || fieldType == "System.Double";
+            var extensionMethod = Helpers.GetSerializationMethod(f);
+
+            if (extensionMethod is null)
+            {
+                var descriptor = DiagnosticDescriptors.CreateFieldTypeError(f);
+                spc.ReportDiagnostic(Diagnostic.Create(descriptor, f.Locations.FirstOrDefault() ?? Location.None));
+                return null;
+            }
+
+            var extensionMethodType = Helpers.GetExtensionMethodType(extensionMethod);
 
             var serializationTemplate = Helpers.LoadTemplate("SerializedField_Serialization.sbn", spc);
             if (serializationTemplate is null) return null;
 
             var scalingLiteral =
                 Helpers.GetScalingFactor(f).ToString("0.0#############################", System.Globalization.CultureInfo.InvariantCulture);
-
 
             var serializationCode = ScribanLite.Render(serializationTemplate,
                                                        new System.Collections.Generic.Dictionary<string, object>
@@ -75,14 +95,13 @@ namespace AtemSharp.CodeGenerators.Serialization
                                                            { "scaling", fieldType },
                                                            { "offset", offset },
                                                            { "scalingFactor", isDouble ? $"* {scalingLiteral}" : string.Empty },
-                                                           { "customScalingFunction", Helpers.GetAttributeStringValue(f, "CustomScalingAttribute") ?? string.Empty }
+                                                           {
+                                                               "customScalingFunction",
+                                                               Helpers.GetAttributeStringValue(f, "CustomScalingAttribute") ??
+                                                               string.Empty
+                                                           }
                                                        });
-
-            return new SerializedField
-            {
-                SerializationCode = serializationCode,
-                PropertyCode = propertyCode,
-            };
+            return serializationCode;
         }
 
         private static byte? GetFlag(IFieldSymbol f)
@@ -94,22 +113,6 @@ namespace AtemSharp.CodeGenerators.Serialization
             return arg.Value is byte b ? (byte?)b : null;
         }
 
-
-        private static string GetExtensionMethodType(string extensionMethodName)
-        {
-            // Simple mapping for known extension method names
-            // Extend this mapping as needed for new methods
-            return extensionMethodName switch
-            {
-                "Boolean" => "bool",
-                "UInt8" => "byte",
-                "UInt16BigEndian" => "ushort",
-                "Int16BigEndian" => "short",
-                "UInt32BigEndian" => "uint",
-                "Int32BigEndian" => "int",
-                _ => "object" // fallback type
-            };
-        }
 
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
@@ -254,6 +257,6 @@ namespace AtemSharp.CodeGenerators.Serialization
         }
 
         private static string? GetValidationMethod(IFieldSymbol f)
-         => Helpers.GetAttributeStringValue(f, "ValidationMethodAttribute");
+            => Helpers.GetAttributeStringValue(f, "ValidationMethodAttribute");
     }
 }

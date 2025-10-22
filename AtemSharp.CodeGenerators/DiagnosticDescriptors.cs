@@ -6,6 +6,24 @@ namespace AtemSharp.CodeGenerators
     [SuppressMessage("MicrosoftCodeAnalysisReleaseTracking", "RS2000:Add analyzer diagnostic IDs to analyzer release")]
     public static class DiagnosticDescriptors
     {
+        public static readonly DiagnosticDescriptor SerializeInternalShouldNotBePublic = new DiagnosticDescriptor(
+            "GEN012",
+            "SerializeInternal method should not be public",
+            "Method 'SerializeInternal' should not be public. Change its accessibility to internal, protected, or private.",
+            "Usage",
+            DiagnosticSeverity.Warning,
+            isEnabledByDefault: true,
+            description: "SerializeInternal methods should not be public. Use internal, protected, or private instead."
+        );
+        public static readonly DiagnosticDescriptor MissingSerializeInternalMethod = new DiagnosticDescriptor(
+            "GEN011",
+            "Missing SerializeInternal method",
+            "Class '{0}' contains a field with CustomSerializationAttribute but does not have a void SerializeInternal(byte[]) or void SerializeInternal(Span<byte>) method",
+            "Usage",
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true,
+            description: "Any class with a field marked with CustomSerializationAttribute must have a void SerializeInternal(byte[]) or void SerializeInternal(Span<byte>) method."
+        );
         public static DiagnosticDescriptor TemplateLoadError(string template) => new DiagnosticDescriptor(
             id: "GEN001",
             title: "Template Load Error",
@@ -26,10 +44,12 @@ namespace AtemSharp.CodeGenerators
 
         public static DiagnosticDescriptor CreateFieldTypeError(IFieldSymbol f)
         {
+
+
             return new DiagnosticDescriptor(
                 id: "GEN003",
                 title: "Missing Span Extension Method",
-                messageFormat: $"No extension method mapping found for field '{f.Name}' of type '{f.Type.ToDisplayString()}'.",
+                messageFormat: $"No extension method mapping found for field '{f.Name}' of type '{Helpers.GetSerializedFieldType(f).ToDisplayString()}'.",
                 category: "SourceGenerator",
                 DiagnosticSeverity.Error,
                 isEnabledByDefault: true
@@ -66,12 +86,12 @@ namespace AtemSharp.CodeGenerators
 
         public static readonly DiagnosticDescriptor CustomSerializationSignature = new DiagnosticDescriptor(
             "GEN007",
-            "Custom serialization method must have ReadOnlySpan<byte> parameter and return void",
-            "Class '{0}' contains a SeralizeInternal method but it does not match the required signature of 'void SerializeInternal(ReadOnlySpan<byte> buffer)', instead the first argument is of type {1}",
+            "Custom serialization method must have byte[] or Span<byte> parameter and return void",
+            "Class contains a SerializeInternal method but it does not match the required signature: 'void SerializeInternal(byte[] buffer)' or 'void SerializeInternal(Span<byte> buffer)'",
             "Usage",
             DiagnosticSeverity.Error,
             isEnabledByDefault: true,
-            description: "Custom serialization methods named SerializeInternal must have a single parameter of type ReadOnlySpan<byte> and return void.");
+            description: "Custom serialization methods named SerializeInternal must have a single parameter of type byte[] or Span<byte> and return void.");
 
 
         public static readonly DiagnosticDescriptor FieldCannotBeReadonly = new DiagnosticDescriptor(
@@ -94,5 +114,14 @@ namespace AtemSharp.CodeGenerators
             description: "Fields marked with DeserializedFieldAttribute or SerializedFieldAttribute must not be public."
         );
 
+        public static readonly DiagnosticDescriptor CustomSerializationNoPropertyConflict = new DiagnosticDescriptor(
+            "GEN010",
+            "CustomSerializationAttribute and NoPropertyAttribute conflict",
+            "Field '{0}' cannot have both CustomSerializationAttribute and NoPropertyAttribute",
+            "Usage",
+            DiagnosticSeverity.Error,
+            isEnabledByDefault: true,
+            description: "A field cannot have both CustomSerializationAttribute and NoPropertyAttribute. Remove one of them."
+        );
     }
 }
