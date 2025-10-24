@@ -110,7 +110,6 @@ namespace AtemSharp.CodeGenerators.Deserialization
             var isDouble = fieldType == "double" || fieldType == "System.Double";
             var extensionMethod = Helpers.GetSerializationMethod(f);
             var scalingFactor = Helpers.GetScalingFactor(f);
-            var isEnum = f.Type.TypeKind == TypeKind.Enum;
 
             if (extensionMethod is null)
             {
@@ -120,7 +119,8 @@ namespace AtemSharp.CodeGenerators.Deserialization
             }
 
             var propertyCode = string.Empty;
-            if (!f.GetAttributes().Any(a => a.AttributeClass?.Name == "NoPropertyAttribute"))
+            var hasProperty = !f.GetAttributes().Any(a => a.AttributeClass?.Name == "NoPropertyAttribute");
+            if (hasProperty)
             {
                 var template = Helpers.LoadTemplate("DeserializedField_FullProperty.sbn", spc);
                 if (template is null) return null;
@@ -143,7 +143,7 @@ namespace AtemSharp.CodeGenerators.Deserialization
 
             var serializationCode = ScribanLite.Render(serializationTemplate, new Dictionary<string, object>
             {
-                { "propertyName", propertyName },
+                { "propertyName", hasProperty ? propertyName : f. },
                 { "fieldType", fieldType },
                 { "extensionMethod", extensionMethod },
                 { "offset", offset },
