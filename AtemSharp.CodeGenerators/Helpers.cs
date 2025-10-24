@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,41 @@ namespace AtemSharp.CodeGenerators
 {
     public static class Helpers
     {
+        private static readonly IReadOnlyDictionary<string, string> SerializationMethods =
+            new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
+            {
+                { "Boolean", "Boolean" },
+                { "Byte", "UInt8" },
+                { "UInt8",  "UInt8" },
+                { "SByte", "Int8"},
+                { "Int8", "Int8" },
+                { "Int16", "Int16BigEndian" },
+                { "UInt16", "UInt16BigEndian" },
+                { "Int32", "Int32BigEndian" },
+                { "UInt32", "UInt32BigEndian" },
+                { "Int64", "Int64BigEndian" },
+            };
+
+        private static readonly IReadOnlyDictionary<string, string> SerializationMethodTypes =
+            new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
+            {
+                { "Boolean", "bool" },
+                { "UInt8", "byte" },
+                { "Int8", "sbyte" },
+                { "Int16BigEndian", "short" },
+                { "UInt16BigEndian", "ushort" },
+                { "Int32BigEndian", "int" },
+                { "UInt32BigEndian", "uint" },
+                { "Int64BigEndian", "long" },
+            };
+
+        public static string GetExtensionMethodType(string extensionMethodName)
+        {
+            return SerializationMethodTypes.TryGetValue(extensionMethodName, out var result)
+                       ? result
+                       : $"object /* No mapping for {extensionMethodName} */";
+        }
+
         public static string? GetSerializationMethod(IFieldSymbol fieldSymbol)
         {
             var typeSymbol = GetSerializedFieldType(fieldSymbol);
@@ -32,30 +68,9 @@ namespace AtemSharp.CodeGenerators
                 }
             }
 
-            switch (name)
-            {
-                case "Boolean":
-                    return "Boolean";
-                case "Byte":
-                case "UInt8":
-                    return "UInt8";
-                case "SByte":
-                case "Int8":
-                    return "Int8";
-                case "Int16":
-                    return "Int16BigEndian";
-                case "UInt16":
-                    return "UInt16BigEndian";
-                case "Int32":
-                    return "Int32BigEndian";
-                case "UInt32":
-                    return "UInt32BigEndian";
-                case "Int64":
-                    return "Int64BigEndian";
-                // Add more mappings as needed
-                default:
-                    return null;
-            }
+            return SerializationMethods.TryGetValue(name, out string value)
+                       ? value
+                       : $"Unknown/* For {name} */";
         }
 
         public static ITypeSymbol GetSerializedFieldType(IFieldSymbol fieldSymbol)
@@ -243,20 +258,6 @@ namespace AtemSharp.CodeGenerators
             return arg.Value?.ToString();
         }
 
-        public static string GetExtensionMethodType(string extensionMethodName)
-        {
-            // Simple mapping for known extension method names
-            // Extend this mapping as needed for new methods
-            return extensionMethodName switch
-            {
-                "Boolean" => "bool",
-                "UInt8" => "byte",
-                "UInt16BigEndian" => "ushort",
-                "Int16BigEndian" => "short",
-                "UInt32BigEndian" => "uint",
-                "Int32BigEndian" => "int",
-                _ => "object" // fallback type
-            };
-        }
+
     }
 }
