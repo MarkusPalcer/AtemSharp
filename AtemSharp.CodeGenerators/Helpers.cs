@@ -91,6 +91,14 @@ namespace AtemSharp.CodeGenerators
 
             // Fallback to the field's type if no attribute or invalid argument
             typeSymbol ??= fieldSymbol.Type;
+
+            // If the type is double, return the type symbol for System.Int16 (short)
+            if (typeSymbol.Name == "Double" || typeSymbol.ToDisplayString() == "double" || typeSymbol.ToDisplayString() == "System.Double")
+            {
+                var int16Type = fieldSymbol.ContainingType.ContainingAssembly.GetTypeByMetadataName("System.Int16");
+                if (int16Type != null)
+                    return int16Type;
+            }
             return typeSymbol;
         }
 

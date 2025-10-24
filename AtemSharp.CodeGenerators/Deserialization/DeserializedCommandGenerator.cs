@@ -110,6 +110,8 @@ namespace AtemSharp.CodeGenerators.Deserialization
             var isDouble = fieldType == "double" || fieldType == "System.Double";
             var extensionMethod = Helpers.GetSerializationMethod(f);
             var scalingFactor = Helpers.GetScalingFactor(f);
+            var serializedType = Helpers.GetSerializedFieldType(f);
+            var isEnum = serializedType.TypeKind == TypeKind.Enum;
 
             if (extensionMethod is null)
             {
@@ -124,11 +126,12 @@ namespace AtemSharp.CodeGenerators.Deserialization
             {
                 var template = Helpers.LoadTemplate("DeserializedField_FullProperty.sbn", spc);
                 if (template is null) return null;
-                propertyCode = ScribanLite.Render(template, new Dictionary<string, object>()
+                propertyCode = ScribanLite.Render(template, new Dictionary<string, object>
                 {
                     { "propertyName", propertyName },
                     { "fieldName", f.Name },
                     { "fieldType", fieldType },
+                    { "serializedType", serializedType },
                     { "msdoc", Helpers.GetFieldMsDocComment(f)}
                 });
             }
@@ -138,7 +141,8 @@ namespace AtemSharp.CodeGenerators.Deserialization
 
             var scalingCode = isDouble ? $"/ {scalingLiteral}" : string.Empty;
 
-            var serializationTemplate = Helpers.LoadTemplate("DeserializedField_Deserialization.sbn", spc);
+
+            var serializationTemplate = isEnum ? Helpers.LoadTemplate("DeserializedField_EnumDeserialization.sbn", spc) : Helpers.LoadTemplate("DeserializedField_Deserialization.sbn", spc);
             if (serializationTemplate is null) return null;
 
             var serializationCode = ScribanLite.Render(serializationTemplate, new Dictionary<string, object>
@@ -148,6 +152,7 @@ namespace AtemSharp.CodeGenerators.Deserialization
                 { "extensionMethod", extensionMethod },
                 { "offset", offset },
                 { "scaling", scalingCode },
+                { "serializedType",  serializedType },
                 { "customScalingFunction", Helpers.GetAttributeStringValue(f, "CustomScalingAttribute") ?? string.Empty },
             });
 
