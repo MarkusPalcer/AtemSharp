@@ -143,7 +143,7 @@ namespace AtemSharp.CodeGenerators.Deserialization
 
             var serializationCode = ScribanLite.Render(serializationTemplate, new Dictionary<string, object>
             {
-                { "propertyName", hasProperty ? propertyName : f. },
+                { "propertyName", hasProperty ? propertyName : f.Name },
                 { "fieldType", fieldType },
                 { "extensionMethod", extensionMethod },
                 { "offset", offset },
