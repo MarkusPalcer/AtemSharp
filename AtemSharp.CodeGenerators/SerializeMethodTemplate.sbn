@@ -6,6 +6,8 @@ using static AtemSharp.Lib.SerializationExtensions;
 
 namespace {{namespace}};
 
+#nullable enable annotations
+
 public partial class {{className}}
 {
 {% for field in serializedFields %}
@@ -25,3 +27,4 @@ public partial class {{className}}
         return buffer;
     }
 }
+#nullable restore

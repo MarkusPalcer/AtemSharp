@@ -5,6 +5,8 @@ using AtemSharp.Lib;
 
 namespace {{namespace}};
 
+#nullable enable annotations
+
 public partial class {{className}}
 {
     {% for field in deserializedFields %}
@@ -22,3 +24,4 @@ public partial class {{className}}
         return result;
     }
 }
+#nullable restore

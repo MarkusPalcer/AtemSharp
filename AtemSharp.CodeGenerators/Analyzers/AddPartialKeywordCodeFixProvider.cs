@@ -41,8 +41,8 @@ namespace AtemSharp.CodeGenerators.Analyzers
             var newModifiers = classDecl.Modifiers.Add(SyntaxFactory.Token(SyntaxKind.PartialKeyword));
             var newClassDecl = classDecl.WithModifiers(newModifiers);
             var root = await document.GetSyntaxRootAsync(cancellationToken);
-            var newRoot = root.ReplaceNode(classDecl, newClassDecl);
-            return document.WithSyntaxRoot(newRoot);
+            var newRoot = root?.ReplaceNode(classDecl, newClassDecl);
+            return newRoot != null ? document.WithSyntaxRoot(newRoot) : document;
         }
     }
 }

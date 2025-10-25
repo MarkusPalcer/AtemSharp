@@ -102,26 +102,14 @@ namespace AtemSharp.CodeGenerators.Deserialization
             return false;
         }
 
-        private static DeserializedField? ProcessField(IFieldSymbol f, SourceProductionContext spc)
+        private static string? CreatePropertyCode(IFieldSymbol f, SourceProductionContext spc)
         {
-            var offset = Helpers.GetDeserializationOffest(f);
             var propertyName = Helpers.GetPropertyName(f);
             var fieldType = Helpers.GetFieldType(f);
-            var isDouble = fieldType == "double" || fieldType == "System.Double";
-            var extensionMethod = Helpers.GetSerializationMethod(f);
-            var scalingFactor = Helpers.GetScalingFactor(f);
             var serializedType = Helpers.GetSerializedFieldType(f);
-            var isEnum = serializedType.TypeKind == TypeKind.Enum;
-
-            if (extensionMethod is null)
-            {
-                var descriptor = DiagnosticDescriptors.CreateFieldTypeError(f);
-                spc.ReportDiagnostic(Diagnostic.Create(descriptor, f.Locations.FirstOrDefault() ?? Location.None));
-                return null;
-            }
+            var hasProperty = !f.GetAttributes().Any(a => a.AttributeClass?.Name == "NoPropertyAttribute");
 
             var propertyCode = string.Empty;
-            var hasProperty = !f.GetAttributes().Any(a => a.AttributeClass?.Name == "NoPropertyAttribute");
             if (hasProperty)
             {
                 var template = Helpers.LoadTemplate("DeserializedField_FullProperty.sbn", spc);
@@ -136,6 +124,30 @@ namespace AtemSharp.CodeGenerators.Deserialization
                 });
             }
 
+            return propertyCode;
+        }
+
+        private static string? CreateDeserializationCode(IFieldSymbol f, SourceProductionContext spc)
+        {
+            if (f.GetAttributes().Any(a => a.AttributeClass?.Name == "CustomDeserializationAttribute")) return string.Empty;
+
+            var offset = Helpers.GetDeserializationOffest(f);
+            var propertyName = Helpers.GetPropertyName(f);
+            var fieldType = Helpers.GetFieldType(f);
+            var isDouble = fieldType == "double" || fieldType == "System.Double";
+            var extensionMethod = Helpers.GetSerializationMethod(f);
+            var scalingFactor = Helpers.GetScalingFactor(f);
+            var serializedType = Helpers.GetSerializedFieldType(f);
+            var isEnum = serializedType.TypeKind == TypeKind.Enum;
+            var hasProperty = !f.GetAttributes().Any(a => a.AttributeClass?.Name == "NoPropertyAttribute");
+
+            if (extensionMethod is null)
+            {
+                var descriptor = DiagnosticDescriptors.CreateFieldTypeError(f);
+                spc.ReportDiagnostic(Diagnostic.Create(descriptor, f.Locations.FirstOrDefault() ?? Location.None));
+                return null;
+            }
+
             var scalingLiteral =
                 scalingFactor.ToString("0.0#############################", System.Globalization.CultureInfo.InvariantCulture);
 
@@ -145,7 +157,7 @@ namespace AtemSharp.CodeGenerators.Deserialization
             var serializationTemplate = isEnum ? Helpers.LoadTemplate("DeserializedField_EnumDeserialization.sbn", spc) : Helpers.LoadTemplate("DeserializedField_Deserialization.sbn", spc);
             if (serializationTemplate is null) return null;
 
-            var serializationCode = ScribanLite.Render(serializationTemplate, new Dictionary<string, object>
+            return ScribanLite.Render(serializationTemplate, new Dictionary<string, object>
             {
                 { "propertyName", hasProperty ? propertyName : f.Name },
                 { "fieldType", fieldType },
@@ -155,6 +167,13 @@ namespace AtemSharp.CodeGenerators.Deserialization
                 { "serializedType",  serializedType },
                 { "customScalingFunction", Helpers.GetAttributeStringValue(f, "CustomScalingAttribute") ?? string.Empty },
             });
+        }
+
+        private static DeserializedField? ProcessField(IFieldSymbol f, SourceProductionContext spc)
+        {
+            var propertyCode = CreatePropertyCode(f, spc);
+            var serializationCode = CreateDeserializationCode(f, spc);
+            if (serializationCode is null || propertyCode is null) return null;
 
             return new DeserializedField
             {

@@ -23,6 +23,7 @@ namespace AtemSharp.CodeGenerators
                 { "Int32", "Int32BigEndian" },
                 { "UInt32", "UInt32BigEndian" },
                 { "Int64", "Int64BigEndian" },
+                { "Uint64", "UInt64BigEndian" },
             };
 
         private static readonly IReadOnlyDictionary<string, string> SerializationMethodTypes =
@@ -36,6 +37,7 @@ namespace AtemSharp.CodeGenerators
                 { "Int32BigEndian", "int" },
                 { "UInt32BigEndian", "uint" },
                 { "Int64BigEndian", "long" },
+                { "UInt64BigEndian", "ulong" },
             };
 
         public static string GetExtensionMethodType(string extensionMethodName)
@@ -71,6 +73,36 @@ namespace AtemSharp.CodeGenerators
             return SerializationMethods.TryGetValue(name, out string value)
                        ? value
                        : $"Unknown/* For {name} */";
+        }
+
+        public static string? GetUnderlyingTypeName(ITypeSymbol enumType)
+        {
+            if (enumType.TypeKind == TypeKind.Enum)
+            {
+                var namedType = enumType as INamedTypeSymbol;
+                if (namedType != null)
+                {
+                    var underlying = namedType.EnumUnderlyingType;
+                    // If the enum does not have an explicit underlying type, EnumUnderlyingType is null
+                    if (underlying != null)
+                    {
+                        // If the underlying type is Int32 (the default), check if it's explicit
+                        // If the enum declaration does not specify, EnumUnderlyingType is still Int32
+                        // So, we need to check if the enum declaration explicitly specifies the type
+                        // Unfortunately, Roslyn does not provide a direct way to check if it's explicit
+                        // So, we return null if Int32, otherwise the name
+                        if (underlying.SpecialType == SpecialType.System_Int32)
+                        {
+                            // Could be implicit, so return null
+                            return null;
+                        }
+                        return underlying.Name;
+                    }
+                }
+                return null;
+            }
+            // Not an enum, just return the type name
+            return enumType.Name;
         }
 
         public static ITypeSymbol GetSerializedFieldType(IFieldSymbol fieldSymbol)
