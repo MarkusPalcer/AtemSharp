@@ -37,7 +37,6 @@ src\commands\MixEffects\CutCommand.ts - DCut
 src\commands\Recording\RecordingDiskCommand.ts - RMSp, RTMD
 src\commands\Recording\RecordingDurationCommand.ts - RMDR, RTMR
 src\commands\Recording\RecordingISOCommand.ts - ISOi
-src\commands\Recording\RecordingStatusCommand.ts - RcTM, RTMS
 src\commands\Settings\MediaPool.ts - CMPS, MPSp
 src\commands\Streaming\StreamingAudioBitratesCommand.ts - STAB
 src\commands\Streaming\StreamingDurationCommand.ts - SRDR, SRST
