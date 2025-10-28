@@ -1,0 +1,37 @@
+using AtemSharp.Attributes;
+using AtemSharp.Enums;
+using AtemSharp.Helpers;
+using AtemSharp.Lib;
+using AtemSharp.State;
+
+namespace AtemSharp.Commands.Recording;
+
+[Command("RMSu", ProtocolVersion.V8_1_1)]
+public partial class RecordingSettingsUpdateCommand : IDeserializedCommand
+{
+    [DeserializedField(0)]
+    [CustomDeserialization]
+    private string _fileName;
+
+    [DeserializedField(128)]
+    private uint _workingSet1DiskId;
+
+    [DeserializedField(132)]
+    private uint _workingSet2DiskId;
+
+    [DeserializedField(136)]
+    private bool _recordInAllCameras;
+
+    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
+    {
+        _fileName = rawCommand.ReadString(0, 128);
+    }
+
+    public void ApplyToState(AtemState state)
+    {
+        state.Recording.FileName = _fileName;
+        state.Recording.WorkingSet1DiskId = _workingSet1DiskId;
+        state.Recording.WorkingSet2DiskId = _workingSet2DiskId;
+        state.Recording.RecordInAllCameras = _recordInAllCameras;
+    }
+}

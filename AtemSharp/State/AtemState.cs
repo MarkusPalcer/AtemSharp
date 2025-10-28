@@ -38,4 +38,5 @@ public class AtemState
     public MediaState Media { get; } = new();
 
     public MacroState Macros { get; } = new();
+    public RecordingState Recording { get; } = new();
 }
