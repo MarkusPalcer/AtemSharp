@@ -1,4 +1,4 @@
-namespace AtemSharp.State;
+namespace AtemSharp.State.Recording;
 
 public class RecordingState
 {
@@ -9,4 +9,5 @@ public class RecordingState
     public RecordingStatus Status { get; internal set; }
     public RecordingError Error { get; internal set; }
     public uint? RecordingTimeAvailable { get; internal set; }
+    public RecordingDuration Duration { get; } = new();
 }

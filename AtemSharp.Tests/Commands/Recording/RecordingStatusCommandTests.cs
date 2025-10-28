@@ -1,4 +1,5 @@
 using AtemSharp.Commands.Recording;
+using AtemSharp.State.Recording;
 
 namespace AtemSharp.Tests.Commands.Recording;
 
@@ -16,7 +17,7 @@ public class RecordingStatusCommandTests : SerializedCommandTestBase<RecordingSt
         {
             Recording =
             {
-                Status = testCase.Command.IsRecording ? AtemSharp.State.RecordingStatus.Recording : AtemSharp.State.RecordingStatus.Idle
+                Status = testCase.Command.IsRecording ? RecordingStatus.Recording : RecordingStatus.Idle
             }
         };
         return new RecordingStatusCommand(state);

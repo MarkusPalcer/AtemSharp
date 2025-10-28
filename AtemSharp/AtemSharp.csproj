@@ -29,8 +29,4 @@
     <ItemGroup>
         <Analyzer Include="..\AtemSharp.CodeGenerators\bin\$(Configuration)\netstandard2.0\AtemSharp.CodeGenerators.dll" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="State\Recording\" />
-    </ItemGroup>
 </Project>

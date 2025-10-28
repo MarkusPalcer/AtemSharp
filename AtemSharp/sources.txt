@@ -35,7 +35,6 @@ src\commands\MixEffects\Key\MixEffectKeyTypeSetCommand.ts - CKTp
 src\commands\MixEffects\AutoTransitionCommand.ts - DAut
 src\commands\MixEffects\CutCommand.ts - DCut
 src\commands\Recording\RecordingDiskCommand.ts - RMSp, RTMD
-src\commands\Recording\RecordingDurationCommand.ts - RMDR, RTMR
 src\commands\Recording\RecordingISOCommand.ts - ISOi
 src\commands\Settings\MediaPool.ts - CMPS, MPSp
 src\commands\Streaming\StreamingAudioBitratesCommand.ts - STAB

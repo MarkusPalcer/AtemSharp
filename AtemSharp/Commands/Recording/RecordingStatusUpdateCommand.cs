@@ -1,6 +1,7 @@
 using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
+using AtemSharp.State.Recording;
 
 namespace AtemSharp.Commands.Recording;
 

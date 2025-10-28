@@ -1,4 +1,4 @@
-namespace AtemSharp.State;
+namespace AtemSharp.State.Recording;
 
 [Flags]
 public enum RecordingStatus : ushort {
