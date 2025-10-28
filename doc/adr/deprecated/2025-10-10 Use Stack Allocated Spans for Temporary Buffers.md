@@ -128,5 +128,6 @@ public static ProductIdentifierCommand Deserialize(Stream stream, ProtocolVersio
 
 ## History
 
+- **Deprecated** 2025-10-28
 - **Accepted** 2025-10-10
 - **Proposed** 2025-10-10

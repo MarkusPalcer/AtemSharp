@@ -1,5 +1,7 @@
 # Serialization and Deserialization
 
+** Superseeded by [new ADR](../2025-10-28%20Serialization%20and%20Deserialization.md) **
+
 - Serialization is handled differently than in the TS original
 - Writing is done via MemoryStream & BinaryWriter instead of writing to an array
 - Helper methods ensure that complex values are serialized in the correct byte order (i.e. identical to the TS-code)
@@ -78,5 +80,6 @@ This approach ensures that the serialized output is byte-for-byte identical to t
 
 # History
 
+- Superseeded 2025-10-28
 - Accepted 2025-10-09
 - Proposed 2025-10-09

@@ -1,7 +1,7 @@
 # Floating-Point Precision in Command Testing
 
 Test floating-point comparisons must account for precision limitations when ATEM protocol values are scaled or converted, 
-using the appropriate `AreApproximatelyEqual` overload with decimal place rounding to match the actual precision available in the binary protocol.
+using the appropriate `.Within()` overload with decimal place rounding to match the actual precision available in the binary protocol.
 
 ## Context
 
@@ -51,5 +51,6 @@ This approach:
 
 ## History
 
+- Deprecated 2025-10-28 in favor of `Assert.That(x, Is.EqualTo(y).Within(z))`
 - Proposed 2025-10-12
 - Approved 2025-10-12

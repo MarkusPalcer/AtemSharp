@@ -192,5 +192,6 @@ var mixEffect = AtemStateUtil.GetMixEffect(state, index);  // Uses GetOrCreate i
 
 ## History
 
-- **Accepted** 2025-10-11 - Implementation completed with comprehensive tests and documentation
-- **Proposed** 2025-10-11 - ADR created after successful implementation and testing
+- **Deprecated** 2025-10-28 in favor of real arrays that are filled as soon as their size is known
+- **Accepted** 2025-10-11
+- **Proposed** 2025-10-11
