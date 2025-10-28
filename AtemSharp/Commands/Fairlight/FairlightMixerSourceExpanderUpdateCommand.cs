@@ -1,48 +1,66 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
-using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("AIXP")]
-public class FairlightMixerSourceExpanderUpdateCommand : FairlightMixerSourceUpdateCommandBase
+public partial class FairlightMixerSourceExpanderUpdateCommand : IDeserializedCommand
 {
+    [DeserializedField(0)]
+    private ushort _inputId;
 
-    public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion version)
+    [DeserializedField(8)]
+    private long _sourceId;
+
+    [DeserializedField(36)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100)]
+    private double _release;
+
+    [DeserializedField(32)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100)]
+    private double _hold;
+
+    [DeserializedField(28)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100)]
+    private double _attack;
+
+    [DeserializedField(26)]
+    [SerializedType(typeof(short))]
+    [ScalingFactor(100)]
+    private double _ratio;
+
+    [DeserializedField(24)]
+    [SerializedType(typeof(short))]
+    [ScalingFactor(100)]
+    private double _range;
+
+    [DeserializedField(20)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100)]
+    private double _threshold;
+
+    [DeserializedField(17)]
+    private bool _gateEnabled;
+
+    [DeserializedField(16)]
+    private bool _expanderEnabled;
+
+    public void ApplyToState(AtemState state)
     {
-        return new FairlightMixerSourceExpanderUpdateCommand
+        var audio = state.GetFairlight();
+
+        if (!audio.Inputs.TryGetValue(InputId, out var input))
         {
-            ExpanderEnabled = rawCommand.ReadBoolean(16),
-            GateEnabled = rawCommand.ReadBoolean(17),
-            Threshold = rawCommand.ReadInt32BigEndian(20) / 100.0,
-            Range = rawCommand.ReadInt16BigEndian(24) / 100.0,
-            Ratio = rawCommand.ReadInt16BigEndian(26) / 100.0,
-            Attack = rawCommand.ReadInt32BigEndian(28) / 100.0,
-            Hold = rawCommand.ReadInt32BigEndian(32) / 100.0,
-            Release = rawCommand.ReadInt32BigEndian(36) / 100.0,
-        }.DeserializeIds(rawCommand);
-    }
+            throw new IndexOutOfRangeException($"Input ID {InputId} does not exist");
+        }
 
-    public double Release { get; set; }
+        var source = input.Sources.GetOrCreate(SourceId);
+        source.Id = SourceId;
+        source.InputId = InputId;
 
-    public double Hold { get; set; }
-
-    public double Attack { get; set; }
-
-    public double Ratio { get; set; }
-
-    public double Range { get; set; }
-
-    public double Threshold { get; set; }
-
-    public bool GateEnabled { get; set; }
-
-    public bool ExpanderEnabled { get; set; }
-
-
-    protected override void ApplyToSource(Source source)
-    {
         source.Dynamics.Expander.Enabled = ExpanderEnabled;
         source.Dynamics.Expander.GateEnabled = GateEnabled;
         source.Dynamics.Expander.Threshold = Threshold;

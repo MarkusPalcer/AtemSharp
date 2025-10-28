@@ -24,5 +24,7 @@ public class VideoState
     /// <summary>
     /// Auxiliary output sources
     /// </summary>
-    public Dictionary<int, int> Auxiliaries { get; set; } = [];
+    // TODO: Check if it can be converted to an array
+    // TODO: Introduce type for auxiliary output and pass this to AuxSourceCommand instead of index
+    public Dictionary<byte, ushort> Auxiliaries { get; set; } = [];
 }

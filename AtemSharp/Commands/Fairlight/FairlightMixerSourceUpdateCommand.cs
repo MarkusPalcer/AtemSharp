@@ -1,72 +1,95 @@
-using AtemSharp.Enums;
 using AtemSharp.Enums.Fairlight;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("FASP")]
-public class FairlightMixerSourceUpdateCommand  : FairlightMixerSourceUpdateCommandBase
+public partial class FairlightMixerSourceUpdateCommand  : IDeserializedCommand
 {
-    public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion version)
+    [DeserializedField(0)]
+    private ushort _inputId;
+
+    [DeserializedField(8)]
+    private long _sourceId;
+
+    [DeserializedField(49)]
+    private FairlightAudioMixOption _mixOption;
+
+    [DeserializedField(48)]
+    [SerializedType(typeof(FairlightAudioMixOption))]
+    [CustomScaling("AtemUtil.GetComponents")]
+    private FairlightAudioMixOption[] _supportedMixOptions = [];
+
+    [DeserializedField(44)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100)]
+    private double _faderGain;
+
+    [DeserializedField(40)]
+    [SerializedType(typeof(short))]
+    [ScalingFactor(100)]
+    private double _balance;
+
+    [DeserializedField(36)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100)]
+    private double _makeUpGain;
+
+    [DeserializedField(32)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100)]
+    private double _equalizerGain;
+
+    [DeserializedField(29)]
+    private bool _equalizerEnabled;
+
+    [DeserializedField(28)]
+    private byte _bandCount;
+
+    [DeserializedField(26)]
+    [SerializedType(typeof(short))]
+    [ScalingFactor(100)]
+    private double _stereoSimulation;
+
+    [DeserializedField(24)]
+    private bool _hasStereoSimulation;
+
+    [DeserializedField(18)]
+    private byte _framesDelay;
+
+    [DeserializedField(17)]
+    private byte _maxFramesDelay;
+
+    [DeserializedField(16)]
+    private FairlightAudioSourceType _sourceType;
+
+    [DeserializedField(20)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100)]
+    private double _gain;
+
+    public void ApplyToState(AtemState state)
     {
-        return new FairlightMixerSourceUpdateCommand
+        var audio = state.GetFairlight();
+
+        if (!audio.Inputs.TryGetValue(InputId, out var input))
         {
-            SourceType = (FairlightAudioSourceType)rawCommand.ReadUInt8(16),
-            MaxFramesDelay = rawCommand.ReadUInt8(17),
-            FramesDelay = rawCommand.ReadUInt8(18),
-            Gain = rawCommand.ReadInt32BigEndian(20) / 100.0,
-            HasStereoSimulation = rawCommand.ReadBoolean(24),
-            StereoSimulation = rawCommand.ReadInt16BigEndian(26) / 100.0,
-            BandCount = rawCommand.ReadUInt8(28),
-            EqualizerEnabled = rawCommand.ReadBoolean(29),
-            EqualizerGain = rawCommand.ReadInt32BigEndian(32) / 100.0,
-            MakeUpGain = rawCommand.ReadInt32BigEndian(36) / 100.0,
-            Balance = rawCommand.ReadInt16BigEndian(40) / 100.0,
-            FaderGain = rawCommand.ReadInt32BigEndian(44) / 100.0,
-            SupportedMixOptions = AtemUtil.GetComponents((FairlightAudioMixOption)rawCommand.ReadUInt8(48)),
-            MixOption = (FairlightAudioMixOption)rawCommand.ReadUInt8(49),
-        }.DeserializeIds(rawCommand);
-    }
+            throw new IndexOutOfRangeException($"Input ID {InputId} does not exist");
+        }
 
-    public FairlightAudioMixOption MixOption { get; set; }
+        var source = input.Sources.GetOrCreate(SourceId);
+        source.Id = SourceId;
+        source.InputId = InputId;
 
-    public required FairlightAudioMixOption[] SupportedMixOptions { get; set; }
-
-    public double FaderGain { get; set; }
-
-    public double Balance { get; set; }
-
-    public double MakeUpGain { get; set; }
-
-    public double EqualizerGain { get; set; }
-
-    public bool EqualizerEnabled { get; set; }
-
-    public byte BandCount { get; set; }
-
-    public double StereoSimulation { get; set; }
-
-    public bool HasStereoSimulation { get; set; }
-
-    public byte FramesDelay { get; set; }
-
-    public byte MaxFramesDelay { get; set; }
-
-    public FairlightAudioSourceType SourceType { get; set; }
-
-    public double Gain { get; set; }
-
-    protected override void ApplyToSource(Source source)
-    {
         source.Equalizer.Enabled = EqualizerEnabled;
         source.Equalizer.Gain = EqualizerGain;
         if (source.Equalizer.Bands.Length  < BandCount)
         {
             source.Equalizer.Bands = AtemStateUtil.CreateArray<SourceEqualizerBand>(BandCount).ForEachWithIndex((band, index) =>
             {
-                band.Index = (byte)index;
+                band.Id = (byte)index;
                 band.InputId = InputId;
                 band.SourceId = SourceId;
             });
@@ -84,4 +107,7 @@ public class FairlightMixerSourceUpdateCommand  : FairlightMixerSourceUpdateComm
         source.SupportedMixOptions = SupportedMixOptions;
         source.MixOption = MixOption;
     }
+
+
+
 }

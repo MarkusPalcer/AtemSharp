@@ -4,7 +4,7 @@ namespace AtemSharp.Enums;
 /// Source availability flags
 /// </summary>
 [Flags]
-public enum SourceAvailability
+public enum SourceAvailability : byte
 {
     None = 0,
     Auxiliary = 1 << 0,

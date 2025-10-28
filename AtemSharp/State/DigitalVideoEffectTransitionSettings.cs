@@ -6,7 +6,7 @@ namespace AtemSharp.State;
 /// DVE transition settings for a mix effect
 /// </summary>
 // ReSharper disable once InconsistentNaming Domain Specific Acronym
-public class DVETransitionSettings
+public class DigitalVideoEffectTransitionSettings
 {
     /// <summary>
     /// Transition rate in frames
@@ -21,7 +21,7 @@ public class DVETransitionSettings
     /// <summary>
     /// DVE effect style
     /// </summary>
-    public DVEEffect Style { get; set; }
+    public DigitalVideoEffect Style { get; set; }
 
     /// <summary>
     /// Fill source input number

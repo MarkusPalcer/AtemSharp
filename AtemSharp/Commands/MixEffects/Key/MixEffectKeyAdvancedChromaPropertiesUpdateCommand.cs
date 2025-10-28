@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Key;
@@ -8,99 +7,83 @@ namespace AtemSharp.Commands.MixEffects.Key;
 /// Command received from ATEM device containing upstream keyer advanced chroma properties update
 /// </summary>
 [Command("KACk")]
-public class MixEffectKeyAdvancedChromaPropertiesUpdateCommand : IDeserializedCommand
+public partial class MixEffectKeyAdvancedChromaPropertiesUpdateCommand : IDeserializedCommand
 {
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>
-    public int MixEffectId { get; init; }
+    [DeserializedField(0)] private byte _mixEffectId;
 
     /// <summary>
     /// Upstream keyer index (0-based)
     /// </summary>
-    public int KeyerId { get; init; }
+    [DeserializedField(1)] private byte _keyerId;
 
     /// <summary>
     /// Foreground level value
     /// </summary>
-    public double ForegroundLevel { get; init; }
+    [DeserializedField(2)] [ScalingFactor(10)]
+    private double _foregroundLevel;
 
     /// <summary>
     /// Background level value
     /// </summary>
-    public double BackgroundLevel { get; init; }
+    [DeserializedField(4)] [ScalingFactor(10)]
+    private double _backgroundLevel;
 
     /// <summary>
     /// Key edge value
     /// </summary>
-    public double KeyEdge { get; init; }
+    [DeserializedField(6)] [ScalingFactor(10)]
+    private double _keyEdge;
 
     /// <summary>
     /// Spill suppression value
     /// </summary>
-    public double SpillSuppression { get; init; }
+    [DeserializedField(8)] [ScalingFactor(10)]
+    private double _spillSuppression;
 
     /// <summary>
     /// Flare suppression value
     /// </summary>
-    public double FlareSuppression { get; init; }
+    [DeserializedField(10)] [ScalingFactor(10)]
+    private double _flareSuppression;
 
     /// <summary>
     /// Brightness adjustment value
     /// </summary>
-    public double Brightness { get; init; }
+    [DeserializedField(12)] [ScalingFactor(10)] [SerializedType(typeof(short))]
+    private double _brightness;
 
     /// <summary>
     /// Contrast adjustment value
     /// </summary>
-    public double Contrast { get; init; }
+    [DeserializedField(14)] [ScalingFactor(10)] [SerializedType(typeof(short))]
+    private double _contrast;
 
     /// <summary>
     /// Saturation adjustment value
     /// </summary>
-    public double Saturation { get; init; }
+    [DeserializedField(16)] [ScalingFactor(10)]
+    private double _saturation;
 
     /// <summary>
     /// Red color adjustment value
     /// </summary>
-    public double Red { get; init; }
+    [DeserializedField(18)] [ScalingFactor(10)] [SerializedType(typeof(short))]
+    private double _red;
 
     /// <summary>
     /// Green color adjustment value
     /// </summary>
-    public double Green { get; init; }
+    [DeserializedField(20)] [ScalingFactor(10)] [SerializedType(typeof(short))]
+    private double _green;
 
     /// <summary>
     /// Blue color adjustment value
     /// </summary>
-    public double Blue { get; init; }
-
-    /// <summary>
-    /// Deserialize the command from binary stream
-    /// </summary>
-    public static MixEffectKeyAdvancedChromaPropertiesUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        // Read all property values as 16-bit integers and divide by 10 (to match TypeScript implementation scaling)
-
-        // Color adjustment values can be negative, so use signed 16-bit (also scaled by 10)
-
-        return new MixEffectKeyAdvancedChromaPropertiesUpdateCommand
-        {
-            MixEffectId = rawCommand.ReadUInt8(0),
-            KeyerId = rawCommand.ReadUInt8(1),
-            ForegroundLevel = rawCommand.ReadUInt16BigEndian(2) / 10.0,
-            BackgroundLevel = rawCommand.ReadUInt16BigEndian(4) / 10.0,
-            KeyEdge = rawCommand.ReadUInt16BigEndian(6) / 10.0,
-            SpillSuppression = rawCommand.ReadUInt16BigEndian(8) / 10.0,
-            FlareSuppression = rawCommand.ReadUInt16BigEndian(10) / 10.0,
-            Brightness = rawCommand.ReadInt16BigEndian(12) / 10.0,
-            Contrast = rawCommand.ReadInt16BigEndian(14) / 10.0,
-            Saturation = rawCommand.ReadUInt16BigEndian(16) / 10.0,
-            Red = rawCommand.ReadInt16BigEndian(18) / 10.0,
-            Green = rawCommand.ReadInt16BigEndian(20) / 10.0,
-            Blue = rawCommand.ReadInt16BigEndian(22) / 10.0
-        };
-    }
+    [DeserializedField(22)] [ScalingFactor(10)] [SerializedType(typeof(short))]
+    private double _blue;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
@@ -119,12 +102,7 @@ public class MixEffectKeyAdvancedChromaPropertiesUpdateCommand : IDeserializedCo
 
         // Get or create the upstream keyer
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerId);
-        keyer.Index = KeyerId;
-
-        // Get or create the advanced chroma settings
-        keyer.AdvancedChromaSettings ??= new UpstreamKeyerAdvancedChromaSettings();
-
-        keyer.AdvancedChromaSettings.Properties ??= new UpstreamKeyerAdvancedChromaProperties();
+        keyer.Id = KeyerId;
 
         // Update the advanced chroma properties
         var properties = keyer.AdvancedChromaSettings.Properties;

@@ -1,33 +1,26 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("FASD")]
-public class FairlightMixerSourceDeleteCommand : IDeserializedCommand
+public partial class FairlightMixerSourceDeleteCommand : IDeserializedCommand
 {
-    public ushort InputId { get; set; }
-    public long SourceId { get; set; }
+    [DeserializedField(0)]
+    private ushort _inputId;
 
-    public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion version)
-    {
-        return new FairlightMixerSourceDeleteCommand
-        {
-            InputId = rawCommand.ReadUInt16BigEndian(0),
-            SourceId = rawCommand.ReadInt64BigEndian(8)
-        };
-    }
+    [DeserializedField(8)]
+    private long _sourceId;
 
     public void ApplyToState(AtemState state)
     {
         var audio = state.GetFairlight();
 
-        if (!audio.Inputs.TryGetValue(InputId, out var input))
+        if (!audio.Inputs.TryGetValue(_inputId, out var input))
         {
-            throw new IndexOutOfRangeException($"Input ID {InputId} does not exist");
+            throw new IndexOutOfRangeException($"Input ID {_inputId} does not exist");
         }
 
-        input.Sources.Remove(SourceId);
+        input.Sources.Remove(_sourceId);
     }
 }

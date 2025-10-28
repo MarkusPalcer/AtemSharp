@@ -1,6 +1,6 @@
 namespace AtemSharp.Enums;
 
-public enum MediaSourceType {
+public enum MediaSourceType : byte {
     Still = 1,
     Clip,
 }

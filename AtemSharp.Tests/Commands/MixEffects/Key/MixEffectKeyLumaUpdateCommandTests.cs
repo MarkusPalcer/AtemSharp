@@ -9,8 +9,8 @@ public class MixEffectKeyLumaUpdateCommandTests : DeserializedCommandTestBase<Mi
 {
     public class CommandData : CommandDataBase
     {
-        public int MixEffectIndex { get; set; }
-        public int KeyerIndex { get; set; }
+        public byte MixEffectIndex { get; set; }
+        public byte KeyerIndex { get; set; }
         public bool PreMultiplied { get; set; }
         public double Clip { get; set; }
         public double Gain { get; set; }

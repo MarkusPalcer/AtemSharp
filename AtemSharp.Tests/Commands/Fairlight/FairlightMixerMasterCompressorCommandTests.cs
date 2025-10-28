@@ -26,24 +26,18 @@ public class FairlightMixerMasterCompressorCommandTests : SerializedCommandTestB
 
     protected override FairlightMixerMasterCompressorCommand CreateSut(TestCaseData testCase)
     {
-        var state = new AtemState
+        var state = new MasterProperties
         {
-            Audio = new FairlightAudioState
+            Dynamics =
             {
-                Master =
+                Compressor =
                 {
-                    Dynamics =
-                    {
-                        Compressor =
-                        {
-                            Enabled = testCase.Command.CompressorEnabled,
-                            Threshold = testCase.Command.Threshold,
-                            Ratio = testCase.Command.Ratio,
-                            Attack = testCase.Command.Attack,
-                            Hold = testCase.Command.Hold,
-                            Release = testCase.Command.Release,
-                        }
-                    }
+                    Enabled = testCase.Command.CompressorEnabled,
+                    Threshold = testCase.Command.Threshold,
+                    Ratio = testCase.Command.Ratio,
+                    Attack = testCase.Command.Attack,
+                    Hold = testCase.Command.Hold,
+                    Release = testCase.Command.Release,
                 }
             }
         };

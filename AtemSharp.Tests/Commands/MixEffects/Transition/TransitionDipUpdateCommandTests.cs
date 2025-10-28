@@ -10,38 +10,15 @@ public class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<Trans
     public class CommandData : CommandDataBase
     {
         public byte Index { get; set; }
-        public int Rate { get; set; }
-        public int Input { get; set; }
+        public byte Rate { get; set; }
+        public ushort Input { get; set; }
     }
 
     protected override void CompareCommandProperties(TransitionDipUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        var failures = new List<string>();
-
-        // Compare Index to MixEffectId - exact match
-        if (!actualCommand.MixEffectId.Equals(expectedData.Index))
-        {
-            failures.Add($"MixEffectId: expected {expectedData.Index}, actual {actualCommand.MixEffectId}");
-        }
-
-        // Compare Rate - exact match (integer value)
-        if (!actualCommand.Rate.Equals(expectedData.Rate))
-        {
-            failures.Add($"Rate: expected {expectedData.Rate}, actual {actualCommand.Rate}");
-        }
-
-        // Compare Input - exact match (integer value)
-        if (!actualCommand.Input.Equals(expectedData.Input))
-        {
-            failures.Add($"Input: expected {expectedData.Input}, actual {actualCommand.Input}");
-        }
-
-        // Assert results
-        if (failures.Count > 0)
-        {
-            Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
-                       string.Join("\n", failures));
-        }
+        Assert.That(actualCommand.MixEffectId, Is.EqualTo(testCase.Command.Index));
+        Assert.That(actualCommand.Rate, Is.EqualTo(testCase.Command.Rate));
+        Assert.That(actualCommand.Input, Is.EqualTo(testCase.Command.Input));
     }
 
     [Test]
@@ -61,10 +38,9 @@ public class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<Trans
             {
                 MixEffects = new Dictionary<int, MixEffect>
                 {
-                    [0] = new MixEffect
+                    [0] = new()
                     {
                         Index = 0,
-                        TransitionSettings = new TransitionSettings()
                     }
                 }
             }
@@ -74,45 +50,9 @@ public class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<Trans
         command.ApplyToState(state);
 
         // Assert
-        Assert.That(state.Video.MixEffects[0].TransitionSettings!.Dip, Is.Not.Null);
-        Assert.That(state.Video.MixEffects[0].TransitionSettings!.Dip!.Rate, Is.EqualTo(75));
-        Assert.That(state.Video.MixEffects[0].TransitionSettings!.Dip!.Input, Is.EqualTo(2048));
-    }
-
-    [Test]
-    public void ApplyToState_MissingTransitionSettings_CreatesNewSettings()
-    {
-        // Arrange
-        var command = new TransitionDipUpdateCommand
-        {
-            MixEffectId = 1,
-            Rate = 100,
-            Input = 3000
-        };
-
-        var state = new AtemState
-        {
-            Video = new VideoState
-            {
-                MixEffects = new Dictionary<int, MixEffect>
-                {
-                    [1] = new MixEffect
-                    {
-                        Index = 1,
-                        TransitionSettings = null // Missing settings
-                    }
-                }
-            }
-        };
-
-        // Act
-        command.ApplyToState(state);
-
-        // Assert
-        Assert.That(state.Video.MixEffects[1].TransitionSettings, Is.Not.Null);
-        Assert.That(state.Video.MixEffects[1].TransitionSettings!.Dip, Is.Not.Null);
-        Assert.That(state.Video.MixEffects[1].TransitionSettings!.Dip!.Rate, Is.EqualTo(100));
-        Assert.That(state.Video.MixEffects[1].TransitionSettings!.Dip!.Input, Is.EqualTo(3000));
+        Assert.That(state.Video.MixEffects[0].TransitionSettings.Dip, Is.Not.Null);
+        Assert.That(state.Video.MixEffects[0].TransitionSettings.Dip.Rate, Is.EqualTo(75));
+        Assert.That(state.Video.MixEffects[0].TransitionSettings.Dip.Input, Is.EqualTo(2048));
     }
 
     [Test]

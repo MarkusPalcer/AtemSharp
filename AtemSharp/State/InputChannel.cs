@@ -11,7 +11,7 @@ public class InputChannel
     /// <summary>
     /// Input identifier/number
     /// </summary>
-    public int InputId { get; set; }
+    public ushort InputId { get; set; }
 
     /// <summary>
     /// Long descriptive name for the input

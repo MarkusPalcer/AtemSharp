@@ -1,23 +1,16 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.FadeToBlack;
 
 [Command("FtbP")]
-public class FadeToBlackRateUpdateCommand : IDeserializedCommand
+public partial class FadeToBlackRateUpdateCommand : IDeserializedCommand
 {
-    public byte MixEffectId { get; init; }
-    public byte Rate { get; init; }
+    [DeserializedField(0)]
+    private byte _mixEffectId;
 
-    public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> data, ProtocolVersion version)
-    {
-        return new FadeToBlackRateUpdateCommand
-        {
-            MixEffectId = data.ReadUInt8(0),
-            Rate = data.ReadUInt8(1)
-        };
-    }
+    [DeserializedField(1)]
+    private byte _rate;
 
     public void ApplyToState(AtemState state)
     {

@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Helpers;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
@@ -8,32 +9,19 @@ namespace AtemSharp.Commands.DeviceProfile;
 /// Mix effect block configuration command received from ATEM
 /// </summary>
 [Command("_MeC")]
-public class MixEffectBlockConfigCommand : IDeserializedCommand
+public partial class MixEffectBlockConfigCommand : IDeserializedCommand
 {
     /// <summary>
     /// Mix effect index
     /// </summary>
-    public byte Index { get; init; }
+    [DeserializedField(0)]
+    private byte _index;
 
     /// <summary>
     /// Number of keyers available in this mix effect
     /// </summary>
-    public byte KeyCount { get; init; }
-
-    /// <summary>
-    /// Deserialize the command from binary stream
-    /// </summary>
-    public static MixEffectBlockConfigCommand Deserialize(ReadOnlySpan<Byte> rawCommand, ProtocolVersion version)
-    {
-        var index = rawCommand.ReadUInt8(0);
-        var keyCount = rawCommand.ReadUInt8(1);
-
-        return new MixEffectBlockConfigCommand
-        {
-            Index = index,
-            KeyCount = keyCount
-        };
-    }
+    [DeserializedField(1)]
+    private  byte _keyCount;
 
     /// <summary>
     /// Apply the command's values to the ATEM state

@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Key;
@@ -8,35 +7,19 @@ namespace AtemSharp.Commands.MixEffects.Key;
 /// Command received from ATEM device containing upstream keyer on-air state update
 /// </summary>
 [Command("KeOn")]
-public class MixEffectKeyOnAirUpdateCommand : IDeserializedCommand
+public partial class MixEffectKeyOnAirUpdateCommand : IDeserializedCommand
 {
-    /// <summary>
-    /// Mix effect index (0-based)
-    /// </summary>
-    public int MixEffectId { get; init; }
+    [DeserializedField(0)]
+    private byte _mixEffectId;
 
-    /// <summary>
-    /// Upstream keyer index (0-based)
-    /// </summary>
-    public int KeyerId { get; init; }
+    [DeserializedField(1)]
+    private byte _keyerId;
 
     /// <summary>
     /// Whether the upstream keyer is on air
     /// </summary>
-    public bool OnAir { get; init; }
-
-    /// <summary>
-    /// Deserialize the command from binary stream
-    /// </summary>
-    public static MixEffectKeyOnAirUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        return new MixEffectKeyOnAirUpdateCommand
-        {
-            MixEffectId = rawCommand.ReadUInt8(0),
-            KeyerId = rawCommand.ReadUInt8(1),
-            OnAir = rawCommand.ReadBoolean(2)
-        };
-    }
+    [DeserializedField(2)]
+    private bool _onAir;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
@@ -55,7 +38,7 @@ public class MixEffectKeyOnAirUpdateCommand : IDeserializedCommand
 
         // Get or create the upstream keyer
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerId);
-        keyer.Index = KeyerId;
+        keyer.Id = KeyerId;
 
         // Update the on-air state
         keyer.OnAir = OnAir;

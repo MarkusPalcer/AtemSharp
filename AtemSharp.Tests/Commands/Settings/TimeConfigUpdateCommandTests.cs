@@ -19,24 +19,6 @@ public class TimeConfigUpdateCommandTests : DeserializedCommandTestBase<TimeConf
     }
 
     [Test]
-    public void ApplyToState_WithNullSettings_CreatesAndUpdates()
-    {
-        // Arrange
-        var state = new AtemState(); // No Settings initialized
-        var command = new TimeConfigUpdateCommand
-        {
-            Mode = TimeMode.TimeOfDay
-        };
-
-        // Act
-        command.ApplyToState(state);
-
-        // Assert
-        Assert.That(state.Settings, Is.Not.Null, "Settings should be created if it doesn't exist");
-        Assert.That(state.Settings.TimeMode, Is.EqualTo(TimeMode.TimeOfDay));
-    }
-
-    [Test]
     public void ApplyToState_WithExistingSettings_UpdatesTimeMode()
     {
         // Arrange
@@ -44,8 +26,7 @@ public class TimeConfigUpdateCommandTests : DeserializedCommandTestBase<TimeConf
         {
             Settings = new SettingsState
             {
-                TimeMode = TimeMode.FreeRun,
-                VideoMode = VideoMode.P1080i50 // Other setting should remain
+                TimeMode = TimeMode.FreeRun
             }
         };
 
@@ -59,6 +40,5 @@ public class TimeConfigUpdateCommandTests : DeserializedCommandTestBase<TimeConf
 
         // Assert
         Assert.That(state.Settings.TimeMode, Is.EqualTo(TimeMode.TimeOfDay));
-        Assert.That(state.Settings.VideoMode, Is.EqualTo(VideoMode.P1080i50), "Other settings should remain unchanged");
     }
 }

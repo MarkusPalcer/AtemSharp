@@ -4,7 +4,7 @@ namespace AtemSharp.Enums;
 /// DVE transition effect types
 /// </summary>
 // ReSharper disable once InconsistentNaming Domain Specific Acronym
-public enum DVEEffect : byte
+public enum DigitalVideoEffect : byte
 {
     SwooshTopLeft = 0,
     SwooshTop = 1,

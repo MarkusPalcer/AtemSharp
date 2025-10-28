@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DownstreamKey;
@@ -8,52 +7,63 @@ namespace AtemSharp.Commands.DownstreamKey;
 /// Command received from ATEM device containing downstream keyer properties
 /// </summary>
 [Command("DskP")]
-public class DownstreamKeyPropertiesCommand : IDeserializedCommand
+public partial class DownstreamKeyPropertiesCommand : IDeserializedCommand
 {
     /// <summary>
     /// Downstream keyer index (0-based)
     /// </summary>
-    public int DownstreamKeyerId { get; init; }
+    [DeserializedField(0)]
+    private byte _downstreamKeyerId;
 
-    /// <summary>
-    /// Downstream keyer properties
-    /// </summary>
-    public DownstreamKeyerProperties Properties { get; init; } = new();
+    [DeserializedField(1)]
+    private bool _tie;
 
-    /// <summary>
-    /// Deserialize the command from binary stream
-    /// </summary>
-    public static DownstreamKeyPropertiesCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        return new DownstreamKeyPropertiesCommand
-        {
-            DownstreamKeyerId = rawCommand.ReadUInt8(0),
-            Properties = new DownstreamKeyerProperties
-            {
-                Tie = rawCommand.ReadBoolean(1),
-                Rate = rawCommand.ReadUInt8(2),
+    [DeserializedField(2)]
+    private byte _rate;
 
-                PreMultiply = rawCommand.ReadBoolean(3),
-                Clip = rawCommand.ReadUInt16BigEndian(4) / 10.0, // Convert from fixed-point to double
-                Gain = rawCommand.ReadUInt16BigEndian(6) / 10.0, // Convert from fixed-point to double
-                Invert = rawCommand.ReadBoolean(8),
+    [DeserializedField(3)]
+    private bool _preMultiply;
 
-                Mask = new DownstreamKeyerMask
-                {
-                    Enabled = rawCommand.ReadBoolean(9),
-                    Top = rawCommand.ReadInt16BigEndian(10) / 1000.0,    // Convert from thousandths
-                    Bottom = rawCommand.ReadInt16BigEndian(12) / 1000.0, // Convert from thousandths
-                    Left = rawCommand.ReadInt16BigEndian(14) / 1000.0,   // Convert from thousandths
-                    Right = rawCommand.ReadInt16BigEndian(16) / 1000.0   // Convert from thousandths
-                }
-            }
-        };
-    }
+    [DeserializedField(4)]
+    [ScalingFactor(10.0)]
+    private double _clip;
+
+    [DeserializedField(6)] [ScalingFactor(10)]
+    private double _gain;
+
+    [DeserializedField(8)] private bool _invert;
+
+    [DeserializedField(9)] private bool _maskEnabled;
+
+    [DeserializedField(10)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
+    private double _maskTop;
+
+    [DeserializedField(12)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
+    private double _maskBottom;
+
+    [DeserializedField(14)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
+    private double _maskLeft;
+
+    [DeserializedField(16)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
+    private double _maskRight;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         // Update the properties
-        state.Video.DownstreamKeyers[DownstreamKeyerId].Properties = Properties;
+        var properties = state.Video.DownstreamKeyers[DownstreamKeyerId].Properties;
+
+        properties.Tie = _tie;
+        properties.Rate = _rate;
+        properties.PreMultiply = _preMultiply;
+        properties.Gain = _gain;
+        properties.Clip = _clip;
+        properties.Invert = _invert;
+
+        properties.Mask.Enabled = _maskEnabled;
+        properties.Mask.Top = _maskTop;
+        properties.Mask.Bottom = _maskBottom;
+        properties.Mask.Left = _maskLeft;
+        properties.Mask.Right = _maskRight;
     }
 }

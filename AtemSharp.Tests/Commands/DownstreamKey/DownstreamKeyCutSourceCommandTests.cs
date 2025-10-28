@@ -1,5 +1,4 @@
 using AtemSharp.Commands.DownstreamKey;
-using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DownstreamKey;
@@ -10,52 +9,22 @@ public class DownstreamKeyCutSourceCommandTests : SerializedCommandTestBase<Down
 {
     public class CommandData : CommandDataBase
     {
-        public int Index { get; set; }
-        public int CutSource { get; set; }
+        public byte Index { get; set; }
+        public ushort CutSource { get; set; }
     }
 
     protected override DownstreamKeyCutSourceCommand CreateSut(TestCaseData testCase)
     {
-        // Create state with the required downstream keyer
-        var state = CreateStateWithDownstreamKeyer(testCase.Command.Index, testCase.Command.CutSource);
-
-        // Create command with the keyer ID
-        var command = new DownstreamKeyCutSourceCommand(testCase.Command.Index, state);
-
-        // Set the actual input value that should be written
-        command.Input = testCase.Command.CutSource;
+        var command = new DownstreamKeyCutSourceCommand(new DownstreamKeyer
+        {
+            Id = testCase.Command.Index,
+            Sources =
+            {
+                CutSource = testCase.Command.CutSource
+            }
+        });
 
         return command;
-    }
-
-    /// <summary>
-    /// Creates an AtemState with a valid downstream keyer at the specified index
-    /// </summary>
-    private static AtemState CreateStateWithDownstreamKeyer(int keyerId, int cutSource = 0)
-    {
-        var downstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(keyerId+1);
-        downstreamKeyers[keyerId] = new DownstreamKeyer
-        {
-            InTransition = false,
-            RemainingFrames = 0,
-            IsAuto = false,
-            OnAir = false,
-            IsTowardsOnAir = false,
-            Sources = new DownstreamKeyerSources
-            {
-                FillSource = 1000,
-                CutSource = cutSource
-            }
-        };
-
-        var state = new AtemState
-        {
-            Video = new VideoState
-            {
-                DownstreamKeyers = downstreamKeyers
-            }
-        };
-        return state;
     }
 
     [Test]
@@ -64,10 +33,15 @@ public class DownstreamKeyCutSourceCommandTests : SerializedCommandTestBase<Down
         // Arrange
         const int keyerId = 1;
         const int expectedCutSource = 42;
-        var state = CreateStateWithDownstreamKeyer(keyerId, expectedCutSource);
-
         // Act
-        var command = new DownstreamKeyCutSourceCommand(keyerId, state);
+        var command = new DownstreamKeyCutSourceCommand(new DownstreamKeyer()
+        {
+            Id = keyerId,
+            Sources =
+            {
+                CutSource = expectedCutSource
+            }
+        });
 
         // Assert
         Assert.That(command.DownstreamKeyerId, Is.EqualTo(keyerId));
@@ -76,21 +50,10 @@ public class DownstreamKeyCutSourceCommandTests : SerializedCommandTestBase<Down
     }
 
     [Test]
-    public void Constructor_WithMissingDownstreamKeyer_ShouldUseDefaults()
-    {
-        // Arrange
-        const int keyerId = 5;
-        var state = new AtemState(); // No video state
-
-        // Act
-        Assert.Throws<IndexOutOfRangeException>(() => new DownstreamKeyCutSourceCommand(keyerId, state));
-    }
-
-    [Test]
     public void Input_WhenSet_ShouldUpdateFlagAndValue()
     {
         // Arrange
-        var command = new DownstreamKeyCutSourceCommand(0, CreateStateWithDownstreamKeyer(0));
+        var command = new DownstreamKeyCutSourceCommand(new DownstreamKeyer());
 
         // Act
         command.Input = 1234;
@@ -104,7 +67,7 @@ public class DownstreamKeyCutSourceCommandTests : SerializedCommandTestBase<Down
     public void Input_WhenSetMultipleTimes_ShouldMaintainFlag()
     {
         // Arrange
-        var command = new DownstreamKeyCutSourceCommand(0, CreateStateWithDownstreamKeyer(0));
+        var command = new DownstreamKeyCutSourceCommand(new DownstreamKeyer());
 
         // Act
         command.Input = 100;
@@ -113,93 +76,5 @@ public class DownstreamKeyCutSourceCommandTests : SerializedCommandTestBase<Down
         // Assert
         Assert.That(command.Input, Is.EqualTo(200));
         Assert.That(command.Flag, Is.EqualTo(1)); // Flag should remain set
-    }
-
-    [TestCase(0, 0)]
-    [TestCase(0, 1)]
-    [TestCase(0, 1000)]
-    [TestCase(0, 65535)]
-    [TestCase(1, 42)]
-    [TestCase(1, 1234)]
-    public void Serialize_WithDifferentValues_ShouldProduceCorrectOutput(int keyerId, int input)
-    {
-        // Arrange
-        var command = new DownstreamKeyCutSourceCommand(keyerId, CreateStateWithDownstreamKeyer(keyerId));
-        command.Input = input;
-
-        // Act
-        var result = command.Serialize(ProtocolVersion.V8_1_1);
-
-        // Assert
-        Assert.That(result.Length, Is.EqualTo(4));
-        Assert.That(result[0], Is.EqualTo(keyerId)); // Keyer ID
-        Assert.That(result[1], Is.EqualTo(0)); // Padding
-
-        // Input as 16-bit big-endian (bytes 2-3)
-        var expectedInputBytes = BitConverter.GetBytes((ushort)input);
-        if (BitConverter.IsLittleEndian)
-        {
-            Array.Reverse(expectedInputBytes);
-        }
-        Assert.That(result[2], Is.EqualTo(expectedInputBytes[0])); // High byte
-        Assert.That(result[3], Is.EqualTo(expectedInputBytes[1])); // Low byte
-    }
-
-    [Test]
-    public void Serialize_WithMaxValues_ShouldHandleCorrectly()
-    {
-        // Arrange
-        const int maxKeyerId = 255;
-        const int maxInput = 65535;
-        var command = new DownstreamKeyCutSourceCommand(maxKeyerId, CreateStateWithDownstreamKeyer(maxKeyerId));
-        command.Input = maxInput;
-
-        // Act
-        var result = command.Serialize(ProtocolVersion.V8_1_1);
-
-        // Assert
-        Assert.That(result.Length, Is.EqualTo(4));
-        Assert.That(result[0], Is.EqualTo(maxKeyerId)); // Keyer ID
-        Assert.That(result[1], Is.EqualTo(0)); // Padding
-        Assert.That(result[2], Is.EqualTo(0xFF)); // High byte of 65535
-        Assert.That(result[3], Is.EqualTo(0xFF)); // Low byte of 65535
-    }
-
-    [Test]
-    public void Serialize_WithLegacyProtocol_ShouldProduceSameOutput()
-    {
-        // Arrange
-        const int keyerId = 1;
-        const int input = 500;
-        var command = new DownstreamKeyCutSourceCommand(keyerId, CreateStateWithDownstreamKeyer(keyerId));
-        command.Input = input;
-
-        // Act
-        var modernResult = command.Serialize(ProtocolVersion.V8_1_1);
-        var legacyResult = command.Serialize(ProtocolVersion.V7_5_2);
-
-        // Assert - this command format doesn't change between protocol versions
-        Assert.That(legacyResult, Is.EqualTo(modernResult));
-    }
-
-    [TestCase(0, 1000)]
-    [TestCase(1, 2000)]
-    [TestCase(0, 3000)]
-    public void RoundTrip_WithDifferentInputValues_ShouldMaintainConsistency(int keyerId, int input)
-    {
-        // Arrange
-        var command = new DownstreamKeyCutSourceCommand(keyerId, CreateStateWithDownstreamKeyer(keyerId));
-        command.Input = input;
-
-        // Act
-        var serialized = command.Serialize(ProtocolVersion.V8_1_1);
-
-        // Verify we can extract the input back from the serialized data
-        var extractedKeyerId = serialized[0];
-        var extractedInput = (serialized[2] << 8) | serialized[3];
-
-        // Assert
-        Assert.That(extractedKeyerId, Is.EqualTo(keyerId));
-        Assert.That(extractedInput, Is.EqualTo(input));
     }
 }

@@ -1,30 +1,47 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("MOCP")]
-public class FairlightMixerMasterCompressorUpdateCommand : IDeserializedCommand
+public partial class FairlightMixerMasterCompressorUpdateCommand : IDeserializedCommand
 {
-    public CompressorParameters Parameters { get; } = new();
+    [DeserializedField(0)]
+    private bool _enabled;
 
-    public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion version)
-    {
-        return new FairlightMixerMasterCompressorUpdateCommand
-        {
-            Parameters = {
-                CompressorEnabled = rawCommand.ReadBoolean(0),
-                Threshold = rawCommand.ReadInt32BigEndian(4) / 100.0,
-                Ratio = rawCommand.ReadInt16BigEndian(8) / 100.0,
-                Attack = rawCommand.ReadInt32BigEndian(12) / 100.0,
-                Hold = rawCommand.ReadInt32BigEndian(16) / 100.0,
-                Release = rawCommand.ReadInt32BigEndian(20) / 100.0,
-            }
-        };
-    }
+    [DeserializedField(4)]
+    [ScalingFactor(100.0)]
+    [SerializedType(typeof(int))]
+    private double _threshold;
+
+    [DeserializedField(8)]
+    [ScalingFactor(100.0)]
+    [SerializedType(typeof(short))]
+    private double _ratio;
+
+    [DeserializedField(12)]
+    [ScalingFactor(100.0)]
+    [SerializedType(typeof(int))]
+    private double _attack;
+
+    [DeserializedField(16)]
+    [ScalingFactor(100.0)]
+    [SerializedType(typeof(int))]
+    private double _hold;
+
+    [DeserializedField(20)]
+    [ScalingFactor(100.0)]
+    [SerializedType(typeof(int))]
+    private double _release;
+
     public void ApplyToState(AtemState state)
     {
-        Parameters.ApplyTo(state.GetFairlight().Master.Dynamics.Compressor);
+        var compressor = state.GetFairlight().Master.Dynamics.Compressor;
+
+        compressor.Enabled = _enabled;
+        compressor.Threshold = _threshold;
+        compressor.Ratio = _ratio;
+        compressor.Attack = _attack;
+        compressor.Hold = _hold;
     }
 }

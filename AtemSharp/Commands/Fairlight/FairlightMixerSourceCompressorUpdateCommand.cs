@@ -1,31 +1,64 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
-using AtemSharp.State.Audio.Fairlight;
+using AtemSharp.Helpers;
+using AtemSharp.State;
 
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("AICP")]
-public class FairlightMixerSourceCompressorUpdateCommand : FairlightMixerSourceUpdateCommandBase
+public partial class FairlightMixerSourceCompressorUpdateCommand : IDeserializedCommand
 {
-    public CompressorParameters Parameters { get; } = new();
+    [DeserializedField(0)]
+    private ushort _inputId;
 
-    public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion version)
+    [DeserializedField(8)]
+    private long _sourceId;
+
+    [DeserializedField(36)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100)]
+    private double _release;
+
+    [DeserializedField(32)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100)]
+    private double _hold;
+
+    [DeserializedField(28)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100)]
+    private double _attack;
+
+    [DeserializedField(24)]
+    [SerializedType(typeof(short))]
+    [ScalingFactor(100)]
+    private double _ratio;
+
+    [DeserializedField(20)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100)]
+    private double _threshold;
+
+    [DeserializedField(16)]
+    private bool _compressorEnabled;
+
+    public void ApplyToState(AtemState state)
     {
-        return new FairlightMixerSourceCompressorUpdateCommand
+        var audio = state.GetFairlight();
+
+        if (!audio.Inputs.TryGetValue(InputId, out var input))
         {
-            Parameters = {
-                CompressorEnabled = rawCommand.ReadBoolean(16),
-                Threshold = rawCommand.ReadInt32BigEndian(20) / 100.0,
-                Ratio = rawCommand.ReadInt16BigEndian(24) / 100.0,
-                Attack = rawCommand.ReadInt32BigEndian(28) / 100.0,
-                Hold = rawCommand.ReadInt32BigEndian(32) / 100.0,
-                Release = rawCommand.ReadInt32BigEndian(36) / 100.0,
-            }
-        }.DeserializeIds(rawCommand);
-    }
+            throw new IndexOutOfRangeException($"Input ID {InputId} does not exist");
+        }
 
-    protected override void ApplyToSource(Source source)
-    {
-        Parameters.ApplyTo(source.Dynamics.Compressor);
+        var source = input.Sources.GetOrCreate(SourceId);
+        source.Id = SourceId;
+        source.InputId = InputId;
+
+        var compressor = source.Dynamics.Compressor;
+        compressor.Enabled = CompressorEnabled;
+        compressor.Threshold = Threshold;
+        compressor.Ratio = Ratio;
+        compressor.Attack = Attack;
+        compressor.Hold = Hold;
+        compressor.Release = Release;
     }
 }

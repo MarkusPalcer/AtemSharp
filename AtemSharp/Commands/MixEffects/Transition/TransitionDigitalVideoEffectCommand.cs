@@ -8,12 +8,11 @@ namespace AtemSharp.Commands.MixEffects.Transition;
 /// Command to set DVE transition settings for a mix effect
 /// </summary>
 [Command("CTDv")]
-// ReSharper disable once InconsistentNaming Domain Specific Acronym
-public class TransitionDVECommand : SerializedCommand
+public class TransitionDigitalVideoEffectCommand : SerializedCommand
 {
     private int _rate;
     private int _logoRate;
-    private DVEEffect _style;
+    private DigitalVideoEffect _style;
     private int _fillSource;
     private int _keySource;
     private bool _enableKey;
@@ -24,43 +23,14 @@ public class TransitionDVECommand : SerializedCommand
     private bool _reverse;
     private bool _flipFlop;
 
-    /// <summary>
-    /// Mix effect index (0-based)
-    /// </summary>
     public int MixEffectId { get; }
 
-    /// <summary>
-    /// Create command initialized with current state values
-    /// </summary>
-    /// <param name="mixEffectId">Mix effect index (0-based)</param>
-    /// <param name="currentState">Current ATEM state</param>
-    /// <exception cref="InvalidIdError">Thrown if mix effect not available</exception>
-    public TransitionDVECommand(int mixEffectId, AtemState currentState)
+    public TransitionDigitalVideoEffectCommand(MixEffect mixEffect)
     {
-        MixEffectId = mixEffectId;
-
-        // If no video state or mix effect array exists, initialize with defaults
-        if (!currentState.Video.MixEffects.TryGetValue(mixEffectId, out var mixEffect) ||
-            mixEffect.TransitionSettings?.DVE == null)
-        {
-            // Set default values and flags (like TypeScript pattern)
-            Rate = 0;
-            LogoRate = 0;
-            Style = DVEEffect.SwooshTopLeft;
-            FillSource = 0;
-            KeySource = 0;
-            EnableKey = false;
-            PreMultiplied = false;
-            Clip = 0.0;
-            Gain = 0.0;
-            InvertKey = false;
-            Reverse = false;
-            FlipFlop = false;
-            return;
-        }
+        MixEffectId = mixEffect.Index;
 
         // Initialize from current state (direct field access = no flags set)
-        var dveSettings = mixEffect.TransitionSettings.DVE;
+        var dveSettings = mixEffect.TransitionSettings.DigitalVideoEffect;
         _rate = dveSettings.Rate;
         _logoRate = dveSettings.LogoRate;
         _style = dveSettings.Style;
@@ -104,7 +74,7 @@ public class TransitionDVECommand : SerializedCommand
     /// <summary>
     /// DVE effect style
     /// </summary>
-    public DVEEffect Style
+    public DigitalVideoEffect Style
     {
         get => _style;
         set

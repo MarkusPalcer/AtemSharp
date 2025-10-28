@@ -1,5 +1,3 @@
-using System.Numerics;
-
 namespace AtemSharp.Lib;
 
 /// <summary>
@@ -91,10 +89,10 @@ public static class AtemUtil
     }
 
     [Obsolete("Only used when the enum type is unknown, prefer using GetComponents<T>")]
-    public static uint[] GetComponents(byte value)
+    public static byte[] GetComponentsLegacy(byte value)
     {
-        var result = new List<uint>();
-        for (uint next = 1; next <= value; next <<= 1)
+        var result = new List<byte>();
+        for (byte next = 1; next <= value; next <<= 1)
         {
             if ((value & next) > 0)
             {

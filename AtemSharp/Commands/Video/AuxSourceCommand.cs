@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Video;
@@ -8,14 +7,18 @@ namespace AtemSharp.Commands.Video;
 /// Command to set the source for an auxiliary output
 /// </summary>
 [Command("CAuS")]
-public class AuxSourceCommand : SerializedCommand
+[BufferSize(4)]
+public partial class AuxSourceCommand : SerializedCommand
 {
-    private int _source;
+    [SerializedField(1)]
+    [NoProperty]
+    internal readonly byte AuxBus;
 
     /// <summary>
-    /// Auxiliary output index (0-based)
+    /// Source input number for the auxiliary output
     /// </summary>
-    public int AuxBus { get; }
+    [SerializedField(2,0)]
+    private ushort _source;
 
     /// <summary>
     /// Create command initialized with current state values
@@ -23,49 +26,15 @@ public class AuxSourceCommand : SerializedCommand
     /// <param name="auxBus">Auxiliary output index (0-based)</param>
     /// <param name="currentState">Current ATEM state</param>
     /// <exception cref="InvalidIdError">Thrown if auxiliary output not available</exception>
-    public AuxSourceCommand(int auxBus, AtemState currentState)
+    public AuxSourceCommand(byte auxBus, AtemState currentState)
     {
         AuxBus = auxBus;
 
-        // If no video state or auxiliaries array exists, initialize with defaults
         if (!currentState.Video.Auxiliaries.TryGetValue(auxBus, out var auxSource))
         {
-            // Set default value and flag (like TypeScript pattern)
-            Source = 0;
-            return;
+            throw new IndexOutOfRangeException($"There is no auxiliary output with index {auxBus}.");
         }
 
-        // Initialize from current state (direct field access = no flags set)
         _source = auxSource;
-    }
-
-    /// <summary>
-    /// Source input number for the auxiliary output
-    /// </summary>
-    public int Source
-    {
-        get => _source;
-        set
-        {
-            _source = value;
-            Flag |= 1 << 0;  // Automatic flag setting!
-        }
-    }
-
-    /// <summary>
-    /// Serialize command to binary stream for transmission to ATEM
-    /// </summary>
-    /// <param name="version">Protocol version</param>
-    /// <returns>Serialized command data</returns>
-    public override byte[] Serialize(ProtocolVersion version)
-    {
-        using var memoryStream = new MemoryStream(4);
-        using var writer = new BinaryWriter(memoryStream);
-
-        writer.Write((byte)0x01);  // Flag byte
-        writer.Write((byte)AuxBus);
-        writer.WriteUInt16BigEndian((ushort)Source);
-        
-        return memoryStream.ToArray();
     }
 }

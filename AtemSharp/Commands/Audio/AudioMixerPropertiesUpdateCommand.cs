@@ -15,8 +15,6 @@ public partial class AudioMixerPropertiesUpdateCommand : IDeserializedCommand
     [DeserializedField(0)]
     private bool _audioFollowVideo;
 
-
-
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {

@@ -8,12 +8,12 @@ public class WipeTransitionSettings
     /// <summary>
     /// Rate of the wipe transition in frames
     /// </summary>
-    public int Rate { get; set; }
+    public byte Rate { get; set; }
 
     /// <summary>
     /// Pattern for the wipe transition
     /// </summary>
-    public int Pattern { get; set; }
+    public byte Pattern { get; set; }
 
     /// <summary>
     /// Width of the wipe border as percentage (0-100%)
@@ -23,7 +23,7 @@ public class WipeTransitionSettings
     /// <summary>
     /// Input source for the wipe border
     /// </summary>
-    public int BorderInput { get; set; }
+    public ushort BorderInput { get; set; }
 
     /// <summary>
     /// Symmetry setting for the wipe transition as percentage (0-100%)

@@ -1,39 +1,32 @@
 using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DownstreamKey;
 
 [Command("DskS", ProtocolVersion.V8_0_1)]
-public class DownstreamKeyStateV8Command : IDeserializedCommand
+public partial class DownstreamKeyStateV8Command : IDeserializedCommand
 {
-    public byte Index { get; init; }
-    public bool InTransition { get; init; }
-    public bool OnAir { get; init; }
-    public bool IsAuto { get; init; }
-    public byte RemainingFrames { get; init; }
-    public bool IsTowardsOnAir { get; init; }
+    [DeserializedField(0)]
+    private byte _index;
 
-    public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> data, ProtocolVersion version)
-    {
-        return new DownstreamKeyStateV8Command
-        {
-            Index = data.ReadUInt8(0),
-            OnAir = data.ReadBoolean(1),
-            InTransition = data.ReadBoolean(2),
-            IsAuto = data.ReadBoolean(3),
-            IsTowardsOnAir = data.ReadBoolean(4),
-            RemainingFrames = data.ReadUInt8(5)
-        };
-    }
+    [DeserializedField(1)]
+    private bool _onAir;
+
+    [DeserializedField(2)]
+    private bool _inTransition;
+
+    [DeserializedField(3)]
+    private bool _isAuto;
+
+    [DeserializedField(4)]
+    private bool _isTowardsOnAir;
+
+    [DeserializedField(5)]
+    private byte _remainingFrames;
 
     public virtual void ApplyToState(AtemState state)
     {
-        if (state.Info.Capabilities?.DownstreamKeyers is null || Index >= state.Info.Capabilities.DownstreamKeyers)
-        {
-            throw new InvalidOperationException("Either the number of downstream keyers is unknown or the index is out of range");
-        }
-
         var dsk = state.Video.DownstreamKeyers[Index];
         dsk.OnAir = OnAir;
         dsk.InTransition = InTransition;

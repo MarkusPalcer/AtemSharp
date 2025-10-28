@@ -104,13 +104,13 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
     /// <summary>
     /// Creates an AtemState with a valid auxiliary output at the specified index
     /// </summary>
-    private static AtemState CreateStateWithAuxiliary(int auxId, int source = 0)
+    private static AtemState CreateStateWithAuxiliary(byte auxId, ushort source = 0)
     {
         return new AtemState
         {
             Video = new VideoState
             {
-                Auxiliaries = new Dictionary<int, int> { {auxId, source} },
+                Auxiliaries = new Dictionary<byte, ushort> { {auxId, source} },
             },
             Info = new DeviceInfo
             {

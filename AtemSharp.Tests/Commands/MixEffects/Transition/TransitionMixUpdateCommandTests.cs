@@ -15,26 +15,8 @@ public class TransitionMixUpdateCommandTests : DeserializedCommandTestBase<Trans
 
     protected override void CompareCommandProperties(TransitionMixUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        var failures = new List<string>();
-
-        // Compare Index to MixEffectId - exact match
-        if (!actualCommand.MixEffectId.Equals(expectedData.Index))
-        {
-            failures.Add($"MixEffectId: expected {expectedData.Index}, actual {actualCommand.MixEffectId}");
-        }
-
-        // Compare Rate - exact match (integer value)
-        if (!actualCommand.Rate.Equals(expectedData.Rate))
-        {
-            failures.Add($"Rate: expected {expectedData.Rate}, actual {actualCommand.Rate}");
-        }
-
-        // Assert results
-        if (failures.Count > 0)
-        {
-            Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
-                       string.Join("\n", failures));
-        }
+        Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.Rate, Is.EqualTo(expectedData.Rate));
     }
 
     [Test]
@@ -56,33 +38,8 @@ public class TransitionMixUpdateCommandTests : DeserializedCommandTestBase<Trans
 
         // Assert - check the state was updated
         Assert.That(state.Video.MixEffects[mixEffectId].TransitionSettings, Is.Not.Null);
-        Assert.That(state.Video.MixEffects[mixEffectId].TransitionSettings!.Mix, Is.Not.Null);
-        Assert.That(state.Video.MixEffects[mixEffectId].TransitionSettings!.Mix!.Rate, Is.EqualTo(newRate));
-    }
-
-    [Test]
-    public void ApplyToState_MissingTransitionSettings_CreatesSettings()
-    {
-        // Arrange
-        const int mixEffectId = 0;
-        const int newRate = 75;
-
-        var state = CreateValidAtemState(mixEffectId);
-        state.Video.MixEffects[mixEffectId].TransitionSettings = null; // Remove transition settings
-
-        var command = new TransitionMixUpdateCommand
-        {
-            MixEffectId = mixEffectId,
-            Rate = newRate
-        };
-
-        // Act
-        command.ApplyToState(state);
-
-        // Assert - check the settings were created and updated
-        Assert.That(state.Video.MixEffects[mixEffectId].TransitionSettings, Is.Not.Null);
-        Assert.That(state.Video.MixEffects[mixEffectId].TransitionSettings!.Mix, Is.Not.Null);
-        Assert.That(state.Video.MixEffects[mixEffectId].TransitionSettings!.Mix!.Rate, Is.EqualTo(newRate));
+        Assert.That(state.Video.MixEffects[mixEffectId].TransitionSettings.Mix, Is.Not.Null);
+        Assert.That(state.Video.MixEffects[mixEffectId].TransitionSettings.Mix.Rate, Is.EqualTo(newRate));
     }
 
     [Test]
@@ -106,7 +63,7 @@ public class TransitionMixUpdateCommandTests : DeserializedCommandTestBase<Trans
     /// <summary>
     /// Creates a valid AtemState with a mix effect for testing
     /// </summary>
-    private static AtemState CreateValidAtemState(int mixEffectId)
+    private static AtemState CreateValidAtemState(byte mixEffectId)
     {
         Dictionary<int, MixEffect> mixEffects = new Dictionary<int, MixEffect>();
         mixEffects[mixEffectId] = new MixEffect
@@ -121,7 +78,6 @@ public class TransitionMixUpdateCommandTests : DeserializedCommandTestBase<Trans
                 RemainingFrames = 0,
                 HandlePosition = 0.0
             },
-            TransitionSettings = new TransitionSettings()
         };
 
         return new AtemState

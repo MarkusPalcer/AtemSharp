@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 
 namespace AtemSharp.Commands.DisplayClock;
 
@@ -7,26 +6,19 @@ namespace AtemSharp.Commands.DisplayClock;
 /// Command to request the current display clock time
 /// </summary>
 [Command("DSTR")]
-public class DisplayClockRequestTimeCommand : SerializedCommand
+[BufferSize(4)]
+public partial class DisplayClockRequestTimeCommand : SerializedCommand
 {
+    // Field will exist in the future according to TS implementation
+    // For now we use it to trigger code generation ;)
+    [SerializedField(0)]
+    [NoProperty]
+    private byte _id = 0;
+
     /// <summary>
     /// Create command to request display clock time
     /// </summary>
     public DisplayClockRequestTimeCommand()
     {
-        // No properties to set for this command
-        Flag = 0;
-    }
-
-    /// <inheritdoc />
-    public override byte[] Serialize(ProtocolVersion version)
-    {
-        // Future: id at byte 0 (skip for now)
-        using var memoryStream = new MemoryStream(4);
-        using var writer = new BinaryWriter(memoryStream);
-
-        writer.Pad(4); // Entire buffer is padding
-
-        return memoryStream.ToArray();
     }
 }

@@ -21,7 +21,9 @@ public partial class AudioMixerMonitorUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Gain in decibel, -Infinity to +6dB
     /// </summary>
-    public double Gain { get; internal set; }
+    [DeserializedField(2)]
+    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.UInt16ToDecibel)}")]
+    private double _gain;
 
     /// <summary>
     /// Whether the monitor is muted
@@ -53,13 +55,6 @@ public partial class AudioMixerMonitorUpdateCommand : IDeserializedCommand
     [DeserializedField(10)]
     [ScalingFactor(100.0)]
     private double _dimLevel;
-
-
-
-    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand, ProtocolVersion _)
-    {
-        Gain = rawCommand.ReadUInt16BigEndian(2).UInt16ToDecibel();
-    }
 
 	/// <inheritdoc />
 	public void ApplyToState(AtemState state)

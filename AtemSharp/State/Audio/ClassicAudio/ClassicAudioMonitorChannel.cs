@@ -9,7 +9,7 @@ public class ClassicAudioMonitorChannel
 	/// Whether the monitor is enabled
 	/// </summary>
 	public bool Enabled { get; set; }
-	
+
 	/// <summary>
 	/// Gain in decibel, -Infinity to +6dB
 	/// </summary>
@@ -24,17 +24,17 @@ public class ClassicAudioMonitorChannel
 	/// Whether solo is enabled
 	/// </summary>
 	public bool Solo { get; set; }
-	
+
 	/// <summary>
 	/// Solo source identifier
 	/// </summary>
-	public int SoloSource { get; set; }
+	public ushort SoloSource { get; set; }
 
 	/// <summary>
 	/// Whether dim is enabled
 	/// </summary>
 	public bool Dim { get; set; }
-	
+
 	/// <summary>
 	/// Dim level as percentage (0.0 to 1.0)
 	/// </summary>

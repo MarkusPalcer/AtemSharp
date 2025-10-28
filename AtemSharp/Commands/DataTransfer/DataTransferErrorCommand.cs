@@ -22,8 +22,6 @@ public partial class DataTransferErrorCommand : IDeserializedCommand
     [DeserializedField(2)]
     private ErrorCode _errorCode;
 
-
-
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {

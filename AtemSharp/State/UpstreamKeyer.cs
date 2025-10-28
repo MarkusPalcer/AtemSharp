@@ -7,10 +7,12 @@ namespace AtemSharp.State;
 /// </summary>
 public class UpstreamKeyer
 {
+    public byte MixEffectId { get; internal set; }
+
     /// <summary>
     /// Upstream keyer index (0-based)
     /// </summary>
-    public int Index { get; set; }
+    public byte Id { get; set; }
 
     /// <summary>
     /// Whether the keyer is currently on air
@@ -45,25 +47,25 @@ public class UpstreamKeyer
     /// <summary>
     /// Mask settings for the upstream keyer
     /// </summary>
-    public UpstreamKeyerMaskSettings? MaskSettings { get; set; }
+    public UpstreamKeyerMaskSettings MaskSettings { get; } = new();
 
     /// <summary>
     /// Luma key settings for the upstream keyer
     /// </summary>
-    public UpstreamKeyerLumaSettings? LumaSettings { get; set; }
+    public UpstreamKeyerLumaSettings LumaSettings { get; } = new();
 
     /// <summary>
     /// Advanced chroma key settings for the upstream keyer
     /// </summary>
-    public UpstreamKeyerAdvancedChromaSettings? AdvancedChromaSettings { get; set; }
+    public UpstreamKeyerAdvancedChromaSettings AdvancedChromaSettings { get; } = new();
 
     /// <summary>
     /// DVE (Digital Video Effects) settings for the upstream keyer
     /// </summary>
-    public UpstreamKeyerDVESettings? DVESettings { get; set; }
-    
+    public UpstreamKeyerDVESettings DigitalVideoEffectsSettings { get; } = new();
+
     /// <summary>
     /// Fly properties for the upstream keyer
     /// </summary>
-    public UpstreamKeyerFlyProperties? FlyProperties { get; set; }
+    public UpstreamKeyerFlyProperties FlyProperties { get; } = new();
 }

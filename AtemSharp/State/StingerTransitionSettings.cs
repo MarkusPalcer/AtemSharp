@@ -8,7 +8,7 @@ public class StingerTransitionSettings
     /// <summary>
     /// Source for the stinger transition
     /// </summary>
-    public int Source { get; set; }
+    public byte Source { get; set; }
 
     /// <summary>
     /// Whether the key is pre-multiplied
@@ -33,20 +33,20 @@ public class StingerTransitionSettings
     /// <summary>
     /// Preroll value for the stinger transition
     /// </summary>
-    public int Preroll { get; set; }
+    public ushort Preroll { get; set; }
 
     /// <summary>
     /// Clip duration for the stinger transition
     /// </summary>
-    public int ClipDuration { get; set; }
+    public ushort ClipDuration { get; set; }
 
     /// <summary>
     /// Trigger point for the stinger transition
     /// </summary>
-    public int TriggerPoint { get; set; }
+    public ushort TriggerPoint { get; set; }
 
     /// <summary>
     /// Mix rate for the stinger transition
     /// </summary>
-    public int MixRate { get; set; }
+    public ushort MixRate { get; set; }
 }

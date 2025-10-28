@@ -35,7 +35,7 @@ public class DownstreamKeyAutoCommand : SerializedCommand
         var dsk = currentState.Video.DownstreamKeyers[downstreamKeyerId];
 
         // Initialize from current state (direct field access = no flags set)
-        _isTowardsOnAir = dsk.IsTowardsOnAir ?? false;
+        _isTowardsOnAir = dsk.IsTowardsOnAir;
     }
 
     /// <summary>
@@ -51,6 +51,7 @@ public class DownstreamKeyAutoCommand : SerializedCommand
         }
     }
 
+    // TODO: Split by version
     /// <summary>
     /// Serialize command to binary stream for transmission to ATEM
     /// </summary>

@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DisplayClock;
@@ -8,37 +7,43 @@ namespace AtemSharp.Commands.DisplayClock;
 /// Update command for display clock current time
 /// </summary>
 [Command("DSTV")]
-public class DisplayClockCurrentTimeCommand : IDeserializedCommand
+public partial class DisplayClockCurrentTimeCommand : IDeserializedCommand
 {
     /// <summary>
-    /// Current display clock time
+    /// Hours (0-23)
     /// </summary>
-    public DisplayClockTime Time { get; init; } = new();
+    [DeserializedField(1)]
+    private byte _hours;
 
-    public static DisplayClockCurrentTimeCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        var hours = rawCommand.ReadUInt8(1);
-        var minutes = rawCommand.ReadUInt8(2);
-        var seconds = rawCommand.ReadUInt8(3);
-        var frames = rawCommand.ReadUInt8(4);
+    /// <summary>
+    /// Minutes (0-59)
+    /// </summary>
+    [DeserializedField(2)]
+    private byte _minutes;
 
-        return new DisplayClockCurrentTimeCommand
-        {
-            Time = new DisplayClockTime
-            {
-                Hours = hours,
-                Minutes = minutes,
-                Seconds = seconds,
-                Frames = frames
-            }
-        };
-    }
+    /// <summary>
+    /// Seconds (0-59)
+    /// </summary>
+    [DeserializedField(3)]
+    private byte _seconds;
+
+    /// <summary>
+    /// Frames (0-59, depends on frame rate)
+    /// </summary>
+    [DeserializedField(4)]
+    private byte _frames;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         state.DisplayClock ??= new State.DisplayClock();
 
-        state.DisplayClock.CurrentTime = Time;
+        state.DisplayClock.CurrentTime = new DisplayClockTime()
+        {
+            Hours = _hours,
+            Minutes = _minutes,
+            Seconds = _seconds,
+            Frames = _frames
+        };
     }
 }

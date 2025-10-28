@@ -17,10 +17,10 @@ public class FairlightMixerMasterLimiterUpdateCommandTests : DeserializedCommand
     protected override void CompareCommandProperties(FairlightMixerMasterLimiterUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
-        Assert.That(actualCommand.Parameters.LimiterEnabled, Is.EqualTo(expectedData.LimiterEnabled));
-        Assert.That(actualCommand.Parameters.Threshold, Is.EqualTo(expectedData.Threshold).Within(0.01));
-        Assert.That(actualCommand.Parameters.Attack, Is.EqualTo(expectedData.Attack).Within(0.01));
-        Assert.That(actualCommand.Parameters.Hold, Is.EqualTo(expectedData.Hold).Within(0.01));
-        Assert.That(actualCommand.Parameters.Release, Is.EqualTo(expectedData.Release).Within(0.01));
+        Assert.That(actualCommand.LimiterEnabled, Is.EqualTo(expectedData.LimiterEnabled));
+        Assert.That(actualCommand.Threshold, Is.EqualTo(expectedData.Threshold).Within(0.01));
+        Assert.That(actualCommand.Attack, Is.EqualTo(expectedData.Attack).Within(0.01));
+        Assert.That(actualCommand.Hold, Is.EqualTo(expectedData.Hold).Within(0.01));
+        Assert.That(actualCommand.Release, Is.EqualTo(expectedData.Release).Within(0.01));
     }
 }

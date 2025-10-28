@@ -1,28 +1,38 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("CILP")]
-public class FairlightMixerSourceLimiterCommand(Source source) : FairlightMixerSourceCommandBase(source)
+[BufferSize(36)]
+public partial class FairlightMixerSourceLimiterCommand(Source source) : SerializedCommand
 {
-    public LimiterParameters Parameters { get; } = new(source.Dynamics.Limiter);
+    [SerializedField(2)]
+    [NoProperty]
+    private readonly ushort _inputId = source.InputId;
 
-    public override byte[] Serialize(ProtocolVersion version)
-    {
-        // For testability: If flag has been set from outside, use that instead of the internal one
-        if (Flag != 0) Parameters.Flag = (byte)Flag;
-        var rawCommand = new byte[36];
-        SerializeIds(rawCommand);
-        rawCommand.WriteUInt8(Parameters.Flag, 0);
-        rawCommand.WriteBoolean(Parameters.LimiterEnabled, 16);
-        rawCommand.WriteInt32BigEndian((int)(Parameters.Threshold * 100), 20);
-        rawCommand.WriteInt32BigEndian((int)(Parameters.Attack * 100), 24);
-        rawCommand.WriteInt32BigEndian((int)(Parameters.Hold * 100), 28);
-        rawCommand.WriteInt32BigEndian((int)(Parameters.Release * 100), 32);
-        return rawCommand;
-    }
+    [SerializedField(8)] [NoProperty] private readonly long _sourceId = source.Id;
 
+    [SerializedField(16, 0)]
+    private bool _limiterEnabled = source.Dynamics.Limiter.Enabled;
 
+    [SerializedField(20,1)]
+    [ScalingFactor(100)]
+    [SerializedType(typeof(int))]
+    private double _threshold = source.Dynamics.Limiter.Threshold;
+
+    [SerializedField(24,2)]
+    [ScalingFactor(100)]
+    [SerializedType(typeof(int))]
+    private double _attack = source.Dynamics.Limiter.Attack;
+
+    [SerializedField(28,3)]
+    [ScalingFactor(100)]
+    [SerializedType(typeof(int))]
+    private double _hold = source.Dynamics.Limiter.Hold;
+
+    [SerializedField(32,4)]
+    [ScalingFactor(100)]
+    [SerializedType(typeof(int))]
+    private double _release = source.Dynamics.Limiter.Release;
 }

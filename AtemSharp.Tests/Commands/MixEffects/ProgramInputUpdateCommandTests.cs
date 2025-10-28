@@ -43,39 +43,6 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
     }
 
     [Test]
-    public void ApplyToState_WithoutMixEffect_CreatesAndUpdates()
-    {
-        // Arrange
-        const int mixEffectId = 1;
-        const int newSource = 2000;
-
-        var state = new AtemState
-        {
-            Info = new DeviceInfo
-            {
-                Capabilities = new AtemCapabilities
-                {
-                    MixEffects = 4 // Allow mix effect 1
-                }
-            }
-        };
-
-        var command = new ProgramInputUpdateCommand
-        {
-            MixEffectId = mixEffectId,
-            Source = newSource
-        };
-
-        // Act
-        command.ApplyToState(state);
-
-        // Assert
-        Assert.That(state.Video, Is.Not.Null);
-        Assert.That(state.Video.MixEffects[mixEffectId], Is.Not.Null);
-        Assert.That(state.Video.MixEffects[mixEffectId].ProgramInput, Is.EqualTo(newSource));
-    }
-
-    [Test]
     public void ApplyToState_WithInvalidMixEffectId_ThrowsInvalidIdError()
     {
         // Arrange
@@ -124,7 +91,7 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
     /// <summary>
     /// Creates an AtemState with a valid mix effect at the specified index
     /// </summary>
-    private static AtemState CreateStateWithMixEffect(int mixEffectId, int programInput = 0)
+    private static AtemState CreateStateWithMixEffect(byte mixEffectId, ushort programInput = 0)
     {
         Dictionary<int, MixEffect> mixEffects = new Dictionary<int, MixEffect>();
         mixEffects[mixEffectId] = new MixEffect

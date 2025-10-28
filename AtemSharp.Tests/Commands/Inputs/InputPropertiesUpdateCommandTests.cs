@@ -10,18 +10,18 @@ public class InputPropertiesUpdateCommandTests : DeserializedCommandTestBase<Inp
 {
     public class CommandData : CommandDataBase
     {
-        public int Id { get; set; }
+        public ushort Id { get; set; }
         public string LongName { get; set; } = string.Empty;
         public string ShortName { get; set; } = string.Empty;
         public bool AreNamesDefault { get; set; }
-        
+
         // TODO: Figure out the relationship between AvailableExternalPorts in test data and ExternalPorts property on the command
         // The test data contains AvailableExternalPorts (ushort) but the command has ExternalPorts (ExternalPortType[]?)
         // Need to understand how these relate and if one should be derived from the other
         public ushort AvailableExternalPorts { get; set; }
-        
+
         public ExternalPortType ExternalPortType { get; set; }
-        public InternalPortType InternalPortType { get; set; }	
+        public InternalPortType InternalPortType { get; set; }
         public SourceAvailability SourceAvailability { get; set; }
         public MeAvailability MeAvailability { get; set; }
     }

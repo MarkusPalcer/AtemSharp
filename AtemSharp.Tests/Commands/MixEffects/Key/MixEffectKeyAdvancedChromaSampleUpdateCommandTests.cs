@@ -8,8 +8,8 @@ public class MixEffectKeyAdvancedChromaSampleUpdateCommandTests : DeserializedCo
 {
     public class CommandData : CommandDataBase
     {
-        public int MixEffectIndex { get; set; }
-        public int KeyerIndex { get; set; }
+        public byte MixEffectIndex { get; set; }
+        public byte KeyerIndex { get; set; }
         public bool EnableCursor { get; set; }
         public bool Preview { get; set; }
         public double CursorX { get; set; }

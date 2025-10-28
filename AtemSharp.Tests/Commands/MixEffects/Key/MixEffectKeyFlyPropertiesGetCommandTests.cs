@@ -9,59 +9,21 @@ public class MixEffectKeyFlyPropertiesGetCommandTests : DeserializedCommandTestB
 {
     public class CommandData : CommandDataBase
     {
-        public int MixEffectIndex { get; set; }
-        public int KeyerIndex { get; set; }
+        public byte MixEffectIndex { get; set; }
+        public byte KeyerIndex { get; set; }
         public bool IsASet { get; set; }
         public bool IsBSet { get; set; }
-        public int RunningToKeyFrame { get; set; }
-        public int RunningToInfinite { get; set; }
+        public IsAtKeyFrame RunningToKeyFrame { get; set; }
+        public byte RunningToInfinite { get; set; }
     }
 
     protected override void CompareCommandProperties(MixEffectKeyFlyPropertiesGetCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        var failures = new List<string>();
-
-        // Compare MixEffectIndex
-        if (!actualCommand.MixEffectIndex.Equals(expectedData.MixEffectIndex))
-        {
-            failures.Add($"MixEffectIndex: expected {expectedData.MixEffectIndex}, actual {actualCommand.MixEffectIndex}");
-        }
-
-        // Compare KeyerIndex
-        if (!actualCommand.KeyerIndex.Equals(expectedData.KeyerIndex))
-        {
-            failures.Add($"KeyerIndex: expected {expectedData.KeyerIndex}, actual {actualCommand.KeyerIndex}");
-        }
-
-        // Compare IsASet
-        if (!actualCommand.IsASet.Equals(expectedData.IsASet))
-        {
-            failures.Add($"IsASet: expected {expectedData.IsASet}, actual {actualCommand.IsASet}");
-        }
-
-        // Compare IsBSet
-        if (!actualCommand.IsBSet.Equals(expectedData.IsBSet))
-        {
-            failures.Add($"IsBSet: expected {expectedData.IsBSet}, actual {actualCommand.IsBSet}");
-        }
-
-        // Compare RunningToKeyFrame (cast to enum)
-        if (!actualCommand.IsAtKeyFrame.Equals((IsAtKeyFrame)expectedData.RunningToKeyFrame))
-        {
-            failures.Add($"RunningToKeyFrame: expected {(IsAtKeyFrame)expectedData.RunningToKeyFrame}, actual {actualCommand.IsAtKeyFrame}");
-        }
-
-        // Compare RunningToInfinite
-        if (!actualCommand.RunToInfiniteIndex.Equals(expectedData.RunningToInfinite))
-        {
-            failures.Add($"RunningToInfinite: expected {expectedData.RunningToInfinite}, actual {actualCommand.RunToInfiniteIndex}");
-        }
-
-        // Assert results
-        if (failures.Count > 0)
-        {
-            Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
-                       string.Join("\n", failures));
-        }
+        Assert.That(actualCommand.MixEffectIndex, Is.EqualTo(expectedData.MixEffectIndex));
+        Assert.That(actualCommand.KeyerIndex, Is.EqualTo(expectedData.KeyerIndex));
+        Assert.That(actualCommand.IsASet, Is.EqualTo(expectedData.IsASet));
+        Assert.That(actualCommand.IsBSet, Is.EqualTo(expectedData.IsBSet));
+        Assert.That(actualCommand.IsAtKeyFrame, Is.EqualTo(expectedData.RunningToKeyFrame));
+        Assert.That(actualCommand.RunToInfiniteIndex, Is.EqualTo(expectedData.RunningToInfinite));
     }
 }

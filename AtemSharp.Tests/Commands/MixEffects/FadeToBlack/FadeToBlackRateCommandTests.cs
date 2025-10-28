@@ -13,28 +13,13 @@ public class FadeToBlackRateCommandTests : SerializedCommandTestBase<FadeToBlack
 
     protected override FadeToBlackRateCommand CreateSut(TestCaseData testCase)
     {
-        var state = new AtemState
+        var mixEffect = new MixEffect
         {
-            Info =
-            {
-                Capabilities = new AtemCapabilities()
-                {
-                    MixEffects = testCase.Command.Index + 1
-                }
-            }, Video =
-            {
-                MixEffects =
-                {
-                    [testCase.Command.Index] = new MixEffect
-                    {
-                        Index = testCase.Command.Index,
-                        FadeToBlack = new FadeToBlackProperties()
-                    }
-                }
-            }
+            Index = testCase.Command.Index,
+            FadeToBlack = new FadeToBlackProperties()
         };
 
-        return new FadeToBlackRateCommand(state, testCase.Command.Index)
+        return new FadeToBlackRateCommand(mixEffect)
         {
             Rate = testCase.Command.Rate
         };

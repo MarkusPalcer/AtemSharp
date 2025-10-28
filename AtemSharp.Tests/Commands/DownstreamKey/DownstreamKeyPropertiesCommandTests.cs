@@ -1,11 +1,11 @@
 using AtemSharp.Commands.DownstreamKey;
 using AtemSharp.State;
-using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DownstreamKey;
 
 [TestFixture]
-public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<DownstreamKeyPropertiesCommand, DownstreamKeyPropertiesCommandTests.CommandData>
+public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<DownstreamKeyPropertiesCommand,
+    DownstreamKeyPropertiesCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -23,86 +23,21 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         public double MaskRight { get; set; }
     }
 
-    protected override void CompareCommandProperties(DownstreamKeyPropertiesCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(DownstreamKeyPropertiesCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
-        var failures = new List<string>();
-
-        // Compare downstream keyer index
-        if (actualCommand.DownstreamKeyerId != expectedData.Index)
-        {
-            failures.Add($"DownstreamKeyerId: expected {expectedData.Index}, actual {actualCommand.DownstreamKeyerId}");
-        }
-
-        // Compare Tie property
-        if (actualCommand.Properties.Tie != expectedData.Tie)
-        {
-            failures.Add($"Tie: expected {expectedData.Tie}, actual {actualCommand.Properties.Tie}");
-        }
-
-        // Compare Rate property
-        if (actualCommand.Properties.Rate != expectedData.Rate)
-        {
-            failures.Add($"Rate: expected {expectedData.Rate}, actual {actualCommand.Properties.Rate}");
-        }
-
-        // Compare PreMultiply property (note: test data uses "PreMultipliedKey")
-        if (actualCommand.Properties.PreMultiply != expectedData.PreMultipliedKey)
-        {
-            failures.Add($"PreMultiply: expected {expectedData.PreMultipliedKey}, actual {actualCommand.Properties.PreMultiply}");
-        }
-
-        // Compare Clip property (with 1 decimal place precision)
-        if (!Utilities.AreApproximatelyEqual(actualCommand.Properties.Clip, expectedData.Clip, 1))
-        {
-            failures.Add($"Clip: expected {expectedData.Clip}, actual {actualCommand.Properties.Clip}");
-        }
-
-        // Compare Gain property (with 1 decimal place precision)
-        if (!Utilities.AreApproximatelyEqual(actualCommand.Properties.Gain, expectedData.Gain, 1))
-        {
-            failures.Add($"Gain: expected {expectedData.Gain}, actual {actualCommand.Properties.Gain}");
-        }
-
-        // Compare Invert property
-        if (actualCommand.Properties.Invert != expectedData.Invert)
-        {
-            failures.Add($"Invert: expected {expectedData.Invert}, actual {actualCommand.Properties.Invert}");
-        }
-
-        // Compare Mask Enabled property
-        if (actualCommand.Properties.Mask.Enabled != expectedData.MaskEnabled)
-        {
-            failures.Add($"Mask.Enabled: expected {expectedData.MaskEnabled}, actual {actualCommand.Properties.Mask.Enabled}");
-        }
-
-        // Compare Mask Top property (with 3 decimal place precision for coordinates)
-        if (!Utilities.AreApproximatelyEqual(actualCommand.Properties.Mask.Top, expectedData.MaskTop, 3))
-        {
-            failures.Add($"Mask.Top: expected {expectedData.MaskTop}, actual {actualCommand.Properties.Mask.Top}");
-        }
-
-        // Compare Mask Bottom property (with 3 decimal place precision for coordinates)
-        if (!Utilities.AreApproximatelyEqual(actualCommand.Properties.Mask.Bottom, expectedData.MaskBottom, 3))
-        {
-            failures.Add($"Mask.Bottom: expected {expectedData.MaskBottom}, actual {actualCommand.Properties.Mask.Bottom}");
-        }
-
-        // Compare Mask Left property (with 3 decimal place precision for coordinates)
-        if (!Utilities.AreApproximatelyEqual(actualCommand.Properties.Mask.Left, expectedData.MaskLeft, 3))
-        {
-            failures.Add($"Mask.Left: expected {expectedData.MaskLeft}, actual {actualCommand.Properties.Mask.Left}");
-        }
-
-        // Compare Mask Right property (with 3 decimal place precision for coordinates)
-        if (!Utilities.AreApproximatelyEqual(actualCommand.Properties.Mask.Right, expectedData.MaskRight, 3))
-        {
-            failures.Add($"Mask.Right: expected {expectedData.MaskRight}, actual {actualCommand.Properties.Mask.Right}");
-        }
-
-        if (failures.Count > 0)
-        {
-            Assert.Fail($"Command property comparison failed:\n{string.Join("\n", failures)}");
-        }
+        Assert.That(actualCommand.DownstreamKeyerId, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.Tie, Is.EqualTo(expectedData.Tie));
+        Assert.That(actualCommand.Rate, Is.EqualTo(expectedData.Rate));
+        Assert.That(actualCommand.PreMultiply, Is.EqualTo(expectedData.PreMultipliedKey));
+        Assert.That(actualCommand.Clip, Is.EqualTo(expectedData.Clip).Within(0.1));
+        Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.1));
+        Assert.That(actualCommand.Invert, Is.EqualTo(expectedData.Invert));
+        Assert.That(actualCommand.MaskEnabled, Is.EqualTo(expectedData.MaskEnabled));
+        Assert.That(actualCommand.MaskTop, Is.EqualTo(expectedData.MaskTop).Within(0.001));
+        Assert.That(actualCommand.MaskBottom, Is.EqualTo(expectedData.MaskBottom).Within(0.001));
+        Assert.That(actualCommand.MaskLeft, Is.EqualTo(expectedData.MaskLeft).Within(0.001));
+        Assert.That(actualCommand.MaskRight, Is.EqualTo(expectedData.MaskRight).Within(0.001));
     }
 
     [Test]
@@ -115,23 +50,17 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         var command = new DownstreamKeyPropertiesCommand
         {
             DownstreamKeyerId = 0,
-            Properties = new DownstreamKeyerProperties
-            {
-                Tie = true,
-                Rate = 25,
-                PreMultiply = false,
-                Clip = 50.0,
-                Gain = 75.0,
-                Invert = true,
-                Mask = new DownstreamKeyerMask
-                {
-                    Enabled = true,
-                    Top = -5.0,
-                    Bottom = 5.0,
-                    Left = -10.0,
-                    Right = 10.0
-                }
-            }
+            Tie = true,
+            Rate = 25,
+            PreMultiply = false,
+            Clip = 50.0,
+            Gain = 75.0,
+            Invert = true,
+            MaskEnabled = true,
+            MaskTop = -5.0,
+            MaskBottom = 5.0,
+            MaskLeft = -10.0,
+            MaskRight = 10.0
         };
 
         // Act
@@ -143,7 +72,7 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         Assert.That(state.Video.DownstreamKeyers[0], Is.Not.Null);
         Assert.That(state.Video.DownstreamKeyers[0].Properties, Is.Not.Null);
 
-        var properties = state.Video.DownstreamKeyers[0].Properties!;
+        var properties = state.Video.DownstreamKeyers[0].Properties;
         Assert.That(properties.Tie, Is.EqualTo(true));
         Assert.That(properties.Rate, Is.EqualTo(25));
         Assert.That(properties.PreMultiply, Is.EqualTo(false));
@@ -168,23 +97,17 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         var command = new DownstreamKeyPropertiesCommand
         {
             DownstreamKeyerId = 2,
-            Properties = new DownstreamKeyerProperties
-            {
                 Tie = false,
                 Rate = 50,
                 PreMultiply = true,
                 Clip = 25.0,
                 Gain = 30.0,
                 Invert = false,
-                Mask = new DownstreamKeyerMask
-                {
-                    Enabled = false,
-                    Top = 0.0,
-                    Bottom = 0.0,
-                    Left = 0.0,
-                    Right = 0.0
-                }
-            }
+                    MaskEnabled = false,
+                    MaskTop = 0.0,
+                    MaskBottom = 0.0,
+                    MaskLeft = 0.0,
+                    MaskRight = 0.0
         };
 
         // Act
@@ -195,7 +118,7 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         Assert.That(state.Video.DownstreamKeyers[2], Is.Not.Null);
         Assert.That(state.Video.DownstreamKeyers[2].Properties, Is.Not.Null);
 
-        var properties = state.Video.DownstreamKeyers[2].Properties!;
+        var properties = state.Video.DownstreamKeyers[2].Properties;
         Assert.That(properties.Tie, Is.EqualTo(false));
         Assert.That(properties.Rate, Is.EqualTo(50));
         Assert.That(properties.PreMultiply, Is.EqualTo(true));
@@ -215,23 +138,6 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         var command = new DownstreamKeyPropertiesCommand
         {
             DownstreamKeyerId = 5, // Invalid - beyond available keyers
-            Properties = new DownstreamKeyerProperties()
-        };
-
-        // Act & Assert
-        Assert.Throws<IndexOutOfRangeException>(() => command.ApplyToState(state));
-    }
-
-    [Test]
-    public void ApplyToState_WithNullCapabilities_ShouldThrow()
-    {
-        // Arrange
-        var state = new AtemState();
-
-        var command = new DownstreamKeyPropertiesCommand
-        {
-            DownstreamKeyerId = 0,
-            Properties = new DownstreamKeyerProperties()
         };
 
         // Act & Assert
@@ -262,23 +168,25 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         var command = new DownstreamKeyPropertiesCommand
         {
             DownstreamKeyerId = 0,
-            Properties = new DownstreamKeyerProperties
-            {
                 Tie = true,
                 Rate = 30,
                 PreMultiply = true,
                 Clip = 80.0,
                 Gain = 90.0,
                 Invert = true,
-                Mask = new DownstreamKeyerMask { Enabled = true, Top = -1.0, Bottom = 1.0, Left = -2.0, Right = 2.0 }
-            }
+
+                MaskEnabled = true,
+                MaskTop = -1.0,
+                MaskBottom = 1.0,
+                MaskLeft = -2.0,
+                MaskRight = 2.0
         };
 
         // Act
         command.ApplyToState(state);
 
         // Assert
-        var properties = state.Video.DownstreamKeyers[0].Properties!;
+        var properties = state.Video.DownstreamKeyers[0].Properties;
         Assert.That(properties.Tie, Is.EqualTo(true));
         Assert.That(properties.Rate, Is.EqualTo(30));
         Assert.That(properties.PreMultiply, Is.EqualTo(true));
@@ -290,53 +198,5 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
         Assert.That(properties.Mask.Bottom, Is.EqualTo(1.0));
         Assert.That(properties.Mask.Left, Is.EqualTo(-2.0));
         Assert.That(properties.Mask.Right, Is.EqualTo(2.0));
-    }
-
-    [Test]
-    public void ApplyToState_ValidIndex_ShouldSucceed()
-    {
-        // Arrange
-        var state = new AtemState();
-        state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(2);
-
-        var command = new DownstreamKeyPropertiesCommand
-        {
-            DownstreamKeyerId = 0,
-            Properties = new()
-            {
-                Tie = false,
-                Rate = 25,
-                PreMultiply = false
-            }
-        };
-
-        // Act & Assert
-        Assert.DoesNotThrow(() => command.ApplyToState(state));
-        Assert.That(state.Video.DownstreamKeyers[0].Properties, Is.Not.Null);
-    }
-
-    [Test]
-    public void ApplyToState_InvalidIndex_ShouldThrow()
-    {
-        // Arrange
-        var state = new AtemState();
-        state.Info.Capabilities = new AtemCapabilities
-        {
-            DownstreamKeyers = 2 // 0-1 valid
-        };
-
-        var command = new DownstreamKeyPropertiesCommand
-        {
-            DownstreamKeyerId = 3, // Invalid - only 0-1 are valid
-            Properties = new()
-            {
-                Tie = false,
-                Rate = 25,
-                PreMultiply = false
-            }
-        };
-
-        // Act & Assert
-        Assert.Throws<IndexOutOfRangeException>(() => command.ApplyToState(state));
     }
 }

@@ -1,6 +1,5 @@
 using AtemSharp.Commands.MixEffects.Transition;
 using AtemSharp.State;
-using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
@@ -11,10 +10,10 @@ public class TransitionWipeUpdateCommandTests : DeserializedCommandTestBase<Tran
     public class CommandData : CommandDataBase
     {
         public byte Index { get; set; }
-        public int Rate { get; set; }
-        public int Pattern { get; set; }
+        public byte Rate { get; set; }
+        public byte Pattern { get; set; }
         public double BorderWidth { get; set; }
-        public int BorderInput { get; set; }
+        public ushort BorderInput { get; set; }
         public double Symmetry { get; set; }
         public double BorderSoftness { get; set; }
         public double XPosition { get; set; }
@@ -23,82 +22,20 @@ public class TransitionWipeUpdateCommandTests : DeserializedCommandTestBase<Tran
         public bool FlipFlop { get; set; }
     }
 
-    protected override void CompareCommandProperties(TransitionWipeUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(TransitionWipeUpdateCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
-        var failures = new List<string>();
-
-        // Compare Index to MixEffectId - exact match
-        if (!actualCommand.MixEffectId.Equals(expectedData.Index))
-        {
-            failures.Add($"MixEffectId: expected {expectedData.Index}, actual {actualCommand.MixEffectId}");
-        }
-
-        // Compare Rate - exact match (integer value)
-        if (!actualCommand.Rate.Equals(expectedData.Rate))
-        {
-            failures.Add($"Rate: expected {expectedData.Rate}, actual {actualCommand.Rate}");
-        }
-
-        // Compare Pattern - exact match (integer value)
-        if (!actualCommand.Pattern.Equals(expectedData.Pattern))
-        {
-            failures.Add($"Pattern: expected {expectedData.Pattern}, actual {actualCommand.Pattern}");
-        }
-
-        // Compare BorderWidth - floating point value so we approximate
-        if (!Utilities.AreApproximatelyEqual(actualCommand.BorderWidth, expectedData.BorderWidth))
-        {
-            failures.Add($"BorderWidth: expected {expectedData.BorderWidth}, actual {actualCommand.BorderWidth}");
-        }
-
-        // Compare BorderInput - exact match (integer value)
-        if (!actualCommand.BorderInput.Equals(expectedData.BorderInput))
-        {
-            failures.Add($"BorderInput: expected {expectedData.BorderInput}, actual {actualCommand.BorderInput}");
-        }
-
-        // Compare Symmetry - floating point value so we approximate
-        if (!Utilities.AreApproximatelyEqual(actualCommand.Symmetry, expectedData.Symmetry))
-        {
-            failures.Add($"Symmetry: expected {expectedData.Symmetry}, actual {actualCommand.Symmetry}");
-        }
-
-        // Compare BorderSoftness - floating point value so we approximate
-        if (!Utilities.AreApproximatelyEqual(actualCommand.BorderSoftness, expectedData.BorderSoftness))
-        {
-            failures.Add($"BorderSoftness: expected {expectedData.BorderSoftness}, actual {actualCommand.BorderSoftness}");
-        }
-
-        // Compare XPosition - floating point value so we approximate
-        if (!Utilities.AreApproximatelyEqual(actualCommand.XPosition, expectedData.XPosition))
-        {
-            failures.Add($"XPosition: expected {expectedData.XPosition}, actual {actualCommand.XPosition}");
-        }
-
-        // Compare YPosition - floating point value so we approximate
-        if (!Utilities.AreApproximatelyEqual(actualCommand.YPosition, expectedData.YPosition))
-        {
-            failures.Add($"YPosition: expected {expectedData.YPosition}, actual {actualCommand.YPosition}");
-        }
-
-        // Compare ReverseDirection - exact match (boolean value)
-        if (!actualCommand.ReverseDirection.Equals(expectedData.ReverseDirection))
-        {
-            failures.Add($"ReverseDirection: expected {expectedData.ReverseDirection}, actual {actualCommand.ReverseDirection}");
-        }
-
-        // Compare FlipFlop - exact match (boolean value)
-        if (!actualCommand.FlipFlop.Equals(expectedData.FlipFlop))
-        {
-            failures.Add($"FlipFlop: expected {expectedData.FlipFlop}, actual {actualCommand.FlipFlop}");
-        }
-
-        // Assert results
-        if (failures.Count > 0)
-        {
-            Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
-                       string.Join("\n", failures));
-        }
+        Assert.That(actualCommand.MixEffectId, Is.EqualTo(testCase.Command.Index));
+        Assert.That(actualCommand.Rate, Is.EqualTo(expectedData.Rate));
+        Assert.That(actualCommand.Pattern, Is.EqualTo(expectedData.Pattern));
+        Assert.That(actualCommand.BorderWidth, Is.EqualTo(expectedData.BorderWidth).Within(0.01));
+        Assert.That(actualCommand.BorderInput, Is.EqualTo(expectedData.BorderInput));
+        Assert.That(actualCommand.Symmetry, Is.EqualTo(expectedData.Symmetry).Within(0.01));
+        Assert.That(actualCommand.BorderSoftness, Is.EqualTo(expectedData.BorderSoftness).Within(0.01));
+        Assert.That(actualCommand.XPosition, Is.EqualTo(expectedData.XPosition).Within(0.0001));
+        Assert.That(actualCommand.YPosition, Is.EqualTo(expectedData.YPosition).Within(0.0001));
+        Assert.That(actualCommand.ReverseDirection, Is.EqualTo(expectedData.ReverseDirection));
+        Assert.That(actualCommand.FlipFlop, Is.EqualTo(expectedData.FlipFlop));
     }
 
     [Test]
@@ -180,7 +117,7 @@ public class TransitionWipeUpdateCommandTests : DeserializedCommandTestBase<Tran
             {
                 Capabilities = new AtemCapabilities
                 {
-                    MixEffects = 2  // Only 2 mix effects available (0, 1)
+                    MixEffects = 2 // Only 2 mix effects available (0, 1)
                 }
             },
             Video = new VideoState
@@ -191,47 +128,5 @@ public class TransitionWipeUpdateCommandTests : DeserializedCommandTestBase<Tran
 
         // Act & Assert
         Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-    }
-
-    [Test]
-    public void ApplyToState_InitializesTransitionSettingsWhenMissing()
-    {
-        // Arrange
-        var command = new TransitionWipeUpdateCommand
-        {
-            MixEffectId = 0,
-            Rate = 100
-        };
-
-        var state = new AtemState
-        {
-            Info = new DeviceInfo
-            {
-                Capabilities = new AtemCapabilities
-                {
-                    MixEffects = 1
-                }
-            },
-            Video = new VideoState
-            {
-                MixEffects = new Dictionary<int, MixEffect>
-                {
-                    [0] = new MixEffect
-                    {
-                        Index = 0,
-                        TransitionSettings = null  // No transition settings
-                    }
-                }
-            }
-        };
-
-        // Act
-        command.ApplyToState(state);
-
-        // Assert
-        var mixEffect = state.Video.MixEffects[0];
-        Assert.That(mixEffect.TransitionSettings, Is.Not.Null, "TransitionSettings should be initialized");
-        Assert.That(mixEffect.TransitionSettings.Wipe, Is.Not.Null, "Wipe settings should be initialized");
-        Assert.That(mixEffect.TransitionSettings.Wipe.Rate, Is.EqualTo(100));
     }
 }

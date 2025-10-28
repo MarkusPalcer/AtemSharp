@@ -18,6 +18,7 @@ public class FairlightMixerInputUpdateCommand : IDeserializedCommand
     public FairlightAnalogInputLevel[] SupportedInputLevels { get; set; } = [];
     public FairlightAnalogInputLevel ActiveInputLevel { get; set; }
 
+    // TODO: Split by version
     public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
         var rcaToXlr = protocolVersion < ProtocolVersion.V8_1_1;

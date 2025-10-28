@@ -8,10 +8,10 @@ public class UpstreamKeyerAdvancedChromaSettings
     /// <summary>
     /// Advanced chroma key properties
     /// </summary>
-    public UpstreamKeyerAdvancedChromaProperties? Properties { get; set; }
+    public UpstreamKeyerAdvancedChromaProperties Properties { get; } = new();
 
     /// <summary>
     /// Advanced chroma key sample settings
     /// </summary>
-    public UpstreamKeyerAdvancedChromaSample? Sample { get; set; }
+    public UpstreamKeyerAdvancedChromaSample Sample { get; } = new();
 }

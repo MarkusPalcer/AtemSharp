@@ -91,6 +91,7 @@ public class TopologyCommand : IDeserializedCommand
     /// </summary>
     public bool OnlyConfigurableOutputs { get; set; }
 
+    // TODO: Split by Version
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>

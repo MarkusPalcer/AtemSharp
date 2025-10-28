@@ -59,5 +59,5 @@ public class DisplayClock
     /// <summary>
     /// Current time (only updated following a call to DisplayClockRequestTime)
     /// </summary>
-    public DisplayClockTime? CurrentTime { get; set; }
+    public DisplayClockTime? CurrentTime { get; internal set; } = new();
 }

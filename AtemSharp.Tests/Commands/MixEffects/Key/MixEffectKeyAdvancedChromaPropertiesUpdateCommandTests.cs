@@ -9,8 +9,8 @@ public class MixEffectKeyAdvancedChromaPropertiesUpdateCommandTests : Deserializ
 
     public class CommandData : CommandDataBase
     {
-        public int MixEffectIndex { get; set; }
-        public int KeyerIndex { get; set; }
+        public byte MixEffectIndex { get; set; }
+        public byte KeyerIndex { get; set; }
         public double ForegroundLevel { get; set; }
         public double BackgroundLevel { get; set; }
         public double KeyEdge { get; set; }

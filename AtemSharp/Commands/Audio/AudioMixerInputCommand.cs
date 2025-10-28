@@ -17,26 +17,24 @@ public partial class AudioMixerInputCommand : SerializedCommand
     private readonly ushort _index;
 
     /// <summary>
-    /// Audio mix option (Off, On, AfterFader)
+    /// Audio mix option
     /// </summary>
     [SerializedField(4, 0)]
     private AudioMixOption _mixOption;
 
     /// <summary>
-    /// Audio gain in decibels (-60.0 to +6.0)
+    /// Audio gain in decibels
     /// </summary>
     [SerializedField(6, 1)]
     [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.DecibelToUInt16)}")]
-    [ValidationMethod(nameof(ValidateGain))]
     private double _gain;
 
     /// <summary>
-    /// Audio balance (-50.0 to +50.0, where 0 is center)
+    /// Audio balance
     /// </summary>
     [SerializedField(8,2)]
     [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.BalanceToInt16)}")]
     [SerializedType(typeof(short))]
-    [ValidationMethod(nameof(ValidateBalance))]
     private double _balance;
 
     /// <summary>
@@ -44,18 +42,6 @@ public partial class AudioMixerInputCommand : SerializedCommand
     /// </summary>
     [SerializedField(10, 3)]
     private bool _rcaToXlrEnabled;
-
-    private void ValidateGain(double value)
-    {
-        if (value < -60.0 || value > 6.0)
-            throw new ArgumentOutOfRangeException(nameof(value), "Gain must be between -60.0 and +6.0 decibels");
-    }
-
-    private void ValidateBalance(double value)
-    {
-        if (value < -50.0 || value > 50.0)
-            throw new ArgumentOutOfRangeException(nameof(value), "Balance must be between -50.0 and +50.0");
-    }
 
     public AudioMixerInputCommand(ushort index, AtemState currentState)
     {

@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Helpers;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
@@ -8,33 +9,25 @@ namespace AtemSharp.Commands.DeviceProfile;
 /// Product identifier command received from ATEM
 /// </summary>
 [Command("_pin")]
-public class ProductIdentifierCommand : IDeserializedCommand
+public partial class ProductIdentifierCommand : IDeserializedCommand
 {
-    /// <summary>
-    /// Product identifier string from the device
-    /// </summary>
-    public string ProductIdentifier { get; init; } = string.Empty;
-
     /// <summary>
     /// ATEM device model
     /// </summary>
-    public Model Model { get; init; }
+    [DeserializedField(40)]
+    private Model _model;
+
+    /// <summary>
+    /// Product identifier string from the device
+    /// </summary>
+    public string ProductIdentifier { get; internal set; } = string.Empty;
 
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    public static ProductIdentifierCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
+    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        var productIdentifier = rawCommand.ReadString(0, 40);
-
-        // Read model as single byte
-        var model = (Model)rawCommand.ReadUInt8(40);
-
-        return new ProductIdentifierCommand
-        {
-            ProductIdentifier = productIdentifier,
-            Model = model
-        };
+        ProductIdentifier = rawCommand.ReadString(0, 40);
     }
 
     /// <summary>

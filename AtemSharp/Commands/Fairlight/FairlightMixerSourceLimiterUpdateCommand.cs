@@ -1,32 +1,58 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
-using AtemSharp.State.Audio.Fairlight;
+using AtemSharp.Helpers;
+using AtemSharp.State;
 
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("AILP")]
-public class FairlightMixerSourceLimiterUpdateCommand : FairlightMixerSourceUpdateCommandBase
+public partial class FairlightMixerSourceLimiterUpdateCommand : IDeserializedCommand
 {
-    public LimiterParameters Parameters { get; } = new();
+    [DeserializedField(0)]
+    private ushort _inputId;
 
-    public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion version)
+    [DeserializedField(8)]
+    private long _sourceId;
+
+    [DeserializedField(16)]
+    private bool _limiterEnabled;
+
+    [DeserializedField(20)]
+    [ScalingFactor(100)]
+    [SerializedType(typeof(int))]
+    private double _threshold;
+
+    [DeserializedField(24)]
+    [ScalingFactor(100)]
+    [SerializedType(typeof(int))]
+    private double _attack;
+
+    [DeserializedField(28)]
+    [ScalingFactor(100)]
+    [SerializedType(typeof(int))]
+    private double _hold;
+
+    [DeserializedField(32)]
+    [ScalingFactor(100)]
+    [SerializedType(typeof(int))]
+    private double _release;
+
+    public void ApplyToState(AtemState state)
     {
-        return new FairlightMixerSourceLimiterUpdateCommand
+        var audio = state.GetFairlight();
+
+        if (!audio.Inputs.TryGetValue(InputId, out var input))
         {
-            Parameters =
-            {
-                LimiterEnabled = rawCommand.ReadBoolean(16),
-                Threshold = rawCommand.ReadInt32BigEndian(20) / 100.0,
-                Attack = rawCommand.ReadInt32BigEndian(24) / 100.0,
-                Hold = rawCommand.ReadInt32BigEndian(28) / 100.0,
-                Release = rawCommand.ReadInt32BigEndian(32) / 100.0,
-            }
-        }.DeserializeIds(rawCommand);
-    }
+            throw new IndexOutOfRangeException($"Input ID {InputId} does not exist");
+        }
 
+        var source = input.Sources.GetOrCreate(SourceId);
+        source.Id = SourceId;
+        source.InputId = InputId;
 
-    protected override void ApplyToSource(Source source)
-    {
-        Parameters.ApplyTo(source.Dynamics.Limiter);
+        var limiter = source.Dynamics.Limiter;
+        limiter.Enabled = LimiterEnabled;
+        limiter.Threshold = Threshold;
+        limiter.Attack = Attack;
+        limiter.Hold = Hold;
+        limiter.Release = Release;
     }
 }

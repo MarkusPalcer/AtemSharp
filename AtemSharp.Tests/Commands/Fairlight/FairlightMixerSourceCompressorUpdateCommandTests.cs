@@ -20,11 +20,11 @@ public class FairlightMixerSourceCompressorUpdateCommandTests : DeserializedComm
     {
         Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Index), $"{testCase.Name} - Index");
         Assert.That(actualCommand.SourceId, Is.EqualTo(expectedData.SourceId), $"{testCase.Name} - SourceId");
-        Assert.That(actualCommand.Parameters.CompressorEnabled, Is.EqualTo(expectedData.CompressorEnabled), $"{testCase.Name} - CompressorEnabled");
-        Assert.That(actualCommand.Parameters.Threshold, Is.EqualTo(expectedData.Threshold).Within(0.01), $"{testCase.Name} - Threshold");
-        Assert.That(actualCommand.Parameters.Ratio, Is.EqualTo(expectedData.Ratio).Within(0.01), $"{testCase.Name} - Ratio");
-        Assert.That(actualCommand.Parameters.Attack, Is.EqualTo(expectedData.Attack).Within(0.01), $"{testCase.Name} - Attack");
-        Assert.That(actualCommand.Parameters.Hold, Is.EqualTo(expectedData.Hold).Within(0.01), $"{testCase.Name} - Hold");
-        Assert.That(actualCommand.Parameters.Release, Is.EqualTo(expectedData.Release).Within(0.01), $"{testCase.Name} - Release");
+        Assert.That(actualCommand.CompressorEnabled, Is.EqualTo(expectedData.CompressorEnabled), $"{testCase.Name} - CompressorEnabled");
+        Assert.That(actualCommand.Threshold, Is.EqualTo(expectedData.Threshold).Within(0.01), $"{testCase.Name} - Threshold");
+        Assert.That(actualCommand.Ratio, Is.EqualTo(expectedData.Ratio).Within(0.01), $"{testCase.Name} - Ratio");
+        Assert.That(actualCommand.Attack, Is.EqualTo(expectedData.Attack).Within(0.01), $"{testCase.Name} - Attack");
+        Assert.That(actualCommand.Hold, Is.EqualTo(expectedData.Hold).Within(0.01), $"{testCase.Name} - Hold");
+        Assert.That(actualCommand.Release, Is.EqualTo(expectedData.Release).Within(0.01), $"{testCase.Name} - Release");
     }
 }

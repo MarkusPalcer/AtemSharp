@@ -26,14 +26,14 @@ public class FairlightMixerSourceEqualizerBandUpdateCommandTests : DeserializedC
     {
         Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.SourceId, Is.EqualTo(expectedData.SourceId));
-        Assert.That(actualCommand.Parameters.BandIndex, Is.EqualTo(expectedData.Band));
-        Assert.That(actualCommand.Parameters.Enabled, Is.EqualTo(expectedData.BandEnabled));
-        Assert.That(actualCommand.Parameters.SupportedShapes, Is.EquivalentTo(AtemUtil.GetComponents(expectedData.SupportedShapes)));
-        Assert.That(actualCommand.Parameters.Shape, Is.EqualTo(expectedData.Shape));
-        Assert.That(actualCommand.Parameters.SupportedFrequencyRanges, Is.EquivalentTo(AtemUtil.GetComponents(expectedData.SupportedFrequencyRanges)));
-        Assert.That(actualCommand.Parameters.FrequencyRange, Is.EqualTo(expectedData.FrequencyRange));
-        Assert.That(actualCommand.Parameters.Frequency, Is.EqualTo(expectedData.Frequency));
-        Assert.That(actualCommand.Parameters.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));
-        Assert.That(actualCommand.Parameters.QFactor, Is.EqualTo(expectedData.QFactor).Within(0.01));
+        Assert.That(actualCommand.BandIndex, Is.EqualTo(expectedData.Band));
+        Assert.That(actualCommand.Enabled, Is.EqualTo(expectedData.BandEnabled));
+        Assert.That(actualCommand.SupportedShapes, Is.EquivalentTo(AtemUtil.GetComponentsLegacy(expectedData.SupportedShapes)));
+        Assert.That(actualCommand.Shape, Is.EqualTo(expectedData.Shape));
+        Assert.That(actualCommand.SupportedFrequencyRanges, Is.EquivalentTo(AtemUtil.GetComponentsLegacy(expectedData.SupportedFrequencyRanges)));
+        Assert.That(actualCommand.FrequencyRange, Is.EqualTo(expectedData.FrequencyRange));
+        Assert.That(actualCommand.Frequency, Is.EqualTo(expectedData.Frequency));
+        Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));
+        Assert.That(actualCommand.QFactor, Is.EqualTo(expectedData.QFactor).Within(0.01));
     }
 }

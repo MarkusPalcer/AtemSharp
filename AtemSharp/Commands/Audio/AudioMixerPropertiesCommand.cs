@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Audio;
@@ -8,49 +7,18 @@ namespace AtemSharp.Commands.Audio;
 /// Command to update audio mixer properties
 /// </summary>
 [Command("CAMP")]
-public class AudioMixerPropertiesCommand : SerializedCommand
+[BufferSize(4)]
+public partial class AudioMixerPropertiesCommand : SerializedCommand
 {
-    private bool _audioFollowVideo;
-
-    /// <summary>
-    /// Create command initialized with current state values
-    /// </summary>
-    /// <param name="currentState">Current ATEM state</param>
-    /// <exception cref="InvalidIdError">Thrown if classic audio not available</exception>
-    public AudioMixerPropertiesCommand(AtemState currentState)
-    {
-        var audio = currentState.GetClassicAudio();
-        // Initialize from current state (direct field access = no flags set)
-        _audioFollowVideo = audio.AudioFollowsVideo ?? false;
-    }
-
     /// <summary>
     /// Whether audio follows video crossfade transition
     /// </summary>
-    public bool AudioFollowVideo
+    [SerializedField(1,0)]
+    private bool _audioFollowVideo;
+
+    public AudioMixerPropertiesCommand(AtemState currentState)
     {
-        get => _audioFollowVideo;
-        set
-        {
-            _audioFollowVideo = value;
-            Flag |= 1 << 0;
-        }
-    }
-
-    /// <summary>
-    /// Serialize command to binary stream for transmission to ATEM
-    /// </summary>
-    /// <param name="version">Protocol version</param>
-    /// <returns>Serialized command data as byte array</returns>
-    public override byte[] Serialize(ProtocolVersion version)
-    {
-        using var memoryStream = new MemoryStream(4);
-        using var writer = new BinaryWriter(memoryStream);
-
-        writer.Write((byte)Flag);
-        writer.WriteBoolean(AudioFollowVideo);
-        writer.Pad(2);
-
-        return memoryStream.ToArray();
+        var audio = currentState.GetClassicAudio();
+        _audioFollowVideo = audio.AudioFollowsVideo ?? false;
     }
 }

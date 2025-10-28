@@ -1,37 +1,52 @@
-using AtemSharp.Enums;
+using AtemSharp.Helpers;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("AEBP")]
-public class FairlightMixerSourceEqualizerBandUpdateCommand : IDeserializedCommand
+public partial class FairlightMixerSourceEqualizerBandUpdateCommand : IDeserializedCommand
 {
-    public ushort InputId { get; set; }
-    public long SourceId { get; set; }
+    [DeserializedField(0)]
+    private ushort _inputId;
 
-    public BandUpdateParameters Parameters { get; } = new();
+    [DeserializedField(8)]
+    private long _sourceId;
 
-    public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion version)
-    {
-        return new FairlightMixerSourceEqualizerBandUpdateCommand
-        {
-            InputId = rawCommand.ReadUInt16BigEndian(0),
-            SourceId = rawCommand.ReadInt64BigEndian(8),
-            Parameters =
-            {
-                BandIndex = rawCommand.ReadUInt8(16),
-                Enabled = rawCommand.ReadBoolean(17),
-                SupportedShapes = AtemUtil.GetComponents(rawCommand.ReadUInt8(18)),
-                Shape = rawCommand.ReadUInt8(19),
-                SupportedFrequencyRanges = AtemUtil.GetComponents(rawCommand.ReadUInt8(20)),
-                FrequencyRange = rawCommand.ReadUInt8(21),
-                Frequency = rawCommand.ReadUInt32BigEndian(24),
-                Gain = rawCommand.ReadInt32BigEndian(28) / 100.0,
-                QFactor = rawCommand.ReadInt16BigEndian(32) / 100.0,
-            }
-        };
-    }
+    [DeserializedField(16)]
+    private byte _bandIndex;
+
+    [DeserializedField(17)]
+    private bool _enabled;
+
+    [DeserializedField(18)]
+    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.GetComponentsLegacy)}")]
+    [SerializedType(typeof(byte))]
+    private byte[] _supportedShapes = [];
+
+    [DeserializedField(19)]
+    private byte _shape;
+
+    [DeserializedField(20)]
+    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.GetComponentsLegacy)}")]
+    [SerializedType(typeof(byte))]
+    private byte[] _supportedFrequencyRanges = [];
+
+    [DeserializedField(21)]
+    private byte _frequencyRange;
+
+    [DeserializedField(24)]
+    private uint _frequency;
+
+    [DeserializedField(28)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100)]
+    private double _gain;
+
+    [DeserializedField(32)]
+    [SerializedType(typeof(short))]
+    [ScalingFactor(100)]
+    private double _qFactor;
 
     public void ApplyToState(AtemState state)
     {
@@ -42,17 +57,23 @@ public class FairlightMixerSourceEqualizerBandUpdateCommand : IDeserializedComma
             throw new IndexOutOfRangeException($"Input ID {InputId} does not exist");
         }
 
-        if (!input.Sources.TryGetValue(SourceId, out var source))
-        {
-            throw new IndexOutOfRangeException($"Source ID {SourceId} does not exist on Input ID {InputId}");
-        }
+        var source = input.Sources.GetOrCreate(SourceId);
+        source.Id = SourceId;
+        source.InputId = InputId;
 
-        if (Parameters.BandIndex >= source.Equalizer.Bands.Length)
+        if (BandIndex >= source.Equalizer.Bands.Length)
         {
-            throw new IndexOutOfRangeException($"Band Index {Parameters.BandIndex} does not exist on Source ID {SourceId} on Input ID {InputId}");
+            throw new IndexOutOfRangeException($"Band Index {BandIndex} does not exist on Source ID {SourceId} on Input ID {InputId}");
         }
-        var band = source.Equalizer.Bands[Parameters.BandIndex];
+        var band = source.Equalizer.Bands[BandIndex];
 
-        Parameters.ApplyTo(band);
+        band.Enabled = Enabled;
+        band.SupportedShapes = SupportedShapes;
+        band.Shape = Shape;
+        band.SupportedFrequencyRanges = SupportedFrequencyRanges;
+        band.FrequencyRange = FrequencyRange;
+        band.Frequency = Frequency;
+        band.Gain = Gain;
+        band.QFactor = QFactor;
     }
 }

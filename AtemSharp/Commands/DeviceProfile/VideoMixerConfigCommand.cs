@@ -16,6 +16,7 @@ public class VideoMixerConfigCommand : IDeserializedCommand
     /// </summary>
     public SupportedVideoMode[] SupportedVideoModes { get; init; } = [];
 
+    // TODO: Split by Version
     public static VideoMixerConfigCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion version)
     {
         var hasRequiresReconfig = version >= ProtocolVersion.V8_0;

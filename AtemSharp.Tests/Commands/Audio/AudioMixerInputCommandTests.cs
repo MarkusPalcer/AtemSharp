@@ -150,21 +150,6 @@ public class AudioMixerInputCommandTests : SerializedCommandTestBase<AudioMixerI
 		Assert.That(command.Flag & (1 << 1), Is.Not.EqualTo(0), "Gain flag should be set");
 	}
 
-	[TestCase(-60.1)]
-	[TestCase(-100.0)]
-	[TestCase(6.1)]
-	[TestCase(10.0)]
-	public void GainProperty_WithInvalidValues_ShouldThrowArgumentOutOfRangeException(double invalidGain)
-	{
-		// Arrange
-		var state = CreateStateWithAudioChannel(1);
-		var command = new AudioMixerInputCommand(1, state);
-
-		// Act & Assert
-		var ex = Assert.Throws<ArgumentOutOfRangeException>(() => command.Gain = invalidGain);
-		Assert.That(ex.ParamName, Is.EqualTo("value"));
-		Assert.That(ex.Message, Does.Contain("Gain must be between -60.0 and +6.0 decibels"));
-	}
 
 	[TestCase(-50.0)]
 	[TestCase(-25.0)]
@@ -183,22 +168,6 @@ public class AudioMixerInputCommandTests : SerializedCommandTestBase<AudioMixerI
 		// Assert
 		Assert.That(command.Balance, Is.EqualTo(validBalance));
 		Assert.That(command.Flag & (1 << 2), Is.Not.EqualTo(0), "Balance flag should be set");
-	}
-
-	[TestCase(-50.1)]
-	[TestCase(-100.0)]
-	[TestCase(50.1)]
-	[TestCase(100.0)]
-	public void BalanceProperty_WithInvalidValues_ShouldThrowArgumentOutOfRangeException(double invalidBalance)
-	{
-		// Arrange
-		var state = CreateStateWithAudioChannel(1);
-		var command = new AudioMixerInputCommand(1, state);
-
-		// Act & Assert
-		var ex = Assert.Throws<ArgumentOutOfRangeException>(() => command.Balance = invalidBalance);
-		Assert.That(ex.ParamName, Is.EqualTo("value"));
-		Assert.That(ex.Message, Does.Contain("Balance must be between -50.0 and +50.0"));
 	}
 
 	[TestCase(AudioMixOption.Off)]

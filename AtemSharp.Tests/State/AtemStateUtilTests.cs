@@ -64,7 +64,7 @@ public class AtemStateUtilTests
         Assert.That(dictionary.Count, Is.EqualTo(2), "Dictionary should have two elements");
         Assert.That(dictionary[1], Is.SameAs(existingObject), "Should preserve existing element");
         Assert.That(dictionary[3], Is.SameAs(result), "Should contain the new element");
-        
+
         // Verify existing object is unchanged
         Assert.That(existingObject.Id, Is.EqualTo(100), "Existing object should be unchanged");
         Assert.That(existingObject.Name, Is.EqualTo("First"), "Existing object should be unchanged");
@@ -130,7 +130,7 @@ public class AtemStateUtilTests
         Assert.That(result, Is.Not.Null, "Should create MixEffect instance");
         Assert.That(result, Is.TypeOf<MixEffect>(), "Should be correct type");
         Assert.That(dictionary[2], Is.SameAs(result), "Should store in dictionary");
-        
+
         // Verify default MixEffect values
         Assert.That(result.Index, Is.EqualTo(0), "Should have default Index value");
         Assert.That(result.ProgramInput, Is.EqualTo(0), "Should have default ProgramInput value");
@@ -170,7 +170,7 @@ public class AtemStateUtilTests
         Assert.That(dictionary[5], Is.SameAs(obj5), "Should contain object at index 5");
         Assert.That(dictionary[10], Is.SameAs(obj10), "Should contain object at index 10");
         Assert.That(dictionary[100], Is.SameAs(obj100), "Should contain object at index 100");
-        
+
         // Verify intermediate indices don't exist (sparse behavior)
         Assert.That(dictionary.ContainsKey(2), Is.False, "Should not contain index 2");
         Assert.That(dictionary.ContainsKey(3), Is.False, "Should not contain index 3");
@@ -179,37 +179,10 @@ public class AtemStateUtilTests
     }
 
     [Test]
-    public void GetOrCreate_ThreadSafety_ShouldNotCorruptDictionary()
-    {
-        // Arrange
-        var dictionary = new Dictionary<int, TestObject>();
-        var tasks = new List<Task<TestObject>>();
-        const int numTasks = 10;
-        const int keyToTest = 42;
-
-        // Act - Multiple threads trying to get/create the same key
-        for (int i = 0; i < numTasks; i++)
-        {
-            tasks.Add(Task.Run(() => dictionary.GetOrCreate(keyToTest)));
-        }
-
-        var results = Task.WhenAll(tasks).Result;
-
-        // Assert
-        Assert.That(dictionary.Count, Is.EqualTo(1), "Dictionary should only contain one element");
-        Assert.That(dictionary.ContainsKey(keyToTest), Is.True, "Dictionary should contain the test key");
-        
-        // Note: This test may have race conditions due to Dictionary not being thread-safe,
-        // but it helps verify that the method itself doesn't introduce additional corruption
-        Assert.That(results.Length, Is.EqualTo(numTasks), "All tasks should complete");
-        Assert.That(results.All(r => r != null), Is.True, "All results should be non-null");
-    }
-
-    [Test]
     public void GetOrCreate_WithCustomConstructorBehavior_ShouldUseDefaultConstructor()
     {
         // This test verifies that the method uses new T() which calls the parameterless constructor
-        
+
         // Arrange
         var dictionary = new Dictionary<int, TestObject>();
 

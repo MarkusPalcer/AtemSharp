@@ -8,10 +8,10 @@ public class DownstreamKeyerSources
 	/// <summary>
 	/// Fill source input number
 	/// </summary>
-	public int FillSource { get; set; }
+	public ushort FillSource { get; set; }
 
 	/// <summary>
 	/// Cut/key source input number
 	/// </summary>
-	public int CutSource { get; set; }
+	public ushort CutSource { get; set; }
 }

@@ -1,35 +1,15 @@
 using AtemSharp.Enums;
+using AtemSharp.Helpers;
 using AtemSharp.Lib;
 using AtemSharp.State;
+using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("CMPP")]
-public class FairlightMixerMasterPropertiesCommand : SerializedCommand
+[BufferSize(4)]
+public partial class FairlightMixerMasterPropertiesCommand(MasterProperties master) : SerializedCommand
 {
-    private bool _audioFollowsVideo;
-
-    public bool AudioFollowsVideo
-    {
-        get => _audioFollowsVideo;
-        set
-        {
-            _audioFollowsVideo = value;
-            Flag |= 1 << 0;
-        }
-    }
-
-    public FairlightMixerMasterPropertiesCommand(AtemState state)
-    {
-        _audioFollowsVideo = state.GetFairlight().Master.AudioFollowsVideo;
-    }
-
-    public override byte[] Serialize(ProtocolVersion version)
-    {
-        var buffer = new byte[4];
-        buffer.WriteUInt8((byte)Flag, 0);
-        buffer.WriteBoolean(AudioFollowsVideo, 1);
-
-        return buffer;
-    }
+    [SerializedField(1, 0)]
+    private bool _audioFollowsVideo = master.AudioFollowsVideo;
 }

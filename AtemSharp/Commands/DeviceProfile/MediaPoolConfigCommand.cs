@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DeviceProfile;
@@ -8,29 +7,19 @@ namespace AtemSharp.Commands.DeviceProfile;
 /// Media pool configuration command received from ATEM
 /// </summary>
 [Command("_mpl")]
-public class MediaPoolConfigCommand : IDeserializedCommand
+public partial class MediaPoolConfigCommand : IDeserializedCommand
 {
     /// <summary>
     /// Number of still images available in the media pool
     /// </summary>
-    public byte StillCount { get; init; }
+    [DeserializedField(0)]
+    private byte _stillCount;
 
     /// <summary>
     /// Number of video clips available in the media pool
     /// </summary>
-    public byte ClipCount { get; init; }
-
-    /// <summary>
-    /// Deserialize the command from binary stream
-    /// </summary>
-    public static MediaPoolConfigCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        return new MediaPoolConfigCommand
-        {
-            StillCount = rawCommand.ReadUInt8(0),
-            ClipCount = rawCommand.ReadUInt8(1)
-        };
-    }
+    [DeserializedField(1)]
+    private byte _clipCount;
 
     /// <summary>
     /// Apply the command's values to the ATEM state

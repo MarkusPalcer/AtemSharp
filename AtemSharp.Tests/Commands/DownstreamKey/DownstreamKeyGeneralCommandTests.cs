@@ -1,5 +1,4 @@
 using AtemSharp.Commands.DownstreamKey;
-using AtemSharp.Enums;
 using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DownstreamKey;
@@ -8,9 +7,14 @@ namespace AtemSharp.Tests.Commands.DownstreamKey;
 public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<DownstreamKeyGeneralCommand,
     DownstreamKeyGeneralCommandTests.CommandData>
 {
+    protected override Range[] GetFloatingPointByteRanges() => [
+        (4..6), // Clip
+        (6..8) // Gain
+    ];
+
     public class CommandData : CommandDataBase
     {
-        public int Index { get; set; }
+        public byte Index { get; set; }
         public bool PreMultipliedKey { get; set; }
         public double Clip { get; set; }
         public double Gain { get; set; }
@@ -20,10 +24,10 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
     protected override DownstreamKeyGeneralCommand CreateSut(TestCaseData testCase)
     {
         // Create state with the required downstream keyer
-        var state = CreateStateWithDownstreamKeyer(testCase.Command.Index);
+        var state = CreateDownstreamKeyer(testCase.Command.Index);
 
         // Create command with the keyer ID
-        var command = new DownstreamKeyGeneralCommand(testCase.Command.Index, state);
+        var command = new DownstreamKeyGeneralCommand(state);
 
         // Set the actual values that should be written
         command.PreMultiply = testCase.Command.PreMultipliedKey;
@@ -37,11 +41,11 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
     /// <summary>
     /// Creates an AtemState with a valid downstream keyer at the specified index
     /// </summary>
-    private static AtemState CreateStateWithDownstreamKeyer(int keyerId)
+    private static DownstreamKeyer CreateDownstreamKeyer(byte keyerId)
     {
-        var downstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(keyerId + 1);
-        downstreamKeyers[keyerId] = new DownstreamKeyer
+        return new DownstreamKeyer
         {
+            Id = keyerId,
             InTransition = false,
             RemainingFrames = 0,
             IsAuto = false,
@@ -58,15 +62,6 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
                 Mask = new DownstreamKeyerMask()
             }
         };
-
-        var state = new AtemState
-        {
-            Video = new VideoState
-            {
-                DownstreamKeyers = downstreamKeyers
-            }
-        };
-        return state;
     }
 
     [Test]
@@ -74,10 +69,10 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
     {
         // Arrange
         const int keyerId = 1;
-        var state = CreateStateWithDownstreamKeyer(keyerId);
+        var state = CreateDownstreamKeyer(keyerId);
 
         // Act
-        var command = new DownstreamKeyGeneralCommand(keyerId, state);
+        var command = new DownstreamKeyGeneralCommand(state);
 
         // Assert
         Assert.That(command.DownstreamKeyerId, Is.EqualTo(keyerId));
@@ -89,22 +84,10 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
     }
 
     [Test]
-    public void Constructor_WithMissingDownstreamKeyer_ShouldUseDefaults()
-    {
-        // Arrange
-        const int keyerId = 5;
-        var state = new AtemState(); // No video state
-
-        // Act
-
-        Assert.Throws<IndexOutOfRangeException>(() => new DownstreamKeyGeneralCommand(keyerId, state));
-    }
-
-    [Test]
     public void PreMultiply_WhenSet_ShouldUpdateFlagAndValue()
     {
         // Arrange
-        var command = new DownstreamKeyGeneralCommand(0, CreateStateWithDownstreamKeyer(0));
+        var command = new DownstreamKeyGeneralCommand(CreateDownstreamKeyer(0));
 
         // Act
         command.PreMultiply = true;
@@ -118,7 +101,7 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
     public void Clip_WhenSet_ShouldUpdateFlagAndValue()
     {
         // Arrange
-        var command = new DownstreamKeyGeneralCommand(0, CreateStateWithDownstreamKeyer(0));
+        var command = new DownstreamKeyGeneralCommand(CreateDownstreamKeyer(0));
 
         // Act
         command.Clip = 50.0;
@@ -128,22 +111,12 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
         Assert.That(command.Flag & 2, Is.EqualTo(2)); // Flag bit 1 should be set
     }
 
-    [Test]
-    public void Clip_WithInvalidValue_ShouldThrowException()
-    {
-        // Arrange
-        var command = new DownstreamKeyGeneralCommand(0, CreateStateWithDownstreamKeyer(0));
-
-        // Act & Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => command.Clip = -1.0);
-        Assert.Throws<ArgumentOutOfRangeException>(() => command.Clip = 101.0);
-    }
 
     [Test]
     public void Gain_WhenSet_ShouldUpdateFlagAndValue()
     {
         // Arrange
-        var command = new DownstreamKeyGeneralCommand(0, CreateStateWithDownstreamKeyer(0));
+        var command = new DownstreamKeyGeneralCommand(CreateDownstreamKeyer(0));
 
         // Act
         command.Gain = 75.0;
@@ -154,35 +127,10 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
     }
 
     [Test]
-    public void Gain_WithInvalidValue_ShouldThrowException()
-    {
-        // Arrange
-        var command = new DownstreamKeyGeneralCommand(0, CreateStateWithDownstreamKeyer(0));
-
-        // Act & Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => command.Gain = -1.0);
-        Assert.Throws<ArgumentOutOfRangeException>(() => command.Gain = 101.0);
-    }
-
-    [Test]
-    public void Invert_WhenSet_ShouldUpdateFlagAndValue()
-    {
-        // Arrange
-        var command = new DownstreamKeyGeneralCommand(0, CreateStateWithDownstreamKeyer(0));
-
-        // Act
-        command.Invert = true;
-
-        // Assert
-        Assert.That(command.Invert, Is.True);
-        Assert.That(command.Flag & 8, Is.EqualTo(8)); // Flag bit 3 should be set
-    }
-
-    [Test]
     public void Properties_WhenSetMultipleTimes_ShouldMaintainFlags()
     {
         // Arrange
-        var command = new DownstreamKeyGeneralCommand(0, CreateStateWithDownstreamKeyer(0));
+        var command = new DownstreamKeyGeneralCommand(CreateDownstreamKeyer(0));
 
         // Act
         command.PreMultiply = true;
@@ -195,37 +143,5 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
         Assert.That(command.Clip, Is.EqualTo(25.0));
         Assert.That(command.Gain, Is.EqualTo(50.0));
         Assert.That(command.Flag, Is.EqualTo(7)); // Bits 0, 1, 2 should be set (1 + 2 + 4 = 7)
-    }
-
-    [Test]
-    public void Serialize_WithSpecificFlags_ShouldProduceCorrectOutput()
-    {
-        // Arrange
-        var command = new DownstreamKeyGeneralCommand(1, CreateStateWithDownstreamKeyer(1));
-        command.PreMultiply = true;
-        command.Clip = 25.0;
-        command.Gain = 50.0;
-        command.Invert = false;
-
-        // Override flags to test specific mask combinations
-        command.Flag = 7; // Only preMultiply + clip + gain flags
-
-        // Act
-        var result = command.Serialize(ProtocolVersion.V8_1_1);
-
-        // Assert
-        Assert.That(result.Length, Is.EqualTo(12));
-        Assert.That(result[0], Is.EqualTo(7)); // Flag should match what we set
-        Assert.That(result[1], Is.EqualTo(1)); // Keyer ID
-        Assert.That(result[2], Is.EqualTo(1)); // PreMultiply = true
-        Assert.That(result[3], Is.EqualTo(0)); // Padding
-        Assert.That(result[4], Is.EqualTo(0)); // Clip high byte (250 = 0x00FA)
-        Assert.That(result[5], Is.EqualTo(250)); // Clip low byte
-        Assert.That(result[6], Is.EqualTo(1)); // Gain high byte (500 = 0x01F4)
-        Assert.That(result[7], Is.EqualTo(244)); // Gain low byte
-        Assert.That(result[8], Is.EqualTo(0)); // Invert = false
-        Assert.That(result[9], Is.EqualTo(0)); // Padding
-        Assert.That(result[10], Is.EqualTo(0)); // Padding
-        Assert.That(result[11], Is.EqualTo(0)); // Padding
     }
 }

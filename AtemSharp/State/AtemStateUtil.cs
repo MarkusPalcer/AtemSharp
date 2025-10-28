@@ -40,14 +40,14 @@ public static class AtemStateUtil
     /// <param name="state">The ATEM state</param>
     /// <param name="index">The MultiViewer index</param>
     /// <returns>The MultiViewer instance</returns>
-    public static MultiViewer GetMultiViewer(AtemState state, int index)
+    public static MultiViewer GetMultiViewer(AtemState state, byte index)
     {
         var multiViewer = state.Settings.MultiViewers.GetOrCreate(index);
         multiViewer.Index = index; // Ensure index is set correctly
         return multiViewer;
     }
 
-    public static TValue GetOrCreate<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey index) where TValue : new() where TKey : notnull
+    public static TValue GetOrCreate<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey index) where TValue : new() where TKey : notnull
     {
         ArgumentNullException.ThrowIfNull(dict);
 

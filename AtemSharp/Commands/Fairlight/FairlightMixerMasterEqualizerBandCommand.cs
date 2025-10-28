@@ -1,30 +1,36 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("CMBP")]
-public class FairlightMixerMasterEqualizerBandCommand(MasterEqualizerBand band) : SerializedCommand
+[BufferSize(20)]
+public partial class FairlightMixerMasterEqualizerBandCommand(MasterEqualizerBand band) : SerializedCommand
 {
+    [SerializedField(1)]
+    [NoProperty]
+    private readonly byte _bandIndex = band.Id;
 
-    private byte _bandIndex = band.Index;
-    public BandParameter Parameters { get; } = new(band);
+    [SerializedField(2, 0)]
+    private bool _enabled = band.Enabled;
 
-    public override byte[] Serialize(ProtocolVersion version)
-    {
-        // For testability: If flag has been set from outside, use that instead of the internal one
-        if (Flag != 0) Parameters.Flag = (byte)Flag;
+    [SerializedField(3, 1)]
+    private byte _shape = band.Shape;
 
-        var buffer = new byte[20];
-        buffer.WriteUInt8(Parameters.Flag, 0);
-        buffer.WriteUInt8(_bandIndex, 1);
-        buffer.WriteBoolean(Parameters.Enabled, 2);
-        buffer.WriteUInt8(Parameters.Shape, 3);
-        buffer.WriteUInt8(Parameters.FrequencyRange, 4);
-        buffer.WriteUInt32BigEndian(Parameters.Frequency, 8);
-        buffer.WriteInt32BigEndian((int)(Parameters.Gain * 100), 12);
-        buffer.WriteInt16BigEndian((short)(Parameters.QFactor * 100), 16);
-        return buffer;
-    }
+    [SerializedField(4, 2)]
+    private byte _frequencyRange = band.FrequencyRange;
+
+    [SerializedField(8,3)]
+    [SerializedType(typeof(uint))]
+    private uint _frequency = band.Frequency;
+
+    [SerializedField(12, 4)]
+    [ScalingFactor(100.0)]
+    [SerializedType(typeof(int))]
+    private double _gain = band.Gain;
+
+    [SerializedField(16, 5)]
+    [ScalingFactor(100.0)]
+    [SerializedType(typeof(short))]
+    private double _qFactor = band.QFactor;
 }

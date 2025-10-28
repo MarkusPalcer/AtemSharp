@@ -1,131 +1,52 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("CIXP")]
-public class FairlightMixerSourceExpanderCommand : FairlightMixerSourceCommandBase
+[BufferSize(40)]
+public partial class FairlightMixerSourceExpanderCommand(Source source) : SerializedCommand
 {
-    private bool _expanderEnabled;
-    private bool _gateEnabled;
-    private double _threshold;
-    private double _range;
-    private double _ratio;
-    private double _attack;
-    private double _hold;
-    private double _release;
 
-    public FairlightMixerSourceExpanderCommand(Source source) : base(source)
-    {
-        _expanderEnabled = source.Dynamics.Expander.Enabled;
-        _gateEnabled = source.Dynamics.Expander.GateEnabled;
-        _threshold = source.Dynamics.Expander.Threshold;
-        _range = source.Dynamics.Expander.Range;
-        _ratio = source.Dynamics.Expander.Ratio;
-        _attack = source.Dynamics.Expander.Attack;
-        _hold = source.Dynamics.Expander.Hold;
-        _release = source.Dynamics.Expander.Release;
-    }
+    [SerializedField(2)]
+    [NoProperty]
+    private readonly ushort _inputId = source.InputId;
 
-    public bool ExpanderEnabled
-    {
-        get { return _expanderEnabled; }
-        set
-        {
-            _expanderEnabled = value;
-            Flag |= 1 << 0;
-        }
-    }
+    [SerializedField(8)] [NoProperty] private readonly long _sourceId = source.Id;
 
-    public bool GateEnabled
-    {
-        get { return _gateEnabled; }
-        set
-        {
-            _gateEnabled = value;
-            Flag |= 1 << 1;
-        }
-    }
+    [SerializedField(16,0)]
+    private bool _expanderEnabled = source.Dynamics.Expander.Enabled;
 
-    public double Threshold
-    {
-        get { return _threshold; }
-        set
-        {
-            _threshold = value;
-            Flag |= 1 << 2;
-        }
-    }
+    [SerializedField(17,1)]
+    private bool _gateEnabled = source.Dynamics.Expander.GateEnabled;
 
-    public double Range
-    {
-        get { return _range; }
-        set
-        {
-            _range = value;
-            Flag |= 1 << 3;
-        }
-    }
+    [SerializedField(20,2)]
+    [ScalingFactor(100)]
+    [SerializedType(typeof(int))]
+    private double _threshold = source.Dynamics.Expander.Threshold;
 
-    public double Ratio
-    {
-        get { return _ratio; }
-        set
-        {
-            _ratio = value;
-            Flag |= 1 << 4;
-        }
-    }
+    [SerializedField(24, 3)]
+    [ScalingFactor(100)]
+    [SerializedType(typeof(short))]
+    private double _range = source.Dynamics.Expander.Range;
 
-    public double Attack
-    {
-        get { return _attack; }
-        set
-        {
-            _attack = value;
-            Flag |= 1 << 5;
-        }
-    }
+    [SerializedField(26, 4)]
+    [ScalingFactor(100)]
+    [SerializedType(typeof(short))]
+    private double _ratio = source.Dynamics.Expander.Ratio;
 
-    public double Hold
-    {
-        get { return _hold; }
-        set
-        {
-            _hold = value;
-            Flag |= 1 << 6;
-        }
-    }
+    [SerializedField(28, 5)]
+    [ScalingFactor(100)]
+    [SerializedType(typeof(int))]
+    private double _attack = source.Dynamics.Expander.Attack;
 
-    public double Release
-    {
-        get { return _release; }
-        set
-        {
-            _release = value;
-            Flag |= 1 << 7;
-        }
-    }
+    [SerializedField(32, 6)]
+    [ScalingFactor(100)]
+    [SerializedType(typeof(int))]
+    private double _hold = source.Dynamics.Expander.Hold;
 
-
-    public override byte[] Serialize(ProtocolVersion version)
-    {
-        var buffer = new byte[40];
-        buffer.WriteUInt8((byte)Flag, 0);
-        SerializeIds(buffer);
-
-        buffer.WriteBoolean(_expanderEnabled, 16);
-        buffer.WriteBoolean(_gateEnabled, 17);
-        buffer.WriteInt32BigEndian((int)(_threshold * 100), 20);
-        buffer.WriteInt16BigEndian((short)(_range * 100), 24);
-        buffer.WriteInt16BigEndian((short)(_ratio * 100), 26);
-        buffer.WriteInt32BigEndian((int)(_attack * 100), 28);
-        buffer.WriteInt32BigEndian((int)(_hold * 100), 32);
-        buffer.WriteInt32BigEndian((int)(_release * 100), 36);
-
-        return buffer;
-    }
-
-
+    [SerializedField(36, 7)]
+    [ScalingFactor(100)]
+    [SerializedType(typeof(int))]
+    private double _release = source.Dynamics.Expander.Release;
 }

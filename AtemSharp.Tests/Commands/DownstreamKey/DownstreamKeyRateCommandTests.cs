@@ -7,23 +7,22 @@ public class DownstreamKeyRateCommandTests : SerializedCommandTestBase<Downstrea
 {
     public class CommandData : CommandDataBase
     {
-        public int Index { get; set; }
+        public byte Index { get; set; }
         public byte Rate { get; set; }
     }
 
     protected override DownstreamKeyRateCommand CreateSut(TestCaseData testCase)
     {
-        var state = new AtemState
+        var state = new DownstreamKeyer
         {
-            Video =
+            Id = testCase.Command.Index,
+            Properties =
             {
-                DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(testCase.Command.Index + 1)
+                Rate = testCase.Command.Rate
             }
         };
 
-        state.Video.DownstreamKeyers[testCase.Command.Index].Properties = new();
-
-        return new DownstreamKeyRateCommand(state, (byte)testCase.Command.Index)
+        return new DownstreamKeyRateCommand(state)
         {
             Rate = testCase.Command.Rate
         };

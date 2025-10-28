@@ -8,10 +8,10 @@ public class DipTransitionSettings
     /// <summary>
     /// Rate of the dip transition in frames
     /// </summary>
-    public int Rate { get; set; }
+    public byte Rate { get; set; }
 
     /// <summary>
     /// Input source for the dip transition
     /// </summary>
-    public int Input { get; set; }
+    public ushort Input { get; set; }
 }

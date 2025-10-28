@@ -79,12 +79,16 @@ public class MasterEqualizerBand : EqualizerBand;
 
 public abstract class EqualizerBand
 {
-    public byte Index { get; internal set; }
+    public byte Id { get; internal set; }
 
     public bool Enabled { get; set; }
-    public uint[] SupportedShapes { get; set; } = [];
+
+    // TODO: Create enum from ATEM Mini ISO Pro behavior
+    public byte[] SupportedShapes { get; set; } = [];
     public byte Shape { get; set; }
-    public uint[] SupportedFrequencyRanges { get; set; } = [];
+
+    // TODO: Create enum from ATEM Mini ISO Pro behavior
+    public byte[] SupportedFrequencyRanges { get; set; } = [];
     public byte FrequencyRange { get; set; }
     public uint Frequency { get; set; }
     public double Gain { get; set; }

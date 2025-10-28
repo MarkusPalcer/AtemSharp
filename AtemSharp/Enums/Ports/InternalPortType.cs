@@ -3,7 +3,7 @@ namespace AtemSharp.Enums.Ports;
 /// <summary>
 /// Internal port types
 /// </summary>
-public enum InternalPortType
+public enum InternalPortType : byte
 {
     External = 0,
     Black = 1,

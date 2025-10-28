@@ -26,7 +26,7 @@ public class FairlightMixerMasterEqualizerBandCommandTests : SerializedCommandTe
     {
         var band = new MasterEqualizerBand
         {
-            Index = testCase.Command.Band,
+            Id = testCase.Command.Band,
             Enabled = testCase.Command.BandEnabled,
             Shape = testCase.Command.Shape,
             FrequencyRange = testCase.Command.FrequencyRange,

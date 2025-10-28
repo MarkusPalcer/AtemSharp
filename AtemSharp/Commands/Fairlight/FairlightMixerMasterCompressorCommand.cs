@@ -1,35 +1,37 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
-using AtemSharp.State;
+using AtemSharp.Helpers;
+using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("CMCP")]
-public class FairlightMixerMasterCompressorCommand : SerializedCommand
+[BufferSize(24)]
+public partial class FairlightMixerMasterCompressorCommand(MasterProperties master) : SerializedCommand
 {
-    public CompressorParameters Parameters { get; }
+    [SerializedField(1, 0)]
+    private bool _enabled = master.Dynamics.Compressor.Enabled;
 
-    public FairlightMixerMasterCompressorCommand(AtemState state)
-    {
-        Parameters = new CompressorParameters(state.GetFairlight().Master.Dynamics.Compressor);
-    }
+    [SerializedField(20)]
+    [ScalingFactor(100.0)]
+    [SerializedType(typeof(int))]
+    private double _release = master.Dynamics.Compressor.Release;
 
-    public override byte[] Serialize(ProtocolVersion version)
-    {
-        if (Flag != 0) // Testability: Use flags from test if present
-        {
-            Parameters.Flag = (byte)Flag;
-        }
+    [SerializedField(16)]
+    [ScalingFactor(100.0)]
+    [SerializedType(typeof(int))]
+    private double _hold = master.Dynamics.Compressor.Hold;
 
-        var buffer = new byte[24];
-        buffer.WriteUInt8(Parameters.Flag, 0);
-        buffer.WriteBoolean(Parameters.CompressorEnabled, 1);
-        buffer.WriteInt32BigEndian((int)(Parameters.Threshold * 100), 4);
-        buffer.WriteInt16BigEndian((short)(Parameters.Ratio * 100), 8);
-        buffer.WriteInt32BigEndian((int)(Parameters.Attack * 100), 12);
-        buffer.WriteInt32BigEndian((int)(Parameters.Hold * 100), 16);
-        buffer.WriteInt32BigEndian((int)(Parameters.Release * 100), 20);
+    [SerializedField(12)]
+    [ScalingFactor(100.0)]
+    [SerializedType(typeof(int))]
+    private double _attack = master.Dynamics.Compressor.Attack;
 
-        return buffer;
-    }
+    [SerializedField(8)]
+    [ScalingFactor(100.0)]
+    [SerializedType(typeof(short))]
+    private double _ratio = master.Dynamics.Compressor.Ratio;
+
+    [SerializedField(4)]
+    [ScalingFactor(100.0)]
+    [SerializedType(typeof(int))]
+    private double _threshold = master.Dynamics.Compressor.Threshold;
 }

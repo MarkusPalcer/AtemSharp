@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Settings.MultiViewers;
@@ -8,35 +7,25 @@ namespace AtemSharp.Commands.Settings.MultiViewers;
 /// Command received from ATEM device containing MultiViewer window VU meter update
 /// </summary>
 [Command("VuMC")]
-public class MultiViewerWindowVuMeterUpdateCommand : IDeserializedCommand
+public partial class MultiViewerWindowVuMeterUpdateCommand : IDeserializedCommand
 {
     /// <summary>
     /// MultiViewer ID for this update
     /// </summary>
-    public int MultiViewerId { get; init; }
+    [DeserializedField(0)]
+    private byte _multiViewerId;
 
     /// <summary>
     /// The window index within the MultiViewer
     /// </summary>
-    public int WindowIndex { get; init; }
+    [DeserializedField(1)]
+    private byte _windowIndex;
 
     /// <summary>
     /// Whether VU meter display is enabled for this window
     /// </summary>
-    public bool VuEnabled { get; init; }
-
-    /// <summary>
-    /// Deserialize the command from binary stream
-    /// </summary>
-    public static MultiViewerWindowVuMeterUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        return new MultiViewerWindowVuMeterUpdateCommand
-        {
-            MultiViewerId = rawCommand.ReadUInt8(0),
-            WindowIndex = rawCommand.ReadUInt8(1),
-            VuEnabled = rawCommand.ReadBoolean(2)
-        };
-    }
+    [DeserializedField(2)]
+    private bool _vuEnabled;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)

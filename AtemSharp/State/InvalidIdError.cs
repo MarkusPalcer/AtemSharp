@@ -1,16 +1,14 @@
 namespace AtemSharp.State;
 
-/// <summary>
-/// Exception thrown when an invalid ID is used
-/// </summary>
+// TODO: Replace with proper exceptions where it is still needed
 public class InvalidIdError : Exception
 {
-	public InvalidIdError(string entityType, int id) 
+	public InvalidIdError(string entityType, int id)
 		: base($"Invalid {entityType} id: {id}")
 	{
 	}
-    
-	public InvalidIdError(string entityType, string id) 
+
+	public InvalidIdError(string entityType, string id)
 		: base($"Invalid {entityType} id: {id}")
 	{
 	}

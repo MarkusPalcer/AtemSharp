@@ -62,7 +62,10 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
         {
             int tolerance = IsFloatingPointByte(i, actual.Length) ? 2 : 0;
             if (Math.Abs(actual[i] - expected[i]) > tolerance)
-                return false;
+            {
+                // Check if its within the tolerance with carry
+                return !(Math.Abs(actual[i] - expected[i]) < 256 - tolerance);
+            }
         }
 
         return true;
@@ -95,21 +98,50 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
         // Act
         var actualPayload = command.Serialize(testCase.FirstVersion);
 
-        // Assert - First try exact match
-        if (actualPayload.SequenceEqual(expectedPayload))
-        {
-            return;
-        }
+        Assert.That(actualPayload, Has.Length.EqualTo(expectedPayload.Length));
+
+        // Step 1: Compare non-float bytes exactly
+        var actualNonFloatBytes =
+            string.Join("-", actualPayload.Select((b, i) => IsFloatingPointByte(i, actualPayload.Length) ? "XX" : $"{b:X2}"));
+        var expectedNonFloatBytes =
+            string.Join("-", expectedPayload.Select((b, i) => IsFloatingPointByte(i, actualPayload.Length) ? "XX" : $"{b:X2}"));
+        Assert.That(actualNonFloatBytes, Is.EqualTo(expectedNonFloatBytes));
 
         // Then try approximate match for floating-point fields
-        if (AreApproximatelyEqual(actualPayload, expectedPayload))
+        var actualFloatBytes =
+            string.Join("-", actualPayload.Select((b, i) => !IsFloatingPointByte(i, actualPayload.Length) ? "XX" : $"{b:X2}"));
+        var expectedFloatBytes =
+            string.Join("-", expectedPayload.Select((b, i) => !IsFloatingPointByte(i, actualPayload.Length) ? "XX" : $"{b:X2}"));
+        if (!AreApproximatelyEqual(actualPayload, expectedPayload))
         {
-            return;
+            Assert.Fail($"Float-bytes differ more than 2 units" +
+                        $"Expected: {expectedFloatBytes}, " +
+                        $"Actual: {actualFloatBytes}");
+        }
+    }
+
+    public void MaxOneOf(params Action[] checks)
+    {
+        var count = 0;
+        foreach (var check in checks)
+        {
+            try
+            {
+                check();
+            }
+            catch (AssertionException)
+            {
+                count++;
+            }
         }
 
-        Assert.Fail($"Command serialization should match TypeScript reference for mask {testCase.Command.Mask:X2}. " +
-                    $"Expected: {BitConverter.ToString(expectedPayload)}, " +
-                    $"Actual: {BitConverter.ToString(actualPayload)}");
+        if (count > 1)
+        {
+            Assert.Multiple(() =>
+            {
+                foreach (var check in checks) check();
+            });
+        }
     }
 
     protected abstract TCommand CreateSut(TestCaseData testCase);

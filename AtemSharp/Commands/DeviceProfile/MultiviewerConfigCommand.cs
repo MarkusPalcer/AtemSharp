@@ -14,6 +14,7 @@ public class MultiviewerConfigCommand : IDeserializedCommand
 	// Store the protocol version for use in ApplyToState
 	public ProtocolVersion Version { get; init; }
 
+    // TODO: Split by version
 	public static MultiviewerConfigCommand Deserialize(ReadOnlySpan<byte> buffer, ProtocolVersion version)
 	{
 		var result = new MultiviewerConfigCommand

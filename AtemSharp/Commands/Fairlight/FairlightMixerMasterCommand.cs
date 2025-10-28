@@ -1,86 +1,30 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("CFMP")]
-public class FairlightMixerMasterCommand :SerializedCommand
+[BufferSize(20)]
+public partial class FairlightMixerMasterCommand(MasterProperties master) : SerializedCommand
 {
-    private bool _followFadeToBlack;
-    private double _faderGain;
-    private double _makeUpGain;
-    private double _equalizerGain;
-    private bool _equalizerEnabled;
+    [SerializedField(1,0)]
+    private bool _equalizerEnabled = master.Equalizer.Enabled;
 
-    public bool FollowFadeToBlack
-    {
-        get { return _followFadeToBlack; }
-        set
-        {
-            _followFadeToBlack = value;
-            Flag |= 1 << 4;
-        }
-    }
+    [SerializedField(4,1)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100.0)]
+    private double _equalizerGain = master.Equalizer.Gain;
 
-    public double FaderGain
-    {
-        get { return _faderGain; }
-        set
-        {
-            _faderGain = value;
-            Flag |= 1 << 3;
-        }
-    }
+    [SerializedField(8,2)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100.0)]
+    private double _makeUpGain = master.Dynamics.MakeUpGain;
 
-    public double MakeUpGain
-    {
-        get { return _makeUpGain; }
-        set
-        {
-            _makeUpGain = value;
-            Flag |= 1 << 2;
-        }
-    }
+    [SerializedField(12,3)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100.0)]
+    private double _faderGain = master.FaderGain;
 
-    public double EqualizerGain
-    {
-        get { return _equalizerGain; }
-        set
-        {
-            _equalizerGain = value;
-            Flag |= 1 << 1;
-        }
-    }
-
-    public bool EqualizerEnabled
-    {
-        get { return _equalizerEnabled; }
-        set
-        {
-            _equalizerEnabled = value;
-            Flag |= 1 << 0;
-        }
-    }
-
-    public FairlightMixerMasterCommand(MasterProperties master)
-    {
-        _equalizerEnabled = master.Equalizer.Enabled;
-        _equalizerGain = master.Equalizer.Gain;
-        _makeUpGain = master.Dynamics.MakeUpGain;
-        _faderGain = master.FaderGain;
-        _followFadeToBlack = master.FollowFadeToBlack;
-    }
-
-    public override byte[] Serialize(ProtocolVersion version)
-    {
-        var buffer = new byte[20];
-        buffer.WriteUInt8((byte)Flag, 0);
-        buffer.WriteBoolean(EqualizerEnabled, 1);
-        buffer.WriteInt32BigEndian((int)(EqualizerGain * 100.0), 4);
-        buffer.WriteInt32BigEndian((int)(MakeUpGain * 100.0), 8);
-        buffer.WriteInt32BigEndian((int)(FaderGain * 100.0), 12);
-        buffer.WriteBoolean(FollowFadeToBlack, 16);
-        return buffer;
-    }
+    [SerializedField(16,4)]
+    private bool _followFadeToBlack = master.FollowFadeToBlack;
 }

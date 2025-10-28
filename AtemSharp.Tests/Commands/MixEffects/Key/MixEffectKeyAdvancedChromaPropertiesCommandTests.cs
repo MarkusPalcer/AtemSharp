@@ -29,8 +29,8 @@ public class MixEffectKeyAdvancedChromaPropertiesCommandTests : SerializedComman
 
     public class CommandData : CommandDataBase
     {
-        public int MixEffectIndex { get; set; }
-        public int KeyerIndex { get; set; }
+        public byte MixEffectIndex { get; set; }
+        public byte KeyerIndex { get; set; }
         public double ForegroundLevel { get; set; }
         public double BackgroundLevel { get; set; }
         public double KeyEdge { get; set; }
@@ -48,8 +48,8 @@ public class MixEffectKeyAdvancedChromaPropertiesCommandTests : SerializedComman
     {
         // Create state with the required mix effect and upstream keyer
         var state = CreateStateWithUpstreamKeyerAdvancedChroma(
-            testCase.Command.MixEffectIndex, 
-            testCase.Command.KeyerIndex, 
+            testCase.Command.MixEffectIndex,
+            testCase.Command.KeyerIndex,
             testCase.Command.ForegroundLevel,
             testCase.Command.BackgroundLevel,
             testCase.Command.KeyEdge,
@@ -61,7 +61,7 @@ public class MixEffectKeyAdvancedChromaPropertiesCommandTests : SerializedComman
             testCase.Command.Red,
             testCase.Command.Green,
             testCase.Command.Blue);
-        
+
         // Create command with the mix effect and keyer IDs
         var command = new MixEffectKeyAdvancedChromaPropertiesCommand(testCase.Command.MixEffectIndex, testCase.Command.KeyerIndex, state);
 
@@ -77,30 +77,30 @@ public class MixEffectKeyAdvancedChromaPropertiesCommandTests : SerializedComman
         command.Red = testCase.Command.Red;
         command.Green = testCase.Command.Green;
         command.Blue = testCase.Command.Blue;
-        
+
         return command;
     }
 
     /// <summary>
     /// Creates an AtemState with a valid mix effect and upstream keyer with advanced chroma settings at the specified indices
     /// </summary>
-    private static AtemState CreateStateWithUpstreamKeyerAdvancedChroma(int mixEffectId, int keyerId, 
+    private static AtemState CreateStateWithUpstreamKeyerAdvancedChroma(byte mixEffectId, byte keyerId,
         double foregroundLevel = 0.0, double backgroundLevel = 0.0, double keyEdge = 0.0,
         double spillSuppression = 0.0, double flareSuppression = 0.0, double brightness = 0.0,
         double contrast = 0.0, double saturation = 0.0, double red = 0.0, double green = 0.0, double blue = 0.0)
     {
         var mixEffects = new Dictionary<int, MixEffect>();
         var upstreamKeyers = new Dictionary<int, UpstreamKeyer>();
-        
+
         upstreamKeyers[keyerId] = new UpstreamKeyer
         {
-            Index = keyerId,
+            Id = keyerId,
             OnAir = false,
             FillSource = 1000,
             CutSource = 1001,
-            AdvancedChromaSettings = new UpstreamKeyerAdvancedChromaSettings
+            AdvancedChromaSettings =
             {
-                Properties = new UpstreamKeyerAdvancedChromaProperties
+                Properties =
                 {
                     ForegroundLevel = foregroundLevel,
                     BackgroundLevel = backgroundLevel,

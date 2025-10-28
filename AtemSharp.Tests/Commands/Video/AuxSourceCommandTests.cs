@@ -9,8 +9,8 @@ public class AuxSourceCommandTests : SerializedCommandTestBase<AuxSourceCommand,
 {
     public class CommandData : CommandDataBase
     {
-        public int Id { get; set; }
-        public int Source { get; set; }
+        public byte Id { get; set; }
+        public ushort Source { get; set; }
     }
 
     protected override AuxSourceCommand CreateSut(TestCaseData testCase)
@@ -30,43 +30,37 @@ public class AuxSourceCommandTests : SerializedCommandTestBase<AuxSourceCommand,
     /// <summary>
     /// Creates an AtemState with a valid auxiliary output at the specified index
     /// </summary>
-    private static AtemState CreateStateWithAuxiliary(int auxId, int source = 0)
+    private static AtemState CreateStateWithAuxiliary(byte auxId, ushort source = 0)
     {
-	    var auxiliaries = new Dictionary<int, int>
-	    {
-		    { auxId, source }
-	    };
-
         return new AtemState
         {
             Video = new VideoState
             {
-                Auxiliaries = auxiliaries
+                Auxiliaries =
+                {
+                    { auxId, source }
+                }
             },
             Info = new DeviceInfo
             {
                 Capabilities = new AtemCapabilities
                 {
-                    Auxiliaries = auxiliaries.Count
+                    Auxiliaries = auxId+1
                 }
             }
         };
     }
 
     [Test]
-    public void Constructor_WithEmptyState_InitializesWithDefaults()
+    public void Constructor_WithEmptyState_Throws()
     {
         // Arrange
         const int auxId = 1;
         var state = new AtemState(); // Empty state
 
         // Act
-        var command = new AuxSourceCommand(auxId, state);
-
-        // Assert
-        Assert.That(command.AuxBus, Is.EqualTo(auxId));
-        Assert.That(command.Source, Is.EqualTo(0));
-        Assert.That(command.Flag, Is.EqualTo(1), "Flag should be set when initializing with defaults");
+        Assert.Throws<IndexOutOfRangeException>(() => _ = new AuxSourceCommand(auxId, state),
+                      $"Constructor should throw when auxiliary {auxId} does not exist in state");
     }
 
     [Test]

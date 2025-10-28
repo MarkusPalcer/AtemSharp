@@ -22,10 +22,10 @@ public class FairlightMixerSourceLimiterUpdateCommandTests : DeserializedCommand
     {
         Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.SourceId, Is.EqualTo(expectedData.SourceId));
-        Assert.That(actualCommand.Parameters.LimiterEnabled, Is.EqualTo(expectedData.LimiterEnabled));
-        Assert.That(actualCommand.Parameters.Threshold, Is.EqualTo(expectedData.Threshold).Within(0.01));
-        Assert.That(actualCommand.Parameters.Attack, Is.EqualTo(expectedData.Attack).Within(0.01));
-        Assert.That(actualCommand.Parameters.Hold, Is.EqualTo(expectedData.Hold).Within(0.01));
-        Assert.That(actualCommand.Parameters.Release, Is.EqualTo(expectedData.Release).Within(0.01));
+        Assert.That(actualCommand.LimiterEnabled, Is.EqualTo(expectedData.LimiterEnabled));
+        Assert.That(actualCommand.Threshold, Is.EqualTo(expectedData.Threshold).Within(0.01));
+        Assert.That(actualCommand.Attack, Is.EqualTo(expectedData.Attack).Within(0.01));
+        Assert.That(actualCommand.Hold, Is.EqualTo(expectedData.Hold).Within(0.01));
+        Assert.That(actualCommand.Release, Is.EqualTo(expectedData.Release).Within(0.01));
     }
 }

@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Settings.MultiViewers;
@@ -8,47 +7,37 @@ namespace AtemSharp.Commands.Settings.MultiViewers;
 /// Command received from ATEM device containing MultiViewer window source update
 /// </summary>
 [Command("MvIn")]
-public class MultiViewerSourceUpdateCommand : IDeserializedCommand
+public partial class MultiViewerSourceUpdateCommand : IDeserializedCommand
 {
     /// <summary>
     /// MultiViewer ID for this update
     /// </summary>
-    public int MultiViewerId { get; init; }
+    [DeserializedField(0)]
+    private byte _multiViewerId;
 
     /// <summary>
     /// The window index within the MultiViewer
     /// </summary>
-    public int WindowIndex { get; init; }
+    [DeserializedField(1)]
+    private byte _windowIndex;
 
     /// <summary>
     /// The video source assigned to this window
     /// </summary>
-    public int Source { get; init; }
+    [DeserializedField(2)]
+    private ushort _source;
 
     /// <summary>
     /// Whether this window supports VU meter display
     /// </summary>
-    public bool SupportsVuMeter { get; init; }
+    [DeserializedField(4)]
+    private bool _supportsVuMeter;
 
     /// <summary>
     /// Whether this window supports safe area overlay
     /// </summary>
-    public bool SupportsSafeArea { get; init; }
-
-    /// <summary>
-    /// Deserialize the command from binary stream
-    /// </summary>
-    public static MultiViewerSourceUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        return new MultiViewerSourceUpdateCommand
-        {
-            MultiViewerId = rawCommand.ReadUInt8(0),
-            WindowIndex = rawCommand.ReadUInt8(1),
-            Source = rawCommand.ReadUInt16BigEndian(2),
-            SupportsVuMeter = rawCommand.ReadBoolean(4),
-            SupportsSafeArea = rawCommand.ReadBoolean(5)
-        };
-    }
+    [DeserializedField(5)]
+    private bool _supportsSafeArea;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)

@@ -1,5 +1,5 @@
 using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Settings.MultiViewers;
@@ -8,35 +8,22 @@ namespace AtemSharp.Commands.Settings.MultiViewers;
 /// Command received from ATEM device containing MultiViewer properties update
 /// </summary>
 [Command("MvPr", ProtocolVersion.V8_0)]
-public class MultiViewerPropertiesUpdateCommand : IDeserializedCommand
+public partial class MultiViewerPropertiesUpdateCommand : IDeserializedCommand
 {
-    /// <summary>
-    /// MultiViewer ID for this update
-    /// </summary>
-    public int MultiViewerId { get; init; }
+    [DeserializedField(0)]
+    private byte _multiViewerId;
 
     /// <summary>
     /// MultiViewer layout configuration
     /// </summary>
-    public MultiViewerLayout Layout { get; init; }
+    [DeserializedField(1)]
+    private MultiViewerLayout _layout;
 
     /// <summary>
     /// Whether program and preview outputs are swapped
     /// </summary>
-    public bool ProgramPreviewSwapped { get; init; }
-
-    /// <summary>
-    /// Deserialize the command from binary stream
-    /// </summary>
-    public static MultiViewerPropertiesUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        return new MultiViewerPropertiesUpdateCommand
-        {
-            MultiViewerId = rawCommand.ReadUInt8(0),
-            Layout = (MultiViewerLayout)rawCommand.ReadUInt8(1),
-            ProgramPreviewSwapped = rawCommand.ReadBoolean(2)
-        };
-    }
+    [DeserializedField(2)]
+    private bool _programPreviewSwapped;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
@@ -49,10 +36,7 @@ public class MultiViewerPropertiesUpdateCommand : IDeserializedCommand
 
         // Get or create the MultiViewer and update its properties
         var multiViewer = AtemStateUtil.GetMultiViewer(state, MultiViewerId);
-        multiViewer.Properties = new MultiViewerPropertiesState
-        {
-            Layout = Layout,
-            ProgramPreviewSwapped = ProgramPreviewSwapped
-        };
+        multiViewer.Properties.Layout = Layout;
+        multiViewer.Properties.ProgramPreviewSwapped = ProgramPreviewSwapped;
     }
 }

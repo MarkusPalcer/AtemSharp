@@ -1,6 +1,5 @@
 using AtemSharp.Commands.MixEffects.Transition;
 using AtemSharp.State;
-using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
@@ -12,44 +11,16 @@ public class TransitionPositionUpdateCommandTests : DeserializedCommandTestBase<
     {
         public byte Index { get; set; }
         public bool InTransition { get; set; }
-        public int RemainingFrames { get; set; }
+        public byte RemainingFrames { get; set; }
         public double HandlePosition { get; set; }
     }
 
     protected override void CompareCommandProperties(TransitionPositionUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        var failures = new List<string>();
-
-        // Compare Index to MixEffectId - exact match
-        if (!actualCommand.MixEffectId.Equals(expectedData.Index))
-        {
-            failures.Add($"MixEffectId: expected {expectedData.Index}, actual {actualCommand.MixEffectId}");
-        }
-
-        // Compare InTransition - exact match
-        if (!actualCommand.InTransition.Equals(expectedData.InTransition))
-        {
-            failures.Add($"InTransition: expected {expectedData.InTransition}, actual {actualCommand.InTransition}");
-        }
-
-        // Compare RemainingFrames - exact match
-        if (!actualCommand.RemainingFrames.Equals(expectedData.RemainingFrames))
-        {
-            failures.Add($"RemainingFrames: expected {expectedData.RemainingFrames}, actual {actualCommand.RemainingFrames}");
-        }
-
-        // Compare HandlePosition - floating point value so we approximate
-        if (!Utilities.AreApproximatelyEqual(actualCommand.HandlePosition, expectedData.HandlePosition))
-        {
-            failures.Add($"HandlePosition: expected {expectedData.HandlePosition}, actual {actualCommand.HandlePosition}");
-        }
-
-        // Assert results
-        if (failures.Count > 0)
-        {
-            Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
-                       string.Join("\n", failures));
-        }
+        Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.InTransition, Is.EqualTo(expectedData.InTransition));
+        Assert.That(actualCommand.RemainingFrames, Is.EqualTo(expectedData.RemainingFrames));
+        Assert.That(actualCommand.HandlePosition, Is.EqualTo(expectedData.HandlePosition).Within(0.0001));
     }
 
     [Test]

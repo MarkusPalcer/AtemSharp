@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Key;
@@ -8,53 +7,41 @@ namespace AtemSharp.Commands.MixEffects.Key;
 /// Command received from ATEM device containing upstream keyer luma settings update
 /// </summary>
 [Command("KeLm")]
-public class MixEffectKeyLumaUpdateCommand : IDeserializedCommand
+public partial class MixEffectKeyLumaUpdateCommand : IDeserializedCommand
 {
-    /// <summary>
-    /// Mix effect index (0-based)
-    /// </summary>
-    public int MixEffectId { get; init; }
+    [DeserializedField(0)]
+    private byte _mixEffectId;
 
-    /// <summary>
-    /// Upstream keyer index (0-based)
-    /// </summary>
-    public int KeyerId { get; init; }
+    [DeserializedField(1)]
+    private byte _keyerId;
 
     /// <summary>
     /// Whether the key should be treated as premultiplied
     /// </summary>
-    public bool PreMultiplied { get; init; }
+    [DeserializedField(2)]
+    private bool _preMultiplied;
 
     /// <summary>
     /// Clip threshold value
     /// </summary>
-    public double Clip { get; init; }
+    [DeserializedField(4)]
+    [ScalingFactor(10)]
+    [SerializedType(typeof(ushort))]
+    private double _clip;
 
     /// <summary>
     /// Gain value for the luma key
     /// </summary>
-    public double Gain { get; init; }
+    [DeserializedField(6)]
+    [ScalingFactor(10)]
+    [SerializedType(typeof(ushort))]
+    private double _gain;
 
     /// <summary>
     /// Whether to invert the luma key
     /// </summary>
-    public bool Invert { get; init; }
-
-    /// <summary>
-    /// Deserialize the command from binary stream
-    /// </summary>
-    public static MixEffectKeyLumaUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        return new MixEffectKeyLumaUpdateCommand
-        {
-            MixEffectId = rawCommand.ReadUInt8(0),
-            KeyerId = rawCommand.ReadUInt8(1),
-            PreMultiplied = rawCommand.ReadBoolean(2),
-            Clip = rawCommand.ReadUInt16BigEndian(4) / 10.0,
-            Gain = rawCommand.ReadUInt16BigEndian(6) / 10.0,
-            Invert = rawCommand.ReadBoolean(8)
-        };
-    }
+    [DeserializedField(8)]
+    private bool _invert;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
@@ -73,10 +60,7 @@ public class MixEffectKeyLumaUpdateCommand : IDeserializedCommand
 
         // Get or create the upstream keyer
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerId);
-        keyer.Index = KeyerId;
-
-        // Get or create the luma settings
-        keyer.LumaSettings ??= new UpstreamKeyerLumaSettings();
+        keyer.Id = KeyerId;
 
         // Update the luma settings
         keyer.LumaSettings.PreMultiplied = PreMultiplied;

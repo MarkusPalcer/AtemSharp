@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Video;
@@ -8,29 +7,19 @@ namespace AtemSharp.Commands.Video;
 /// Command received from ATEM device containing auxiliary source update
 /// </summary>
 [Command("AuxS")]
-public class AuxSourceUpdateCommand : IDeserializedCommand
+public partial class AuxSourceUpdateCommand : IDeserializedCommand
 {
-	/// <summary>
-	/// Auxiliary output index (0-based)
-	/// </summary>
-	public int AuxBus { get; init; }
+    /// <summary>
+    /// Auxiliary output index (0-based)
+    /// </summary>
+    [DeserializedField(0)]
+    private byte _auxBus;
 
-	/// <summary>
-	/// Source input number for the auxiliary output
-	/// </summary>
-	public int Source { get; init; }
-
-	/// <summary>
-	/// Deserialize the command from binary stream
-	/// </summary>
-	public static AuxSourceUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-	{
-		return new AuxSourceUpdateCommand
-		{
-			AuxBus = rawCommand.ReadUInt8(0),
-			Source = rawCommand.ReadUInt16BigEndian(2)
-		};
-	}
+    /// <summary>
+    /// Source input number for the auxiliary output
+    /// </summary>
+    [DeserializedField(2)]
+    private ushort _source;
 
 	/// <inheritdoc />
 	public void ApplyToState(AtemState state)

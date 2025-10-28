@@ -1,4 +1,5 @@
 using System.Buffers.Binary;
+using System.Text;
 
 namespace AtemSharp.Lib;
 
@@ -134,5 +135,13 @@ public static class SpanExtensions
         }
 
         return System.Text.Encoding.UTF8.GetString(subSpan);
+    }
+
+    public static void WriteString(this Span<byte> buffer, string value, int offset, int maxLength)
+    {
+        var dataBytes = Encoding.UTF8.GetBytes(value);
+        var copyLength = Math.Min(dataBytes.Length, maxLength - 1);
+        dataBytes[..copyLength].CopyTo(buffer.Slice(offset, copyLength));
+        buffer[copyLength] = 0;
     }
 }

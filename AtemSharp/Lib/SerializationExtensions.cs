@@ -82,14 +82,19 @@ public static class SerializationExtensions
         self[offset] = value;
     }
 
-    public static void WriteUInt16BigEndian(this byte[] self, double value, int offset)
+    public static void WriteUInt16BigEndian(this byte[] self, ushort value, int offset)
     {
-        BinaryPrimitives.WriteUInt16BigEndian(self.AsSpan(offset), (ushort)value);
+        BinaryPrimitives.WriteUInt16BigEndian(self.AsSpan(offset), value);
     }
 
     public static void WriteInt64BigEndian(this byte[] self, long value, int offset)
     {
         BinaryPrimitives.WriteInt64BigEndian(self.AsSpan(offset), value);
+    }
+
+    public static void WriteUInt64BigEndian(this byte[] self, ulong value, int offset)
+    {
+        BinaryPrimitives.WriteUInt64BigEndian(self.AsSpan(offset), value);
     }
 
     public static void WriteUInt32BigEndian(this byte[] self, uint value, int offset)
@@ -114,5 +119,17 @@ public static class SerializationExtensions
     {
         var bytes = System.Text.Encoding.UTF8.GetBytes(value);
         Array.Copy(bytes, 0, self, offset, bytes.Length);
+    }
+
+    public static void WriteString(this byte[] buffer, string? value, int offset, int maxLength)
+    {
+        buffer.AsSpan().Slice(offset, maxLength).WriteString(value ?? string.Empty, 0, maxLength);
+    }
+
+    public static void WriteBlob(this byte[] buffer, byte[] decodedHash, int offset, int maxLength)
+    {
+        var copyLength = Math.Min(decodedHash.Length, maxLength);
+        var hashBytes = buffer.AsSpan().Slice(offset, maxLength);
+        decodedHash.AsSpan()[..copyLength].CopyTo(hashBytes);
     }
 }

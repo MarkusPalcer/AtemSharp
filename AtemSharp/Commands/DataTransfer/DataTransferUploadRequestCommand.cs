@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 
 namespace AtemSharp.Commands.DataTransfer;
 
@@ -7,8 +6,31 @@ namespace AtemSharp.Commands.DataTransfer;
 /// Command to request a data transfer upload to the ATEM device
 /// </summary>
 [Command("FTSD")]
-public class DataTransferUploadRequestCommand : SerializedCommand
+[BufferSize(16)]
+public partial class DataTransferUploadRequestCommand : SerializedCommand
 {
+    [SerializedField(0)]
+    private ushort _transferId;
+
+    [SerializedField(2)]
+    private ushort _transferStoreId;
+
+    [SerializedField(6)]
+    private ushort _transferIndex;
+
+    /// <summary>
+    /// Size of the data to transfer
+    /// </summary>
+    [SerializedField(8)]
+    private uint _size;
+
+    /// <summary>
+    /// Transfer mode
+    /// Note: maybe this should be an enum, but we don't have a good description, and it shouldn't be used externally
+    /// </summary>
+    [SerializedField(12)]
+    private ushort _mode;
+
     /// <summary>
     /// Create command with specified transfer parameters
     /// </summary>
@@ -38,50 +60,25 @@ public class DataTransferUploadRequestCommand : SerializedCommand
         Mode = 0;
     }
 
-    /// <summary>
-    /// Transfer ID
-    /// </summary>
-    public ushort TransferId { get; set; }
-
-    /// <summary>
-    /// Transfer store ID
-    /// </summary>
-    public ushort TransferStoreId { get; set; }
-
-    /// <summary>
-    /// Transfer index
-    /// </summary>
-    public ushort TransferIndex { get; set; }
-
-    /// <summary>
-    /// Size of the data to transfer
-    /// </summary>
-    public uint Size { get; set; }
-
-    /// <summary>
-    /// Transfer mode
-    /// Note: maybe this should be an enum, but we don't have a good description, and it shouldn't be used externally
-    /// </summary>
-    public ushort Mode { get; set; }
-
-    /// <summary>
-    /// Serialize command to binary stream for transmission to ATEM
-    /// </summary>
-    /// <param name="version">Protocol version</param>
-    /// <returns>Serialized command data as byte array</returns>
-    public override byte[] Serialize(ProtocolVersion version)
-    {
-        using var memoryStream = new MemoryStream(16);
-        using var writer = new BinaryWriter(memoryStream);
-        
-        writer.WriteUInt16BigEndian(TransferId);       // Position 0-1
-        writer.WriteUInt16BigEndian(TransferStoreId);  // Position 2-3
-        writer.Pad(2);                          // Position 4-5 (padding) 
-        writer.WriteUInt16BigEndian(TransferIndex);    // Position 6-7
-        writer.WriteUInt32BigEndian(Size);             // Position 8-11
-        writer.WriteUInt16BigEndian(Mode);             // Position 12-13
-        writer.Pad(2);                          // Position 14-15 (padding)
-        
-        return memoryStream.ToArray();
-    }
+    //
+    // /// <summary>
+    // /// Serialize command to binary stream for transmission to ATEM
+    // /// </summary>
+    // /// <param name="version">Protocol version</param>
+    // /// <returns>Serialized command data as byte array</returns>
+    // public override byte[] Serialize(ProtocolVersion version)
+    // {
+    //     using var memoryStream = new MemoryStream(16);
+    //     using var writer = new BinaryWriter(memoryStream);
+    //
+    //     writer.WriteUInt16BigEndian(TransferId);       // Position 0-1
+    //     writer.WriteUInt16BigEndian(TransferStoreId);  // Position 2-3
+    //     writer.Pad(2);                          // Position 4-5 (padding)
+    //     writer.WriteUInt16BigEndian(TransferIndex);    // Position 6-7
+    //     writer.WriteUInt32BigEndian(Size);             // Position 8-11
+    //     writer.WriteUInt16BigEndian(Mode);             // Position 12-13
+    //     writer.Pad(2);                          // Position 14-15 (padding)
+    //
+    //     return memoryStream.ToArray();
+    // }
 }

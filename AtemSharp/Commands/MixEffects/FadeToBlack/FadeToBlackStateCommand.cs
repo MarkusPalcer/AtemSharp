@@ -1,31 +1,25 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.FadeToBlack;
 
 [Command("FtbS")]
-public class FadeToBlackStateCommand : IDeserializedCommand
+public partial class FadeToBlackStateCommand : IDeserializedCommand
 {
-    public byte MixEffectId { get; init; }
-    public bool IsFullyBlack { get; init; }
-    public bool InTransition { get; init; }
-    public byte RemainingFrames { get; init; }
+    [DeserializedField(0)]
+    private byte _mixEffectId;
 
-    public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> data, ProtocolVersion version)
-    {
-        return new FadeToBlackStateCommand()
-        {
-            MixEffectId = data.ReadUInt8(0),
-            IsFullyBlack = data.ReadBoolean(1),
-            InTransition = data.ReadBoolean(2),
-            RemainingFrames = data.ReadUInt8(3)
-        };
-    }
+    [DeserializedField(1)]
+    private bool _isFullyBlack;
+
+    [DeserializedField(2)]
+    private bool _inTransition;
+
+    [DeserializedField(3)]
+    private byte _remainingFrames;
 
     public void ApplyToState(AtemState state)
     {
-        // TODO: Change to array access after array initializes from Topology command
         if (state.Info.Capabilities is null)
         {
             throw new InvalidOperationException("Fade to black rate cannot be applied before capabilities are known");

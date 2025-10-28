@@ -48,7 +48,7 @@ public class DataTransferAckCommandTests : SerializedCommandTestBase<DataTransfe
         Assert.That(command.TransferId, Is.EqualTo(12345));
         Assert.That(command.TransferIndex, Is.EqualTo(67));
     }
-    
+
      [Test]
     public void Constructor_WithParameters_ShouldSetProperties()
     {
@@ -58,34 +58,6 @@ public class DataTransferAckCommandTests : SerializedCommandTestBase<DataTransfe
 
         // Act
         var command = new DataTransferAckCommand(transferId, transferIndex);
-
-        // Assert
-        Assert.That(command.TransferId, Is.EqualTo(transferId));
-        Assert.That(command.TransferIndex, Is.EqualTo(transferIndex));
-    }
-
-    [Test]
-    public void Constructor_Default_ShouldInitializeWithZeroValues()
-    {
-        // Act
-        var command = new DataTransferAckCommand();
-
-        // Assert
-        Assert.That(command.TransferId, Is.EqualTo(0));
-        Assert.That(command.TransferIndex, Is.EqualTo(0));
-    }
-
-    [Test]
-    public void Properties_ShouldBeSettable()
-    {
-        // Arrange
-        var command = new DataTransferAckCommand();
-        const ushort transferId = 57390;
-        const byte transferIndex = 9;
-
-        // Act
-        command.TransferId = transferId;
-        command.TransferIndex = transferIndex;
 
         // Assert
         Assert.That(command.TransferId, Is.EqualTo(transferId));

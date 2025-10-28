@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DeviceProfile;
@@ -8,23 +7,13 @@ namespace AtemSharp.Commands.DeviceProfile;
 /// Macro pool configuration command received from ATEM
 /// </summary>
 [Command("_MAC")]
-public class MacroPoolConfigCommand : IDeserializedCommand
+public partial class MacroPoolConfigCommand : IDeserializedCommand
 {
     /// <summary>
     /// Number of macros available in the macro pool
     /// </summary>
-    public byte MacroCount { get; init; }
-
-    /// <summary>
-    /// Deserialize the command from binary stream
-    /// </summary>
-    public static MacroPoolConfigCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        return new MacroPoolConfigCommand
-        {
-            MacroCount = rawCommand.ReadUInt8(0)
-        };
-    }
+    [DeserializedField(0)]
+    private byte _macroCount;
 
     /// <summary>
     /// Apply the command's values to the ATEM state

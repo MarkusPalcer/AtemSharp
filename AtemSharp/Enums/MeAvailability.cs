@@ -4,7 +4,7 @@ namespace AtemSharp.Enums;
 /// Mix effect availability flags
 /// </summary>
 [Flags]
-public enum MeAvailability
+public enum MeAvailability : byte
 {
     None = 0,
     Me1 = 1 << 0,

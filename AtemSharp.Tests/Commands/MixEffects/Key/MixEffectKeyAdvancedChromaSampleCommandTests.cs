@@ -24,8 +24,8 @@ public class MixEffectKeyAdvancedChromaSampleCommandTests : SerializedCommandTes
 
     public class CommandData : CommandDataBase
     {
-        public int MixEffectIndex { get; set; }
-        public int KeyerIndex { get; set; }
+        public byte MixEffectIndex { get; set; }
+        public byte KeyerIndex { get; set; }
         public bool EnableCursor { get; set; }
         public bool Preview { get; set; }
         public double CursorX { get; set; }
@@ -39,94 +39,26 @@ public class MixEffectKeyAdvancedChromaSampleCommandTests : SerializedCommandTes
     protected override MixEffectKeyAdvancedChromaSampleCommand CreateSut(TestCaseData testCase)
     {
         // Create state with the required mix effect and upstream keyer
-        var state = CreateStateWithUpstreamKeyerAdvancedChromaSample(
-            testCase.Command.MixEffectIndex, 
-            testCase.Command.KeyerIndex, 
-            testCase.Command.EnableCursor,
-            testCase.Command.Preview,
-            testCase.Command.CursorX,
-            testCase.Command.CursorY,
-            testCase.Command.CursorSize,
-            testCase.Command.SampledY,
-            testCase.Command.SampledCb,
-            testCase.Command.SampledCr);
-        
-        // Create command with the mix effect and keyer IDs
-        var command = new MixEffectKeyAdvancedChromaSampleCommand(testCase.Command.MixEffectIndex, testCase.Command.KeyerIndex, state);
-
-        // Set the actual advanced chroma sample settings that should be written
-        command.EnableCursor = testCase.Command.EnableCursor;
-        command.Preview = testCase.Command.Preview;
-        command.CursorX = testCase.Command.CursorX;
-        command.CursorY = testCase.Command.CursorY;
-        command.CursorSize = testCase.Command.CursorSize;
-        command.SampledY = testCase.Command.SampledY;
-        command.SampledCb = testCase.Command.SampledCb;
-        command.SampledCr = testCase.Command.SampledCr;
-        
-        return command;
-    }
-
-    /// <summary>
-    /// Creates an AtemState with a valid mix effect and upstream keyer with advanced chroma sample settings at the specified indices
-    /// </summary>
-    private static AtemState CreateStateWithUpstreamKeyerAdvancedChromaSample(int mixEffectId, int keyerId, 
-        bool enableCursor = false, bool preview = false, double cursorX = 0.0, double cursorY = 0.0,
-        double cursorSize = 0.0, double sampledY = 0.0, double sampledCb = 0.0, double sampledCr = 0.0)
-    {
-        var mixEffects = new Dictionary<int, MixEffect>();
-        var upstreamKeyers = new Dictionary<int, UpstreamKeyer>();
-        
-        upstreamKeyers[keyerId] = new UpstreamKeyer
+        var state = new UpstreamKeyer
         {
-            Index = keyerId,
-            OnAir = false,
-            FillSource = 1000,
-            CutSource = 1001,
-            AdvancedChromaSettings = new UpstreamKeyerAdvancedChromaSettings
+            Id = testCase.Command.KeyerIndex,
+            MixEffectId = testCase.Command.MixEffectIndex,
+            AdvancedChromaSettings =
             {
-                Sample = new UpstreamKeyerAdvancedChromaSample
+                Sample =
                 {
-                    EnableCursor = enableCursor,
-                    Preview = preview,
-                    CursorX = cursorX,
-                    CursorY = cursorY,
-                    CursorSize = cursorSize,
-                    SampledY = sampledY,
-                    SampledCb = sampledCb,
-                    SampledCr = sampledCr
+                    EnableCursor = testCase.Command.EnableCursor,
+                    Preview = testCase.Command.Preview,
+                    CursorX = testCase.Command.CursorX,
+                    CursorY = testCase.Command.CursorY,
+                    CursorSize = testCase.Command.CursorSize,
+                    SampledY = testCase.Command.SampledY,
+                    SampledCb = testCase.Command.SampledCb,
+                    SampledCr = testCase.Command.SampledCr
                 }
             }
         };
 
-        mixEffects[mixEffectId] = new MixEffect
-        {
-            Index = mixEffectId,
-            ProgramInput = 1000,
-            PreviewInput = 2001,
-            TransitionPreview = false,
-            TransitionPosition = new TransitionPosition
-            {
-                InTransition = false,
-                HandlePosition = 0,
-                RemainingFrames = 0
-            },
-            UpstreamKeyers = upstreamKeyers
-        };
-
-        return new AtemState
-        {
-            Video = new VideoState
-            {
-                MixEffects = mixEffects
-            },
-            Info = new DeviceInfo
-            {
-                Capabilities = new AtemCapabilities
-                {
-                    MixEffects = mixEffectId + 1
-                }
-            }
-        };
+        return new MixEffectKeyAdvancedChromaSampleCommand(state);
     }
 }

@@ -7,6 +7,8 @@ namespace AtemSharp.Commands;
 [Command("TlSr")]
 public class TallyBySourceCommand : IDeserializedCommand
 {
+    // Command is manually deserialized because it contains a variable length array
+
     internal TallyBySourceCommand(Tally[] tallyBySource)
     {
         TallyBySource = tallyBySource;

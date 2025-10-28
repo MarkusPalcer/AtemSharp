@@ -3,32 +3,45 @@ namespace AtemSharp.State;
 /// <summary>
 /// Downstream keyer state
 /// </summary>
-public class DownstreamKeyer : IDownstreamKeyerBase
+public class DownstreamKeyer
 {
     public byte Id { get; internal set; }
 
-    /// <inheritdoc />
-    public bool InTransition { get; set; }
+    /// <summary>
+    /// Whether the downstream keyer is currently in transition
+    /// </summary>
 
-    /// <inheritdoc />
-    public int RemainingFrames { get; set; }
+    public bool InTransition { get; internal set; }
 
-    /// <inheritdoc />
-    public bool IsAuto { get; set; }
+    /// <summary>
+    /// Number of frames remaining in the current transition
+    /// </summary>
 
-    /// <inheritdoc />
-    public bool OnAir { get; set; }
+    public int RemainingFrames { get; internal set; }
 
-    /// <inheritdoc />
-    public bool? IsTowardsOnAir { get; set; }
+    /// <summary>
+    /// Whether the downstream keyer is in auto transition mode
+    /// </summary>
+
+    public bool IsAuto { get; internal set; }
+
+    /// <summary>
+    /// Whether the downstream keyer is currently on air
+    /// </summary>
+    public bool OnAir { get; internal set; }
+
+    /// <summary>
+    /// Direction of the auto transition (true = towards on air, false = towards off air)
+    /// </summary>
+    public bool IsTowardsOnAir { get; internal set; }
 
     /// <summary>
     /// Downstream keyer source configuration
     /// </summary>
-    public DownstreamKeyerSources Sources { get; set; } = new();
+    public DownstreamKeyerSources Sources { get; internal  set; } = new();
 
     /// <summary>
     /// Downstream keyer properties and configuration
     /// </summary>
-    public DownstreamKeyerProperties? Properties { get; set; }
+    public DownstreamKeyerProperties Properties { get; internal set; } = new();
 }

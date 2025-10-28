@@ -13,6 +13,8 @@ namespace AtemSharp.Commands;
 [Command("Powr")]
 public class PowerStatusCommand : IDeserializedCommand
 {
+    // Command is manually deserialized because the only field it has needs to be manually deserialized
+
     /// <summary>
     /// Power supply status array. Each element represents the status of a power supply.
     /// true = power supply is working, false = power supply has failed or is not present.

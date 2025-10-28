@@ -9,58 +9,19 @@ public class ProgramInputCommandTests : SerializedCommandTestBase<ProgramInputCo
 {
     public class CommandData : CommandDataBase
     {
-        public int Index { get; set; }
-        public int Source { get; set; }
+        public byte Index { get; set; }
+        public ushort Source { get; set; }
     }
 
     protected override ProgramInputCommand CreateSut(TestCaseData testCase)
     {
-        // Create state with the required mix effect
-        var state = CreateStateWithMixEffect(testCase.Command.Index, testCase.Command.Source);
-        
-        // Create command with the mix effect ID
-        var command = new ProgramInputCommand(testCase.Command.Index, state);
-
-        // Set the actual source value that should be written
-        command.Source = testCase.Command.Source;
-        
-        return command;
-    }
-
-    /// <summary>
-    /// Creates an AtemState with a valid mix effect at the specified index
-    /// </summary>
-    private static AtemState CreateStateWithMixEffect(int mixEffectId, int programInput = 0)
-    {
-        Dictionary<int, MixEffect> mixEffects = new Dictionary<int, MixEffect>();
-        mixEffects[mixEffectId] = new MixEffect
+        var state = new MixEffect
         {
-            Index = mixEffectId,
-            ProgramInput = programInput,
-            PreviewInput = 1000,
-            TransitionPreview = false,
-            TransitionPosition = new TransitionPosition
-            {
-                InTransition = false,
-                HandlePosition = 0,
-                RemainingFrames = 0
-            },
+            Index = testCase.Command.Index,
+            ProgramInput = testCase.Command.Source
         };
 
-        return new AtemState
-        {
-            Info = new DeviceInfo
-            {
-                Capabilities = new AtemCapabilities
-                {
-                    MixEffects = Math.Max(mixEffectId + 1, 2)
-                }
-            },
-            Video = new VideoState
-            {
-                MixEffects = mixEffects
-            }
-        };
+        return new ProgramInputCommand(state);
     }
 
     [Test]
@@ -69,49 +30,19 @@ public class ProgramInputCommandTests : SerializedCommandTestBase<ProgramInputCo
         // Arrange
         const int mixEffectId = 1;
         const int expectedSource = 1234;
-        var state = CreateStateWithMixEffect(mixEffectId, expectedSource);
+        var state = new MixEffect
+        {
+            Index = mixEffectId,
+            ProgramInput = expectedSource
+        };
+
 
         // Act
-        var command = new ProgramInputCommand(mixEffectId, state);
+        var command = new ProgramInputCommand(state);
 
         // Assert
         Assert.That(command.MixEffectId, Is.EqualTo(mixEffectId));
         Assert.That(command.Source, Is.EqualTo(expectedSource));
         Assert.That(command.Flag, Is.EqualTo(0), "Flag should not be set when initializing from state");
-    }
-
-    [Test]
-    public void Constructor_WithoutMixEffect_InitializesWithDefaults()
-    {
-        // Arrange
-        const int mixEffectId = 1;
-        var state = new AtemState(); // Empty state
-
-        // Act
-        var command = new ProgramInputCommand(mixEffectId, state);
-
-        // Assert
-        Assert.That(command.MixEffectId, Is.EqualTo(mixEffectId));
-        Assert.That(command.Source, Is.EqualTo(0));
-        Assert.That(command.Flag, Is.EqualTo(1), "Flag should be set when initializing with defaults");
-    }
-
-    [Test]
-    public void Source_WhenSet_UpdatesFlagAutomatically()
-    {
-        // Arrange
-        const int mixEffectId = 0;
-        var state = CreateStateWithMixEffect(mixEffectId, 100);
-        var command = new ProgramInputCommand(mixEffectId, state);
-        
-        // Reset flag after constructor
-        command.Flag = 0;
-
-        // Act
-        command.Source = 2000;
-
-        // Assert
-        Assert.That(command.Source, Is.EqualTo(2000));
-        Assert.That(command.Flag, Is.EqualTo(1), "Flag should be set when Source property is changed");
     }
 }

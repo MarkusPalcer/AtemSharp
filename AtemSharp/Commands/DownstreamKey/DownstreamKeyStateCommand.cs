@@ -37,6 +37,5 @@ public class DownstreamKeyStateCommand : IDeserializedCommand
         dsk.InTransition = InTransition;
         dsk.IsAuto = IsAuto;
         dsk.RemainingFrames = RemainingFrames;
-        dsk.IsTowardsOnAir = null;
     }
 }

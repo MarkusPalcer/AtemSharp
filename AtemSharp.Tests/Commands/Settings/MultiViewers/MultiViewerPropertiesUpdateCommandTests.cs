@@ -2,59 +2,18 @@ using AtemSharp.Commands.Settings.MultiViewers;
 using AtemSharp.Enums;
 using AtemSharp.State;
 using AtemSharp.State.Info;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.Settings.MultiViewers;
 
-/// <summary>
-/// Tests for MultiViewerPropertiesUpdateCommand
-/// </summary>
 [TestFixture]
-// TODO: Check for data driven tests
-public class MultiViewerPropertiesUpdateCommandTests
+public class MultiViewerPropertiesUpdateCommandTests : DeserializedCommandTestBase<MultiViewerPropertiesUpdateCommand, MultiViewerPropertiesUpdateCommandTests.CommandData>
 {
-    [Test]
-    public void Deserialize_ShouldReadCorrectData()
+    public class CommandData : CommandDataBase
     {
-        // Arrange
-        Span<byte> testData = [1, 3, 1, 0]; // MultiViewer 1, Layout=ProgramBottom, ProgramPreviewSwapped=true
-
-        // Act
-        var command = MultiViewerPropertiesUpdateCommand.Deserialize(testData, ProtocolVersion.V8_0);
-
-        // Assert
-        Assert.That(command.MultiViewerId, Is.EqualTo(1), "MultiViewer ID should be read correctly");
-        Assert.That(command.Layout, Is.EqualTo(MultiViewerLayout.ProgramBottom), "Layout should be read correctly");
-        Assert.That(command.ProgramPreviewSwapped, Is.True, "ProgramPreviewSwapped should be read correctly");
-    }
-
-    [Test]
-    public void Deserialize_ShouldHandleVariousLayoutValues()
-    {
-        var testCases = new[]
-        {
-            ((byte)0, MultiViewerLayout.Default),
-            ((byte)1, MultiViewerLayout.TopLeftSmall),
-            ((byte)2, MultiViewerLayout.TopRightSmall),
-            ((byte)3, MultiViewerLayout.ProgramBottom),
-            ((byte)4, MultiViewerLayout.BottomLeftSmall),
-            ((byte)5, MultiViewerLayout.ProgramRight),
-            ((byte)8, MultiViewerLayout.BottomRightSmall),
-            ((byte)10, MultiViewerLayout.ProgramLeft),
-            ((byte)12, MultiViewerLayout.ProgramTop)
-        };
-
-        foreach (var (layoutByte, expectedLayout) in testCases)
-        {
-            // Arrange
-            Span<byte> testData = [0, layoutByte, 0, 0];
-
-            // Act
-            var command = MultiViewerPropertiesUpdateCommand.Deserialize(testData, ProtocolVersion.V8_0);
-
-            // Assert
-            Assert.That(command.Layout, Is.EqualTo(expectedLayout),
-                       $"Byte value {layoutByte} should deserialize to {expectedLayout}");
-        }
+        public byte MultiviewIndex { get; set; }
+        public MultiViewerLayout Layout { get; set; }
+        public bool ProgramPreviewSwapped { get; set; }
     }
 
     [Test]
@@ -73,7 +32,7 @@ public class MultiViewerPropertiesUpdateCommandTests
             Span<byte> testData = [0, 0, swapByte, 0];
 
             // Act
-            var command = MultiViewerPropertiesUpdateCommand.Deserialize(testData, ProtocolVersion.V8_0);
+            var command = MultiViewerPropertiesUpdateCommand.Deserialize(testData, ProtocolVersion.V8_0).As<MultiViewerPropertiesUpdateCommand>();
 
             // Assert
             Assert.That(command.ProgramPreviewSwapped, Is.EqualTo(expectedSwapped),
@@ -99,8 +58,8 @@ public class MultiViewerPropertiesUpdateCommandTests
             {
                 MultiViewers = new Dictionary<int, MultiViewer>
                 {
-                    [0] = new(0),
-                    [1] = new(1)
+                    [0] = new MultiViewer() { Index = 0 },
+                    [1] = new MultiViewer() { Index = 1 }
                 }
             }
         };
@@ -118,9 +77,9 @@ public class MultiViewerPropertiesUpdateCommandTests
         // Assert
         Assert.That(state.Settings.MultiViewers[1].Properties, Is.Not.Null,
                    "Properties should be created");
-        Assert.That(state.Settings.MultiViewers[1].Properties!.Layout, Is.EqualTo(MultiViewerLayout.TopRightSmall),
+        Assert.That(state.Settings.MultiViewers[1].Properties.Layout, Is.EqualTo(MultiViewerLayout.TopRightSmall),
                    "Layout should be updated in state");
-        Assert.That(state.Settings.MultiViewers[1].Properties!.ProgramPreviewSwapped, Is.True,
+        Assert.That(state.Settings.MultiViewers[1].Properties.ProgramPreviewSwapped, Is.True,
                    "ProgramPreviewSwapped should be updated in state");
     }
 
@@ -213,7 +172,14 @@ public class MultiViewerPropertiesUpdateCommandTests
                    "MultiViewer should be created");
         Assert.That(state.Settings.MultiViewers[0].Index, Is.EqualTo(0),
                    "MultiViewer index should be set");
-        Assert.That(state.Settings.MultiViewers[0].Properties!.Layout, Is.EqualTo(MultiViewerLayout.ProgramLeft),
+        Assert.That(state.Settings.MultiViewers[0].Properties.Layout, Is.EqualTo(MultiViewerLayout.ProgramLeft),
                    "Layout should be set correctly");
+    }
+
+    protected override void CompareCommandProperties(MultiViewerPropertiesUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    {
+        Assert.That(actualCommand.MultiViewerId, Is.EqualTo(expectedData.MultiviewIndex));
+        Assert.That(actualCommand.Layout, Is.EqualTo(expectedData.Layout));
+        Assert.That(actualCommand.ProgramPreviewSwapped, Is.EqualTo(expectedData.ProgramPreviewSwapped));
     }
 }

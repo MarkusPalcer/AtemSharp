@@ -9,7 +9,7 @@ public class FairlightMixerSourceCommandTests : SerializedCommandTestBase<Fairli
     protected override Range[] GetFloatingPointByteRanges()
         =>
         [
-            (20.. 24), // Gain
+            (20..24), // Gain
             (24..26), // StereoSimulation
             (28..32), // EqualizerGain
             (32..36), // MakeUpGain

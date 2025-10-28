@@ -1,4 +1,3 @@
-using AtemSharp.Enums;
 using AtemSharp.Helpers;
 using AtemSharp.Lib;
 using AtemSharp.State;
@@ -13,26 +12,25 @@ namespace AtemSharp.Commands.Audio;
 public partial class AudioMixerMasterUpdateCommand : IDeserializedCommand
 {
     /// <summary>
-    /// Audio gain in decibels
-    /// </summary>
-    public double Gain { get; internal set; }
-
-    /// <summary>
-    /// Audio balance (-50.0 to +50.0)
-    /// </summary>
-    public double Balance { get; internal set; }
-
-    /// <summary>
     /// Whether audio follows fade to black
     /// </summary>
     [DeserializedField(4)]
     private bool _followFadeToBlack;
 
-    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand, ProtocolVersion _)
-    {
-        Gain = rawCommand.ReadUInt16BigEndian(0).UInt16ToDecibel();
-        Balance = rawCommand.ReadInt16BigEndian(2).Int16ToBalance();
-    }
+    /// <summary>
+    /// Audio gain in decibels
+    /// </summary>
+    [DeserializedField(0)]
+    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.UInt16ToDecibel)}")]
+    private double _gain;
+
+    /// <summary>
+    /// Audio balance
+    /// </summary>
+    [DeserializedField(2)]
+    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.Int16ToBalance)}")]
+    [SerializedType(typeof(short))]
+    private double _balance;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)

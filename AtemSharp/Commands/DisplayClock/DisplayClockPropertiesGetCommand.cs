@@ -1,4 +1,5 @@
 using AtemSharp.Enums;
+using AtemSharp.Helpers;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
@@ -8,72 +9,64 @@ namespace AtemSharp.Commands.DisplayClock;
 /// Update command for display clock properties
 /// </summary>
 [Command("DCPV")]
-public class DisplayClockPropertiesGetCommand : IDeserializedCommand
+public partial class DisplayClockPropertiesGetCommand : IDeserializedCommand
 {
     /// <summary>
     /// Whether the display clock is enabled
     /// </summary>
-    public bool Enabled { get; init; }
+    [DeserializedField(1)] private bool _enabled;
 
     /// <summary>
     /// Size of the clock display
     /// </summary>
-    public byte Size { get; init; }
+    [DeserializedField(3)] private byte _size;
 
     /// <summary>
     /// Opacity of the clock display (0-255)
     /// </summary>
-    public byte Opacity { get; init; }
+    [DeserializedField(5)] private byte _opacity;
 
     /// <summary>
     /// X position of the clock display
     /// </summary>
-    public double PositionX { get; init; }
+    [DeserializedField(6)] [ScalingFactor(1000.0)] [SerializedType(typeof(short))]
+    private double _positionX;
 
     /// <summary>
     /// Y position of the clock display
     /// </summary>
-    public double PositionY { get; init; }
+    [DeserializedField(8)] [ScalingFactor(1000.0)] [SerializedType(typeof(short))]
+    private double _positionY;
 
     /// <summary>
     /// Whether the clock should auto-hide
     /// </summary>
-    public bool AutoHide { get; init; }
-
-    /// <summary>
-    /// Starting time for countdown/countup modes
-    /// </summary>
-    public DisplayClockTime StartFrom { get; init; } = new();
+    [DeserializedField(10)] private bool _autoHide;
 
     /// <summary>
     /// Clock mode (countdown, countup, time of day)
     /// </summary>
-    public DisplayClockClockMode ClockMode { get; init; }
+    [DeserializedField(15)] private DisplayClockClockMode _clockMode;
 
     /// <summary>
     /// Clock state (stopped, running, reset)
     /// </summary>
-    public DisplayClockClockState ClockState { get; init; }
+    [DeserializedField(16)] private DisplayClockClockState _clockState;
 
-    public static DisplayClockPropertiesGetCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
+
+    /// <summary>
+    /// Starting time for countdown/countup modes
+    /// </summary>
+    public DisplayClockTime StartFrom { get; internal set; } = new();
+
+    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
-        return new DisplayClockPropertiesGetCommand
+        StartFrom = new DisplayClockTime
         {
-            Enabled = rawCommand.ReadBoolean(1),
-            Size = rawCommand.ReadUInt8(3),
-            Opacity = rawCommand.ReadUInt8(5),
-            PositionX = Math.Round(rawCommand.ReadInt16BigEndian(6) / 1000.0, 3),
-            PositionY = Math.Round(rawCommand.ReadInt16BigEndian(8) / 1000.0, 3),
-            AutoHide = rawCommand.ReadBoolean(10),
-            StartFrom = new DisplayClockTime
-            {
-                Hours = rawCommand.ReadUInt8(11),
-                Minutes = rawCommand.ReadUInt8(12),
-                Seconds = rawCommand.ReadUInt8(13),
-                Frames = rawCommand.ReadUInt8(14)
-            },
-            ClockMode = (DisplayClockClockMode)rawCommand.ReadUInt8(15),
-            ClockState = (DisplayClockClockState)rawCommand.ReadUInt8(16)
+            Hours = rawCommand.ReadUInt8(11),
+            Minutes = rawCommand.ReadUInt8(12),
+            Seconds = rawCommand.ReadUInt8(13),
+            Frames = rawCommand.ReadUInt8(14)
         };
     }
 

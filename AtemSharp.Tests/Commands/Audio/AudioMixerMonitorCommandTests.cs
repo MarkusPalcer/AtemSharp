@@ -23,7 +23,7 @@ public class AudioMixerMonitorCommandTests : SerializedCommandTestBase<AudioMixe
 		public double Gain { get; set; }
 		public bool Mute { get; set; }
 		public bool Solo { get; set; }
-		public int SoloSource { get; set; }
+		public ushort SoloSource { get; set; }
 		public bool Dim { get; set; }
 		public double DimLevel { get; set; }
 	}

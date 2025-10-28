@@ -1,5 +1,5 @@
 using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Key;
@@ -8,89 +8,51 @@ namespace AtemSharp.Commands.MixEffects.Key;
 /// Command received from ATEM device containing upstream keyer base properties
 /// </summary>
 [Command("KeBP")]
-public class MixEffectKeyPropertiesGetCommand : IDeserializedCommand
+public partial class MixEffectKeyPropertiesGetCommand : IDeserializedCommand
 {
-    /// <summary>
-    /// Mix effect index (0-based)
-    /// </summary>
-    public int MixEffectIndex { get; init; }
+    [DeserializedField(0)]
+    private byte _mixEffectIndex;
 
-    /// <summary>
-    /// Upstream keyer index (0-based)
-    /// </summary>
-    public int KeyerIndex { get; init; }
+    [DeserializedField(1)]
+    private byte _keyerIndex;
 
-    /// <summary>
-    /// Type of keying effect
-    /// </summary>
-    public MixEffectKeyType KeyType { get; init; }
+    [DeserializedField(2)]
+    private MixEffectKeyType _keyType;
 
-    /// <summary>
-    /// Whether this keyer supports fly key functionality
-    /// </summary>
-    public bool CanFlyKey { get; init; }
+    [DeserializedField(4)]
+    private bool _canFlyKey;
 
-    /// <summary>
-    /// Whether fly key is currently enabled
-    /// </summary>
-    public bool FlyEnabled { get; init; }
+    [DeserializedField(5)]
+    private bool _flyEnabled;
 
-    /// <summary>
-    /// Fill source input number
-    /// </summary>
-    public int FillSource { get; init; }
+    [DeserializedField(6)]
+    private ushort _fillSource;
 
-    /// <summary>
-    /// Cut source input number
-    /// </summary>
-    public int CutSource { get; init; }
+    [DeserializedField(8)]
+    private ushort _cutSource;
 
-    /// <summary>
-    /// Whether masking is enabled
-    /// </summary>
-    public bool MaskEnabled { get; init; }
+    [DeserializedField(10)]
+    private bool _maskEnabled;
 
-    /// <summary>
-    /// Top edge of mask
-    /// </summary>
-    public double MaskTop { get; init; }
+    [DeserializedField(12)]
+    [ScalingFactor(1000)]
+    [SerializedType(typeof(short))]
+    private double _maskTop;
 
-    /// <summary>
-    /// Bottom edge of mask
-    /// </summary>
-    public double MaskBottom { get; init; }
+    [DeserializedField(14)]
+    [ScalingFactor(1000)]
+    [SerializedType(typeof(short))]
+    private double _maskBottom;
 
-    /// <summary>
-    /// Left edge of mask
-    /// </summary>
-    public double MaskLeft { get; init; }
+    [DeserializedField(16)]
+    [ScalingFactor(1000)]
+    [SerializedType(typeof(short))]
+    private double _maskLeft;
 
-    /// <summary>
-    /// Right edge of mask
-    /// </summary>
-    public double MaskRight { get; init; }
-
-    /// <summary>
-    /// Deserialize the command from binary stream
-    /// </summary>
-    public static MixEffectKeyPropertiesGetCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        return new MixEffectKeyPropertiesGetCommand
-        {
-            MixEffectIndex = rawCommand.ReadUInt8(0),
-            KeyerIndex = rawCommand.ReadUInt8(1),
-            KeyType = (MixEffectKeyType)rawCommand.ReadUInt8(2),
-            CanFlyKey = rawCommand.ReadBoolean(4),
-            FlyEnabled = rawCommand.ReadBoolean(5),
-            FillSource = rawCommand.ReadUInt16BigEndian(6),
-            CutSource = rawCommand.ReadUInt16BigEndian(8),
-            MaskEnabled = rawCommand.ReadBoolean(10),
-            MaskTop = rawCommand.ReadInt16BigEndian(12) / 1000.0,
-            MaskBottom = rawCommand.ReadInt16BigEndian(14) / 1000.0,
-            MaskLeft = rawCommand.ReadInt16BigEndian(16) / 1000.0,
-            MaskRight = rawCommand.ReadInt16BigEndian(18) / 1000.0
-        };
-    }
+    [DeserializedField(18)]
+    [ScalingFactor(1000)]
+    [SerializedType(typeof(short))]
+    private double _maskRight;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
@@ -109,7 +71,7 @@ public class MixEffectKeyPropertiesGetCommand : IDeserializedCommand
 
         // Get or create the upstream keyer
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerIndex);
-        keyer.Index = KeyerIndex;
+        keyer.Id = KeyerIndex;
 
         // Update keyer properties
         keyer.KeyType = KeyType;
@@ -119,8 +81,6 @@ public class MixEffectKeyPropertiesGetCommand : IDeserializedCommand
         keyer.CutSource = CutSource;
 
         // Update mask settings
-        keyer.MaskSettings ??= new UpstreamKeyerMaskSettings();
-
         keyer.MaskSettings.MaskEnabled = MaskEnabled;
         keyer.MaskSettings.MaskTop = MaskTop;
         keyer.MaskSettings.MaskBottom = MaskBottom;

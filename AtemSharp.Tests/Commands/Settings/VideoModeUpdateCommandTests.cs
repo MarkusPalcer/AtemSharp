@@ -11,42 +11,11 @@ namespace AtemSharp.Tests.Commands.Settings;
 /// </summary>
 [TestFixture]
 // TODO: Check test data
-public class VideoModeUpdateCommandTests
+public class VideoModeUpdateCommandTests : DeserializedCommandTestBase<VideoModeUpdateCommand, VideoModeUpdateCommandTests.CommandData>
 {
-    [Test]
-    public void Deserialize_ShouldReadVideoModeFromFirstByte()
+    public class CommandData : CommandDataBase
     {
-        // Arrange
-        Span<byte> testData = [13, 0, 0, 0]; // VideoMode.N1080p5994 = 13
-
-        // Act
-        var command = VideoModeUpdateCommand.Deserialize(testData, ProtocolVersion.V7_2);
-
-        // Assert
-        Assert.That(command.Mode, Is.EqualTo(VideoMode.N1080p5994), "Should deserialize video mode correctly");
-    }
-
-    [Test]
-    public void Deserialize_ShouldHandleDifferentVideoModes()
-    {
-        (byte[], VideoMode)[] testCases =
-        [
-            ([0, 0, 0, 0], VideoMode.N525i5994NTSC),
-            ([1, 0, 0, 0], VideoMode.P625i50PAL),
-            ([4, 0, 0, 0], VideoMode.P720p50),
-            ([13, 0, 0, 0], VideoMode.N1080p5994),
-            ([25, 0, 0, 0], VideoMode.N8KHDp5994)
-        ];
-
-        foreach (var (data, expectedMode) in testCases)
-        {
-            // Act
-            var command = VideoModeUpdateCommand.Deserialize(data.AsSpan(), ProtocolVersion.V7_2);
-
-            // Assert
-            Assert.That(command.Mode, Is.EqualTo(expectedMode),
-                       $"Byte value {data[0]} should deserialize to {expectedMode}");
-        }
+        public VideoMode VideoMode { get; set; }
     }
 
     [Test]
@@ -72,5 +41,10 @@ public class VideoModeUpdateCommandTests
         // Assert
         Assert.That(state.Settings.VideoMode, Is.EqualTo(VideoMode.N1080p5994),
                    "State should be updated with new video mode");
+    }
+
+    protected override void CompareCommandProperties(VideoModeUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    {
+        Assert.That(actualCommand.Mode, Is.EqualTo(expectedData.VideoMode));
     }
 }

@@ -150,11 +150,11 @@ public class MultiViewerWindowVuMeterUpdateCommandTests : DeserializedCommandTes
     /// <summary>
     /// Creates an AtemState with a valid MultiViewer at the specified index
     /// </summary>
-    private static AtemState CreateStateWithMultiViewer(int multiViewerId)
+    private static AtemState CreateStateWithMultiViewer(byte multiViewerId)
     {
         var multiViewers = new Dictionary<int, MultiViewer>
         {
-            { multiViewerId, new MultiViewer(multiViewerId) }
+            { multiViewerId, new MultiViewer() {Index = multiViewerId} }
         };
 
         return new AtemState

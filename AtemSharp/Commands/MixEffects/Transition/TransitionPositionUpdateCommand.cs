@@ -1,48 +1,35 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Transition;
 
-/// <summary>
-/// Command received from ATEM device containing transition position update
-/// </summary>
 [Command("TrPs")]
-public class TransitionPositionUpdateCommand : IDeserializedCommand
+public partial class TransitionPositionUpdateCommand : IDeserializedCommand
 {
-    /// <summary>
-    /// Mix effect index (0-based)
-    /// </summary>
-    public int MixEffectId { get; init; }
+    [DeserializedField(0)]
+    [NoProperty]
+    internal byte MixEffectId;
 
     /// <summary>
     /// Whether a transition is currently in progress
     /// </summary>
-    public bool InTransition { get; init; }
+    [DeserializedField(1)]
+    private bool _inTransition;
 
     /// <summary>
     /// Number of frames remaining in the transition
     /// </summary>
-    public int RemainingFrames { get; init; }
+    [DeserializedField(2)]
+    private byte _remainingFrames;
 
     /// <summary>
     /// Current position of the transition handle (0.0 to 1.0)
     /// </summary>
-    public double HandlePosition { get; init; }
+    [DeserializedField(4)]
+    [ScalingFactor(10000)]
+    [SerializedType(typeof(ushort))]
+    private double _handlePosition;
 
-    /// <summary>
-    /// Deserialize the command from binary stream
-    /// </summary>
-    public static TransitionPositionUpdateCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        return new TransitionPositionUpdateCommand
-        {
-            MixEffectId = rawCommand.ReadUInt8(0),
-            InTransition = rawCommand.ReadBoolean(1),
-            RemainingFrames = rawCommand.ReadUInt8(2),
-            HandlePosition = rawCommand.ReadUInt16BigEndian(4) / 10000.0 // Convert from ushort (0-10000) to double (0.0-1.0)
-        };
-    }
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)

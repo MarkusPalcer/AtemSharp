@@ -1,5 +1,5 @@
 using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Settings;
@@ -8,8 +8,13 @@ namespace AtemSharp.Commands.Settings;
 /// Command to set the video mode of the ATEM device
 /// </summary>
 [Command("CVdM")]
-public class VideoModeCommand : SerializedCommand
+[BufferSize(4)]
+public partial class VideoModeCommand : SerializedCommand
 {
+    /// <summary>
+    /// Video mode to set
+    /// </summary>
+    [SerializedField(0)]
     private VideoMode _mode;
 
     /// <summary>
@@ -20,30 +25,5 @@ public class VideoModeCommand : SerializedCommand
     {
         // Initialize from current state (direct field access = no flags set)
         _mode = currentState.Settings.VideoMode;
-    }
-
-    /// <summary>
-    /// Video mode to set
-    /// </summary>
-    public VideoMode Mode
-    {
-        get => _mode;
-        set => _mode = value; // No flag setting - this is a BasicWritableCommand equivalent
-    }
-
-    /// <summary>
-    /// Serialize command to binary stream for transmission to ATEM
-    /// </summary>
-    /// <param name="version">Protocol version</param>
-    /// <returns>Serialized command data</returns>
-    public override byte[] Serialize(ProtocolVersion version)
-    {
-        using var memoryStream = new MemoryStream(4);
-        using var writer = new BinaryWriter(memoryStream);
-        
-        writer.Write((byte)Mode);
-        writer.Pad(3); // Pad to 4 bytes total
-        
-        return memoryStream.ToArray();
     }
 }

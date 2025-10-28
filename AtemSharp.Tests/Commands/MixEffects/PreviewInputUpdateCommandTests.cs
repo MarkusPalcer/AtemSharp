@@ -132,7 +132,7 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
     /// <summary>
     /// Creates an AtemState with a valid mix effect at the specified index
     /// </summary>
-    private static AtemState CreateStateWithMixEffect(int mixEffectId, int previewInput = 0)
+    private static AtemState CreateStateWithMixEffect(byte mixEffectId, ushort previewInput = 0)
     {
         Dictionary<int, MixEffect> mixEffects = new Dictionary<int, MixEffect>();
         mixEffects[mixEffectId] = new MixEffect

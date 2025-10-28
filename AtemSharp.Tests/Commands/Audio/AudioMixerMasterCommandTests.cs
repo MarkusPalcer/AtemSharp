@@ -115,32 +115,6 @@ public class AudioMixerMasterCommandTests : SerializedCommandTestBase<AudioMixer
 	}
 
 	[Test]
-	public void SetGain_WithInvalidValueTooLow_ShouldThrowArgumentOutOfRangeException()
-	{
-		// Arrange
-		var state = CreateStateWithAudioMaster();
-		var command = new AudioMixerMasterCommand(state);
-
-		// Act & Assert
-		var ex = Assert.Throws<ArgumentOutOfRangeException>(() => command.Gain = -70.0);
-		Assert.That(ex.ParamName, Is.EqualTo("value"));
-		Assert.That(ex.Message, Does.Contain("must be between -60.0 and +6.0"));
-	}
-
-	[Test]
-	public void SetGain_WithInvalidValueTooHigh_ShouldThrowArgumentOutOfRangeException()
-	{
-		// Arrange
-		var state = CreateStateWithAudioMaster();
-		var command = new AudioMixerMasterCommand(state);
-
-		// Act & Assert
-		var ex = Assert.Throws<ArgumentOutOfRangeException>(() => command.Gain = 10.0);
-		Assert.That(ex.ParamName, Is.EqualTo("value"));
-		Assert.That(ex.Message, Does.Contain("must be between -60.0 and +6.0"));
-	}
-
-	[Test]
 	public void SetBalance_WithValidValue_ShouldSetPropertyAndFlag()
 	{
 		// Arrange
@@ -156,31 +130,7 @@ public class AudioMixerMasterCommandTests : SerializedCommandTestBase<AudioMixer
 		Assert.That(command.Flag & (1 << 1), Is.Not.EqualTo(0), "Balance flag should be set");
 	}
 
-	[Test]
-	public void SetBalance_WithInvalidValueTooLow_ShouldThrowArgumentOutOfRangeException()
-	{
-		// Arrange
-		var state = CreateStateWithAudioMaster();
-		var command = new AudioMixerMasterCommand(state);
 
-		// Act & Assert
-		var ex = Assert.Throws<ArgumentOutOfRangeException>(() => command.Balance = -60.0);
-		Assert.That(ex.ParamName, Is.EqualTo("value"));
-		Assert.That(ex.Message, Does.Contain("must be between -50.0 and +50.0"));
-	}
-
-	[Test]
-	public void SetBalance_WithInvalidValueTooHigh_ShouldThrowArgumentOutOfRangeException()
-	{
-		// Arrange
-		var state = CreateStateWithAudioMaster();
-		var command = new AudioMixerMasterCommand(state);
-
-		// Act & Assert
-		var ex = Assert.Throws<ArgumentOutOfRangeException>(() => command.Balance = 60.0);
-		Assert.That(ex.ParamName, Is.EqualTo("value"));
-		Assert.That(ex.Message, Does.Contain("must be between -50.0 and +50.0"));
-	}
 
 	[Test]
 	public void SetFollowFadeToBlack_WithValue_ShouldSetPropertyAndFlag()

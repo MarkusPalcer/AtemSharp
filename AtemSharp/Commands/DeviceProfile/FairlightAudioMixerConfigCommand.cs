@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 using AtemSharp.State.Audio.Fairlight;
 
@@ -9,29 +8,19 @@ namespace AtemSharp.Commands.DeviceProfile;
 /// Fairlight audio mixer configuration command received from ATEM
 /// </summary>
 [Command("_FAC")]
-public class FairlightAudioMixerConfigCommand : IDeserializedCommand
+public partial class FairlightAudioMixerConfigCommand : IDeserializedCommand
 {
     /// <summary>
     /// Number of Fairlight audio inputs available
     /// </summary>
-    public byte Inputs { get; init; }
+    [DeserializedField(0)]
+    private byte _inputs;
 
     /// <summary>
     /// Number of Fairlight monitor channels available
     /// </summary>
-    public byte Monitors { get; init; }
-
-    /// <summary>
-    /// Deserialize the command from binary stream
-    /// </summary>
-    public static FairlightAudioMixerConfigCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        return new FairlightAudioMixerConfigCommand
-        {
-            Inputs = rawCommand.ReadUInt8(0),
-            Monitors = rawCommand.ReadUInt8(1)
-        };
-    }
+    [DeserializedField(1)]
+    private byte _monitors;
 
     /// <summary>
     /// Apply the command's values to the ATEM state

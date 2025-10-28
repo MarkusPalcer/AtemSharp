@@ -18,12 +18,12 @@ public class TransitionWipeUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Rate of the wipe transition in frames
     /// </summary>
-    public int Rate { get; init; }
+    public byte Rate { get; init; }
 
     /// <summary>
     /// Pattern for the wipe transition
     /// </summary>
-    public int Pattern { get; init; }
+    public byte Pattern { get; init; }
 
     /// <summary>
     /// Width of the wipe border as percentage (0-100%)
@@ -33,7 +33,7 @@ public class TransitionWipeUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Input source for the wipe border
     /// </summary>
-    public int BorderInput { get; init; }
+    public ushort BorderInput { get; init; }
 
     /// <summary>
     /// Symmetry setting for the wipe transition as percentage (0-100%)
@@ -94,12 +94,6 @@ public class TransitionWipeUpdateCommand : IDeserializedCommand
         {
             throw new InvalidIdError("MixEffect", MixEffectId.ToString());
         }
-
-        // Initialize transition settings if not present
-        mixEffect.TransitionSettings ??= new TransitionSettings();
-
-        // Initialize wipe settings if not present
-        mixEffect.TransitionSettings.Wipe ??= new WipeTransitionSettings();
 
         // Update the wipe settings
         mixEffect.TransitionSettings.Wipe.Rate = Rate;

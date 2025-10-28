@@ -29,7 +29,7 @@ public class FairlightMixerSourceEqualizerBandCommandTests : SerializedCommandTe
     {
         var band = new SourceEqualizerBand
         {
-            Index = testCase.Command.Band,
+            Id = testCase.Command.Band,
             InputId = (ushort)testCase.Command.Index,
             SourceId = testCase.Command.SourceId,
             Enabled = testCase.Command.BandEnabled,

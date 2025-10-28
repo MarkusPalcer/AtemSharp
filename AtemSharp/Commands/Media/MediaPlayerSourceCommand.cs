@@ -1,71 +1,23 @@
 using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Media;
 
 [Command("MPSS")]
-public class MediaPlayerSourceCommand : SerializedCommand
+[BufferSize(8)]
+public partial class MediaPlayerSourceCommand(MediaPlayer player) : SerializedCommand
 {
-    private MediaSourceType _sourceType;
-    private byte _stillIndex;
-    private byte _clipIndex;
+    [SerializedField(2,0)]
+    private MediaSourceType _sourceType = player.SourceType;
 
-    public MediaSourceType SourceType
-    {
-        get => _sourceType;
-        set
-        {
-            _sourceType = value;
-            Flag |= 1 << 0;
-        }
-    }
+    [SerializedField(3,1)]
+    private byte _stillIndex = player.StillIndex;
 
-    public byte StillIndex
-    {
-        get => _stillIndex;
-        set
-        {
-            _stillIndex = value;
-            Flag |= 1 << 1;
-        }
-    }
+    [SerializedField(4,2)]
+    private byte _clipIndex = player.ClipIndex;
 
-    public byte ClipIndex
-    {
-        get => _clipIndex;
-        set
-        {
-            _clipIndex = value;
-            Flag |= 1 << 2;
-        }
-    }
-
-    public byte MediaPlayerId { get; private set; }
-
-    public MediaPlayerSourceCommand(MediaPlayer player)
-    {
-        _sourceType = player.SourceType;
-        _stillIndex = player.StillIndex;
-        _clipIndex = player.ClipIndex;
-
-        MediaPlayerId = player.Id;
-    }
-
-    public MediaPlayerSourceCommand(AtemState state, int mediaPlayerId)
-        : this(state.Media.Players[mediaPlayerId])
-    {
-    }
-
-    public override byte[] Serialize(ProtocolVersion version)
-    {
-        var buffer = new byte[8];
-        buffer.WriteUInt8((byte)Flag, 0);
-        buffer.WriteUInt8(MediaPlayerId, 1);
-        buffer.WriteUInt8((byte)SourceType, 2);
-        buffer.WriteUInt8(StillIndex, 3);
-        buffer.WriteUInt8(ClipIndex, 4);
-
-        return buffer;
-    }
+    [SerializedField(1)]
+    [NoProperty]
+    private readonly byte _mediaPlayerId = player.Id;
 }

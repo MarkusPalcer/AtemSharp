@@ -11,48 +11,20 @@ public class TransitionPropertiesUpdateCommandTests : DeserializedCommandTestBas
     public class CommandData : CommandDataBase
     {
         public byte Index { get; set; }
-        public byte Style { get; set; }
-        public byte Selection { get; set; }
-        public byte NextStyle { get; set; }
-        public byte NextSelection { get; set; }
+        public TransitionStyle Style { get; set; }
+        public TransitionSelection Selection { get; set; }
+        public TransitionStyle NextStyle { get; set; }
+        public TransitionSelection NextSelection { get; set; }
     }
 
     protected override void CompareCommandProperties(TransitionPropertiesUpdateCommand actualCommand,
         CommandData expectedData, TestCaseData testCase)
     {
-        var failures = new List<string>();
-
-        // Compare all properties
-        if (actualCommand.MixEffectId != expectedData.Index)
-        {
-            failures.Add($"MixEffectId: expected {expectedData.Index}, actual {actualCommand.MixEffectId}");
-        }
-
-        if ((byte)actualCommand.Style != expectedData.Style)
-        {
-            failures.Add($"Style: expected {expectedData.Style}, actual {(byte)actualCommand.Style}");
-        }
-
-        if ((byte)actualCommand.Selection != expectedData.Selection)
-        {
-            failures.Add($"Selection: expected {expectedData.Selection}, actual {(byte)actualCommand.Selection}");
-        }
-
-        if ((byte)actualCommand.NextStyle != expectedData.NextStyle)
-        {
-            failures.Add($"NextStyle: expected {expectedData.NextStyle}, actual {(byte)actualCommand.NextStyle}");
-        }
-
-        if ((byte)actualCommand.NextSelection != expectedData.NextSelection)
-        {
-            failures.Add($"NextSelection: expected {expectedData.NextSelection}, actual {(byte)actualCommand.NextSelection}");
-        }
-
-        // Assert results
-        if (failures.Count > 0)
-        {
-            Assert.Fail($"Command property comparison failed:\n{string.Join("\n", failures)}");
-        }
+        Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.Style, Is.EqualTo(expectedData.Style));
+        Assert.That(actualCommand.Selection, Is.EqualTo(expectedData.Selection));
+        Assert.That(actualCommand.NextStyle, Is.EqualTo(expectedData.NextStyle));
+        Assert.That(actualCommand.NextSelection, Is.EqualTo(expectedData.NextSelection));
     }
 
     [Test]
@@ -76,7 +48,7 @@ public class TransitionPropertiesUpdateCommandTests : DeserializedCommandTestBas
         // Assert
         var mixEffect = state.Video.MixEffects[1];
         Assert.That(mixEffect.TransitionProperties, Is.Not.Null);
-        Assert.That(mixEffect.TransitionProperties!.Style, Is.EqualTo(TransitionStyle.Wipe));
+        Assert.That(mixEffect.TransitionProperties.Style, Is.EqualTo(TransitionStyle.Wipe));
         Assert.That(mixEffect.TransitionProperties.Selection, Is.EqualTo(TransitionSelection.Background | TransitionSelection.Key1));
         Assert.That(mixEffect.TransitionProperties.NextStyle, Is.EqualTo(TransitionStyle.DVE));
         Assert.That(mixEffect.TransitionProperties.NextSelection, Is.EqualTo(TransitionSelection.Key2 | TransitionSelection.Key3));
@@ -118,13 +90,10 @@ public class TransitionPropertiesUpdateCommandTests : DeserializedCommandTestBas
 
         var state = CreateMinimalState();
         // Pre-populate with existing transition properties
-        state.Video.MixEffects[0].TransitionProperties = new TransitionProperties
-        {
-            Style = TransitionStyle.Mix,
-            Selection = TransitionSelection.Background,
-            NextStyle = TransitionStyle.Mix,
-            NextSelection = TransitionSelection.Background
-        };
+        state.Video.MixEffects[0].TransitionProperties.Style = TransitionStyle.Mix;
+        state.Video.MixEffects[0].TransitionProperties.Selection = TransitionSelection.Background;
+        state.Video.MixEffects[0].TransitionProperties.NextStyle = TransitionStyle.Mix;
+        state.Video.MixEffects[0].TransitionProperties.NextSelection = TransitionSelection.Background;
 
         // Act
         command.ApplyToState(state);
@@ -132,7 +101,7 @@ public class TransitionPropertiesUpdateCommandTests : DeserializedCommandTestBas
         // Assert
         var mixEffect = state.Video.MixEffects[0];
         Assert.That(mixEffect.TransitionProperties, Is.Not.Null);
-        Assert.That(mixEffect.TransitionProperties!.Style, Is.EqualTo(TransitionStyle.Sting));
+        Assert.That(mixEffect.TransitionProperties.Style, Is.EqualTo(TransitionStyle.Sting));
         Assert.That(mixEffect.TransitionProperties.Selection, Is.EqualTo(TransitionSelection.Key4));
         Assert.That(mixEffect.TransitionProperties.NextStyle, Is.EqualTo(TransitionStyle.Dip));
         Assert.That(mixEffect.TransitionProperties.NextSelection, Is.EqualTo(TransitionSelection.Background));

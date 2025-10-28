@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 using AtemSharp.State.Audio.ClassicAudio;
 
@@ -9,35 +8,25 @@ namespace AtemSharp.Commands.DeviceProfile;
 /// Audio mixer configuration command received from ATEM
 /// </summary>
 [Command("_AMC")]
-public class AudioMixerConfigCommand : IDeserializedCommand
+public partial class AudioMixerConfigCommand : IDeserializedCommand
 {
     /// <summary>
     /// Number of audio inputs available
     /// </summary>
-    public byte Inputs { get; init; }
+    [DeserializedField(0)]
+    private byte _inputs;
 
     /// <summary>
     /// Number of monitor channels available
     /// </summary>
-    public byte Monitors { get; init; }
+    [DeserializedField(1)]
+    private byte _monitors;
 
     /// <summary>
     /// Number of headphone channels available
     /// </summary>
-    public byte Headphones { get; init; }
-
-    /// <summary>
-    /// Deserialize the command from binary stream
-    /// </summary>
-    public static AudioMixerConfigCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        return new AudioMixerConfigCommand
-        {
-            Inputs = rawCommand.ReadUInt8(0),
-            Monitors = rawCommand.ReadUInt8(1),
-            Headphones = rawCommand.ReadUInt8(2)
-        };
-    }
+    [DeserializedField(2)]
+    private byte _headphones;
 
     /// <summary>
     /// Apply the command's values to the ATEM state

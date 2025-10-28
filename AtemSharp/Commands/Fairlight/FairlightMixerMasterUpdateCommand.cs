@@ -1,37 +1,35 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("FAMP")]
-public class FairlightMixerMasterUpdateCommand : IDeserializedCommand
+public partial class FairlightMixerMasterUpdateCommand : IDeserializedCommand
 {
-    public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        return new FairlightMixerMasterUpdateCommand
-        {
-            BandCount = rawCommand.ReadUInt8(0),
-            EqualizerEnabled = rawCommand.ReadBoolean(1),
-            EqualizerGain = rawCommand.ReadInt32BigEndian(4) / 100.0,
-            MakeUpGain = rawCommand.ReadInt32BigEndian(8) / 100.0,
-            FaderGain = rawCommand.ReadInt32BigEndian(12) / 100.0,
-            FollowFadeToBlack = rawCommand.ReadBoolean(16)
-        };
-    }
+    [DeserializedField(0)]
+    private byte _bandCount;
 
-    public bool FollowFadeToBlack { get; set; }
+    [DeserializedField(1)]
+    private bool _equalizerEnabled;
 
-    public double FaderGain { get; set; }
+    [DeserializedField(4)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100.0)]
+    private double _equalizerGain;
 
-    public double MakeUpGain { get; set; }
+    [DeserializedField(8)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100.0)]
+    private double _makeUpGain;
 
-    public double EqualizerGain { get; set; }
+    [DeserializedField(12)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100.0)]
+    private double _faderGain;
 
-    public bool EqualizerEnabled { get; set; }
-
-    public byte BandCount { get; set; }
+    [DeserializedField(16)]
+    private bool _followFadeToBlack;
 
     public void ApplyToState(AtemState state)
     {
@@ -45,7 +43,7 @@ public class FairlightMixerMasterUpdateCommand : IDeserializedCommand
         if (fairlight.Master.Equalizer.Bands.Length != BandCount)
         {
             fairlight.Master.Equalizer.Bands = AtemStateUtil.CreateArray<MasterEqualizerBand>(BandCount)
-                                                            .ForEachWithIndex((band, index) => band.Index = (byte)index);
+                                                            .ForEachWithIndex((band, index) => band.Id = (byte)index);
         }
     }
 }

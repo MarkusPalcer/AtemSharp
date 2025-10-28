@@ -8,8 +8,8 @@ public class MixEffectKeyOnAirUpdateCommandTests : DeserializedCommandTestBase<M
 {
     public class CommandData : CommandDataBase
     {
-        public int MixEffectIndex { get; set; }
-        public int KeyerIndex { get; set; }
+        public byte MixEffectIndex { get; set; }
+        public byte KeyerIndex { get; set; }
         public bool OnAir { get; set; }
     }
 

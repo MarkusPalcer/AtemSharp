@@ -135,5 +135,5 @@ public class UpstreamKeyerDVESettings
     /// <summary>
     /// Transition rate (frames)
     /// </summary>
-    public int Rate { get; set; }
+    public byte Rate { get; set; }
 }

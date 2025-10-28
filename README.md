@@ -31,10 +31,10 @@ var atem = new Atem();
 
 // Subscribe to events
 atem.Connected += (sender, e) => Console.WriteLine("Connected to ATEM!");
-atem.StateChanged += (sender, e) => 
+atem.StateChanged += (sender, e) =>
 {
     Console.WriteLine($"State changed: {string.Join(", ", e.ChangedPaths)}");
-    
+
     // Access current state
     var me1 = e.State.Video.MixEffects.GetValueOrDefault(0);
     if (me1?.ProgramInput.HasValue == true)
@@ -45,7 +45,7 @@ atem.StateChanged += (sender, e) =>
 await atem.ConnectAsync("192.168.1.240");
 
 // Send commands
-await atem.SendCommandsAsync(new[] { 
+await atem.SendCommandsAsync(new[] {
     new CutCommand(0),  // Cut on ME1
     new ProgramInputCommand(0, 1),  // Set program to input 1
     new PreviewInputCommand(0, 2),  // Set preview to input 2
@@ -76,22 +76,26 @@ This is now a **functional** port of the TypeScript library with significant cap
 - ✅ All core enum definitions ported (50+ enums)
 - ✅ Command architecture with base classes implemented
 - ✅ **Working networking layer** with UDP socket handling
-- ✅ **Command parsing and serialization** 
+- ✅ **Command parsing and serialization**
 - ✅ **Core ATEM commands**: Cut, Auto, Program/Preview Input
 - ✅ **State management** for Mix Effects and device info
 - ✅ **Version detection and handshake protocol**
 - ✅ **Complete documentation** and examples
 - ✅ Unit test framework setup
-- 🔲 Complete command implementations (hundreds more commands)
+- 🔲 Complete command implementations
+- 🔲 Unify how commands are initialized (don'T give all commands the whole AtemState but only their relevant sub-object and have that sub-object know its ID)
 - 🔲 Full data transfer functionality
-- 🔲 Hardware validation
+- 🔲 Full documentation comments
+- 🔲 Hardware validation (ie test with ATEM Mini ISO Pro)
 - 🔲 Publish repo to GitHub (and create issues for additional work)
 - 🔲 Publish 0.1 version to NuGet
 - 🔲 Split version aware commands
+- 🔲 Add validation for ranges on serialized command property setters
 - 🔲 Refactoring of the state structure
 - 🔲 Abstraction layer to remove manual creation of commands
 - 🔲 (Real) Sample application
 - 🔲 Publish 1.0 version to NuGet
+
 
 
 ## Contributing

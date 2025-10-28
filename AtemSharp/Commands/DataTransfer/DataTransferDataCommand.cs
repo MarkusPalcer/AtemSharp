@@ -11,15 +11,18 @@ namespace AtemSharp.Commands.DataTransfer;
 [Command("FTDa")]
 public class DataTransferDataCommand : SerializedCommand, IDeserializedCommand
 {
+    // This command does not use the generated code because the payload does
+    // not have a fixed size
+
     /// <summary>
     /// Transfer ID
     /// </summary>
-    public ushort TransferId { get; init; }
+    public required ushort TransferId { get; init; }
 
     /// <summary>
     /// Data content
     /// </summary>
-    public byte[] Body { get; init; } = [];
+    public required byte[] Body { get; init; } = [];
 
     /// <summary>
     /// Serialize command to binary stream for transmission to ATEM
@@ -50,11 +53,7 @@ public class DataTransferDataCommand : SerializedCommand, IDeserializedCommand
         };
     }
 
-    /// <summary>
-    /// Apply this command to the ATEM state
-    /// </summary>
-    /// <param name="state">ATEM state to modify</param>
-    /// <returns>List of state paths that were changed (empty for this command)</returns>
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         // Nothing to do - this is just data transport, no state changes

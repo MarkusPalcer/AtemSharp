@@ -19,11 +19,6 @@ public partial class FairlightMixerInputCommand : SerializedCommand
 
     public FairlightMixerInputCommand(FairlightAudioInput input)
     {
-        Init(input);
-    }
-
-    private void Init(FairlightAudioInput input)
-    {
         _index = input.Id;
         RcaToXlrEnabled = input.Properties.RcaToXlrEnabled;
         ActiveConfiguration = input.Properties.ActiveConfiguration;

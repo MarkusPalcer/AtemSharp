@@ -8,26 +8,25 @@ public class TransitionSettings
     /// <summary>
     /// Mix transition settings
     /// </summary>
-    public MixTransitionSettings? Mix { get; set; }
+    public MixTransitionSettings Mix { get; } = new();
 
     /// <summary>
     /// Dip transition settings
     /// </summary>
-    public DipTransitionSettings? Dip { get; set; }
+    public DipTransitionSettings Dip { get; } = new();
 
     /// <summary>
     /// Wipe transition settings
     /// </summary>
-    public WipeTransitionSettings? Wipe { get; set; }
+    public WipeTransitionSettings Wipe { get; } = new();
 
     /// <summary>
-    /// DVE transition settings
+    /// DigitalVideoEffect transition settings
     /// </summary>
-    // ReSharper disable once InconsistentNaming Domain Specific Acronym
-    public DVETransitionSettings? DVE { get; set; }
+    public DigitalVideoEffectTransitionSettings DigitalVideoEffect { get; } = new();
 
     /// <summary>
     /// Stinger transition settings
     /// </summary>
-    public StingerTransitionSettings? Stinger { get; set; }
+    public StingerTransitionSettings Stinger { get; } = new();
 }

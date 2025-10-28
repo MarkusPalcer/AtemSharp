@@ -20,6 +20,7 @@ public class SuperSourceConfigCommand : IDeserializedCommand
     /// </summary>
     public byte BoxCount { get; init; }
 
+    // TODO: Split by version
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>

@@ -1,36 +1,46 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Fairlight;
 
 [Command("CICP")]
-public class FairlightMixerSourceCompressorCommand : FairlightMixerSourceCommandBase
+[BufferSize(40)]
+public partial class FairlightMixerSourceCompressorCommand(Source source) : SerializedCommand
 {
-    public CompressorParameters Parameters { get; }
+    [SerializedField(2)]
+    [NoProperty]
+    private readonly ushort _inputId = source.InputId;
 
-    public FairlightMixerSourceCompressorCommand(Source source) : base(source)
-    {
-        Parameters = new CompressorParameters(source.Dynamics.Compressor);
-    }
+    [SerializedField(8)]
+    [NoProperty]
+    private readonly long _sourceId = source.Id;
 
-    public override byte[] Serialize(ProtocolVersion version)
-    {
-        if (Flag != 0) // Testability: Use flags from test if present
-        {
-            Parameters.Flag = (byte)Flag;
-        }
+    [SerializedField(16)]
+    private bool _compressorEnabled = source.Dynamics.Compressor.Enabled;
 
-        byte[] buffer = new byte[40];
-        buffer.WriteUInt8(Parameters.Flag, 0);
-        SerializeIds(buffer);
-        buffer.WriteBoolean(Parameters.CompressorEnabled, 16);
-        buffer.WriteInt32BigEndian((int)(Parameters.Threshold * 100), 20);
-        buffer.WriteInt16BigEndian((short)(Parameters.Ratio * 100), 24);
-        buffer.WriteInt32BigEndian((int)(Parameters.Attack * 100), 28);
-        buffer.WriteInt32BigEndian((int)(Parameters.Hold * 100), 32);
-        buffer.WriteInt32BigEndian((int)(Parameters.Release * 100), 36);
+    [SerializedField(20)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100.0)]
+    private double _threshold = source.Dynamics.Compressor.Threshold;
 
-        return buffer;
-    }
+    [SerializedField(24)]
+    [SerializedType(typeof(short))]
+    [ScalingFactor(100.0)]
+    private double _ratio = source.Dynamics.Compressor.Ratio;
+
+    [SerializedField(28)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100.0)]
+    private double _attack = source.Dynamics.Compressor.Attack;
+
+    [SerializedField(32)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100.0)]
+    private double _hold = source.Dynamics.Compressor.Hold;
+
+
+    [SerializedField(36)]
+    [SerializedType(typeof(int))]
+    [ScalingFactor(100.0)]
+    private double _release = source.Dynamics.Compressor.Release;
 }

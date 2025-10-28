@@ -6,8 +6,8 @@ namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
 [TestFixture]
 [Ignore("TODO: DVE scaling factors need refinement")]
-public class MixEffectKeyDVEUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyDVEUpdateCommand,
-    MixEffectKeyDVEUpdateCommandTests.CommandData>
+public class MixEffectKeyDigitalVideoEffectsUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyDigitalVideoEffectsUpdateCommand,
+    MixEffectKeyDigitalVideoEffectsUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -41,7 +41,7 @@ public class MixEffectKeyDVEUpdateCommandTests : DeserializedCommandTestBase<Mix
         public int Rate { get; set; }
     }
 
-    protected override void CompareCommandProperties(MixEffectKeyDVEUpdateCommand command, CommandData expected, TestCaseData testCase)
+    protected override void CompareCommandProperties(MixEffectKeyDigitalVideoEffectsUpdateCommand command, CommandData expected, TestCaseData testCase)
     {
         var failures = new List<string>();
 

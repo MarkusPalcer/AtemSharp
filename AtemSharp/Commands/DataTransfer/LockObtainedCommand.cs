@@ -15,8 +15,6 @@ public partial class LockObtainedCommand : IDeserializedCommand
     [DeserializedField(0)]
     private ushort _index;
 
-
-
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {

@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DownstreamKey;
@@ -8,63 +7,26 @@ namespace AtemSharp.Commands.DownstreamKey;
 /// Command to set the cut source input for a downstream keyer
 /// </summary>
 [Command("CDsC")]
-public class DownstreamKeyCutSourceCommand : SerializedCommand
+[BufferSize(4)]
+public partial class DownstreamKeyCutSourceCommand : SerializedCommand
 {
-    private int _input;
-
     /// <summary>
     /// Downstream keyer index (0-based)
     /// </summary>
-    public int DownstreamKeyerId { get; }
-
-    /// <summary>
-    /// Create command initialized with current state values
-    /// </summary>
-    /// <param name="downstreamKeyerId">Downstream keyer index (0-based)</param>
-    /// <param name="currentState">Current ATEM state</param>
-    /// <exception cref="InvalidIdError">Thrown if downstream keyer not available</exception>
-    public DownstreamKeyCutSourceCommand(int downstreamKeyerId, AtemState currentState)
-    {
-        DownstreamKeyerId = downstreamKeyerId;
-
-        if (downstreamKeyerId >= currentState.Video.DownstreamKeyers.Length)
-        {
-            throw new IndexOutOfRangeException("DownstreamKeyerId is out of range");
-        }
-
-        var dsk = currentState.Video.DownstreamKeyers[downstreamKeyerId];
-
-        // Initialize from current state (direct field access = no flags set)
-        _input = dsk.Sources.CutSource;
-    }
+    [SerializedField(0)]
+    [NoProperty]
+    internal readonly byte DownstreamKeyerId;
 
     /// <summary>
     /// Cut source input number
     /// </summary>
-    public int Input
+    [SerializedField(2, 0)]
+    private ushort _input;
+
+    public DownstreamKeyCutSourceCommand(DownstreamKeyer dsk)
     {
-        get => _input;
-        set
-        {
-            _input = value;
-            Flag |= 1 << 0;  // Automatic flag setting!
-        }
-    }
-
-    /// <summary>
-    /// Serialize command to binary stream for transmission to ATEM
-    /// </summary>
-    /// <param name="version">Protocol version</param>
-    /// <returns>Serialized command data</returns>
-    public override byte[] Serialize(ProtocolVersion version)
-    {
-        using var memoryStream = new MemoryStream(4);
-        using var writer = new BinaryWriter(memoryStream);
-
-        writer.Write((byte)DownstreamKeyerId);
-        writer.Pad(1);
-        writer.WriteUInt16BigEndian((ushort)Input);
-
-        return memoryStream.ToArray();
+        // Initialize from current state (direct field access = no flags set)
+        DownstreamKeyerId = dsk.Id;
+        _input = dsk.Sources.CutSource;
     }
 }
