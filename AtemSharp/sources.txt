@@ -35,7 +35,6 @@ src\commands\MixEffects\Key\MixEffectKeyTypeSetCommand.ts - CKTp
 src\commands\MixEffects\AutoTransitionCommand.ts - DAut
 src\commands\MixEffects\CutCommand.ts - DCut
 src\commands\Settings\MediaPool.ts - CMPS, MPSp
-src\commands\Streaming\StreamingStatsCommand.ts - SRSS
 src\commands\SuperSource\SuperSourceBoxParametersCommand.ts - CSBP, SSBP
 src\commands\SuperSource\SuperSourcePropertiesCommand.ts - CSSc, CSSc, CSBd, SSrc, SSrc, SSBd
 src\commands\CameraControlCommand.ts - CCmd, CCdP
