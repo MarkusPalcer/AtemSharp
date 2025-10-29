@@ -1,4 +1,4 @@
-namespace AtemSharp.State;
+namespace AtemSharp.State.Streaming;
 
 public class StreamingState
 {
@@ -8,4 +8,8 @@ public class StreamingState
 
     public Bitrates VideoBitrates { get; } = new();
     public Bitrates AudioBitrates { get; } = new();
+
+    public StreamingStatus Status { get; internal set; } = StreamingStatus.Idle;
+
+    public StreamingError Error { get; internal set; } = StreamingError.None;
 }

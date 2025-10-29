@@ -37,7 +37,6 @@ src\commands\MixEffects\CutCommand.ts - DCut
 src\commands\Settings\MediaPool.ts - CMPS, MPSp
 src\commands\Streaming\StreamingDurationCommand.ts - SRDR, SRST
 src\commands\Streaming\StreamingStatsCommand.ts - SRSS
-src\commands\Streaming\StreamingStatusCommand.ts - StrR, StRS
 src\commands\SuperSource\SuperSourceBoxParametersCommand.ts - CSBP, SSBP
 src\commands\SuperSource\SuperSourcePropertiesCommand.ts - CSSc, CSSc, CSBd, SSrc, SSrc, SSBd
 src\commands\CameraControlCommand.ts - CCmd, CCdP
