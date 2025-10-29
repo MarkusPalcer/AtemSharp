@@ -6,4 +6,6 @@ public class TimeCode
     public byte Minutes { get; internal set; }
     public byte Seconds { get; internal set; }
     public byte Frames { get; internal set; }
+
+    public bool IsDropFrame { get; internal set; }
 }

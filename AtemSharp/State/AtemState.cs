@@ -42,7 +42,7 @@ public class AtemState
     public MacroState Macros { get; } = new();
     public RecordingState Recording { get; } = new();
 
-    public Duration Duration { get; } = new();
     public StreamingState Streaming { get; } = new();
 
+    public TimeCode TimeCode { get; } = new();
 }

@@ -9,7 +9,7 @@ public class RecordingState
     public RecordingStatus Status { get; internal set; }
     public RecordingError Error { get; internal set; }
     public uint? RecordingTimeAvailable { get; internal set; }
-    public Duration Duration { get; } = new();
+    public TimeCode Duration { get; } = new();
 
     public Dictionary<uint, RecordingDisk> Disks { get; } = new();
     public bool RecordAllInputs { get; internal set; }
