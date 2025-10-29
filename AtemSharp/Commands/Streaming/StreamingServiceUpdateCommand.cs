@@ -36,7 +36,7 @@ public partial class StreamingServiceUpdateCommand : IDeserializedCommand
         state.Streaming.ServiceName = _serviceName;
         state.Streaming.Url = _url;
         state.Streaming.Key = _key;
-        state.Streaming.VideoBitrate1 = _bitrate1;
-        state.Streaming.VideoBitrate2 = _bitrate2;
+        state.Streaming.VideoBitrates.Low = _bitrate1;
+        state.Streaming.VideoBitrates.High = _bitrate2;
     }
 }

@@ -23,8 +23,11 @@ public class StreamingServiceCommandTests : SerializedCommandTestBase<StreamingS
                 ServiceName = testCase.Command.ServiceName,
                 Url = testCase.Command.Url,
                 Key = testCase.Command.Key,
-                VideoBitrate1 = testCase.Command.Bitrates[0],
-                VideoBitrate2 = testCase.Command.Bitrates[1],
+                VideoBitrates =
+                {
+                    Low = testCase.Command.Bitrates[0],
+                    High = testCase.Command.Bitrates[1],
+                }
             }
         };
 

@@ -21,8 +21,8 @@ public partial class StreamingServiceCommand(AtemState state) : SerializedComman
     [CustomSerialization]
     private string _key = state.Streaming.Key;
 
-    [SerializedField(1092, 3)] private uint _bitrate1 = state.Streaming.VideoBitrate1;
-    [SerializedField(1096, 3)] private uint _bitrate2 = state.Streaming.VideoBitrate2;
+    [SerializedField(1092, 3)] private uint _lowBitrate = state.Streaming.VideoBitrates.Low;
+    [SerializedField(1096, 3)] private uint _highBitrate = state.Streaming.VideoBitrates.High;
 
     private void SerializeInternal(byte[] rawCommand)
     {

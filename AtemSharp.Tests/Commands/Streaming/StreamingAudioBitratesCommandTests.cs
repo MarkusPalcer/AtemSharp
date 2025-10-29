@@ -17,8 +17,11 @@ public class StreamingAudioBitratesCommandTests : SerializedCommandTestBase<Stre
         {
             Streaming =
             {
-                AudioBitrateLow = testCase.Command.LowBitrate,
-                AudioBitrateHigh = testCase.Command.HighBitrate
+                AudioBitrates =
+                {
+                    Low = testCase.Command.LowBitrate,
+                    High = testCase.Command.HighBitrate
+                }
             }
         });
     }

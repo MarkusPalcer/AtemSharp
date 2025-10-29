@@ -15,7 +15,7 @@ public partial class StreamingAudioBitratesUpdateCommand : IDeserializedCommand
 
     public void ApplyToState(AtemState state)
     {
-        state.Streaming.AudioBitrateLow = lowBitrate;
-        state.Streaming.AudioBitrateHigh = highBitrate;
+        state.Streaming.AudioBitrates.Low = lowBitrate;
+        state.Streaming.AudioBitrates.High = highBitrate;
     }
 }
