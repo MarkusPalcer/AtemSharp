@@ -6,7 +6,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Commands.Streaming;
 
-[Command("SRSU")]
+[Command("SRSU", ProtocolVersion.V8_1_1)]
 public partial class StreamingServiceUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)]
@@ -36,7 +36,7 @@ public partial class StreamingServiceUpdateCommand : IDeserializedCommand
         state.Streaming.ServiceName = _serviceName;
         state.Streaming.Url = _url;
         state.Streaming.Key = _key;
-        state.Streaming.Bitrate1 = _bitrate1;
-        state.Streaming.Bitrate2 = _bitrate2;
+        state.Streaming.VideoBitrate1 = _bitrate1;
+        state.Streaming.VideoBitrate2 = _bitrate2;
     }
 }

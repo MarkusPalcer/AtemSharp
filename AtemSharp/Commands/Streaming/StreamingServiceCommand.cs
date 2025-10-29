@@ -1,10 +1,11 @@
+using AtemSharp.Enums;
 using AtemSharp.Helpers;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Streaming;
 
-[Command("CRSS")]
+[Command("CRSS", ProtocolVersion.V8_1_1)]
 [BufferSize(1100)]
 public partial class StreamingServiceCommand(AtemState state) : SerializedCommand
 {
@@ -20,8 +21,8 @@ public partial class StreamingServiceCommand(AtemState state) : SerializedComman
     [CustomSerialization]
     private string _key = state.Streaming.Key;
 
-    [SerializedField(1092, 3)] private uint _bitrate1 = state.Streaming.Bitrate1;
-    [SerializedField(1096, 3)] private uint _bitrate2 = state.Streaming.Bitrate2;
+    [SerializedField(1092, 3)] private uint _bitrate1 = state.Streaming.VideoBitrate1;
+    [SerializedField(1096, 3)] private uint _bitrate2 = state.Streaming.VideoBitrate2;
 
     private void SerializeInternal(byte[] rawCommand)
     {
