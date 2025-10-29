@@ -1,3 +1,4 @@
+using System.Runtime.Serialization;
 using AtemSharp.State.Audio;
 using AtemSharp.State.Recording;
 
@@ -41,4 +42,6 @@ public class AtemState
     public RecordingState Recording { get; } = new();
 
     public RecordingDuration Duration { get; } = new();
+    public StreamingState Streaming { get; } = new();
+
 }

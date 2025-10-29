@@ -1,0 +1,23 @@
+using AtemSharp.Commands.Streaming;
+
+namespace AtemSharp.Tests.Commands.Streaming;
+
+public class StreamingServiceUpdateCommandTests : DeserializedCommandTestBase<StreamingServiceUpdateCommand, StreamingServiceUpdateCommandTests.CommandData>
+{
+    public class CommandData : CommandDataBase
+    {
+        public string ServiceName { get; set; } = string.Empty;
+        public string Url { get; set; } = string.Empty;
+        public string Key { get; set; } = string.Empty;
+        public uint[] Bitrates { get; set; } = [];
+    }
+
+    protected override void CompareCommandProperties(StreamingServiceUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    {
+        Assert.That(actualCommand.ServiceName, Is.EqualTo(expectedData.ServiceName));
+        Assert.That(actualCommand.Url, Is.EqualTo(expectedData.Url));
+        Assert.That(actualCommand.Key, Is.EqualTo(expectedData.Key));
+        Assert.That(actualCommand.Bitrate1, Is.EqualTo(expectedData.Bitrates[0]));
+        Assert.That(actualCommand.Bitrate2, Is.EqualTo(expectedData.Bitrates[1]));
+    }
+}
