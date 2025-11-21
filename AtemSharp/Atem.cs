@@ -106,6 +106,7 @@ public class Atem : IDisposable
 	/// </summary>
 	public Enums.ConnectionState ConnectionState => Transport.ConnectionState;
 
+    // TODO: Move command deserialization to AtemSocket
 	private void OnPacketReceived(object? sender, PacketReceivedEventArgs e)
 	{
 		try

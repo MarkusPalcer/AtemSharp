@@ -6,8 +6,12 @@ using AtemSharp.Lib;
 
 namespace AtemSharp.Communication;
 
+/// <summary>
+/// Handles the communication protocol for the ATEM mixers
+/// </summary>
 public class AtemSocketChild
 {
+    // TODO: public ConnectionStatus: Closed, Connecting, Connected, Disconnecting
     public ConnectionState ConnectionState { get; private set; } = ConnectionState.Closed;
 
     private ushort _nextSendPacketId = 1;
@@ -25,6 +29,7 @@ public class AtemSocketChild
     private CancellationTokenSource? _timersCancellation;
     private int _receivedWithoutAck;
 
+
     public event EventHandler? Connected;
 
     private readonly Func<Task> _onDisconnect;
@@ -37,18 +42,15 @@ public class AtemSocketChild
 
 
     // TODO: Use C#-Events instead of callbacks
-    public AtemSocketChild(string address,
-                           int port,
-                           Func<Task> onDisconnect,
+    public AtemSocketChild(Func<Task> onDisconnect,
                            Func<AtemPacket, Task> onCommandsReceived,
                            Func<AckedPacket[], Task> onPacketsAcknowledged)
     {
-        _address = address;
-        _port = port;
+        _address = "127.0.0.1";
+        _port = Constants.AtemConstants.DEFAULT_PORT;
         _onDisconnect = onDisconnect;
         _onCommandsReceived = onCommandsReceived;
         _onPacketsAcknowledged = onPacketsAcknowledged;
-        CreateSocket();
     }
 
     private void StartTimers()
@@ -117,14 +119,17 @@ public class AtemSocketChild
         _timersCancellation = null;
     }
 
+    // TODO: Await connection event
     public async Task Connect(string address, int port)
     {
         _address = address;
         _port = port;
 
+        CreateSocket();
         await RestartConnection();
     }
 
+    // TODO: Await timer finalization and socket destruction
     public async Task Disconnect()
     {
         ClearTimers();
@@ -159,6 +164,8 @@ public class AtemSocketChild
         SendPacket(CommandConnectHello);
         ConnectionState = ConnectionState.SynSent;
         Log("Syn Sent");
+
+        // TODO: Await connection event
     }
 
 

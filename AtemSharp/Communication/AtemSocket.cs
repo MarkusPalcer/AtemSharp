@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using AtemSharp.Commands;
 using AtemSharp.Constants;
 using AtemSharp.Enums;
@@ -6,6 +5,9 @@ using AtemSharp.Lib;
 
 namespace AtemSharp.Communication;
 
+/// <summary>
+/// Sends and receives commands to a ATEM Mixer
+/// </summary>
 public class AtemSocket : IAtemSocket, IUdpTransport
 {
     private readonly CommandParser _commandParser = new();
@@ -107,11 +109,10 @@ public class AtemSocket : IAtemSocket, IUdpTransport
         return packets.Select(x => x.TrackingId).ToArray();
     }
 
+    // TODO: Move to constructor
     private async Task CreateSocketProcess()
     {
-        _socketProcess = new AtemSocketChild(_address,
-                                             _port,
-                                             () =>
+        _socketProcess = new AtemSocketChild(() =>
                                              {
                                                  OnDisconnected();
                                                  return Task.CompletedTask;
@@ -170,6 +171,7 @@ public class AtemSocket : IAtemSocket, IUdpTransport
         await Disconnect();
     }
 
+    // TODO: SendCommands
     public Task SendCommand(SerializedCommand command, CancellationToken cancellationToken = default)
     {
         SendCommands([command]);
@@ -177,6 +179,7 @@ public class AtemSocket : IAtemSocket, IUdpTransport
         return Task.CompletedTask;
     }
 
+    // TODO: Hide
     public Task SendPacketAsync(AtemPacket packet, CancellationToken cancellationToken = default)
     {
         var info = new OutboundPacketInfo(packet.ToBytes(), GetNextTrackingId());
