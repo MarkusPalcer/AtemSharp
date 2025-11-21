@@ -1,3 +1,4 @@
+using System.Threading.Tasks.Dataflow;
 using AtemSharp.Commands;
 using AtemSharp.Communication;
 using AtemSharp.Lib;
@@ -6,22 +7,26 @@ using Microsoft.Extensions.Logging;
 
 namespace AtemSharp;
 
+/// <summary>
+/// Represents an ATEM switcher that is connected
+/// </summary>
 public class AtemSwitcher : IAsyncDisposable
 {
-    private readonly CommandParser _commandParser = new();
-
     internal IAtemClient Client
     {
         get => _client;
         set
         {
             // Subscribe to transport events
-            _client.PacketReceived -= OnPacketReceived;
+            _receiveLoop?.Cancel().FireAndForget();
             _client.ConnectionStateChanged -= OnConnectionStateChanged;
 
-            value.PacketReceived += OnPacketReceived;
             value.ConnectionStateChanged += OnConnectionStateChanged;
             _client = value;
+            if (_receiveLoop is not null)
+            {
+                _receiveLoop = ActionLoop.Start(ReceiveCommandLoop);
+            }
         }
     }
 
@@ -29,6 +34,7 @@ public class AtemSwitcher : IAsyncDisposable
     private bool _disposed;
     private IAtemClient _client;
     private TaskCompletionSource<bool>? _connectionCompletionSource;
+    private ActionLoop? _receiveLoop;
 
     /// <summary>
     /// Gets the current ATEM state
@@ -59,7 +65,6 @@ public class AtemSwitcher : IAsyncDisposable
     {
         _client = transport ?? throw new ArgumentNullException(nameof(transport));
         _logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<AtemSwitcher>.Instance;
-        _client.PacketReceived += OnPacketReceived;
         _client.ConnectionStateChanged += OnConnectionStateChanged;
     }
 
@@ -80,9 +85,24 @@ public class AtemSwitcher : IAsyncDisposable
         _connectionCompletionSource = new TaskCompletionSource<bool>();
 
         await Client.ConnectAsync(remoteHost, remotePort, cancellationToken);
-
+        _receiveLoop = ActionLoop.Start(ReceiveCommandLoop);
         // Wait for InitCompleteCommand to be received, indicating the connection is fully established
         await _connectionCompletionSource.Task.WaitAsync(cancellationToken);
+    }
+
+    private async Task ReceiveCommandLoop(CancellationToken token)
+    {
+        var command = await _client.ReceivedCommands.ReceiveAsync(token);
+
+        // Apply the command to the current state
+        command.ApplyToState(State!);
+
+        // Check if this is the InitCompleteCommand
+        if (command is InitCompleteCommand)
+        {
+            // Signal that the connection is fully established (only once)
+            _connectionCompletionSource?.TrySetResult(true);
+        }
     }
 
     /// <summary>
@@ -102,81 +122,6 @@ public class AtemSwitcher : IAsyncDisposable
     /// </summary>
     public Enums.ConnectionState ConnectionState => Client.ConnectionState;
 
-    // TODO: Move command deserialization to AtemSocket
-    private void OnPacketReceived(object? sender, PacketReceivedEventArgs e)
-    {
-        try
-        {
-            // Extract commands from packet payload and apply to state
-            // Based on TypeScript atemSocket.ts _parseCommands method (lines 181-217)
-            var payload = e.Packet.Payload;
-            var offset = 0;
-
-            // Parse all commands in the packet payload
-            while (offset + Constants.AtemConstants.COMMAND_HEADER_SIZE <= payload.Length)
-            {
-                // Extract command header (8 bytes: length, reserved, rawName)
-                var commandLength = (payload[offset] << 8) | payload[offset + 1]; // Big-endian 16-bit
-                // Skip reserved bytes (offset + 2, offset + 3)
-                var rawName = System.Text.Encoding.ASCII.GetString(payload, offset + 4, 4);
-
-                // Validate command length
-                if (commandLength < Constants.AtemConstants.COMMAND_HEADER_SIZE)
-                {
-                    // Commands are never less than 8 bytes (header size)
-                    break;
-                }
-
-                if (offset + commandLength > payload.Length)
-                {
-                    // Command extends beyond payload - malformed packet
-                    break;
-                }
-
-                // Extract command data (excluding the 8-byte header)
-                var commandDataStart = offset + Constants.AtemConstants.COMMAND_HEADER_SIZE;
-                var commandDataLength = commandLength - Constants.AtemConstants.COMMAND_HEADER_SIZE;
-                var commandData = new Span<Byte>(payload, commandDataStart, commandDataLength);
-
-                try
-                {
-                    // Try to parse the command using CommandParser
-                    var command = _commandParser.ParseCommand(rawName, commandData);
-                    if (command != null)
-                    {
-                        // Apply the command to the current state
-                        command.ApplyToState(State!);
-
-                        // Check if this is the InitCompleteCommand
-                        if (command is InitCompleteCommand)
-                        {
-                            // Signal that the connection is fully established (only once)
-                            _connectionCompletionSource?.TrySetResult(true);
-                        }
-                    }
-                    // Note: Unknown commands are tracked by CommandParser.ParseCommand
-#if DEBUG
-					_logger.LogDebug("Processed command: {CommandName}", rawName);
-#endif
-                }
-                catch (Exception ex)
-                {
-                    // Log command parsing error but continue processing other commands
-                    // Matches TypeScript emit('error', `Failed to deserialize command: ${cmdConstructor.constructor.name}: ${e}`)
-                    _logger.LogError(ex, "Failed to deserialize command {CommandName}: {ErrorMessage}", rawName, ex.Message);
-                }
-
-                // Move to next command
-                offset += commandLength;
-            }
-        }
-        catch (Exception ex)
-        {
-            // Handle any unexpected errors during packet processing
-            _logger.LogError(ex, "Error processing packet: {ErrorMessage}", ex.Message);
-        }
-    }
-
     private void OnConnectionStateChanged(object? sender, ConnectionStateChangedEventArgs e)
     {
         // Handle connection state transitions
@@ -184,12 +129,6 @@ public class AtemSwitcher : IAsyncDisposable
         // but may be further refined by command processing (e.g., InitComplete)
 
         _logger.LogInformation("Connection state changed: {PreviousState} -> {NewState}", e.PreviousState, e.State);
-    }
-
-    private void OnErrorOccurred(object? sender, Exception e)
-    {
-        // Handle transport layer errors
-        _logger.LogError(e, "Transport error occurred: {ErrorMessage}", e.Message);
     }
 
     /// <summary>
@@ -202,7 +141,8 @@ public class AtemSwitcher : IAsyncDisposable
 
         _disposed = true;
 
-        Client.PacketReceived -= OnPacketReceived;
+        if (_receiveLoop != null) await _receiveLoop.Cancel();
+
         Client.ConnectionStateChanged -= OnConnectionStateChanged;
         await Client.DisposeAsync();
 

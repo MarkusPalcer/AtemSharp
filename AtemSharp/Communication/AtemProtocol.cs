@@ -311,7 +311,6 @@ public class AtemProtocol
         // The atem will ask for MAX_PACKET_ID to be retransmitted when it really wants 0
         fromId = (ushort)(fromId % MaxPacketId);
 
-        // TODO: Simplify using LINQ
         var fromIndex = _inflight.FindIndex(0, pkt => pkt.PacketId == fromId);
         if (fromIndex != -1)
         {

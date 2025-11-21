@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks.Dataflow;
 using AtemSharp.Commands;
@@ -23,11 +24,13 @@ public class AtemClient : IAtemClient
     private ActionLoop? _receiveLoop;
     private ActionLoop? _ackLoop;
     private readonly ConcurrentDictionary<int, TaskCompletionSource> _commandAckSources = new();
+    private BufferBlock<IDeserializedCommand> _receivedCommands = new();
+
+    public IReceivableSourceBlock<IDeserializedCommand> ReceivedCommands => _receivedCommands;
+
 
     public event EventHandler? Disconnected;
-    public event EventHandler<ReceivedCommandsEventArgs>? ReceivedCommands;
     public event EventHandler? Connected;
-    public event EventHandler<PacketReceivedEventArgs>? PacketReceived;
     public event EventHandler<ConnectionStateChangedEventArgs>? ConnectionStateChanged;
 
     protected virtual void OnDisconnected()
@@ -52,6 +55,7 @@ public class AtemClient : IAtemClient
         }
 
         _commandAckSources.Clear();
+        _receivedCommands = new();
         _receiveLoop = ActionLoop.Start(ReceivePacket);
         _ackLoop = ActionLoop.Start(DoAckLoop);
         await _protocol.Connect(_remoteEndpoint);
@@ -95,9 +99,64 @@ public class AtemClient : IAtemClient
     private async Task ReceivePacket(CancellationToken cts)
     {
         var packet = await _protocol!.ReceivedPackets.ReceiveAsync(cts);
-        OnPacketReceived(packet);
-    }
 
+        try
+        {
+            // Extract commands from packet payload and apply to state
+            // Based on TypeScript atemSocket.ts _parseCommands method (lines 181-217)
+            var payload = packet.Payload;
+            var offset = 0;
+
+            // Parse all commands in the packet payload
+            while (offset + AtemConstants.COMMAND_HEADER_SIZE <= payload.Length)
+            {
+                // Extract command header (8 bytes: length, reserved, rawName)
+                var commandLength = (payload[offset] << 8) | payload[offset + 1]; // Big-endian 16-bit
+                // Skip reserved bytes (offset + 2, offset + 3)
+                var rawName = System.Text.Encoding.ASCII.GetString(payload, offset + 4, 4);
+
+                // Validate command length
+                if (commandLength < AtemConstants.COMMAND_HEADER_SIZE)
+                {
+                    // Commands are never less than 8 bytes (header size)
+                    break;
+                }
+
+                if (offset + commandLength > payload.Length)
+                {
+                    // Command extends beyond payload - malformed packet
+                    break;
+                }
+
+                // Extract command data (excluding the 8-byte header)
+                var commandDataStart = offset + AtemConstants.COMMAND_HEADER_SIZE;
+                var commandDataLength = commandLength - AtemConstants.COMMAND_HEADER_SIZE;
+                var commandData = new Span<byte>(payload, commandDataStart, commandDataLength);
+
+                try
+                {
+                    // Try to parse the command using CommandParser
+                    var command = _commandParser.ParseCommand(rawName, commandData);
+                    if (command != null)
+                    {
+                        _receivedCommands.SendAsync(command).FireAndForget();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.Print($"Error while processing command: {ex.Message}\n{ex.StackTrace}");
+                }
+
+                // Move to next command
+                offset += commandLength;
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle any unexpected errors during packet processing
+            Debug.Print($"Error processing packet: {BitConverter.ToString(packet.Payload)}\n{ex.Message}\n{ex.StackTrace}");
+        }
+    }
 
     public async Task SendCommands(SerializedCommand[] commands)
     {
@@ -148,11 +207,6 @@ public class AtemClient : IAtemClient
     public async Task ConnectAsync(string address, int port = AtemConstants.DEFAULT_PORT, CancellationToken cancellationToken = default)
     {
         await Connect(address, port);
-    }
-
-    protected virtual void OnPacketReceived(AtemPacket packet)
-    {
-        PacketReceived?.Invoke(this, new PacketReceivedEventArgs { Packet = packet });
     }
 
     public async ValueTask DisposeAsync()

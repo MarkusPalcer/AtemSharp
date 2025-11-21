@@ -1,3 +1,4 @@
+using System.Threading.Tasks.Dataflow;
 using AtemSharp.Commands;
 using AtemSharp.Constants;
 using AtemSharp.Enums;
@@ -6,10 +7,6 @@ namespace AtemSharp.Lib;
 
 public interface IAtemClient : IAsyncDisposable
 {
-	/// <summary>
-	/// Raised when a packet is received from the remote endpoint
-	/// </summary>
-	event EventHandler<PacketReceivedEventArgs>? PacketReceived;
 
 	/// <summary>
 	/// Raised when the connection state changes
@@ -20,6 +17,8 @@ public interface IAtemClient : IAsyncDisposable
 	/// Gets the current connection state
 	/// </summary>
 	ConnectionState ConnectionState { get; }
+
+    public IReceivableSourceBlock<IDeserializedCommand> ReceivedCommands { get; }
 
 	/// <summary>
 	/// Connects to the specified ATEM device
