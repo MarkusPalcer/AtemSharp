@@ -1,23 +1,11 @@
 using System.Threading.Tasks.Dataflow;
 using AtemSharp.Commands;
 using AtemSharp.Constants;
-using AtemSharp.Enums;
 
 namespace AtemSharp.Lib;
 
 public interface IAtemClient : IAsyncDisposable
 {
-
-	/// <summary>
-	/// Raised when the connection state changes
-	/// </summary>
-	event EventHandler<ConnectionStateChangedEventArgs>? ConnectionStateChanged;
-
-	/// <summary>
-	/// Gets the current connection state
-	/// </summary>
-	ConnectionState ConnectionState { get; }
-
     public IReceivableSourceBlock<IDeserializedCommand> ReceivedCommands { get; }
 
 	/// <summary>

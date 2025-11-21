@@ -19,7 +19,7 @@ public class AtemClient : IAtemClient
     private int _nextPacketTrackingId;
     private bool _isDisconnecting;
     private IPEndPoint _remoteEndpoint =  new(IPAddress.None, 0);
-    private AtemProtocol? _protocol;
+    private IAtemProtocol? _protocol;
     private Action? _exitUnsubscribe = () => { };
     private ActionLoop? _receiveLoop;
     private ActionLoop? _ackLoop;
@@ -27,16 +27,6 @@ public class AtemClient : IAtemClient
     private BufferBlock<IDeserializedCommand> _receivedCommands = new();
 
     public IReceivableSourceBlock<IDeserializedCommand> ReceivedCommands => _receivedCommands;
-
-
-    public event EventHandler? Disconnected;
-    public event EventHandler? Connected;
-    public event EventHandler<ConnectionStateChangedEventArgs>? ConnectionStateChanged;
-
-    protected virtual void OnDisconnected()
-    {
-        Disconnected?.Invoke(this, EventArgs.Empty);
-    }
 
     public async Task Connect(string address, int port)
     {
@@ -46,7 +36,7 @@ public class AtemClient : IAtemClient
 
         if (_protocol is null)
         {
-            CreateSocketProcess();
+            _protocol = new AtemProtocol();
 
             if (_isDisconnecting || _protocol is null)
             {
@@ -88,17 +78,9 @@ public class AtemClient : IAtemClient
         }
     }
 
-    private void CreateSocketProcess()
+    private async Task ReceivePacket(CancellationToken token)
     {
-        _protocol = new AtemProtocol();
-
-        _protocol.Connected += (_, _) => OnConnected();
-        _protocol.Disconnected += (_, _) => OnDisconnected();
-    }
-
-    private async Task ReceivePacket(CancellationToken cts)
-    {
-        var packet = await _protocol!.ReceivedPackets.ReceiveAsync(cts);
+        var packet = await _protocol!.ReceivedPackets.ReceiveAsync(token);
 
         try
         {
@@ -139,7 +121,7 @@ public class AtemClient : IAtemClient
                     var command = _commandParser.ParseCommand(rawName, commandData);
                     if (command != null)
                     {
-                        _receivedCommands.SendAsync(command).FireAndForget();
+                        _receivedCommands.SendAsync(command, token).FireAndForget();
                     }
                 }
                 catch (Exception ex)
@@ -191,18 +173,12 @@ public class AtemClient : IAtemClient
         await Task.WhenAll(ackTcs.Select(t => t.Task));
     }
 
-    protected virtual void OnConnected()
-    {
-        Connected?.Invoke(this, EventArgs.Empty);
-    }
 
 
     public async Task SendCommand(SerializedCommand command)
     {
         await SendCommands([command]);
     }
-
-    public ConnectionState ConnectionState => _protocol?.ConnectionState ?? ConnectionState.Closed;
 
     public async Task ConnectAsync(string address, int port = AtemConstants.DEFAULT_PORT, CancellationToken cancellationToken = default)
     {

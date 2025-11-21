@@ -9,13 +9,10 @@ namespace AtemSharp.Communication;
 /// <summary>
 /// Handles the communication protocol for the ATEM mixers
 /// </summary>
-// TODO: Create interface
 // TODO: Make IAsyncDisposable
-public class AtemProtocol
+public class AtemProtocol : IAtemProtocol
 {
-    // TODO: public ConnectionStatus: Closed, Connecting, Connected, Disconnecting
-    public ConnectionState ConnectionState { get; private set; } = ConnectionState.Closed;
-
+    private ConnectionState _connectionState = ConnectionState.Closed;
     private ushort _nextSendPacketId = 1;
     private readonly Lock _nextSendPacketIdLock = new();
     private ushort _sessionId;
@@ -30,17 +27,16 @@ public class AtemProtocol
     private int _receivedWithoutAck;
     private TaskCompletionSource? _connectionSource;
 
-    public event EventHandler? Connected;
-    public event EventHandler? Disconnected;
-
-    public IReceivableSourceBlock<AtemPacket> ReceivedPackets => _receivedPackets;
-    public IReceivableSourceBlock<int> AckedTrackingIds => _ackedTrackingIds;
 
     private ActionLoop? _receiveLoop;
     private BufferBlock<AtemPacket> _receivedPackets = new();
     private BufferBlock<int> _ackedTrackingIds = new();
     private ActionLoop? _reconnectTimer;
     private ActionLoop? _retransmitTimer;
+
+    public IReceivableSourceBlock<AtemPacket> ReceivedPackets => _receivedPackets;
+    public IReceivableSourceBlock<int> AckedTrackingIds => _ackedTrackingIds;
+
 
     private void StartTimers()
     {
@@ -95,23 +91,22 @@ public class AtemProtocol
         _ackedTrackingIds = new();
 
         Debug.Print("Disconnected");
-        ConnectionState = ConnectionState.Disconnected;
-
-        OnDisconnected();
+        _connectionState = ConnectionState.Disconnected;
     }
 
     private async Task RestartConnection()
     {
         await ClearTimers();
 
-        // This includes a 'disconnect'
-        if (ConnectionState == ConnectionState.Established)
+        switch (_connectionState)
         {
-            await RecreateSocket();
-            OnDisconnected();
-        } else if (ConnectionState == ConnectionState.Disconnected)
-        {
-            await CreateSocket();
+            // This includes a 'disconnect'
+            case ConnectionState.Established:
+                await RecreateSocket();
+                break;
+            case ConnectionState.Disconnected:
+                await CreateSocket();
+                break;
         }
 
         // Reset connection
@@ -122,7 +117,7 @@ public class AtemProtocol
         StartTimers();
 
         await SendPacket(CommandConnectHello);
-        ConnectionState = ConnectionState.SynSent;
+        _connectionState = ConnectionState.SynSent;
     }
 
     public async Task SendPackets(AtemPacket[] packets)
@@ -203,15 +198,15 @@ public class AtemProtocol
         if (packet.HasFlag(PacketFlag.NewSessionId))
         {
             Debug.Print("Connected");
-            ConnectionState = ConnectionState.Established;
+            _connectionState = ConnectionState.Established;
             _lastReceivedPacketId = packet.PacketId;
             _sessionId = packet.SessionId;
             await SendAck(packet.PacketId);
-            OnConnected();
+            _connectionSource?.TrySetResult();
             return;
         }
 
-        if (ConnectionState == ConnectionState.Established)
+        if (_connectionState == ConnectionState.Established)
         {
             // Device asked for retransmit
             if (packet.HasFlag(PacketFlag.RetransmitRequest))
@@ -296,7 +291,7 @@ public class AtemProtocol
     private async Task FireAckTimer()
     {
         _receivedWithoutAck = 0;
-        _ackTimerCancellation?.Cancel();
+        await (_ackTimerCancellation?.CancelAsync()  ?? Task.CompletedTask);
         _ackTimerCancellation = null;
         await SendAck(_lastReceivedPacketId);
     }
@@ -366,15 +361,4 @@ public class AtemProtocol
     private static readonly uint MaxPacketPerAck = 16;
 
     private static readonly TimeSpan InFlightTimeout = TimeSpan.FromMilliseconds(60);
-
-    protected virtual void OnConnected()
-    {
-        _connectionSource?.TrySetResult();
-        Connected?.Invoke(this, EventArgs.Empty);
-    }
-
-    protected virtual void OnDisconnected()
-    {
-        Disconnected?.Invoke(this, EventArgs.Empty);
-    }
 }

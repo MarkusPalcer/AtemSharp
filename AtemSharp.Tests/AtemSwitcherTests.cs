@@ -1,4 +1,3 @@
-using AtemSharp.Enums;
 using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests;
@@ -28,7 +27,6 @@ public class AtemSwitcherTests
     public void Constructor_ShouldInitializeCorrectly()
     {
         // Assert
-        Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Closed));
         Assert.That(AtemSwitcher.UnknownCommands, Is.Not.Null);
         Assert.That(AtemSwitcher.UnknownCommands, Is.Empty);
     }
@@ -43,8 +41,6 @@ public class AtemSwitcherTests
 
         // Assert
         Assert.That(_atem.State, Is.Not.Null);
-        Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Established));
-
 
         // Cleanup
         var disconnectTask = _atem.DisconnectAsync();
@@ -64,7 +60,6 @@ public class AtemSwitcherTests
         await connectTask.WithTimeout();
 
         // Assert
-        Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Established));
         Assert.That(_transportFake.RemoteEndPoint?.Port, Is.EqualTo(customPort));
 
         // Cleanup
@@ -79,23 +74,6 @@ public class AtemSwitcherTests
 	    // Act & Assert
         Assert.DoesNotThrowAsync(() => _atem.DisconnectAsync());
         return Task.CompletedTask;
-    }
-
-    [Test]
-    public async Task DisconnectAsync_AfterConnect_ShouldUpdateConnectionState()
-    {
-        // Arrange
-        var connectTask = _atem.ConnectAsync("127.0.0.1", 1234);
-        _transportFake.SuccessfullyConnect();
-        await connectTask.WithTimeout();
-
-        // Act
-        var disconnectTask = _atem.DisconnectAsync();
-        _transportFake.SuccessfullyDisconnect();
-        await disconnectTask.WithTimeout();
-
-        // Assert
-        Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Closed));
     }
 
     [Test]

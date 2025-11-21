@@ -3,7 +3,6 @@ using AtemSharp.Commands;
 using AtemSharp.Communication;
 using AtemSharp.Lib;
 using AtemSharp.State;
-using Microsoft.Extensions.Logging;
 
 namespace AtemSharp;
 
@@ -19,9 +18,7 @@ public class AtemSwitcher : IAsyncDisposable
         {
             // Subscribe to transport events
             _receiveLoop?.Cancel().FireAndForget();
-            _client.ConnectionStateChanged -= OnConnectionStateChanged;
 
-            value.ConnectionStateChanged += OnConnectionStateChanged;
             _client = value;
             if (_receiveLoop is not null)
             {
@@ -30,7 +27,6 @@ public class AtemSwitcher : IAsyncDisposable
         }
     }
 
-    private readonly ILogger<AtemSwitcher> _logger;
     private bool _disposed;
     private IAtemClient _client;
     private TaskCompletionSource<bool>? _connectionCompletionSource;
@@ -49,8 +45,7 @@ public class AtemSwitcher : IAsyncDisposable
     /// <summary>
     /// Initializes a new instance of the Atem class
     /// </summary>
-    /// <param name="logger">Logger instance for diagnostic output</param>
-    public AtemSwitcher(ILogger<AtemSwitcher>? logger = null) : this(new AtemClient(), logger)
+    public AtemSwitcher() : this(new AtemClient())
     {
     }
 
@@ -59,13 +54,10 @@ public class AtemSwitcher : IAsyncDisposable
     /// This constructor is useful for testing scenarios where you want to inject a mock transport
     /// </summary>
     /// <param name="transport">The UDP transport to use for communication</param>
-    /// <param name="logger">Logger instance for diagnostic output</param>
     /// <remarks>This constructor is solely for testing purposes to mock the IUdpTransport</remarks>
-    internal AtemSwitcher(IAtemClient transport, ILogger<AtemSwitcher>? logger = null)
+    internal AtemSwitcher(IAtemClient transport)
     {
         _client = transport ?? throw new ArgumentNullException(nameof(transport));
-        _logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<AtemSwitcher>.Instance;
-        _client.ConnectionStateChanged += OnConnectionStateChanged;
     }
 
     /// <summary>
@@ -118,20 +110,6 @@ public class AtemSwitcher : IAsyncDisposable
     }
 
     /// <summary>
-    /// Gets the current connection state
-    /// </summary>
-    public Enums.ConnectionState ConnectionState => Client.ConnectionState;
-
-    private void OnConnectionStateChanged(object? sender, ConnectionStateChangedEventArgs e)
-    {
-        // Handle connection state transitions
-        // This is primarily driven by the transport layer (UDP handshake)
-        // but may be further refined by command processing (e.g., InitComplete)
-
-        _logger.LogInformation("Connection state changed: {PreviousState} -> {NewState}", e.PreviousState, e.State);
-    }
-
-    /// <summary>
     /// Disposes the Atem instance and releases all resources
     /// </summary>
     public async ValueTask DisposeAsync()
@@ -143,7 +121,6 @@ public class AtemSwitcher : IAsyncDisposable
 
         if (_receiveLoop != null) await _receiveLoop.Cancel();
 
-        Client.ConnectionStateChanged -= OnConnectionStateChanged;
         await Client.DisposeAsync();
 
         // Clean up any pending connection completion
