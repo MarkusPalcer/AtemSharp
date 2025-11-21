@@ -63,7 +63,7 @@ public class AtemSocketChild
         {
             if (t.IsFaulted)
             {
-                Log($"Reconnect failed: {t.Exception}");
+                Debug.Print($"Reconnect failed: {t.Exception}");
             }
         });
     }
@@ -76,7 +76,7 @@ public class AtemSocketChild
         {
             if (t.IsFaulted)
             {
-                Log($"Failed to retransmit {t.Exception}");
+                Debug.Print($"Failed to retransmit {t.Exception}");
             }
         });
     }
@@ -109,7 +109,7 @@ public class AtemSocketChild
         _receivedPackets = await _receivedPackets.Recreate();
         _ackedTrackingIds = await _ackedTrackingIds.Recreate();
 
-        Log("Disconnected");
+        Debug.Print("Disconnected");
         ConnectionState = ConnectionState.Disconnected;
 
         OnDisconnected();
@@ -132,21 +132,16 @@ public class AtemSocketChild
         // Reset connection
         _nextSendPacketId = 1;
         _sessionId = 0;
-        Log("Reconnect");
+        Debug.Print("Reconnect");
 
         // Try doing reconnect
         StartTimers();
 
         SendPacket(CommandConnectHello);
         ConnectionState = ConnectionState.SynSent;
-        Log("Syn Sent");
+        Debug.Print("Syn Sent");
 
         // TODO: Await connection event
-    }
-
-    private void Log(string message)
-    {
-        Debug.Print(message);
     }
 
     public void SendPackets(OutboundPacketInfo[] packets)
@@ -223,13 +218,13 @@ public class AtemSocketChild
             {
                 if (cancellationToken.IsCancellationRequested) return;
 
-                Log($"Error receiving: {ex.Message}\n Cancelling Receive-Loop and waiting for reconnect");
+                Debug.Print($"Error receiving: {ex.Message}\n Cancelling Receive-Loop and waiting for reconnect");
                 return;
             }
 
             ReceivePacket(result.Buffer);
         }
-        Log("Receive loop exited");
+        Debug.Print("Receive loop exited");
     }
 
     private bool IsPacketCoveredByAck(ushort ackId, ushort packetId)
@@ -243,16 +238,16 @@ public class AtemSocketChild
 
     private void ReceivePacket(byte[] buffer)
     {
-        Log($"AtemSocketChild: RECV {BitConverter.ToString(buffer)}");
+        Debug.Print($"AtemSocketChild: RECV {BitConverter.ToString(buffer)}");
 
         _lastReceivedAt = DateTime.Now;
         var packet = AtemPacket.FromBytes(buffer);
 
-        Log($"AtemSocketChild: Packet #{packet.PacketId}, Flags: {packet.Flags}, SessionId: {packet.SessionId}");
+        Debug.Print($"AtemSocketChild: Packet #{packet.PacketId}, Flags: {packet.Flags}, SessionId: {packet.SessionId}");
 
         if (packet.HasFlag(PacketFlag.NewSessionId))
         {
-            Log("Connected");
+            Debug.Print("Connected");
             ConnectionState = ConnectionState.Established;
             _lastReceivedPacketId = packet.PacketId;
             _sessionId = packet.SessionId;
@@ -268,7 +263,7 @@ public class AtemSocketChild
             // Device asked for retransmit
             if (packet.HasFlag(PacketFlag.RetransmitRequest))
             {
-                Log($"Retransmit request: {packet.RetransmitFromPacketId}");
+                Debug.Print($"Retransmit request: {packet.RetransmitFromPacketId}");
                 ps.Add(RetransmitFrom(packet.RetransmitFromPacketId));
             }
 
@@ -315,11 +310,11 @@ public class AtemSocketChild
         {
             if (t.IsFaulted)
             {
-                Log($"AtemSocketChild: Failed to ReceivePacket: {t.Exception.Message}");
+                Debug.Print($"AtemSocketChild: Failed to ReceivePacket: {t.Exception.Message}");
             }
             else
             {
-                Log("Packet processed");
+                Debug.Print("Packet processed");
             }
         });
     }
@@ -327,7 +322,7 @@ public class AtemSocketChild
     // TODO: Make async Task and handle errors
     private void SendPacket(byte[] buffer)
     {
-        Log($"AtemSocketChild: SEND {BitConverter.ToString(buffer)}");
+        Debug.Print($"AtemSocketChild: SEND {BitConverter.ToString(buffer)}");
         _socket?.SendAsync(buffer, _connectionTokenSource?.Token ?? CancellationToken.None);
     }
 
@@ -336,16 +331,16 @@ public class AtemSocketChild
         _receivedWithoutAck++;
         if (_receivedWithoutAck >= MaxPacketPerAck)
         {
-            Log("AckTimer short circuit due to too many received packets");
+            Debug.Print("AckTimer short circuit due to too many received packets");
             FireAckTimer();
         } else if (_ackTimerCancellation is null)
         {
-            Log("AckTimer started");
+            Debug.Print("AckTimer started");
             StartAckTimer();
         }
         else
         {
-            Log("AckTimer already running");
+            Debug.Print("AckTimer already running");
         }
     }
 
@@ -375,7 +370,7 @@ public class AtemSocketChild
 
     private void SendAck(ushort packetId)
     {
-        Log($"Sending Ack for #{packetId}, SessionId: {_sessionId}");
+        Debug.Print($"Sending Ack for #{packetId}, SessionId: {_sessionId}");
         SendPacket(AtemPacket.CreateAck(_sessionId, packetId).ToBytes());
     }
 
@@ -388,7 +383,7 @@ public class AtemSocketChild
         var fromIndex = _inflight.FindIndex(0, pkt => pkt.PacketId == fromId);
         if (fromIndex != -1)
         {
-            Log($"Unable to resend: {fromId}");
+            Debug.Print($"Unable to resend: {fromId}");
             await RestartConnection();
         }
         else
@@ -419,11 +414,11 @@ public class AtemSocketChild
             {
                 if (sentPacket.Resent <= MaxPacketRetries && IsPacketCoveredByAck(_nextSendPacketId, sentPacket.PacketId))
                 {
-                    Log($"Retransmit from timeout: {sentPacket.PacketId}");
+                    Debug.Print($"Retransmit from timeout: {sentPacket.PacketId}");
                     await RetransmitFrom(sentPacket.PacketId);
                     return;
                 } else {
-                    Log($"Packet timed out {sentPacket.PacketId}");
+                    Debug.Print($"Packet timed out {sentPacket.PacketId}");
                     await RestartConnection();
                     return;
                 }

@@ -94,8 +94,6 @@ public class AtemSocket : IAtemSocket, IUdpTransport
 
             _socketProcess = null;
         }
-
-
     }
 
     private int GetNextTrackingId()
