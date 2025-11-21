@@ -88,13 +88,6 @@ public class AtemClient : IAtemSocket, IUdpTransport
         }
     }
 
-    // TODO: Inline
-    private int GetNextTrackingId()
-    {
-        return Interlocked.Increment(ref _nextPacketTrackingId);
-    }
-
-
     public async Task SendCommands(SerializedCommand[] commands)
     {
         if (_protocol is null) throw new InvalidOperationException("Socket process is not open");
@@ -107,7 +100,7 @@ public class AtemClient : IAtemSocket, IUdpTransport
 
         var packets = packetBuilder.GetPackets().Select(buffer => new AtemPacket(buffer)
         {
-            TrackingId = GetNextTrackingId(),
+            TrackingId = Interlocked.Increment(ref _nextPacketTrackingId),
             Flags = PacketFlag.AckRequest
         }).ToArray();
 
