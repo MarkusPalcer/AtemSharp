@@ -21,13 +21,11 @@ public class AtemSocket : IAtemSocket, IUdpTransport
     private Task _creatingSocket = Task.CompletedTask;
     private Action? _exitUnsubscribe = () => { };
     private ActionLoop? _receiveLoop;
-
+    private ActionLoop? _ackLoop;
 
     public event EventHandler? Disconnected;
 
     public event EventHandler<ReceivedCommandsEventArgs>? ReceivedCommands;
-
-    public event EventHandler<AckPacketsEventArgs>? AckPackets;
 
     public event EventHandler? Connected;
 
@@ -51,7 +49,14 @@ public class AtemSocket : IAtemSocket, IUdpTransport
         }
 
         _receiveLoop = ActionLoop.Start(ReceivePacket);
+        _ackLoop = ActionLoop.Start(DoAckLoop);
         await _socketProcess.Connect(_address, _port);
+    }
+
+    private async Task DoAckLoop(CancellationToken cts)
+    {
+        await _socketProcess.AckedTrackingIds.ReceiveAsync(cts);
+        // TODO: Complete packet TCS'
     }
 
     public async ValueTask DisposeAsync()
@@ -74,6 +79,7 @@ public class AtemSocket : IAtemSocket, IUdpTransport
         }
 
         await (_receiveLoop?.Cancel() ?? Task.CompletedTask);
+        await (_ackLoop?.Cancel() ?? Task.CompletedTask);
 
         if (_socketProcess is not null)
         {
@@ -121,11 +127,7 @@ public class AtemSocket : IAtemSocket, IUdpTransport
     // TODO: Move to constructor
     private async Task CreateSocketProcess()
     {
-        _socketProcess = new AtemSocketChild(packets =>
-        {
-            OnAckPackets(new AckPacketsEventArgs { PacketIds = packets.Select(x => x.TrackingId).ToArray() });
-            return Task.CompletedTask;
-        });
+        _socketProcess = new AtemSocketChild();
 
         _socketProcess.Connected += (_,_) => OnConnected();
         _socketProcess.Disconnected += (_,_) => OnDisconnected();
@@ -140,11 +142,6 @@ public class AtemSocket : IAtemSocket, IUdpTransport
     protected virtual void OnDisconnected()
     {
         Disconnected?.Invoke(this, EventArgs.Empty);
-    }
-
-    protected virtual void OnAckPackets(AckPacketsEventArgs e)
-    {
-        AckPackets?.Invoke(this, e);
     }
 
     protected virtual void OnConnected()

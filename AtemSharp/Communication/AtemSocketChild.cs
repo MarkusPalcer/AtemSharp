@@ -21,8 +21,8 @@ public class AtemSocketChild
     private ushort _sessionId;
 
     // TODO: Turn into IPAddress instance
-    private string _address;
-    private int _port;
+    private string _address = "127.0.0.1";
+    private int _port = Constants.AtemConstants.DEFAULT_PORT;
     private IUdpClient? _socket;
 
     private DateTime _lastReceivedAt = DateTime.Now;
@@ -37,22 +37,13 @@ public class AtemSocketChild
     public event EventHandler? Disconnected;
 
     public IReceivableSourceBlock<AtemPacket> ReceivedPackets => _receivedPackets;
-
-    private readonly Func<AckedPacket[], Task> _onPacketsAcknowledged;
+    public IReceivableSourceBlock<int> AckedTrackingIds => _ackedTrackingIds;
 
     internal Func<IUdpClient> UdpClientFactory = () => new UdpClientWrapper();
     private Task? _receiveLoop;
     private CancellationTokenSource? _connectionTokenSource;
     private BufferBlock<AtemPacket> _receivedPackets = new();
-
-
-    // TODO: Use C#-Events instead of callbacks
-    public AtemSocketChild(Func<AckedPacket[], Task> onPacketsAcknowledged)
-    {
-        _address = "127.0.0.1";
-        _port = Constants.AtemConstants.DEFAULT_PORT;
-        _onPacketsAcknowledged = onPacketsAcknowledged;
-    }
+    private BufferBlock<int> _ackedTrackingIds = new();
 
     private void StartTimers()
     {
@@ -136,9 +127,8 @@ public class AtemSocketChild
         ClearTimers();
         CloseSocket();
 
-        _receivedPackets.Complete();
-        await _receivedPackets.Completion;
-        _receivedPackets = new BufferBlock<AtemPacket>();
+        _receivedPackets = await _receivedPackets.Recreate();
+        _ackedTrackingIds = await _ackedTrackingIds.Recreate();
 
         Log("Disconnected");
         ConnectionState = ConnectionState.Disconnected;
@@ -175,8 +165,6 @@ public class AtemSocketChild
         // TODO: Await connection event
     }
 
-
-    // TODO: Replace with MS-Logging mechanism
     private void Log(string message)
     {
         Debug.Print(message);
@@ -328,12 +316,11 @@ public class AtemSocketChild
             if (packet.HasFlag(PacketFlag.AckReply))
             {
                 var ackPacketId = packet.AckPacketId;
-                var ackedCommands = new List<AckedPacket>();
                 _inflight = _inflight.Where(pkt =>
                 {
                     if (IsPacketCoveredByAck(ackPacketId, pkt.PacketId))
                     {
-                        ackedCommands.Add(new AckedPacket(pkt.PacketId, pkt.TrackingId));
+                        _ackedTrackingIds.SendAsync(pkt.TrackingId);
                         return false;
                     }
                     else
@@ -342,7 +329,6 @@ public class AtemSocketChild
                         return true;
                     }
                 }).ToList();
-                ps.Add(_onPacketsAcknowledged(ackedCommands.ToArray()));
             }
         }
 
