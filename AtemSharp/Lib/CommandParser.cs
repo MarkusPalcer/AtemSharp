@@ -130,7 +130,7 @@ public class CommandParser
 		if (commandType == null)
 		{
 			// Track unrecognized command (matches TypeScript emit('debug', `Unknown command ${name}`) behavior)
-			Atem.UnknownCommands.Add(rawName);
+			AtemSwitcher.UnknownCommands.Add(rawName);
 			return null;
 		}
 

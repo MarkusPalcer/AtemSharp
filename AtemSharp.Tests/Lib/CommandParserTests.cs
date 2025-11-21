@@ -51,14 +51,14 @@ public class CommandParserTests
     {
         // Arrange
         var parser = new CommandParser();
-        Atem.UnknownCommands.Clear();
+        AtemSwitcher.UnknownCommands.Clear();
 
         // Act
         var result = parser.ParseCommand("UNKN", Span<byte>.Empty);
 
         // Assert
         Assert.That(result, Is.Null);
-        Assert.That(Atem.UnknownCommands, Contains.Item("UNKN"));
+        Assert.That(AtemSwitcher.UnknownCommands, Contains.Item("UNKN"));
     }
 
     [Test]

@@ -8,7 +8,7 @@ public class VideoState
     /// <summary>
     /// Input channels available on this device
     /// </summary>
-    public Dictionary<int, InputChannel> Inputs { get; set; } = [];
+    public Dictionary<ushort, InputChannel> Inputs { get; set; } = [];
 
     /// <summary>
     /// Mix effects available on this device

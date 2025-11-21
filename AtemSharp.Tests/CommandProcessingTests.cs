@@ -4,8 +4,6 @@ using AtemSharp.Commands.MixEffects;
 using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.Tests.TestUtilities;
-using Microsoft.Extensions.Logging;
-using NSubstitute;
 using System.Reflection;
 using System.Text;
 
@@ -14,26 +12,19 @@ namespace AtemSharp.Tests;
 [TestFixture]
 public class CommandProcessingTests
 {
-    private Atem? _atem;
-    private ILogger<Atem>? _mockLogger;
+    private AtemSwitcher _atem = new();
 
     [SetUp]
     public void SetUp()
     {
         // Clear static state
-        Atem.UnknownCommands.Clear();
-
-        // Create mock logger
-        _mockLogger = Substitute.For<ILogger<Atem>>();
-
-        // Create Atem instance with mocked logger
-        _atem = new Atem(_mockLogger);
+        AtemSwitcher.UnknownCommands.Clear();
     }
 
     [TearDown]
-    public void TearDown()
+    public async Task TearDown()
     {
-        _atem?.Dispose();
+        await _atem.DisposeAsync();
     }
 
     // Data structures for test data
@@ -104,15 +95,15 @@ public class CommandProcessingTests
         // Arrange
         var parser = new CommandParser();
         Span<byte> unknownData = [0x01, 0x02];
-        var initialUnknownCount = Atem.UnknownCommands.Count;
+        var initialUnknownCount = AtemSwitcher.UnknownCommands.Count;
 
         // Act
         var command = parser.ParseCommand("XXXX", unknownData);
 
         // Assert
         Assert.That(command, Is.Null);
-        Assert.That(Atem.UnknownCommands.Count, Is.EqualTo(initialUnknownCount + 1));
-        Assert.That(Atem.UnknownCommands, Contains.Item("XXXX"));
+        Assert.That(AtemSwitcher.UnknownCommands.Count, Is.EqualTo(initialUnknownCount + 1));
+        Assert.That(AtemSwitcher.UnknownCommands, Contains.Item("XXXX"));
     }
 
     [Test]
@@ -245,7 +236,7 @@ public class CommandProcessingTests
     {
         // Arrange
         // Initialize the state (normally done in ConnectAsync)
-        _atem!.GetType().GetProperty("State")?.SetValue(_atem, new AtemSharp.State.AtemState());
+        _atem.GetType().GetProperty("State")?.SetValue(_atem, new AtemSharp.State.AtemState());
 
         var validPayload = CreateMultiCommandPayload();
         var packet = new AtemPacket(validPayload)
@@ -254,14 +245,11 @@ public class CommandProcessingTests
             SessionId = 1,
             PacketId = 1
         };
-        var packetArgs = new PacketReceivedEventArgs { Packet = packet, RemoteEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, 9910) };
+        var packetArgs = new PacketReceivedEventArgs { Packet = packet };
 
         // Act - Trigger OnPacketReceived via reflection
-        var onPacketReceivedMethod = typeof(Atem).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
+        var onPacketReceivedMethod = typeof(AtemSwitcher).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
         onPacketReceivedMethod?.Invoke(_atem, [null, packetArgs]);
-
-        // Assert - Verify no error logging occurred
-        _mockLogger?.DidNotReceive().Log(LogLevel.Error, Arg.Any<EventId>(), Arg.Any<object>(), Arg.Any<Exception>(), Arg.Any<Func<object, Exception?, string>>());
     }
 
     [Test]
@@ -269,7 +257,7 @@ public class CommandProcessingTests
     {
         // Arrange
         // Initialize the state (normally done in ConnectAsync)
-        _atem!.GetType().GetProperty("State")?.SetValue(_atem, new AtemSharp.State.AtemState());
+        _atem.GetType().GetProperty("State")?.SetValue(_atem, new AtemSharp.State.AtemState());
 
         var malformedPayload = CreateMalformedCommandPayload();
         var packet = new AtemPacket(malformedPayload)
@@ -278,14 +266,11 @@ public class CommandProcessingTests
             SessionId = 1,
             PacketId = 1
         };
-        var packetArgs = new PacketReceivedEventArgs { Packet = packet, RemoteEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, 9910) };
+        var packetArgs = new PacketReceivedEventArgs { Packet = packet };
 
         // Act - Trigger OnPacketReceived via reflection
-        var onPacketReceivedMethod = typeof(Atem).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
+        var onPacketReceivedMethod = typeof(AtemSwitcher).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
         onPacketReceivedMethod?.Invoke(_atem, [null, packetArgs]);
-
-        // Assert - Verify no error logging occurred (malformed packets should be handled gracefully)
-        _mockLogger?.DidNotReceive().Log(LogLevel.Error, Arg.Any<EventId>(), Arg.Any<object>(), Arg.Any<Exception>(), Arg.Any<Func<object, Exception?, string>>());
     }
 
     [Test]
@@ -293,7 +278,7 @@ public class CommandProcessingTests
     {
         // Arrange
         // Initialize the state (normally done in ConnectAsync)
-        _atem!.GetType().GetProperty("State")?.SetValue(_atem, new AtemSharp.State.AtemState());
+        _atem.GetType().GetProperty("State")?.SetValue(_atem, new AtemSharp.State.AtemState());
 
         var emptyPacket = new AtemPacket([])
         {
@@ -301,50 +286,11 @@ public class CommandProcessingTests
             SessionId = 1,
             PacketId = 1
         };
-        var packetArgs = new PacketReceivedEventArgs { Packet = emptyPacket, RemoteEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, 9910) };
+        var packetArgs = new PacketReceivedEventArgs { Packet = emptyPacket };
 
         // Act - Trigger OnPacketReceived via reflection
-        var onPacketReceivedMethod = typeof(Atem).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
+        var onPacketReceivedMethod = typeof(AtemSwitcher).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
         onPacketReceivedMethod?.Invoke(_atem, [null, packetArgs]);
-
-        // Assert - Verify no error logging occurred (empty packets should be handled gracefully)
-        _mockLogger?.DidNotReceive().Log(LogLevel.Error, Arg.Any<EventId>(), Arg.Any<object>(), Arg.Any<Exception>(), Arg.Any<Func<object, Exception?, string>>());
-    }
-
-    [Test]
-    public void Atem_ProcessPacketWithoutState_ShouldLogError()
-    {
-        // Arrange
-        // Deliberately do NOT initialize the state to test error logging
-        // Use a packet with a command that will definitely try to access state
-        var packet = CreateValidCommandPacket();
-        var packetArgs = new PacketReceivedEventArgs { Packet = packet, RemoteEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, 9910) };
-
-        // Act - Trigger OnPacketReceived via reflection
-        var onPacketReceivedMethod = typeof(Atem).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
-        onPacketReceivedMethod?.Invoke(_atem, [null, packetArgs]);
-
-        // Assert - Verify error logging occurred due to command failing when applied to null state
-        _mockLogger?.Received().Log(LogLevel.Error, Arg.Any<EventId>(), Arg.Any<object>(), Arg.Any<Exception>(), Arg.Any<Func<object, Exception?, string>>());
-    }
-
-    private AtemPacket CreateValidCommandPacket()
-    {
-        // Create a real version command packet using test data format
-        // Based on libatem test data: "00-0C-00-00-5F-76-65-72-00-02-00-1C"
-        var commandBytes = new byte[] {
-            0x00, 0x0C,       // Command length = 12
-            0x00, 0x00,       // Reserved
-            0x5F, 0x76, 0x65, 0x72,  // "_ver" command name
-            0x00, 0x02, 0x00, 0x1C   // Version data (protocol version)
-        };
-
-        return new AtemPacket(commandBytes)
-        {
-            Flags = PacketFlag.AckRequest,
-            SessionId = 1,
-            PacketId = 1
-        };
     }
 
     [Test]
@@ -358,10 +304,10 @@ public class CommandProcessingTests
             SessionId = 1,
             PacketId = 1
         };
-        var packetArgs = new PacketReceivedEventArgs { Packet = packet, RemoteEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, 9910) };
+        var packetArgs = new PacketReceivedEventArgs { Packet = packet };
 
         // Act - Trigger OnPacketReceived via reflection
-        var onPacketReceivedMethod = typeof(Atem).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
+        var onPacketReceivedMethod = typeof(AtemSwitcher).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
         onPacketReceivedMethod?.Invoke(_atem, [null, packetArgs]);
 
         // Assert - This test verifies that error logging does occur when there's actually an error

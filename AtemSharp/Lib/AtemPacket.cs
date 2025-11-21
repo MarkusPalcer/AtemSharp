@@ -9,7 +9,6 @@ public class AtemPacket
 {
     private const int PacketHeaderSize = 12;
     private const int LengthMask = 0x07FF; // 11 bits for length
-    private const int FlagsShift = 11; // Flags are in the upper 5 bits (16 - 11 = 5)
 
     /// <summary>
     /// Packet flags indicating the type and properties of the packet
@@ -34,7 +33,7 @@ public class AtemPacket
     /// <summary>
     /// Reserved field or packet ID to resend from (used in retransmit requests)
     /// </summary>
-    public ushort Reserved { get; set; }
+    public ushort RetransmitFromPacketId { get; set; }
 
     /// <summary>
     /// Unique packet ID for this packet (15-bit, wraps around)
@@ -47,9 +46,9 @@ public class AtemPacket
     public byte[] Payload { get; set; }
 
     /// <summary>
-    /// Gets the size of the packet header in bytes
+    /// Internally used ID to track ACKs of packets
     /// </summary>
-    public static int HeaderSize => PacketHeaderSize;
+    public int TrackingId { get; set; }
 
     /// <summary>
     /// Creates a new empty ATEM packet
@@ -114,7 +113,7 @@ public class AtemPacket
         packet.Length = (ushort)(flagsAndLength & LengthMask);
         packet.SessionId = headerSpan.ReadUInt16BigEndian(2);
         packet.AckPacketId = headerSpan.ReadUInt16BigEndian(4);
-        packet.Reserved = headerSpan.ReadUInt16BigEndian(6);
+        packet.RetransmitFromPacketId = headerSpan.ReadUInt16BigEndian(6);
         // Skip bytes 8-9 (reserved)
         packet.PacketId = headerSpan.ReadUInt16BigEndian(10);
 
@@ -154,7 +153,7 @@ public class AtemPacket
         bufferSpan[1] = (byte)(Length & 0xFF); // Second byte: lower 8 bits of length
         bufferSpan.WriteUInt16BigEndian(2, SessionId);
         bufferSpan.WriteUInt16BigEndian(4, AckPacketId);
-        bufferSpan.WriteUInt16BigEndian(6, Reserved);
+        bufferSpan.WriteUInt16BigEndian(6, RetransmitFromPacketId);
         // Bytes 8-9 remain zero (reserved)
         bufferSpan.WriteUInt16BigEndian(10, PacketId);
 
@@ -217,6 +216,15 @@ public class AtemPacket
             AckPacketId = packetIdToAck,
             PacketId = 0, // ACK packets don't need their own packet ID
             Payload = []
+        };
+    }
+
+    internal static AtemPacket CreateAckRequest()
+    {
+        return new AtemPacket
+        {
+            Flags = PacketFlag.AckRequest,
+            Payload = [],
         };
     }
 
