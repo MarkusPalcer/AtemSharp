@@ -1,4 +1,5 @@
 using System.Net;
+using AtemSharp.Commands;
 using AtemSharp.Constants;
 using AtemSharp.Enums;
 using AtemSharp.Lib;
@@ -16,12 +17,12 @@ public class UdpTransportFake : IUdpTransport
     private ConnectionState _previousConnectionState = ConnectionState.Closed;
     private IPEndPoint? _remoteEndPoint;
     private bool _disposed;
-    
+
     private TaskCompletionSource _connectTcs = new();
 	private TaskCompletionSource _disconnectTcs = new();
 
 	public bool IsDisposed => _disposed;
-	
+
     /// <summary>
     /// Raised when a packet is received from the remote endpoint
     /// </summary>
@@ -51,17 +52,17 @@ public class UdpTransportFake : IUdpTransport
     /// List of packets that were sent via SendPacketAsync for verification in tests
     /// </summary>
     [UsedImplicitly]
-    public List<AtemPacket> SentPackets { get; } = new();
+    public List<SerializedCommand> SentCommands { get; } = new();
 
     public void SuccessfullyConnect()
     {
         _connectTcs.SetResult();
-        
+
         // After successful connection, simulate the ATEM device sending an InitCompleteCommand
         // This is required for the new networking implementation to complete the connection
         SimulateInitCompleteCommand();
     }
-    
+
     public void FailConnect() => _connectTcs.SetException(new InvalidOperationException());
 
     public void SuccessfullyDisconnect() => _disconnectTcs.SetResult();
@@ -99,7 +100,7 @@ public class UdpTransportFake : IUdpTransport
 
         _connectTcs = new();
         _disconnectTcs = new();
-        
+
         await _connectTcs.Task;
 
         // Parse the IP address to validate it
@@ -137,10 +138,7 @@ public class UdpTransportFake : IUdpTransport
         SetConnectionState(ConnectionState.Closed);
     }
 
-    /// <summary>
-    /// Simulates sending a packet (stores it in SentPackets for verification)
-    /// </summary>
-    public Task SendPacketAsync(AtemPacket packet, CancellationToken cancellationToken = default)
+    public Task SendCommand(SerializedCommand command, CancellationToken cancellationToken = default)
     {
         if (_disposed)
         {
@@ -152,38 +150,8 @@ public class UdpTransportFake : IUdpTransport
             throw new InvalidOperationException($"Cannot send packet when state is {_connectionState}");
         }
 
-        if (packet == null)
-        {
-            throw new ArgumentNullException(nameof(packet));
-        }
-
-        SentPackets.Add(packet);
+        SentCommands.Add(command);
         return Task.CompletedTask;
-    }
-
-    /// <summary>
-    /// Simulates sending a hello packet
-    /// </summary>
-    public Task SendHelloPacketAsync(CancellationToken cancellationToken)
-    {
-        if (_disposed)
-        {
-            throw new ObjectDisposedException(nameof(UdpTransportFake));
-        }
-
-        // Create a basic hello packet
-        var helloPacket = new AtemPacket
-        {
-            Flags = PacketFlag.NewSessionId | PacketFlag.AckRequest,
-            Length = 12, // Header only
-            SessionId = 0,
-            AckPacketId = 0,
-            Reserved = 0,
-            PacketId = 1,
-            Payload = Array.Empty<byte>()
-        };
-
-        return SendPacketAsync(helloPacket, cancellationToken);
     }
 
     /// <summary>
@@ -207,8 +175,7 @@ public class UdpTransportFake : IUdpTransport
 
         var eventArgs = new PacketReceivedEventArgs
         {
-            Packet = packet,
-            RemoteEndPoint = sourceEndPoint
+            Packet = packet
         };
 
         PacketReceived?.Invoke(this, eventArgs);
@@ -236,14 +203,14 @@ public class UdpTransportFake : IUdpTransport
             (byte)'I', (byte)'n', (byte)'C', (byte)'m', // Raw name "InCm"
             // No additional data for InitCompleteCommand
         };
-        
+
         var packet = new AtemPacket(commandData)
         {
             Flags = PacketFlag.AckRequest,
             SessionId = 1,
             PacketId = 100
         };
-        
+
         SimulatePacketReceived(packet);
     }
 
@@ -278,14 +245,6 @@ public class UdpTransportFake : IUdpTransport
         }
 
         SetConnectionState(newState);
-    }
-
-    /// <summary>
-    /// Clears the list of sent packets
-    /// </summary>
-    public void ClearSentPackets()
-    {
-        SentPackets.Clear();
     }
 
     private void SetConnectionState(ConnectionState newState)
@@ -325,7 +284,7 @@ public class UdpTransportFake : IUdpTransport
         ErrorOccurred = null;
 
         // Clear sent packets
-        SentPackets.Clear();
+        SentCommands.Clear();
 
         // Reset state
         _connectionState = ConnectionState.Closed;

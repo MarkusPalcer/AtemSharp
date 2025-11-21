@@ -1,3 +1,4 @@
+using AtemSharp.Commands;
 using AtemSharp.Constants;
 using AtemSharp.Enums;
 
@@ -41,16 +42,5 @@ public interface IUdpTransport : IDisposable
 	/// <returns>Task that completes when disconnected</returns>
 	Task DisconnectAsync(CancellationToken cancellationToken = default);
 
-	/// <summary>
-	/// Sends a packet to the connected ATEM device
-	/// </summary>
-	/// <param name="packet">Packet to send</param>
-	/// <param name="cancellationToken">Cancellation token</param>
-	/// <returns>Task that completes when packet is sent</returns>
-	Task SendPacketAsync(AtemPacket packet, CancellationToken cancellationToken = default);
-
-	/// <summary>
-	/// Sends the initial hello packet to establish connection
-	/// </summary>
-	Task SendHelloPacketAsync(CancellationToken cancellationToken);
+    Task SendCommand(SerializedCommand command, CancellationToken cancellationToken = default);
 }

@@ -1,5 +1,3 @@
-using System.Net;
-
 namespace AtemSharp.Lib;
 
 /// <summary>
@@ -8,5 +6,4 @@ namespace AtemSharp.Lib;
 public class PacketReceivedEventArgs : EventArgs
 {
 	public required AtemPacket Packet { get; init; }
-	public required IPEndPoint RemoteEndPoint { get; init; }
 }

@@ -1,0 +1,474 @@
+using System.Diagnostics;
+using System.Net;
+using System.Net.Sockets;
+using AtemSharp.Enums;
+using AtemSharp.Lib;
+
+namespace AtemSharp.Communication;
+
+public class AtemSocketChild
+{
+    public ConnectionState ConnectionState { get; private set; } = ConnectionState.Closed;
+
+    private ushort _nextSendPacketId = 1;
+    private ushort _sessionId;
+
+    // TODO: Turn into IPAddress instance
+    private string _address;
+    private int _port;
+    private IUdpClient? _socket;
+
+    private DateTime _lastReceivedAt = DateTime.Now;
+    private ushort _lastReceivedPacketId;
+    private List<InFlightPacket> _inflight = [];
+    private CancellationTokenSource? _ackTimerCancellation;
+    private CancellationTokenSource? _timersCancellation;
+    private int _receivedWithoutAck;
+
+    public event EventHandler? Connected;
+
+    private readonly Func<Task> _onDisconnect;
+    private readonly Func<AtemPacket, Task> _onCommandsReceived;
+    private readonly Func<AckedPacket[], Task> _onPacketsAcknowledged;
+
+    internal Func<IUdpClient> UdpClientFactory = () => new UdpClientWrapper();
+    private Task? _receiveLoop;
+    private CancellationTokenSource? _connectionTokenSource;
+
+
+    // TODO: Use C#-Events instead of callbacks
+    public AtemSocketChild(string address,
+                           int port,
+                           Func<Task> onDisconnect,
+                           Func<AtemPacket, Task> onCommandsReceived,
+                           Func<AckedPacket[], Task> onPacketsAcknowledged)
+    {
+        _address = address;
+        _port = port;
+        _onDisconnect = onDisconnect;
+        _onCommandsReceived = onCommandsReceived;
+        _onPacketsAcknowledged = onPacketsAcknowledged;
+        CreateSocket();
+    }
+
+    private void StartTimers()
+    {
+        if (_timersCancellation is not null) return;
+
+        _timersCancellation = new();
+        ReconnectTimerLoop(_timersCancellation.Token);
+        RetransmitTimerLoop(_timersCancellation.Token);
+    }
+
+    private async void ReconnectTimerLoop(CancellationToken cancellationToken)
+    {
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            try
+            {
+                await Task.Delay(ConnectionRetryInterval, cancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+                return;
+            }
+
+            if (_lastReceivedAt + ConnectionTimeout > DateTime.Now)
+            {
+                continue;
+            }
+
+            RestartConnection().ContinueWith(t =>
+            {
+                if (t.IsFaulted)
+                {
+                    Log($"Reconnect failed: {t.Exception}");
+                }
+            });
+        }
+    }
+
+    private async void RetransmitTimerLoop(CancellationToken cancellationToken)
+    {
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            try
+            {
+                await Task.Delay(RetransmitInterval, cancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+                return;
+            }
+
+            CheckForRetransmit().ContinueWith(t =>
+            {
+                if (t.IsFaulted)
+                {
+                    Log($"Failed to retransmit {t.Exception}");
+                }
+            });
+        }
+    }
+
+    private void ClearTimers()
+    {
+        _timersCancellation?.Cancel();
+        _timersCancellation = null;
+    }
+
+    public async Task Connect(string address, int port)
+    {
+        _address = address;
+        _port = port;
+
+        await RestartConnection();
+    }
+
+    public async Task Disconnect()
+    {
+        ClearTimers();
+        CloseSocket();
+        Log("Disconnected");
+        ConnectionState = ConnectionState.Disconnected;
+        await _onDisconnect();
+    }
+
+    private async Task RestartConnection()
+    {
+        ClearTimers();
+
+        // This includes a 'disconnect'
+        if (ConnectionState == ConnectionState.Established)
+        {
+            RecreateSocket();
+            await _onDisconnect();
+        } else if (ConnectionState == ConnectionState.Disconnected)
+        {
+            CreateSocket();
+        }
+
+        // Reset connection
+        _nextSendPacketId = 1;
+        _sessionId = 0;
+        Log("Reconnect");
+
+        // Try doing reconnect
+        StartTimers();
+
+        SendPacket(CommandConnectHello);
+        ConnectionState = ConnectionState.SynSent;
+        Log("Syn Sent");
+    }
+
+
+    // TODO: Replace with MS-Logging mechanism
+    private void Log(string message)
+    {
+        Debug.Print(message);
+    }
+
+    public void SendPackets(OutboundPacketInfo[] packets)
+    {
+        foreach (var packet in packets)
+        {
+            SendPacket((ushort)packet.Payload.Length, packet.Payload, packet.TrackingId);
+        }
+    }
+
+    private void SendPacket(ushort payloadLength, byte[] payload, int trackingId)
+    {
+        // TODO: Use concurrent counter
+        ushort packetId = _nextSendPacketId++;
+        if (_nextSendPacketId >= MaxPacketId)
+        {
+            _nextSendPacketId = 0;
+        }
+
+        // TODO: Replace with AtemPacket serialization
+        ushort opCode = ((ushort)PacketFlag.AckRequest << 11);
+        var flagsAndLength = (ushort)(opCode | (payloadLength + 12));
+        var buffer = new byte[12 + payloadLength];
+
+        buffer.WriteUInt16BigEndian(flagsAndLength, 0);
+        buffer.WriteUInt16BigEndian(_sessionId, 2);
+        buffer.WriteUInt16BigEndian(packetId, 10);
+        Array.Copy(payload, 0, buffer, 12, payloadLength);
+        SendPacket(buffer);
+        _inflight.Add(new(packetId, trackingId, payload)
+        {
+            LastSent = DateTime.Now,
+            Resent = 0
+        });
+    }
+
+    private void RecreateSocket()
+    {
+        CloseSocket();
+        CreateSocket();
+    }
+
+    private void CloseSocket()
+    {
+        _socket?.Dispose();
+        _connectionTokenSource?.Cancel();
+        _connectionTokenSource?.Dispose();
+        _connectionTokenSource = null;
+
+        (_receiveLoop ?? Task.CompletedTask).Wait();
+    }
+
+    private void CreateSocket()
+    {
+        _connectionTokenSource = new();
+
+        _socket?.Dispose();
+        _socket = UdpClientFactory();
+        _socket.Client.Bind(new IPEndPoint(IPAddress.Any, 0));
+        _socket.Connect(new IPEndPoint(IPAddress.Parse(_address), _port));
+        _receiveLoop = ReceiveLoopAsync(_connectionTokenSource.Token);
+    }
+
+    private async Task ReceiveLoopAsync(CancellationToken cancellationToken)
+    {
+        while (!cancellationToken.IsCancellationRequested)
+        {
+            UdpReceiveResult result;
+            try
+            {
+                result = await _socket!.ReceiveAsync(cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                if (cancellationToken.IsCancellationRequested) return;
+
+                Log($"Error receiving: {ex.Message}\n Cancelling Receive-Loop and waiting for reconnect");
+                return;
+            }
+
+            ReceivePacket(result.Buffer);
+        }
+        Log("Receive loop exited");
+    }
+
+    private bool IsPacketCoveredByAck(ushort ackId, ushort packetId)
+    {
+        var tolerance = MaxPacketId / 2;
+        var pktIsShortlyBefore = packetId < ackId && packetId + tolerance > ackId;
+        var pktIsShortlyAfter = packetId > ackId && packetId < ackId + tolerance;
+        var pktIsBeforeWrap = packetId > ackId + tolerance;
+        return packetId == ackId || ((pktIsShortlyBefore || pktIsBeforeWrap) && !pktIsShortlyAfter);
+    }
+
+    private void ReceivePacket(byte[] buffer)
+    {
+        Log($"AtemSocketChild: RECV {BitConverter.ToString(buffer)}");
+
+        _lastReceivedAt = DateTime.Now;
+        var packet = AtemPacket.FromBytes(buffer);
+
+        Log($"AtemSocketChild: Packet #{packet.PacketId}, Flags: {packet.Flags}, SessionId: {packet.SessionId}");
+
+        if (packet.HasFlag(PacketFlag.NewSessionId))
+        {
+            Log("Connected");
+            ConnectionState = ConnectionState.Established;
+            _lastReceivedPacketId = packet.PacketId;
+            _sessionId = packet.SessionId;
+            SendAck(packet.PacketId);
+            OnConnected();
+            return;
+        }
+
+        List<Task> ps = new();
+
+        if (ConnectionState == ConnectionState.Established)
+        {
+            // Device asked for retransmit
+            if (packet.HasFlag(PacketFlag.RetransmitRequest))
+            {
+                Log($"Retransmit request: {packet.RetransmitFromPacketId}");
+                ps.Add(RetransmitFrom(packet.RetransmitFromPacketId));
+            }
+
+            // Got a packet that needs an ack
+            if (packet.HasFlag(PacketFlag.AckRequest))
+            {
+                // Check if it next in the sequence
+                if (packet.PacketId == (_lastReceivedPacketId + 1) % MaxPacketId)
+                {
+                    _lastReceivedPacketId = packet.PacketId;
+                    _sessionId = packet.SessionId;
+                    SendOrQueueAck();
+                    if (packet.Payload.Length > 0)
+                    {
+                        ps.Add(_onCommandsReceived(packet));
+                    }
+                } else if (IsPacketCoveredByAck(_lastReceivedPacketId, packet.PacketId))
+                {
+                    SendOrQueueAck();
+                }
+            }
+
+            // Device ack'ed our packet
+            if (packet.HasFlag(PacketFlag.AckReply))
+            {
+                var ackPacketId = packet.AckPacketId;
+                var ackedCommands = new List<AckedPacket>();
+                _inflight = _inflight.Where(pkt =>
+                {
+                    if (IsPacketCoveredByAck(ackPacketId, pkt.PacketId))
+                    {
+                        ackedCommands.Add(new AckedPacket(pkt.PacketId, pkt.TrackingId));
+                        return false;
+                    }
+                    else
+                    {
+                        // Not acked yet
+                        return true;
+                    }
+                }).ToList();
+                ps.Add(_onPacketsAcknowledged(ackedCommands.ToArray()));
+            }
+        }
+
+        Task.WhenAll(ps).ContinueWith(t =>
+        {
+            if (t.IsFaulted)
+            {
+                Log($"AtemSocketChild: Failed to ReceivePacket: {t.Exception.Message}");
+            }
+            else
+            {
+                Log("Packet processed");
+            }
+        });
+    }
+
+    // TODO: Make async Task and handle errors
+    private void SendPacket(byte[] buffer)
+    {
+        Log($"AtemSocketChild: SEND {BitConverter.ToString(buffer)}");
+        _socket?.SendAsync(buffer, _connectionTokenSource?.Token ?? CancellationToken.None);
+    }
+
+    private void SendOrQueueAck()
+    {
+        _receivedWithoutAck++;
+        if (_receivedWithoutAck >= MaxPacketPerAck)
+        {
+            Log("AckTimer short circuit due to too many received packets");
+            FireAckTimer();
+        } else if (_ackTimerCancellation is null)
+        {
+            Log("AckTimer started");
+            StartAckTimer();
+        }
+        else
+        {
+            Log("AckTimer already running");
+        }
+    }
+
+    private async void StartAckTimer()
+    {
+        var cts = new CancellationTokenSource();
+        _ackTimerCancellation = cts;
+        try
+        {
+            await Task.Delay(TimeSpan.FromMilliseconds(5), cts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            return;
+        }
+
+        FireAckTimer();
+    }
+
+    private void FireAckTimer()
+    {
+        _receivedWithoutAck = 0;
+        _ackTimerCancellation?.Cancel();
+        _ackTimerCancellation = null;
+        SendAck(_lastReceivedPacketId);
+    }
+
+    private void SendAck(ushort packetId)
+    {
+        Log($"Sending Ack for #{packetId}, SessionId: {_sessionId}");
+        SendPacket(AtemPacket.CreateAck(_sessionId, packetId).ToBytes());
+    }
+
+    private async Task RetransmitFrom(ushort fromId)
+    {
+        // The atem will ask for MAX_PACKET_ID to be retransmitted when it really wants 0
+        fromId = (ushort)(fromId % MaxPacketId);
+
+        // TODO: Simplify using LINQ
+        var fromIndex = _inflight.FindIndex(0, pkt => pkt.PacketId == fromId);
+        if (fromIndex != -1)
+        {
+            Log($"Unable to resend: {fromId}");
+            await RestartConnection();
+        }
+        else
+        {
+            var now = DateTime.Now;
+            for (var currentIndex = fromIndex; currentIndex < _inflight.Count; currentIndex++)
+            {
+                var sentPacket =  _inflight[currentIndex];
+                if (sentPacket.PacketId == fromId || !IsPacketCoveredByAck(fromId, sentPacket.PacketId))
+                {
+                    sentPacket.LastSent = now;
+                    sentPacket.Resent++;
+                    SendPacket(sentPacket.Payload);
+                }
+            }
+        }
+    }
+
+    private async Task CheckForRetransmit()
+    {
+        if (_inflight.Count == 0) return;
+
+        var now = DateTime.Now;
+        // TODO: Simplify using LINQ (.First ...)
+        foreach (var sentPacket in _inflight)
+        {
+            if (sentPacket.LastSent + InFlightTimeout < now)
+            {
+                if (sentPacket.Resent <= MaxPacketRetries && IsPacketCoveredByAck(_nextSendPacketId, sentPacket.PacketId))
+                {
+                    Log($"Retransmit from timeout: {sentPacket.PacketId}");
+                    await RetransmitFrom(sentPacket.PacketId);
+                    return;
+                } else {
+                    Log($"Packet timed out {sentPacket.PacketId}");
+                    await RestartConnection();
+                    return;
+                }
+            }
+        }
+    }
+
+    private static readonly TimeSpan ConnectionRetryInterval = TimeSpan.FromSeconds(1);
+    private static readonly TimeSpan ConnectionTimeout = TimeSpan.FromSeconds(5);
+    private static readonly TimeSpan RetransmitInterval = TimeSpan.FromMilliseconds(10);
+    private static readonly byte[] CommandConnectHello =
+    [
+        0x10, 0x14, 0x53, 0xab, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00
+    ];
+
+    private static readonly ushort MaxPacketId = 1 << 15;
+    private static readonly uint MaxPacketRetries = 10;
+    private static readonly uint MaxPacketPerAck = 16;
+
+    private static readonly TimeSpan InFlightTimeout = TimeSpan.FromMilliseconds(60);
+
+    protected virtual void OnConnected()
+    {
+        Connected?.Invoke(this, EventArgs.Empty);
+    }
+}

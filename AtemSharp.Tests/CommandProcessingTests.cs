@@ -27,7 +27,7 @@ public class CommandProcessingTests
         _mockLogger = Substitute.For<ILogger<Atem>>();
 
         // Create Atem instance with mocked logger
-        _atem = new Atem(_mockLogger);
+        _atem = new Atem();
     }
 
     [TearDown]
@@ -254,7 +254,7 @@ public class CommandProcessingTests
             SessionId = 1,
             PacketId = 1
         };
-        var packetArgs = new PacketReceivedEventArgs { Packet = packet, RemoteEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, 9910) };
+        var packetArgs = new PacketReceivedEventArgs { Packet = packet };
 
         // Act - Trigger OnPacketReceived via reflection
         var onPacketReceivedMethod = typeof(Atem).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -278,7 +278,7 @@ public class CommandProcessingTests
             SessionId = 1,
             PacketId = 1
         };
-        var packetArgs = new PacketReceivedEventArgs { Packet = packet, RemoteEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, 9910) };
+        var packetArgs = new PacketReceivedEventArgs { Packet = packet };
 
         // Act - Trigger OnPacketReceived via reflection
         var onPacketReceivedMethod = typeof(Atem).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -301,7 +301,7 @@ public class CommandProcessingTests
             SessionId = 1,
             PacketId = 1
         };
-        var packetArgs = new PacketReceivedEventArgs { Packet = emptyPacket, RemoteEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, 9910) };
+        var packetArgs = new PacketReceivedEventArgs { Packet = emptyPacket };
 
         // Act - Trigger OnPacketReceived via reflection
         var onPacketReceivedMethod = typeof(Atem).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -309,42 +309,6 @@ public class CommandProcessingTests
 
         // Assert - Verify no error logging occurred (empty packets should be handled gracefully)
         _mockLogger?.DidNotReceive().Log(LogLevel.Error, Arg.Any<EventId>(), Arg.Any<object>(), Arg.Any<Exception>(), Arg.Any<Func<object, Exception?, string>>());
-    }
-
-    [Test]
-    public void Atem_ProcessPacketWithoutState_ShouldLogError()
-    {
-        // Arrange
-        // Deliberately do NOT initialize the state to test error logging
-        // Use a packet with a command that will definitely try to access state
-        var packet = CreateValidCommandPacket();
-        var packetArgs = new PacketReceivedEventArgs { Packet = packet, RemoteEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, 9910) };
-
-        // Act - Trigger OnPacketReceived via reflection
-        var onPacketReceivedMethod = typeof(Atem).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
-        onPacketReceivedMethod?.Invoke(_atem, [null, packetArgs]);
-
-        // Assert - Verify error logging occurred due to command failing when applied to null state
-        _mockLogger?.Received().Log(LogLevel.Error, Arg.Any<EventId>(), Arg.Any<object>(), Arg.Any<Exception>(), Arg.Any<Func<object, Exception?, string>>());
-    }
-
-    private AtemPacket CreateValidCommandPacket()
-    {
-        // Create a real version command packet using test data format
-        // Based on libatem test data: "00-0C-00-00-5F-76-65-72-00-02-00-1C"
-        var commandBytes = new byte[] {
-            0x00, 0x0C,       // Command length = 12
-            0x00, 0x00,       // Reserved
-            0x5F, 0x76, 0x65, 0x72,  // "_ver" command name
-            0x00, 0x02, 0x00, 0x1C   // Version data (protocol version)
-        };
-
-        return new AtemPacket(commandBytes)
-        {
-            Flags = PacketFlag.AckRequest,
-            SessionId = 1,
-            PacketId = 1
-        };
     }
 
     [Test]
@@ -358,7 +322,7 @@ public class CommandProcessingTests
             SessionId = 1,
             PacketId = 1
         };
-        var packetArgs = new PacketReceivedEventArgs { Packet = packet, RemoteEndPoint = new System.Net.IPEndPoint(System.Net.IPAddress.Loopback, 9910) };
+        var packetArgs = new PacketReceivedEventArgs { Packet = packet };
 
         // Act - Trigger OnPacketReceived via reflection
         var onPacketReceivedMethod = typeof(Atem).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);

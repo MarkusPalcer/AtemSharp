@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks.Dataflow;
 using AtemSharp.Lib;
 
 namespace AtemSharp.Tests.TestUtilities;
@@ -9,8 +10,8 @@ namespace AtemSharp.Tests.TestUtilities;
 /// </summary>
 public class UdpClientFake : IUdpClient
 {
-    private readonly Queue<byte[]> _receivedData = new();
-    private readonly List<byte[]> _sentData = new();
+    private readonly BufferBlock<UdpReceiveResult> _receivedData = new();
+    public BufferBlock<byte[]> SentData { get; } = new();
     private bool _disposed;
     private IPEndPoint? _connectedEndPoint;
     private readonly Socket _fakeSocket;
@@ -20,11 +21,6 @@ public class UdpClientFake : IUdpClient
     /// Gets the underlying Socket for configuration
     /// </summary>
     public Socket Client => _fakeSocket;
-
-    /// <summary>
-    /// Gets the data that was sent through this fake client
-    /// </summary>
-    public IReadOnlyList<byte[]> SentData => _sentData.AsReadOnly();
 
     /// <summary>
     /// Gets the endpoint this client is connected to
@@ -50,43 +46,22 @@ public class UdpClientFake : IUdpClient
         _connectedEndPoint = remoteEndPoint;
     }
 
-    /// <summary>
-    /// Asynchronously sends data to the connected remote endpoint
-    /// </summary>
-    /// <param name="data">The data to send</param>
-    /// <param name="cancellationToken">Cancellation token</param>
-    /// <returns>Task representing the async operation</returns>
-    public Task SendAsync(byte[] data, CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    Task IUdpClient.SendAsync(byte[] data, CancellationToken cancellationToken)
     {
         ThrowIfDisposed();
-        _sentData.Add((byte[])data.Clone());
+
+        SentData.Post((byte[])data.Clone());
+
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Asynchronously receives data from any remote endpoint
-    /// </summary>
-    /// <param name="cancellationToken">Cancellation token</param>
-    /// <returns>Task containing the received data and remote endpoint</returns>
-    public async Task<UdpReceiveResult> ReceiveAsync(CancellationToken cancellationToken = default)
+    /// <inheritdoc />
+    async Task<UdpReceiveResult> IUdpClient.ReceiveAsync(CancellationToken cancellationToken)
     {
         ThrowIfDisposed();
-        
-        // If we have immediate data available, return it
-        if (_receivedData.Count > 0)
-        {
-            var data = _receivedData.Dequeue();
-            return new UdpReceiveResult(data, _connectedEndPoint ?? new IPEndPoint(IPAddress.Loopback, 9910));
-        }
 
-        // Otherwise, wait for data to be provided via SimulateReceive
-        _receiveTaskCompletionSource = new TaskCompletionSource<UdpReceiveResult>();
-        
-        // Wait for either data to arrive or cancellation
-        using var registration = cancellationToken.Register(() => 
-            _receiveTaskCompletionSource?.TrySetCanceled(cancellationToken));
-            
-        return await _receiveTaskCompletionSource.Task;
+        return await _receivedData.ReceiveAsync(cancellationToken);
     }
 
     /// <summary>
@@ -97,34 +72,13 @@ public class UdpClientFake : IUdpClient
     public void SimulateReceive(byte[] data)
     {
         ThrowIfDisposed();
-        
-        if (_receiveTaskCompletionSource != null)
-        {
-            // Complete the pending receive operation
-            var result = new UdpReceiveResult((byte[])data.Clone(), _connectedEndPoint ?? new IPEndPoint(IPAddress.Loopback, 9910));
-            _receiveTaskCompletionSource.TrySetResult(result);
-            _receiveTaskCompletionSource = null;
-        }
-        else
-        {
-            // Queue the data for later retrieval
-            _receivedData.Enqueue((byte[])data.Clone());
-        }
-    }
 
-    /// <summary>
-    /// Simulates a receive error
-    /// </summary>
-    /// <param name="exception">The exception to throw from ReceiveAsync</param>
-    public void SimulateReceiveError(Exception exception)
-    {
-        ThrowIfDisposed();
-        
-        if (_receiveTaskCompletionSource != null)
+        if (_connectedEndPoint is null)
         {
-            _receiveTaskCompletionSource.TrySetException(exception);
-            _receiveTaskCompletionSource = null;
+            throw new InvalidOperationException("Not connected");
         }
+
+        _receivedData.Post(new UdpReceiveResult((byte[])data.Clone(), _connectedEndPoint));
     }
 
     /// <summary>
@@ -132,7 +86,7 @@ public class UdpClientFake : IUdpClient
     /// </summary>
     public void ClearSentData()
     {
-        _sentData.Clear();
+        SentData.TryReceiveAll(out _);
     }
 
     /// <summary>
@@ -145,7 +99,7 @@ public class UdpClientFake : IUdpClient
             // Cancel any pending receive operations
             _receiveTaskCompletionSource?.TrySetCanceled();
             _receiveTaskCompletionSource = null;
-            
+
             _fakeSocket.Dispose();
             _disposed = true;
         }

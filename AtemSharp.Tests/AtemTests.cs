@@ -19,7 +19,7 @@ public class AtemTests
         // Clear static state
         Atem.UnknownCommands.Clear();
         _logger = Substitute.For<ILogger<Atem>>();
-        _atem = new Atem(_logger);
+        _atem = new Atem();
         _transportFake = new UdpTransportFake();
         _atem.Transport = _transportFake;
     }
@@ -35,8 +35,7 @@ public class AtemTests
     public void Constructor_ShouldInitializeCorrectly()
     {
         // Assert
-        Assert.That(_atem!.State, Is.Null);
-        Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Closed));
+        Assert.That(_atem!.ConnectionState, Is.EqualTo(ConnectionState.Closed));
         Assert.That(Atem.UnknownCommands, Is.Not.Null);
         Assert.That(Atem.UnknownCommands, Is.Empty);
     }
@@ -53,7 +52,7 @@ public class AtemTests
         Assert.That(_atem.State, Is.Not.Null);
         Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Established));
 
-        
+
         // Cleanup
         var disconnectTask = _atem.DisconnectAsync();
         _transportFake.SuccessfullyDisconnect();
@@ -74,7 +73,7 @@ public class AtemTests
         // Assert
         Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Established));
         Assert.That(_transportFake.RemoteEndPoint?.Port, Is.EqualTo(customPort));
-        
+
         // Cleanup
         var disconnectTask = _atem.DisconnectAsync();
         _transportFake.SuccessfullyDisconnect();
@@ -96,7 +95,7 @@ public class AtemTests
         var connectTask = _atem!.ConnectAsync("127.0.0.1", 1234);
         _transportFake.SuccessfullyConnect();
         await connectTask.WithTimeout();
-        
+
         // Act
         var disconnectTask = _atem.DisconnectAsync();
         _transportFake.SuccessfullyDisconnect();
@@ -138,16 +137,16 @@ public class AtemTests
     public async Task ConnectAsync_StateInitialization_ShouldCreateNewState()
     {
         // Arrange
-        Assert.That(_atem!.State, Is.Null);
+        var oldState = _atem!.State;
 
         // Act
         var connectTask = _atem!.ConnectAsync("127.0.0.1", 1234);
         _transportFake.SuccessfullyConnect();
         await connectTask.WithTimeout();
-        
+
         // Assert
-        Assert.That(_atem.State, Is.Not.Null);
         Assert.That(_atem.State, Is.TypeOf<AtemSharp.State.AtemState>());
+        Assert.That(_atem.State, Is.Not.SameAs(oldState));
 
         // Cleanup
         var disconnectTask = _atem.DisconnectAsync();
@@ -162,7 +161,7 @@ public class AtemTests
         var connectTask = _atem!.ConnectAsync("127.0.0.1", 1234);
         _transportFake.SuccessfullyConnect();
         await connectTask.WithTimeout();
-        
+
         // Second connect should fail since already connected
         var ex = Assert.ThrowsAsync<InvalidOperationException>(() => _atem.ConnectAsync("127.0.0.1", 1234));
         Assert.That(ex!.Message, Does.Contain("Cannot connect when state is"));
@@ -180,7 +179,7 @@ public class AtemTests
 	    var connectTask = _atem!.ConnectAsync("127.0.0.1", 1234);
 	    _transportFake.SuccessfullyConnect();
 	    await connectTask.WithTimeout();
-	    
+
 	    // Ensure state is initialized and set up capabilities for the test
 	    Assert.That(_atem.State, Is.Not.Null, "State should be initialized after connection");
 	    _atem.State!.Info.Capabilities = new AtemSharp.State.AtemCapabilities
@@ -192,7 +191,7 @@ public class AtemTests
 	    _logger.WhenForAnyArgs(x => x.Log(default, default, default, default, default, default))
 	            // ReSharper disable once AccessToModifiedClosure Intended behavior for test
 	           .Do(_ => tcs?.SetResult());
-	    
+
 	    // Create a PreviewInputUpdateCommand packet manually (as sent by ATEM device)
 	    // Command header (8 bytes): length (12), reserved (0), raw name "PrvI"
 	    // Command data (4 bytes): mixEffectId=0, padding=0, source=0
@@ -202,31 +201,31 @@ public class AtemTests
 		    0x00, 0x0C, // Command length (12 bytes = 8 header + 4 data) - big endian
 		    0x00, 0x00, // Reserved
 		    (byte)'P', (byte)'r', (byte)'v', (byte)'I', // Raw name "PrvI"
-            
+
 		    // Command data (4 bytes)
 		    0x00, // Mix effect ID = 0
 		    0x00, // Padding byte
 		    0x00, 0x00 // Source = 0 (big endian)
 	    };
-        
+
 	    var packet = new AtemPacket(commandData)
 	    {
 		    Flags = PacketFlag.AckRequest,
 		    SessionId = 1,
 		    PacketId = 100
 	    };
-        
+
 	    _transportFake.SimulatePacketReceived(packet);
 	    await tcs.Task.WithTimeout();
-	    
+
 	    // Verify that no errors were logged (indicating successful command parsing)
 	    _logger.DidNotReceive().Log(LogLevel.Error, Arg.Any<EventId>(), Arg.Any<object>(), Arg.Any<Exception>(), Arg.Any<Func<object, Exception?, string>>());
-	    
+
 	    // Also verify that the command was properly parsed and applied to state
 	    Assert.That(_atem.State, Is.Not.Null, "State should be initialized after receiving commands");
 	    Assert.That(_atem.State!.Video.MixEffects.ContainsKey(0), Is.True, "Mix effect 0 should exist after receiving PreviewInputUpdate command");
 	    Assert.That(_atem.State.Video.MixEffects[0].PreviewInput, Is.EqualTo(0), "Preview input should be set to source 0");
-	    
+
 	    // Cleanup
 	    tcs = null;
 	    var disconnectTask = _atem.DisconnectAsync();

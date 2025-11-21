@@ -112,7 +112,7 @@ public class AtemPacketTests
         Assert.That(parsedPacket.Length, Is.EqualTo(16));
         Assert.That(parsedPacket.SessionId, Is.EqualTo(0x1234));
         Assert.That(parsedPacket.AckPacketId, Is.EqualTo(0x5678));
-        Assert.That(parsedPacket.Reserved, Is.EqualTo(0x9ABC));
+        Assert.That(parsedPacket.RetransmitFromPacketId, Is.EqualTo(0x9ABC));
         Assert.That(parsedPacket.PacketId, Is.EqualTo(0xDEF0));
         
         var expectedPayload = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD };
@@ -181,7 +181,7 @@ public class AtemPacketTests
             Flags = PacketFlag.AckRequest | PacketFlag.NewSessionId,
             SessionId = 0x1234,
             AckPacketId = 0x5678,
-            Reserved = 0x9ABC,
+            RetransmitFromPacketId = 0x9ABC,
             PacketId = 0xDEF0
         };
 
@@ -194,7 +194,7 @@ public class AtemPacketTests
         Assert.That(parsedBack.Length, Is.EqualTo(originalPacket.Length));
         Assert.That(parsedBack.SessionId, Is.EqualTo(originalPacket.SessionId));
         Assert.That(parsedBack.AckPacketId, Is.EqualTo(originalPacket.AckPacketId));
-        Assert.That(parsedBack.Reserved, Is.EqualTo(originalPacket.Reserved));
+        Assert.That(parsedBack.RetransmitFromPacketId, Is.EqualTo(originalPacket.RetransmitFromPacketId));
         Assert.That(parsedBack.PacketId, Is.EqualTo(originalPacket.PacketId));
         Assert.That(parsedBack.Payload, Is.EqualTo(originalPacket.Payload));
     }

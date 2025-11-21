@@ -1,3 +1,6 @@
+using AtemSharp.Commands;
+using AtemSharp.Commands.Macro;
+using AtemSharp.Communication;
 using AtemSharp.Lib;
 using AtemSharp.State;
 using Microsoft.Extensions.Logging;
@@ -44,7 +47,7 @@ public class Atem : IDisposable
 	/// Initializes a new instance of the Atem class
 	/// </summary>
 	/// <param name="logger">Logger instance for diagnostic output</param>
-	public Atem(ILogger<Atem>? logger = null) : this(new UdpTransport(), logger)
+	public Atem(ILogger<Atem>? logger = null) : this(new AtemSocket(), logger)
 	{
 	}
 
@@ -210,4 +213,9 @@ public class Atem : IDisposable
 		// Clean up any pending connection completion
 		_connectionCompletionSource?.TrySetCanceled();
 	}
+
+    public async Task SendCommand(SerializedCommand command)
+    {
+        await Transport.SendCommand(command);
+    }
 }

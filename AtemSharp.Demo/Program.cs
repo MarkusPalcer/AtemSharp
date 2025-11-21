@@ -1,6 +1,9 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Diagnostics;
 using AtemSharp;
+using AtemSharp.Commands.Macro;
+using AtemSharp.Commands.MixEffects;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -12,16 +15,25 @@ using var loggerFactory = LoggerFactory.Create(builder =>
     builder.AddConsole().SetMinimumLevel(LogLevel.Information));
 var logger = loggerFactory.CreateLogger<Atem>();
 
-var atem = new Atem(logger);
+var atem = new Atem();
 
 var emergencyCts = new CancellationTokenSource();
-emergencyCts.CancelAfter(TimeSpan.FromSeconds(10));
+if (!Debugger.IsAttached)
+{
+    emergencyCts.CancelAfter(TimeSpan.FromSeconds(10));
+}
+
 Console.CancelKeyPress += (_, _) => emergencyCts.Cancel();
 
 Console.WriteLine("Attempting to connect to 192.168.178.69:9910...");
 await atem.ConnectAsync("192.168.178.69", cancellationToken: emergencyCts.Token);
 Console.WriteLine("Connected, waiting 2s for data to come in ...");
 await Task.Delay(TimeSpan.FromSeconds(2), emergencyCts.Token);
+
+
+Console.WriteLine($"Executing Macro {atem.State.Macros.Macros[0].Name} ...");
+var command = new MacroActionCommand(atem.State.Macros.Macros[0], MacroAction.Run);
+await atem.SendCommand(command);
 
 var state = atem.State;
 
