@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Net;
 using System.Threading.Tasks.Dataflow;
 using AtemSharp.Commands;
 using AtemSharp.Constants;
@@ -16,8 +17,7 @@ public class AtemClient : IAtemClient
 
     private int _nextPacketTrackingId;
     private bool _isDisconnecting;
-    private string _address = "127.0.0.1";
-    private int _port;
+    private IPEndPoint _remoteEndpoint =  new(IPAddress.None, 0);
     private AtemProtocol? _protocol;
     private Action? _exitUnsubscribe = () => { };
     private ActionLoop? _receiveLoop;
@@ -39,8 +39,7 @@ public class AtemClient : IAtemClient
     {
         _isDisconnecting = false;
 
-        _address = address;
-        _port = port;
+        _remoteEndpoint = new IPEndPoint(IPAddress.Parse(address), port);
 
         if (_protocol is null)
         {
@@ -55,7 +54,7 @@ public class AtemClient : IAtemClient
         _commandAckSources.Clear();
         _receiveLoop = ActionLoop.Start(ReceivePacket);
         _ackLoop = ActionLoop.Start(DoAckLoop);
-        await _protocol.Connect(_address, _port);
+        await _protocol.Connect(_remoteEndpoint);
     }
 
     private async Task DoAckLoop(CancellationToken cts)

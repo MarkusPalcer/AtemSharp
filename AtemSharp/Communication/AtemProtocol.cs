@@ -20,9 +20,7 @@ public class AtemProtocol
     private readonly Lock _nextSendPacketIdLock = new();
     private ushort _sessionId;
 
-    // TODO: Turn into IPAddress instance
-    private string _address = "127.0.0.1";
-    private int _port = Constants.AtemConstants.DEFAULT_PORT;
+    private IPEndPoint _remoteEndpoint = new(IPAddress.None, Constants.AtemConstants.DEFAULT_PORT);
     private IUdpClient? _socket;
 
     private DateTime _lastReceivedAt = DateTime.Now;
@@ -89,10 +87,9 @@ public class AtemProtocol
         });
     }
 
-    public async Task Connect(string address, int port)
+    public async Task Connect(IPEndPoint endPoint)
     {
-        _address = address;
-        _port = port;
+        _remoteEndpoint = endPoint;
 
         await CreateSocket();
 
@@ -184,7 +181,7 @@ public class AtemProtocol
 
         _socket = new UdpClientWrapper();
         _socket.Client.Bind(new IPEndPoint(IPAddress.Any, 0));
-        _socket.Connect(new IPEndPoint(IPAddress.Parse(_address), _port));
+        _socket.Connect(_remoteEndpoint);
         _receiveLoop = ActionLoop.Start(ReceiveLoopAsync);
     }
 
