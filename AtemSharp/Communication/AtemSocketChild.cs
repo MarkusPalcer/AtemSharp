@@ -29,9 +29,7 @@ public class AtemSocketChild
     private ushort _lastReceivedPacketId;
     private List<InFlightPacket> _inflight = [];
     private CancellationTokenSource? _ackTimerCancellation;
-    private CancellationTokenSource? _timersCancellation;
     private int _receivedWithoutAck;
-
 
     public event EventHandler? Connected;
     public event EventHandler? Disconnected;
@@ -39,76 +37,57 @@ public class AtemSocketChild
     public IReceivableSourceBlock<AtemPacket> ReceivedPackets => _receivedPackets;
     public IReceivableSourceBlock<int> AckedTrackingIds => _ackedTrackingIds;
 
-    internal Func<IUdpClient> UdpClientFactory = () => new UdpClientWrapper();
     private Task? _receiveLoop;
     private CancellationTokenSource? _connectionTokenSource;
     private BufferBlock<AtemPacket> _receivedPackets = new();
     private BufferBlock<int> _ackedTrackingIds = new();
+    private ActionLoop? _reconnectTimer;
+    private ActionLoop? _retransmitTimer;
 
     private void StartTimers()
     {
-        if (_timersCancellation is not null) return;
-
-        _timersCancellation = new();
-        ReconnectTimerLoop(_timersCancellation.Token);
-        RetransmitTimerLoop(_timersCancellation.Token);
+        _reconnectTimer ??= ActionLoop.Start(ReconnectTimer);
+        _retransmitTimer ??= ActionLoop.Start(RetransmitTimer);
     }
 
-    private async void ReconnectTimerLoop(CancellationToken cancellationToken)
+    private async Task ReconnectTimer(CancellationToken token)
     {
-        while (!cancellationToken.IsCancellationRequested)
+        await Task.Delay(ConnectionRetryInterval, token);
+
+        if (_lastReceivedAt + ConnectionTimeout > DateTime.Now)
         {
-            try
-            {
-                await Task.Delay(ConnectionRetryInterval, cancellationToken);
-            }
-            catch (TaskCanceledException)
-            {
-                return;
-            }
-
-            if (_lastReceivedAt + ConnectionTimeout > DateTime.Now)
-            {
-                continue;
-            }
-
-            RestartConnection().ContinueWith(t =>
-            {
-                if (t.IsFaulted)
-                {
-                    Log($"Reconnect failed: {t.Exception}");
-                }
-            });
+            return;
         }
-    }
 
-    private async void RetransmitTimerLoop(CancellationToken cancellationToken)
-    {
-        while (!cancellationToken.IsCancellationRequested)
+        RestartConnection().ContinueWith(t =>
         {
-            try
+            if (t.IsFaulted)
             {
-                await Task.Delay(RetransmitInterval, cancellationToken);
+                Log($"Reconnect failed: {t.Exception}");
             }
-            catch (TaskCanceledException)
-            {
-                return;
-            }
-
-            CheckForRetransmit().ContinueWith(t =>
-            {
-                if (t.IsFaulted)
-                {
-                    Log($"Failed to retransmit {t.Exception}");
-                }
-            });
-        }
+        });
     }
 
-    private void ClearTimers()
+    private async Task RetransmitTimer(CancellationToken token)
     {
-        _timersCancellation?.Cancel();
-        _timersCancellation = null;
+        await Task.Delay(RetransmitInterval, token);
+
+        CheckForRetransmit().ContinueWith(t =>
+        {
+            if (t.IsFaulted)
+            {
+                Log($"Failed to retransmit {t.Exception}");
+            }
+        });
+    }
+
+    // TODO: Make async task
+    private async void ClearTimers()
+    {
+        await Task.WhenAll(
+            _reconnectTimer?.Cancel() ?? Task.CompletedTask,
+            _retransmitTimer?.Cancel() ?? Task.CompletedTask
+        );
     }
 
     // TODO: Await connection event
@@ -225,7 +204,7 @@ public class AtemSocketChild
         _connectionTokenSource = new();
 
         _socket?.Dispose();
-        _socket = UdpClientFactory();
+        _socket = ((Func<IUdpClient>)(() => new UdpClientWrapper()))();
         _socket.Client.Bind(new IPEndPoint(IPAddress.Any, 0));
         _socket.Connect(new IPEndPoint(IPAddress.Parse(_address), _port));
         _receiveLoop = ReceiveLoopAsync(_connectionTokenSource.Token);
