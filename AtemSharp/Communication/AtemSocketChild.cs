@@ -9,6 +9,7 @@ namespace AtemSharp.Communication;
 /// <summary>
 /// Handles the communication protocol for the ATEM mixers
 /// </summary>
+// TODO: Create interface
 public class AtemSocketChild
 {
     // TODO: public ConnectionStatus: Closed, Connecting, Connected, Disconnecting
@@ -31,8 +32,8 @@ public class AtemSocketChild
 
 
     public event EventHandler? Connected;
+    public event EventHandler? Disconnected;
 
-    private readonly Func<Task> _onDisconnect;
     private readonly Func<AtemPacket, Task> _onCommandsReceived;
     private readonly Func<AckedPacket[], Task> _onPacketsAcknowledged;
 
@@ -42,13 +43,11 @@ public class AtemSocketChild
 
 
     // TODO: Use C#-Events instead of callbacks
-    public AtemSocketChild(Func<Task> onDisconnect,
-                           Func<AtemPacket, Task> onCommandsReceived,
+    public AtemSocketChild(Func<AtemPacket, Task> onCommandsReceived,
                            Func<AckedPacket[], Task> onPacketsAcknowledged)
     {
         _address = "127.0.0.1";
         _port = Constants.AtemConstants.DEFAULT_PORT;
-        _onDisconnect = onDisconnect;
         _onCommandsReceived = onCommandsReceived;
         _onPacketsAcknowledged = onPacketsAcknowledged;
     }
@@ -136,7 +135,7 @@ public class AtemSocketChild
         CloseSocket();
         Log("Disconnected");
         ConnectionState = ConnectionState.Disconnected;
-        await _onDisconnect();
+        OnDisconnected();
     }
 
     private async Task RestartConnection()
@@ -147,7 +146,7 @@ public class AtemSocketChild
         if (ConnectionState == ConnectionState.Established)
         {
             RecreateSocket();
-            await _onDisconnect();
+            OnDisconnected();
         } else if (ConnectionState == ConnectionState.Disconnected)
         {
             CreateSocket();
@@ -477,5 +476,10 @@ public class AtemSocketChild
     protected virtual void OnConnected()
     {
         Connected?.Invoke(this, EventArgs.Empty);
+    }
+
+    protected virtual void OnDisconnected()
+    {
+        Disconnected?.Invoke(this, EventArgs.Empty);
     }
 }

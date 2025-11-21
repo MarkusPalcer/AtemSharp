@@ -89,6 +89,7 @@ public class AtemSocket : IAtemSocket, IUdpTransport
         return Interlocked.Increment(ref _nextPacketTrackingId);
     }
 
+    // TODO: make async and await all tracking IDs
     public int[] SendCommands(SerializedCommand[] commands)
     {
         if (_socketProcess is null) throw new InvalidOperationException("Socket process is not open");
@@ -112,11 +113,7 @@ public class AtemSocket : IAtemSocket, IUdpTransport
     // TODO: Move to constructor
     private async Task CreateSocketProcess()
     {
-        _socketProcess = new AtemSocketChild(() =>
-                                             {
-                                                 OnDisconnected();
-                                                 return Task.CompletedTask;
-                                             },
+        _socketProcess = new AtemSocketChild(
                                              (packet) =>
                                              {
                                                  OnPacketReceived(packet);
@@ -128,12 +125,8 @@ public class AtemSocket : IAtemSocket, IUdpTransport
                                                  return Task.CompletedTask;
                                              });
 
-        _socketProcess.Connected += HandleConnected;
-    }
-
-    private void HandleConnected(object? sender, EventArgs e)
-    {
-        OnConnected();
+        _socketProcess.Connected += (_,_) => OnConnected();
+        _socketProcess.Disconnected += (_,_) => OnDisconnected();
     }
 
     protected virtual void OnDisconnected()
@@ -171,25 +164,10 @@ public class AtemSocket : IAtemSocket, IUdpTransport
         await Disconnect();
     }
 
-    // TODO: SendCommands
     public Task SendCommand(SerializedCommand command, CancellationToken cancellationToken = default)
     {
         SendCommands([command]);
-        // TODO: Complete task when command has been acked
         return Task.CompletedTask;
-    }
-
-    // TODO: Hide
-    public Task SendPacketAsync(AtemPacket packet, CancellationToken cancellationToken = default)
-    {
-        var info = new OutboundPacketInfo(packet.ToBytes(), GetNextTrackingId());
-        _socketProcess?.SendPackets([info]);
-        return Task.CompletedTask;
-    }
-
-    public Task SendHelloPacketAsync(CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
     }
 
     protected virtual void OnPacketReceived(AtemPacket packet)
