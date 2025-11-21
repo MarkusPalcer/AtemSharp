@@ -11,4 +11,5 @@ public class FairlightAudioState : AudioState
     public Dictionary<int, FairlightAudioInput> Inputs { get; init; } = [];
 
     public MasterProperties Master { get; } = new();
+    public MonitorProperties Monitor { get; } = new();
 }
