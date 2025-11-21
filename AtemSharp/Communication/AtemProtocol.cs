@@ -11,7 +11,7 @@ namespace AtemSharp.Communication;
 /// </summary>
 // TODO: Create interface
 // TODO: Make IAsyncDisposable
-public class AtemSocketChild
+public class AtemProtocol
 {
     // TODO: public ConnectionStatus: Closed, Connecting, Connected, Disconnecting
     public ConnectionState ConnectionState { get; private set; } = ConnectionState.Closed;

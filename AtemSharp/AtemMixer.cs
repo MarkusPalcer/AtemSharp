@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace AtemSharp;
 
-public class Atem : IDisposable
+public class AtemMixer : IDisposable
 {
     private readonly CommandParser _commandParser = new();
 
@@ -27,7 +27,7 @@ public class Atem : IDisposable
         }
     }
 
-    private readonly ILogger<Atem> _logger;
+    private readonly ILogger<AtemMixer> _logger;
     private bool _disposed;
     private IUdpTransport _transport;
     private TaskCompletionSource<bool>? _connectionCompletionSource;
@@ -46,7 +46,7 @@ public class Atem : IDisposable
     /// Initializes a new instance of the Atem class
     /// </summary>
     /// <param name="logger">Logger instance for diagnostic output</param>
-    public Atem(ILogger<Atem>? logger = null) : this(new AtemSocket(), logger)
+    public AtemMixer(ILogger<AtemMixer>? logger = null) : this(new AtemClient(), logger)
     {
     }
 
@@ -57,10 +57,10 @@ public class Atem : IDisposable
     /// <param name="transport">The UDP transport to use for communication</param>
     /// <param name="logger">Logger instance for diagnostic output</param>
     /// <remarks>This constructor is solely for testing purposes to mock the IUdpTransport</remarks>
-    internal Atem(IUdpTransport transport, ILogger<Atem>? logger = null)
+    internal AtemMixer(IUdpTransport transport, ILogger<AtemMixer>? logger = null)
     {
         _transport = transport ?? throw new ArgumentNullException(nameof(transport));
-        _logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<Atem>.Instance;
+        _logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<AtemMixer>.Instance;
         _transport.PacketReceived += OnPacketReceived;
         _transport.ConnectionStateChanged += OnConnectionStateChanged;
         _transport.ErrorOccurred += OnErrorOccurred;
@@ -77,7 +77,7 @@ public class Atem : IDisposable
                                    CancellationToken cancellationToken = default)
     {
         if (_disposed)
-            throw new ObjectDisposedException(nameof(Atem));
+            throw new ObjectDisposedException(nameof(AtemMixer));
 
         State = new AtemState();
         _connectionCompletionSource = new TaskCompletionSource<bool>();

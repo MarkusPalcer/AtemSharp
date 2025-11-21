@@ -10,7 +10,7 @@ namespace AtemSharp.Communication;
 /// <summary>
 /// Sends and receives commands to a ATEM Mixer
 /// </summary>
-public class AtemSocket : IAtemSocket, IUdpTransport
+public class AtemClient : IAtemSocket, IUdpTransport
 {
     private readonly CommandParser _commandParser = new();
 
@@ -18,7 +18,7 @@ public class AtemSocket : IAtemSocket, IUdpTransport
     private bool _isDisconnecting;
     private string _address = "127.0.0.1";
     private int _port;
-    private AtemSocketChild? _socketProcess;
+    private AtemProtocol? _protocol;
     private Action? _exitUnsubscribe = () => { };
     private ActionLoop? _receiveLoop;
     private ActionLoop? _ackLoop;
@@ -37,11 +37,11 @@ public class AtemSocket : IAtemSocket, IUdpTransport
         _address = address;
         _port = port;
 
-        if (_socketProcess is null)
+        if (_protocol is null)
         {
             CreateSocketProcess();
 
-            if (_isDisconnecting || _socketProcess is null)
+            if (_isDisconnecting || _protocol is null)
             {
                 throw new InvalidOperationException("Disconnecting");
             }
@@ -50,12 +50,12 @@ public class AtemSocket : IAtemSocket, IUdpTransport
         _commandAckSources.Clear();
         _receiveLoop = ActionLoop.Start(ReceivePacket);
         _ackLoop = ActionLoop.Start(DoAckLoop);
-        await _socketProcess.Connect(_address, _port);
+        await _protocol.Connect(_address, _port);
     }
 
     private async Task DoAckLoop(CancellationToken cts)
     {
-        var ackedId = await _socketProcess.AckedTrackingIds.ReceiveAsync(cts);
+        var ackedId = await _protocol.AckedTrackingIds.ReceiveAsync(cts);
         if (!_commandAckSources.Remove(ackedId, out var tcs)) return;
         tcs.TrySetResult();
     }
@@ -73,18 +73,18 @@ public class AtemSocket : IAtemSocket, IUdpTransport
         await (_receiveLoop?.Cancel() ?? Task.CompletedTask);
         await (_ackLoop?.Cancel() ?? Task.CompletedTask);
 
-        if (_socketProcess is not null)
+        if (_protocol is not null)
         {
             try
             {
-                await _socketProcess.Disconnect();
+                await _protocol.Disconnect();
             }
             catch (Exception)
             {
                 // Ignore Exceptions
             }
 
-            _socketProcess = null;
+            _protocol = null;
         }
     }
 
@@ -97,7 +97,7 @@ public class AtemSocket : IAtemSocket, IUdpTransport
 
     public async Task SendCommands(SerializedCommand[] commands)
     {
-        if (_socketProcess is null) throw new InvalidOperationException("Socket process is not open");
+        if (_protocol is null) throw new InvalidOperationException("Socket process is not open");
 
         var packetBuilder = new PacketBuilder(_commandParser.Version);
         foreach (var command in commands)
@@ -122,7 +122,7 @@ public class AtemSocket : IAtemSocket, IUdpTransport
 
         if (packets.Length > 0)
         {
-            _socketProcess.SendPackets(packets);
+            _protocol.SendPackets(packets);
         }
 
         await Task.WhenAll(ackTcs.Select(t => t.Task));
@@ -130,15 +130,15 @@ public class AtemSocket : IAtemSocket, IUdpTransport
 
     private void CreateSocketProcess()
     {
-        _socketProcess = new AtemSocketChild();
+        _protocol = new AtemProtocol();
 
-        _socketProcess.Connected += (_,_) => OnConnected();
-        _socketProcess.Disconnected += (_,_) => OnDisconnected();
+        _protocol.Connected += (_,_) => OnConnected();
+        _protocol.Disconnected += (_,_) => OnDisconnected();
     }
 
     private async Task ReceivePacket(CancellationToken cts)
     {
-        var packet = await _socketProcess!.ReceivedPackets.ReceiveAsync(cts);
+        var packet = await _protocol!.ReceivedPackets.ReceiveAsync(cts);
         OnPacketReceived(packet);
     }
 
@@ -161,7 +161,7 @@ public class AtemSocket : IAtemSocket, IUdpTransport
     public event EventHandler<ConnectionStateChangedEventArgs>? ConnectionStateChanged;
     public event EventHandler<Exception>? ErrorOccurred;
 
-    public ConnectionState ConnectionState => _socketProcess?.ConnectionState ?? ConnectionState.Closed;
+    public ConnectionState ConnectionState => _protocol?.ConnectionState ?? ConnectionState.Closed;
 
     public async Task ConnectAsync(string address, int port = AtemConstants.DEFAULT_PORT, CancellationToken cancellationToken = default)
     {

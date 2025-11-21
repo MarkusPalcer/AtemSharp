@@ -14,20 +14,20 @@ namespace AtemSharp.Tests;
 [TestFixture]
 public class CommandProcessingTests
 {
-    private Atem? _atem;
-    private ILogger<Atem>? _mockLogger;
+    private AtemMixer? _atem;
+    private ILogger<AtemMixer>? _mockLogger;
 
     [SetUp]
     public void SetUp()
     {
         // Clear static state
-        Atem.UnknownCommands.Clear();
+        AtemMixer.UnknownCommands.Clear();
 
         // Create mock logger
-        _mockLogger = Substitute.For<ILogger<Atem>>();
+        _mockLogger = Substitute.For<ILogger<AtemMixer>>();
 
         // Create Atem instance with mocked logger
-        _atem = new Atem();
+        _atem = new AtemMixer();
     }
 
     [TearDown]
@@ -104,15 +104,15 @@ public class CommandProcessingTests
         // Arrange
         var parser = new CommandParser();
         Span<byte> unknownData = [0x01, 0x02];
-        var initialUnknownCount = Atem.UnknownCommands.Count;
+        var initialUnknownCount = AtemMixer.UnknownCommands.Count;
 
         // Act
         var command = parser.ParseCommand("XXXX", unknownData);
 
         // Assert
         Assert.That(command, Is.Null);
-        Assert.That(Atem.UnknownCommands.Count, Is.EqualTo(initialUnknownCount + 1));
-        Assert.That(Atem.UnknownCommands, Contains.Item("XXXX"));
+        Assert.That(AtemMixer.UnknownCommands.Count, Is.EqualTo(initialUnknownCount + 1));
+        Assert.That(AtemMixer.UnknownCommands, Contains.Item("XXXX"));
     }
 
     [Test]
@@ -257,7 +257,7 @@ public class CommandProcessingTests
         var packetArgs = new PacketReceivedEventArgs { Packet = packet };
 
         // Act - Trigger OnPacketReceived via reflection
-        var onPacketReceivedMethod = typeof(Atem).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
+        var onPacketReceivedMethod = typeof(AtemMixer).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
         onPacketReceivedMethod?.Invoke(_atem, [null, packetArgs]);
 
         // Assert - Verify no error logging occurred
@@ -281,7 +281,7 @@ public class CommandProcessingTests
         var packetArgs = new PacketReceivedEventArgs { Packet = packet };
 
         // Act - Trigger OnPacketReceived via reflection
-        var onPacketReceivedMethod = typeof(Atem).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
+        var onPacketReceivedMethod = typeof(AtemMixer).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
         onPacketReceivedMethod?.Invoke(_atem, [null, packetArgs]);
 
         // Assert - Verify no error logging occurred (malformed packets should be handled gracefully)
@@ -304,7 +304,7 @@ public class CommandProcessingTests
         var packetArgs = new PacketReceivedEventArgs { Packet = emptyPacket };
 
         // Act - Trigger OnPacketReceived via reflection
-        var onPacketReceivedMethod = typeof(Atem).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
+        var onPacketReceivedMethod = typeof(AtemMixer).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
         onPacketReceivedMethod?.Invoke(_atem, [null, packetArgs]);
 
         // Assert - Verify no error logging occurred (empty packets should be handled gracefully)
@@ -325,7 +325,7 @@ public class CommandProcessingTests
         var packetArgs = new PacketReceivedEventArgs { Packet = packet };
 
         // Act - Trigger OnPacketReceived via reflection
-        var onPacketReceivedMethod = typeof(Atem).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
+        var onPacketReceivedMethod = typeof(AtemMixer).GetMethod("OnPacketReceived", BindingFlags.NonPublic | BindingFlags.Instance);
         onPacketReceivedMethod?.Invoke(_atem, [null, packetArgs]);
 
         // Assert - This test verifies that error logging does occur when there's actually an error

@@ -7,19 +7,19 @@ using NSubstitute;
 namespace AtemSharp.Tests;
 
 [TestFixture]
-public class AtemTests
+public class AtemMixerTests
 {
-    private Atem? _atem;
+    private AtemMixer? _atem;
     private UdpTransportFake _transportFake;
-    private ILogger<Atem> _logger;
+    private ILogger<AtemMixer> _logger;
 
     [SetUp]
     public void SetUp()
     {
         // Clear static state
-        Atem.UnknownCommands.Clear();
-        _logger = Substitute.For<ILogger<Atem>>();
-        _atem = new Atem();
+        AtemMixer.UnknownCommands.Clear();
+        _logger = Substitute.For<ILogger<AtemMixer>>();
+        _atem = new AtemMixer();
         _transportFake = new UdpTransportFake();
         _atem.Transport = _transportFake;
     }
@@ -36,8 +36,8 @@ public class AtemTests
     {
         // Assert
         Assert.That(_atem!.ConnectionState, Is.EqualTo(ConnectionState.Closed));
-        Assert.That(Atem.UnknownCommands, Is.Not.Null);
-        Assert.That(Atem.UnknownCommands, Is.Empty);
+        Assert.That(AtemMixer.UnknownCommands, Is.Not.Null);
+        Assert.That(AtemMixer.UnknownCommands, Is.Empty);
     }
 
     [Test]

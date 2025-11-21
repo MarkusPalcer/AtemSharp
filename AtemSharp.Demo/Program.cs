@@ -13,9 +13,9 @@ Console.WriteLine("=== AtemSharp Demo ===\n");
 // Create a console logger factory and logger
 using var loggerFactory = LoggerFactory.Create(builder =>
     builder.AddConsole().SetMinimumLevel(LogLevel.Information));
-var logger = loggerFactory.CreateLogger<Atem>();
+var logger = loggerFactory.CreateLogger<AtemMixer>();
 
-var atem = new Atem();
+var atem = new AtemMixer();
 
 var emergencyCts = new CancellationTokenSource();
 if (!Debugger.IsAttached)
@@ -44,7 +44,7 @@ await File.WriteAllTextAsync("state.json", stateJson);
 Console.WriteLine($"State written to: {Path.GetFullPath("state.json")}");
 
 // Write unknown commands to file
-var unknownCommandsText = string.Join(Environment.NewLine, Atem.UnknownCommands.Select(cmd => $"- {cmd}"));
+var unknownCommandsText = string.Join(Environment.NewLine, AtemMixer.UnknownCommands.Select(cmd => $"- {cmd}"));
 await File.WriteAllTextAsync("unknown_commands.txt", unknownCommandsText);
 Console.WriteLine($"Unknown commands written to: {Path.GetFullPath("unknown_commands.txt")}");
 
