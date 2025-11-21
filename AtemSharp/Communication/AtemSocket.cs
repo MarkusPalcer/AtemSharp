@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Threading.Tasks.Dataflow;
 using AtemSharp.Commands;
 using AtemSharp.Constants;
@@ -22,6 +23,7 @@ public class AtemSocket : IAtemSocket, IUdpTransport
     private Action? _exitUnsubscribe = () => { };
     private ActionLoop? _receiveLoop;
     private ActionLoop? _ackLoop;
+    private readonly ConcurrentDictionary<int, TaskCompletionSource> _commandAckSources = new();
 
     public event EventHandler? Disconnected;
 
@@ -48,6 +50,7 @@ public class AtemSocket : IAtemSocket, IUdpTransport
             }
         }
 
+        _commandAckSources.Clear();
         _receiveLoop = ActionLoop.Start(ReceivePacket);
         _ackLoop = ActionLoop.Start(DoAckLoop);
         await _socketProcess.Connect(_address, _port);
@@ -55,8 +58,9 @@ public class AtemSocket : IAtemSocket, IUdpTransport
 
     private async Task DoAckLoop(CancellationToken cts)
     {
-        await _socketProcess.AckedTrackingIds.ReceiveAsync(cts);
-        // TODO: Complete packet TCS'
+        var ackedId = await _socketProcess.AckedTrackingIds.ReceiveAsync(cts);
+        if (!_commandAckSources.Remove(ackedId, out var tcs)) return;
+        tcs.TrySetResult();
     }
 
     public async ValueTask DisposeAsync()
@@ -96,13 +100,14 @@ public class AtemSocket : IAtemSocket, IUdpTransport
         }
     }
 
+    // TODO: Inline
     private int GetNextTrackingId()
     {
         return Interlocked.Increment(ref _nextPacketTrackingId);
     }
 
-    // TODO: make async and await all tracking IDs
-    public int[] SendCommands(SerializedCommand[] commands)
+
+    public async Task SendCommands(SerializedCommand[] commands)
     {
         if (_socketProcess is null) throw new InvalidOperationException("Socket process is not open");
 
@@ -114,12 +119,21 @@ public class AtemSocket : IAtemSocket, IUdpTransport
 
         var packets = packetBuilder.GetPackets().Select(buffer => new OutboundPacketInfo(buffer, GetNextTrackingId())).ToArray();
 
+        var ackTcs = new List<TaskCompletionSource>(packets.Length);
+
+        foreach (var outboundPacketInfo in packets)
+        {
+            var taskCompletionSource = new TaskCompletionSource();
+            _commandAckSources[outboundPacketInfo.TrackingId] = taskCompletionSource;
+            ackTcs.Add(taskCompletionSource);
+        }
+
         if (packets.Length > 0)
         {
             _socketProcess.SendPackets(packets);
         }
 
-        return packets.Select(x => x.TrackingId).ToArray();
+        await Task.WhenAll(ackTcs.Select(t => t.Task));
     }
 
     // TODO: Move to constructor
@@ -157,6 +171,7 @@ public class AtemSocket : IAtemSocket, IUdpTransport
     public event EventHandler<Exception>? ErrorOccurred;
 
     public ConnectionState ConnectionState => _socketProcess?.ConnectionState ?? ConnectionState.Closed;
+
     public async Task ConnectAsync(string address, int port = AtemConstants.DEFAULT_PORT, CancellationToken cancellationToken = default)
     {
         await Connect(address, port);
@@ -167,10 +182,10 @@ public class AtemSocket : IAtemSocket, IUdpTransport
         await Disconnect();
     }
 
-    public Task SendCommand(SerializedCommand command, CancellationToken cancellationToken = default)
+    // TODO: Handle cancellation
+    public async Task SendCommand(SerializedCommand command, CancellationToken cancellationToken = default)
     {
-        SendCommands([command]);
-        return Task.CompletedTask;
+        await SendCommands([command]);
     }
 
     protected virtual void OnPacketReceived(AtemPacket packet)
@@ -178,3 +193,4 @@ public class AtemSocket : IAtemSocket, IUdpTransport
         PacketReceived?.Invoke(this, new PacketReceivedEventArgs { Packet = packet});
     }
 }
+

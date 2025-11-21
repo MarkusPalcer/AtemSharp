@@ -10,5 +10,5 @@ public interface IAtemSocket : IAsyncDisposable
 
     Task Connect(string address, int port);
     Task Disconnect();
-    int[] SendCommands(SerializedCommand[] commands);
+    Task SendCommands(SerializedCommand[] commands);
 }
