@@ -20,7 +20,7 @@ var atem = new Atem();
 var emergencyCts = new CancellationTokenSource();
 if (!Debugger.IsAttached)
 {
-    emergencyCts.CancelAfter(TimeSpan.FromSeconds(10));
+    emergencyCts.CancelAfter(TimeSpan.FromSeconds(20));
 }
 
 Console.CancelKeyPress += (_, _) => emergencyCts.Cancel();
@@ -32,8 +32,7 @@ await Task.Delay(TimeSpan.FromSeconds(2), emergencyCts.Token);
 
 
 Console.WriteLine($"Executing Macro {atem.State.Macros.Macros[0].Name} ...");
-var command = new MacroActionCommand(atem.State.Macros.Macros[0], MacroAction.Run);
-await atem.SendCommand(command);
+await atem.SendCommand(new MacroActionCommand(atem.State.Macros.Macros[0], MacroAction.Run));
 
 var state = atem.State;
 
@@ -49,4 +48,14 @@ var unknownCommandsText = string.Join(Environment.NewLine, Atem.UnknownCommands.
 await File.WriteAllTextAsync("unknown_commands.txt", unknownCommandsText);
 Console.WriteLine($"Unknown commands written to: {Path.GetFullPath("unknown_commands.txt")}");
 
+Console.WriteLine("Disconnecting...");
+await atem.DisconnectAsync();
+
+Console.WriteLine("Reconnecting...");
+await atem.ConnectAsync("192.168.178.69", cancellationToken: emergencyCts.Token);
+Console.WriteLine("Connected, waiting 2s for data to come in ...");
+await Task.Delay(TimeSpan.FromSeconds(2), emergencyCts.Token);
+Console.WriteLine($"Executing Macro {atem.State.Macros.Macros[1].Name} ...");
+await atem.SendCommand(new MacroActionCommand(atem.State.Macros.Macros[1], MacroAction.Run));
+Console.WriteLine("Disconnecting...");
 await atem.DisconnectAsync();

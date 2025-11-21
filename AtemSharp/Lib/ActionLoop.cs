@@ -36,6 +36,8 @@ public class ActionLoop
 
     private async void Loop()
     {
+        Debug.Print($"{_name} started.");
+
         while (!_cancellationTokenSource.IsCancellationRequested)
         {
             try
@@ -48,8 +50,8 @@ public class ActionLoop
             }
             catch (Exception ex)
             {
-                _taskCompletionSource.TrySetException(ex);
-                Debug.Print($"{_name} exception: {ex.Message}");
+                _taskCompletionSource.TrySetResult();
+                Debug.Print($"{_name} exception: {ex.Message}\n{ex.StackTrace}");
                 return;
             }
         }

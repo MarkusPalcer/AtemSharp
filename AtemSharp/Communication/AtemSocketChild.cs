@@ -37,8 +37,7 @@ public class AtemSocketChild
     public IReceivableSourceBlock<AtemPacket> ReceivedPackets => _receivedPackets;
     public IReceivableSourceBlock<int> AckedTrackingIds => _ackedTrackingIds;
 
-    private Task? _receiveLoop;
-    private CancellationTokenSource? _connectionTokenSource;
+    private ActionLoop? _receiveLoop;
     private BufferBlock<AtemPacket> _receivedPackets = new();
     private BufferBlock<int> _ackedTrackingIds = new();
     private ActionLoop? _reconnectTimer;
@@ -82,7 +81,7 @@ public class AtemSocketChild
     }
 
     // TODO: Make async task
-    private async void ClearTimers()
+    private async Task ClearTimers()
     {
         await Task.WhenAll(
             _reconnectTimer?.Cancel() ?? Task.CompletedTask,
@@ -103,11 +102,13 @@ public class AtemSocketChild
     // TODO: Await timer finalization and socket destruction
     public async Task Disconnect()
     {
-        ClearTimers();
-        CloseSocket();
+        Debug.Print("Clearing timers");
+        await ClearTimers();
+        Debug.Print("Closing Socket");
+        await CloseSocket();
 
-        _receivedPackets = await _receivedPackets.Recreate();
-        _ackedTrackingIds = await _ackedTrackingIds.Recreate();
+        _receivedPackets = new();
+        _ackedTrackingIds = new();
 
         Debug.Print("Disconnected");
         ConnectionState = ConnectionState.Disconnected;
@@ -117,12 +118,12 @@ public class AtemSocketChild
 
     private async Task RestartConnection()
     {
-        ClearTimers();
+        await ClearTimers();
 
         // This includes a 'disconnect'
         if (ConnectionState == ConnectionState.Established)
         {
-            RecreateSocket();
+            await RecreateSocket();
             OnDisconnected();
         } else if (ConnectionState == ConnectionState.Disconnected)
         {
@@ -178,53 +179,40 @@ public class AtemSocketChild
         });
     }
 
-    private void RecreateSocket()
+    private async Task RecreateSocket()
     {
-        CloseSocket();
+        await CloseSocket();
         CreateSocket();
     }
 
-    private void CloseSocket()
+    private async Task CloseSocket()
     {
+        await (_receiveLoop?.Cancel() ?? Task.CompletedTask);
+        _receiveLoop = null;
         _socket?.Dispose();
-        _connectionTokenSource?.Cancel();
-        _connectionTokenSource?.Dispose();
-        _connectionTokenSource = null;
-
-        (_receiveLoop ?? Task.CompletedTask).Wait();
     }
 
     private void CreateSocket()
     {
-        _connectionTokenSource = new();
-
         _socket?.Dispose();
         _socket = ((Func<IUdpClient>)(() => new UdpClientWrapper()))();
         _socket.Client.Bind(new IPEndPoint(IPAddress.Any, 0));
         _socket.Connect(new IPEndPoint(IPAddress.Parse(_address), _port));
-        _receiveLoop = ReceiveLoopAsync(_connectionTokenSource.Token);
+        _receiveLoop = ActionLoop.Start(ReceiveLoopAsync);
     }
 
     private async Task ReceiveLoopAsync(CancellationToken cancellationToken)
     {
-        while (!cancellationToken.IsCancellationRequested)
+        try
         {
             UdpReceiveResult result;
-            try
-            {
-                result = await _socket!.ReceiveAsync(cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                if (cancellationToken.IsCancellationRequested) return;
-
-                Debug.Print($"Error receiving: {ex.Message}\n Cancelling Receive-Loop and waiting for reconnect");
-                return;
-            }
-
+            result = await _socket!.ReceiveAsync(cancellationToken);
             ReceivePacket(result.Buffer);
         }
-        Debug.Print("Receive loop exited");
+        catch (TaskCanceledException)
+        {
+            // NOP
+        }
     }
 
     private bool IsPacketCoveredByAck(ushort ackId, ushort packetId)
@@ -238,12 +226,8 @@ public class AtemSocketChild
 
     private void ReceivePacket(byte[] buffer)
     {
-        Debug.Print($"AtemSocketChild: RECV {BitConverter.ToString(buffer)}");
-
         _lastReceivedAt = DateTime.Now;
         var packet = AtemPacket.FromBytes(buffer);
-
-        Debug.Print($"AtemSocketChild: Packet #{packet.PacketId}, Flags: {packet.Flags}, SessionId: {packet.SessionId}");
 
         if (packet.HasFlag(PacketFlag.NewSessionId))
         {
@@ -256,15 +240,19 @@ public class AtemSocketChild
             return;
         }
 
-        List<Task> ps = new();
-
         if (ConnectionState == ConnectionState.Established)
         {
             // Device asked for retransmit
             if (packet.HasFlag(PacketFlag.RetransmitRequest))
             {
                 Debug.Print($"Retransmit request: {packet.RetransmitFromPacketId}");
-                ps.Add(RetransmitFrom(packet.RetransmitFromPacketId));
+                RetransmitFrom(packet.RetransmitFromPacketId).ContinueWith(t =>
+                {
+                    if (t.IsFaulted)
+                    {
+                        Debug.Print($"Error while retransmitting: {t.Exception}");
+                    }
+                });
             }
 
             // Got a packet that needs an ack
@@ -305,25 +293,12 @@ public class AtemSocketChild
                 }).ToList();
             }
         }
-
-        Task.WhenAll(ps).ContinueWith(t =>
-        {
-            if (t.IsFaulted)
-            {
-                Debug.Print($"AtemSocketChild: Failed to ReceivePacket: {t.Exception.Message}");
-            }
-            else
-            {
-                Debug.Print("Packet processed");
-            }
-        });
     }
 
     // TODO: Make async Task and handle errors
     private void SendPacket(byte[] buffer)
     {
-        Debug.Print($"AtemSocketChild: SEND {BitConverter.ToString(buffer)}");
-        _socket?.SendAsync(buffer, _connectionTokenSource?.Token ?? CancellationToken.None);
+        _socket?.SendAsync(buffer);
     }
 
     private void SendOrQueueAck()
@@ -331,16 +306,10 @@ public class AtemSocketChild
         _receivedWithoutAck++;
         if (_receivedWithoutAck >= MaxPacketPerAck)
         {
-            Debug.Print("AckTimer short circuit due to too many received packets");
             FireAckTimer();
         } else if (_ackTimerCancellation is null)
         {
-            Debug.Print("AckTimer started");
             StartAckTimer();
-        }
-        else
-        {
-            Debug.Print("AckTimer already running");
         }
     }
 
@@ -370,7 +339,6 @@ public class AtemSocketChild
 
     private void SendAck(ushort packetId)
     {
-        Debug.Print($"Sending Ack for #{packetId}, SessionId: {_sessionId}");
         SendPacket(AtemPacket.CreateAck(_sessionId, packetId).ToBytes());
     }
 
@@ -383,7 +351,7 @@ public class AtemSocketChild
         var fromIndex = _inflight.FindIndex(0, pkt => pkt.PacketId == fromId);
         if (fromIndex != -1)
         {
-            Debug.Print($"Unable to resend: {fromId}");
+            Debug.Print($"Unable to resend: {fromId}: unknown packet ID");
             await RestartConnection();
         }
         else

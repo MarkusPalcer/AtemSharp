@@ -19,7 +19,6 @@ public class AtemSocket : IAtemSocket, IUdpTransport
     private string _address = "127.0.0.1";
     private int _port;
     private AtemSocketChild? _socketProcess;
-    private Task _creatingSocket = Task.CompletedTask;
     private Action? _exitUnsubscribe = () => { };
     private ActionLoop? _receiveLoop;
     private ActionLoop? _ackLoop;
@@ -40,9 +39,7 @@ public class AtemSocket : IAtemSocket, IUdpTransport
 
         if (_socketProcess is null)
         {
-
-            _creatingSocket = CreateSocketProcess();
-            await _creatingSocket;
+            CreateSocketProcess();
 
             if (_isDisconnecting || _socketProcess is null)
             {
@@ -73,15 +70,6 @@ public class AtemSocket : IAtemSocket, IUdpTransport
 
     public async Task Disconnect()
     {
-        try
-        {
-            await _creatingSocket;
-        }
-        catch (Exception)
-        {
-            // Ignore Exceptions
-        }
-
         await (_receiveLoop?.Cancel() ?? Task.CompletedTask);
         await (_ackLoop?.Cancel() ?? Task.CompletedTask);
 
@@ -136,8 +124,7 @@ public class AtemSocket : IAtemSocket, IUdpTransport
         await Task.WhenAll(ackTcs.Select(t => t.Task));
     }
 
-    // TODO: Move to constructor
-    private async Task CreateSocketProcess()
+    private void CreateSocketProcess()
     {
         _socketProcess = new AtemSocketChild();
 
