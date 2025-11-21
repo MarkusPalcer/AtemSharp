@@ -57,13 +57,7 @@ public class AtemProtocol
             return;
         }
 
-        RestartConnection().ContinueWith(t =>
-        {
-            if (t.IsFaulted)
-            {
-                Debug.Print($"Reconnect failed: {t.Exception}");
-            }
-        });
+        RestartConnection().FireAndForget();
     }
 
     private async Task ClearTimers()
@@ -78,13 +72,7 @@ public class AtemProtocol
     {
         await Task.Delay(RetransmitInterval, token);
 
-        CheckForRetransmit().ContinueWith(t =>
-        {
-            if (t.IsFaulted)
-            {
-                Debug.Print($"Failed to retransmit {t.Exception}");
-            }
-        });
+        CheckForRetransmit().FireAndForget();
     }
 
     public async Task Connect(IPEndPoint endPoint)
@@ -229,13 +217,7 @@ public class AtemProtocol
             if (packet.HasFlag(PacketFlag.RetransmitRequest))
             {
                 Debug.Print($"Retransmit request: {packet.RetransmitFromPacketId}");
-                RetransmitFrom(packet.RetransmitFromPacketId).ContinueWith(t =>
-                {
-                    if (t.IsFaulted)
-                    {
-                        Debug.Print($"Error while retransmitting: {t.Exception}");
-                    }
-                });
+                RetransmitFrom(packet.RetransmitFromPacketId).FireAndForget();
             }
 
             // Got a packet that needs an ack
