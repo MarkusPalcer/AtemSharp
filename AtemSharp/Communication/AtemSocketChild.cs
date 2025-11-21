@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Net;
-using System.Net.Sockets;
 using System.Threading.Tasks.Dataflow;
 using AtemSharp.Enums;
 using AtemSharp.Lib;
@@ -137,19 +136,16 @@ public class AtemSocketChild
         // Try doing reconnect
         StartTimers();
 
-        SendPacket(CommandConnectHello);
+        await SendPacket(CommandConnectHello);
         ConnectionState = ConnectionState.SynSent;
     }
 
-    public void SendPackets(AtemPacket[] packets)
+    public async Task SendPackets(AtemPacket[] packets)
     {
-        foreach (var packet in packets)
-        {
-            SendPacket(packet);
-        }
+        await Task.WhenAll(packets.Select(SendPacket).ToList());
     }
 
-    private void SendPacket(AtemPacket packet)
+    private async Task SendPacket(AtemPacket packet)
     {
         using (var _ = _nextSendPacketIdLock.EnterScope())
         {
@@ -161,7 +157,7 @@ public class AtemSocketChild
         }
         packet.SessionId = _sessionId;
 
-        SendPacket(packet.ToBytes());
+        await SendPacket(packet.ToBytes());
         _inflight.Add(new(packet.PacketId, packet.TrackingId, packet.Payload)
         {
             LastSent = DateTime.Now,
@@ -196,9 +192,8 @@ public class AtemSocketChild
     {
         try
         {
-            UdpReceiveResult result;
-            result = await _socket!.ReceiveAsync(cancellationToken);
-            ReceivePacket(result.Buffer);
+            var result = await _socket!.ReceiveAsync(cancellationToken);
+            await ReceivePacket(result.Buffer);
         }
         catch (TaskCanceledException)
         {
@@ -215,7 +210,7 @@ public class AtemSocketChild
         return packetId == ackId || ((pktIsShortlyBefore || pktIsBeforeWrap) && !pktIsShortlyAfter);
     }
 
-    private void ReceivePacket(byte[] buffer)
+    private async Task ReceivePacket(byte[] buffer)
     {
         _lastReceivedAt = DateTime.Now;
         var packet = AtemPacket.FromBytes(buffer);
@@ -226,7 +221,7 @@ public class AtemSocketChild
             ConnectionState = ConnectionState.Established;
             _lastReceivedPacketId = packet.PacketId;
             _sessionId = packet.SessionId;
-            SendAck(packet.PacketId);
+            await SendAck(packet.PacketId);
             OnConnected();
             return;
         }
@@ -254,14 +249,14 @@ public class AtemSocketChild
                 {
                     _lastReceivedPacketId = packet.PacketId;
                     _sessionId = packet.SessionId;
-                    SendOrQueueAck();
+                    await SendOrQueueAck();
                     if (packet.Payload.Length > 0)
                     {
-                        _receivedPackets.SendAsync(packet);
+                        await _receivedPackets.SendAsync(packet);
                     }
                 } else if (IsPacketCoveredByAck(_lastReceivedPacketId, packet.PacketId))
                 {
-                    SendOrQueueAck();
+                    await SendOrQueueAck();
                 }
             }
 
@@ -287,17 +282,17 @@ public class AtemSocketChild
     }
 
     // TODO: Make async Task and handle errors
-    private void SendPacket(byte[] buffer)
+    private async Task SendPacket(byte[] buffer)
     {
-        _socket?.SendAsync(buffer);
+        await (_socket?.SendAsync(buffer) ?? Task.CompletedTask);
     }
 
-    private void SendOrQueueAck()
+    private async Task SendOrQueueAck()
     {
         _receivedWithoutAck++;
         if (_receivedWithoutAck >= MaxPacketPerAck)
         {
-            FireAckTimer();
+            await FireAckTimer();
         } else if (_ackTimerCancellation is null)
         {
             StartAckTimer();
@@ -317,20 +312,20 @@ public class AtemSocketChild
             return;
         }
 
-        FireAckTimer();
+        await FireAckTimer();
     }
 
-    private void FireAckTimer()
+    private async Task FireAckTimer()
     {
         _receivedWithoutAck = 0;
         _ackTimerCancellation?.Cancel();
         _ackTimerCancellation = null;
-        SendAck(_lastReceivedPacketId);
+        await SendAck(_lastReceivedPacketId);
     }
 
-    private void SendAck(ushort packetId)
+    private async Task SendAck(ushort packetId)
     {
-        SendPacket(AtemPacket.CreateAck(_sessionId, packetId).ToBytes());
+        await SendPacket(AtemPacket.CreateAck(_sessionId, packetId).ToBytes());
     }
 
     private async Task RetransmitFrom(ushort fromId)
@@ -355,7 +350,7 @@ public class AtemSocketChild
                 {
                     sentPacket.LastSent = now;
                     sentPacket.Resent++;
-                    SendPacket(sentPacket.Payload);
+                    await SendPacket(sentPacket.Payload);
                 }
             }
         }
