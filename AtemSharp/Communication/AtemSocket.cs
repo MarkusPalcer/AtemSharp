@@ -1,3 +1,4 @@
+using System.Threading.Tasks.Dataflow;
 using AtemSharp.Commands;
 using AtemSharp.Constants;
 using AtemSharp.Enums;
@@ -19,6 +20,8 @@ public class AtemSocket : IAtemSocket, IUdpTransport
     private AtemSocketChild? _socketProcess;
     private Task _creatingSocket = Task.CompletedTask;
     private Action? _exitUnsubscribe = () => { };
+    private ActionLoop? _receiveLoop;
+
 
     public event EventHandler? Disconnected;
 
@@ -47,6 +50,7 @@ public class AtemSocket : IAtemSocket, IUdpTransport
             }
         }
 
+        _receiveLoop = ActionLoop.Start(ReceivePacket);
         await _socketProcess.Connect(_address, _port);
     }
 
@@ -69,6 +73,8 @@ public class AtemSocket : IAtemSocket, IUdpTransport
             // Ignore Exceptions
         }
 
+        await (_receiveLoop?.Cancel() ?? Task.CompletedTask);
+
         if (_socketProcess is not null)
         {
             try
@@ -82,6 +88,8 @@ public class AtemSocket : IAtemSocket, IUdpTransport
 
             _socketProcess = null;
         }
+
+
     }
 
     private int GetNextTrackingId()
@@ -113,20 +121,20 @@ public class AtemSocket : IAtemSocket, IUdpTransport
     // TODO: Move to constructor
     private async Task CreateSocketProcess()
     {
-        _socketProcess = new AtemSocketChild(
-                                             (packet) =>
-                                             {
-                                                 OnPacketReceived(packet);
-                                                 return Task.CompletedTask;
-                                             },
-                                             packets =>
-                                             {
-                                                 OnAckPackets(new AckPacketsEventArgs { PacketIds = packets.Select(x => x.TrackingId).ToArray() });
-                                                 return Task.CompletedTask;
-                                             });
+        _socketProcess = new AtemSocketChild(packets =>
+        {
+            OnAckPackets(new AckPacketsEventArgs { PacketIds = packets.Select(x => x.TrackingId).ToArray() });
+            return Task.CompletedTask;
+        });
 
         _socketProcess.Connected += (_,_) => OnConnected();
         _socketProcess.Disconnected += (_,_) => OnDisconnected();
+    }
+
+    private async Task ReceivePacket(CancellationToken cts)
+    {
+        var packet = await _socketProcess!.ReceivedPackets.ReceiveAsync(cts);
+        OnPacketReceived(packet);
     }
 
     protected virtual void OnDisconnected()

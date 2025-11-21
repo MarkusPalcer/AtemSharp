@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks.Dataflow;
 using AtemSharp.Enums;
 using AtemSharp.Lib;
 
@@ -10,6 +11,7 @@ namespace AtemSharp.Communication;
 /// Handles the communication protocol for the ATEM mixers
 /// </summary>
 // TODO: Create interface
+// TODO: Make IAsyncDisposable
 public class AtemSocketChild
 {
     // TODO: public ConnectionStatus: Closed, Connecting, Connected, Disconnecting
@@ -34,21 +36,21 @@ public class AtemSocketChild
     public event EventHandler? Connected;
     public event EventHandler? Disconnected;
 
-    private readonly Func<AtemPacket, Task> _onCommandsReceived;
+    public IReceivableSourceBlock<AtemPacket> ReceivedPackets => _receivedPackets;
+
     private readonly Func<AckedPacket[], Task> _onPacketsAcknowledged;
 
     internal Func<IUdpClient> UdpClientFactory = () => new UdpClientWrapper();
     private Task? _receiveLoop;
     private CancellationTokenSource? _connectionTokenSource;
+    private BufferBlock<AtemPacket> _receivedPackets = new();
 
 
     // TODO: Use C#-Events instead of callbacks
-    public AtemSocketChild(Func<AtemPacket, Task> onCommandsReceived,
-                           Func<AckedPacket[], Task> onPacketsAcknowledged)
+    public AtemSocketChild(Func<AckedPacket[], Task> onPacketsAcknowledged)
     {
         _address = "127.0.0.1";
         _port = Constants.AtemConstants.DEFAULT_PORT;
-        _onCommandsReceived = onCommandsReceived;
         _onPacketsAcknowledged = onPacketsAcknowledged;
     }
 
@@ -133,8 +135,14 @@ public class AtemSocketChild
     {
         ClearTimers();
         CloseSocket();
+
+        _receivedPackets.Complete();
+        await _receivedPackets.Completion;
+        _receivedPackets = new BufferBlock<AtemPacket>();
+
         Log("Disconnected");
         ConnectionState = ConnectionState.Disconnected;
+
         OnDisconnected();
     }
 
@@ -308,7 +316,7 @@ public class AtemSocketChild
                     SendOrQueueAck();
                     if (packet.Payload.Length > 0)
                     {
-                        ps.Add(_onCommandsReceived(packet));
+                        _receivedPackets.SendAsync(packet);
                     }
                 } else if (IsPacketCoveredByAck(_lastReceivedPacketId, packet.PacketId))
                 {
