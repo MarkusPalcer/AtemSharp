@@ -12,4 +12,5 @@ public class FairlightAudioState : AudioState
 
     public MasterProperties Master { get; } = new();
     public MonitorProperties Monitor { get; } = new();
+    public SoloProperties Solo { get; } = new();
 }
