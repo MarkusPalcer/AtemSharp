@@ -46,6 +46,11 @@ public class AtemPacket
     public byte[] Payload { get; set; }
 
     /// <summary>
+    /// Internally used ID to track ACKs of packets
+    /// </summary>
+    public int TrackingId { get; set; }
+
+    /// <summary>
     /// Creates a new empty ATEM packet
     /// </summary>
     public AtemPacket()

@@ -18,6 +18,7 @@ public class AtemSocketChild
     public ConnectionState ConnectionState { get; private set; } = ConnectionState.Closed;
 
     private ushort _nextSendPacketId = 1;
+    private readonly Lock _nextSendPacketIdLock = new();
     private ushort _sessionId;
 
     // TODO: Turn into IPAddress instance
@@ -46,11 +47,11 @@ public class AtemSocketChild
 
     private void StartTimers()
     {
-        _reconnectTimer ??= ActionLoop.Start(ReconnectTimer);
-        _retransmitTimer ??= ActionLoop.Start(RetransmitTimer);
+        _reconnectTimer ??= ActionLoop.Start(ReconnectTimerLoop);
+        _retransmitTimer ??= ActionLoop.Start(RetransmitTimerLoop);
     }
 
-    private async Task ReconnectTimer(CancellationToken token)
+    private async Task ReconnectTimerLoop(CancellationToken token)
     {
         await Task.Delay(ConnectionRetryInterval, token);
 
@@ -68,7 +69,15 @@ public class AtemSocketChild
         });
     }
 
-    private async Task RetransmitTimer(CancellationToken token)
+    private async Task ClearTimers()
+    {
+        await Task.WhenAll(
+            _reconnectTimer?.Cancel() ?? Task.CompletedTask,
+            _retransmitTimer?.Cancel() ?? Task.CompletedTask
+        );
+    }
+
+    private async Task RetransmitTimerLoop(CancellationToken token)
     {
         await Task.Delay(RetransmitInterval, token);
 
@@ -81,15 +90,6 @@ public class AtemSocketChild
         });
     }
 
-    private async Task ClearTimers()
-    {
-        await Task.WhenAll(
-            _reconnectTimer?.Cancel() ?? Task.CompletedTask,
-            _retransmitTimer?.Cancel() ?? Task.CompletedTask
-        );
-    }
-
-    // TODO: Await connection event
     public async Task Connect(string address, int port)
     {
         _address = address;
@@ -102,7 +102,6 @@ public class AtemSocketChild
         await _connectionSource.Task;
     }
 
-    // TODO: Await timer finalization and socket destruction
     public async Task Disconnect()
     {
         await ClearTimers();
@@ -134,44 +133,36 @@ public class AtemSocketChild
         // Reset connection
         _nextSendPacketId = 1;
         _sessionId = 0;
-        Debug.Print("Reconnect");
 
         // Try doing reconnect
         StartTimers();
 
         SendPacket(CommandConnectHello);
         ConnectionState = ConnectionState.SynSent;
-        Debug.Print("Syn Sent");
     }
 
-    public void SendPackets(OutboundPacketInfo[] packets)
+    public void SendPackets(AtemPacket[] packets)
     {
         foreach (var packet in packets)
         {
-            SendPacket((ushort)packet.Payload.Length, packet.Payload, packet.TrackingId);
+            SendPacket(packet);
         }
     }
 
-    private void SendPacket(ushort payloadLength, byte[] payload, int trackingId)
+    private void SendPacket(AtemPacket packet)
     {
-        // TODO: Use concurrent counter
-        ushort packetId = _nextSendPacketId++;
-        if (_nextSendPacketId >= MaxPacketId)
+        using (var _ = _nextSendPacketIdLock.EnterScope())
         {
-            _nextSendPacketId = 0;
+            packet.PacketId = _nextSendPacketId++;
+            if (_nextSendPacketId >= MaxPacketId)
+            {
+                _nextSendPacketId = 0;
+            }
         }
+        packet.SessionId = _sessionId;
 
-        // TODO: Replace with AtemPacket serialization
-        ushort opCode = ((ushort)PacketFlag.AckRequest << 11);
-        var flagsAndLength = (ushort)(opCode | (payloadLength + 12));
-        var buffer = new byte[12 + payloadLength];
-
-        buffer.WriteUInt16BigEndian(flagsAndLength, 0);
-        buffer.WriteUInt16BigEndian(_sessionId, 2);
-        buffer.WriteUInt16BigEndian(packetId, 10);
-        Array.Copy(payload, 0, buffer, 12, payloadLength);
-        SendPacket(buffer);
-        _inflight.Add(new(packetId, trackingId, payload)
+        SendPacket(packet.ToBytes());
+        _inflight.Add(new(packet.PacketId, packet.TrackingId, packet.Payload)
         {
             LastSent = DateTime.Now,
             Resent = 0

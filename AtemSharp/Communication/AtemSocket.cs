@@ -105,7 +105,11 @@ public class AtemSocket : IAtemSocket, IUdpTransport
             packetBuilder.AddCommand(command);
         }
 
-        var packets = packetBuilder.GetPackets().Select(buffer => new OutboundPacketInfo(buffer, GetNextTrackingId())).ToArray();
+        var packets = packetBuilder.GetPackets().Select(buffer => new AtemPacket(buffer)
+        {
+            TrackingId = GetNextTrackingId(),
+            Flags = PacketFlag.AckRequest
+        }).ToArray();
 
         var ackTcs = new List<TaskCompletionSource>(packets.Length);
 
