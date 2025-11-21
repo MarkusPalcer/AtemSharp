@@ -10,7 +10,7 @@ namespace AtemSharp.Communication;
 /// <summary>
 /// Sends and receives commands to a ATEM Mixer
 /// </summary>
-public class AtemClient : IAtemSocket, IUdpTransport
+public class AtemClient : IAtemClient
 {
     private readonly CommandParser _commandParser = new();
 
@@ -25,10 +25,15 @@ public class AtemClient : IAtemSocket, IUdpTransport
     private readonly ConcurrentDictionary<int, TaskCompletionSource> _commandAckSources = new();
 
     public event EventHandler? Disconnected;
-
     public event EventHandler<ReceivedCommandsEventArgs>? ReceivedCommands;
-
     public event EventHandler? Connected;
+    public event EventHandler<PacketReceivedEventArgs>? PacketReceived;
+    public event EventHandler<ConnectionStateChangedEventArgs>? ConnectionStateChanged;
+
+    protected virtual void OnDisconnected()
+    {
+        Disconnected?.Invoke(this, EventArgs.Empty);
+    }
 
     public async Task Connect(string address, int port)
     {
@@ -55,20 +60,12 @@ public class AtemClient : IAtemSocket, IUdpTransport
 
     private async Task DoAckLoop(CancellationToken cts)
     {
-        var ackedId = await _protocol.AckedTrackingIds.ReceiveAsync(cts);
+        var ackedId = await _protocol!.AckedTrackingIds.ReceiveAsync(cts);
         if (!_commandAckSources.Remove(ackedId, out var tcs)) return;
         tcs.TrySetResult();
     }
 
-    public async ValueTask DisposeAsync()
-    {
-        await Disconnect();
-
-        _exitUnsubscribe?.Invoke();
-        _exitUnsubscribe = null;
-    }
-
-    public async Task Disconnect()
+    public async Task DisconnectAsync()
     {
         await (_receiveLoop?.Cancel() ?? Task.CompletedTask);
         await (_ackLoop?.Cancel() ?? Task.CompletedTask);
@@ -87,6 +84,21 @@ public class AtemClient : IAtemSocket, IUdpTransport
             _protocol = null;
         }
     }
+
+    private void CreateSocketProcess()
+    {
+        _protocol = new AtemProtocol();
+
+        _protocol.Connected += (_, _) => OnConnected();
+        _protocol.Disconnected += (_, _) => OnDisconnected();
+    }
+
+    private async Task ReceivePacket(CancellationToken cts)
+    {
+        var packet = await _protocol!.ReceivedPackets.ReceiveAsync(cts);
+        OnPacketReceived(packet);
+    }
+
 
     public async Task SendCommands(SerializedCommand[] commands)
     {
@@ -115,29 +127,10 @@ public class AtemClient : IAtemSocket, IUdpTransport
 
         if (packets.Length > 0)
         {
-            _protocol.SendPackets(packets);
+            await _protocol.SendPackets(packets);
         }
 
         await Task.WhenAll(ackTcs.Select(t => t.Task));
-    }
-
-    private void CreateSocketProcess()
-    {
-        _protocol = new AtemProtocol();
-
-        _protocol.Connected += (_,_) => OnConnected();
-        _protocol.Disconnected += (_,_) => OnDisconnected();
-    }
-
-    private async Task ReceivePacket(CancellationToken cts)
-    {
-        var packet = await _protocol!.ReceivedPackets.ReceiveAsync(cts);
-        OnPacketReceived(packet);
-    }
-
-    protected virtual void OnDisconnected()
-    {
-        Disconnected?.Invoke(this, EventArgs.Empty);
     }
 
     protected virtual void OnConnected()
@@ -145,14 +138,11 @@ public class AtemClient : IAtemSocket, IUdpTransport
         Connected?.Invoke(this, EventArgs.Empty);
     }
 
-    public void Dispose()
-    {
-        DisposeAsync().AsTask().Wait();
-    }
 
-    public event EventHandler<PacketReceivedEventArgs>? PacketReceived;
-    public event EventHandler<ConnectionStateChangedEventArgs>? ConnectionStateChanged;
-    public event EventHandler<Exception>? ErrorOccurred;
+    public async Task SendCommand(SerializedCommand command)
+    {
+        await SendCommands([command]);
+    }
 
     public ConnectionState ConnectionState => _protocol?.ConnectionState ?? ConnectionState.Closed;
 
@@ -161,20 +151,16 @@ public class AtemClient : IAtemSocket, IUdpTransport
         await Connect(address, port);
     }
 
-    public async Task DisconnectAsync(CancellationToken cancellationToken = default)
-    {
-        await Disconnect();
-    }
-
-    // TODO: Handle cancellation
-    public async Task SendCommand(SerializedCommand command, CancellationToken cancellationToken = default)
-    {
-        await SendCommands([command]);
-    }
-
     protected virtual void OnPacketReceived(AtemPacket packet)
     {
-        PacketReceived?.Invoke(this, new PacketReceivedEventArgs { Packet = packet});
+        PacketReceived?.Invoke(this, new PacketReceivedEventArgs { Packet = packet });
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await DisconnectAsync();
+
+        _exitUnsubscribe?.Invoke();
+        _exitUnsubscribe = null;
     }
 }
-

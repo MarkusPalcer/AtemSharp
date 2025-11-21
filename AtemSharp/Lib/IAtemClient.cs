@@ -4,7 +4,7 @@ using AtemSharp.Enums;
 
 namespace AtemSharp.Lib;
 
-public interface IUdpTransport : IDisposable
+public interface IAtemClient : IAsyncDisposable
 {
 	/// <summary>
 	/// Raised when a packet is received from the remote endpoint
@@ -15,11 +15,6 @@ public interface IUdpTransport : IDisposable
 	/// Raised when the connection state changes
 	/// </summary>
 	event EventHandler<ConnectionStateChangedEventArgs>? ConnectionStateChanged;
-
-	/// <summary>
-	/// Raised when an error occurs during transport operations
-	/// </summary>
-	event EventHandler<Exception>? ErrorOccurred;
 
 	/// <summary>
 	/// Gets the current connection state
@@ -38,9 +33,8 @@ public interface IUdpTransport : IDisposable
 	/// <summary>
 	/// Disconnects from the ATEM device
 	/// </summary>
-	/// <param name="cancellationToken">Cancellation token</param>
 	/// <returns>Task that completes when disconnected</returns>
-	Task DisconnectAsync(CancellationToken cancellationToken = default);
+	Task DisconnectAsync();
 
-    Task SendCommand(SerializedCommand command, CancellationToken cancellationToken = default);
+    Task SendCommand(SerializedCommand command);
 }

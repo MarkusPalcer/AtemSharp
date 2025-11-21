@@ -6,30 +6,28 @@ using Microsoft.Extensions.Logging;
 
 namespace AtemSharp;
 
-public class AtemMixer : IDisposable
+public class AtemSwitcher : IAsyncDisposable
 {
     private readonly CommandParser _commandParser = new();
 
-    internal IUdpTransport Transport
+    internal IAtemClient Client
     {
-        get => _transport;
+        get => _client;
         set
         {
             // Subscribe to transport events
-            _transport.PacketReceived -= OnPacketReceived;
-            _transport.ConnectionStateChanged -= OnConnectionStateChanged;
-            _transport.ErrorOccurred -= OnErrorOccurred;
+            _client.PacketReceived -= OnPacketReceived;
+            _client.ConnectionStateChanged -= OnConnectionStateChanged;
 
             value.PacketReceived += OnPacketReceived;
             value.ConnectionStateChanged += OnConnectionStateChanged;
-            value.ErrorOccurred += OnErrorOccurred;
-            _transport = value;
+            _client = value;
         }
     }
 
-    private readonly ILogger<AtemMixer> _logger;
+    private readonly ILogger<AtemSwitcher> _logger;
     private bool _disposed;
-    private IUdpTransport _transport;
+    private IAtemClient _client;
     private TaskCompletionSource<bool>? _connectionCompletionSource;
 
     /// <summary>
@@ -46,7 +44,7 @@ public class AtemMixer : IDisposable
     /// Initializes a new instance of the Atem class
     /// </summary>
     /// <param name="logger">Logger instance for diagnostic output</param>
-    public AtemMixer(ILogger<AtemMixer>? logger = null) : this(new AtemClient(), logger)
+    public AtemSwitcher(ILogger<AtemSwitcher>? logger = null) : this(new AtemClient(), logger)
     {
     }
 
@@ -57,13 +55,12 @@ public class AtemMixer : IDisposable
     /// <param name="transport">The UDP transport to use for communication</param>
     /// <param name="logger">Logger instance for diagnostic output</param>
     /// <remarks>This constructor is solely for testing purposes to mock the IUdpTransport</remarks>
-    internal AtemMixer(IUdpTransport transport, ILogger<AtemMixer>? logger = null)
+    internal AtemSwitcher(IAtemClient transport, ILogger<AtemSwitcher>? logger = null)
     {
-        _transport = transport ?? throw new ArgumentNullException(nameof(transport));
-        _logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<AtemMixer>.Instance;
-        _transport.PacketReceived += OnPacketReceived;
-        _transport.ConnectionStateChanged += OnConnectionStateChanged;
-        _transport.ErrorOccurred += OnErrorOccurred;
+        _client = transport ?? throw new ArgumentNullException(nameof(transport));
+        _logger = logger ?? Microsoft.Extensions.Logging.Abstractions.NullLogger<AtemSwitcher>.Instance;
+        _client.PacketReceived += OnPacketReceived;
+        _client.ConnectionStateChanged += OnConnectionStateChanged;
     }
 
     /// <summary>
@@ -77,12 +74,12 @@ public class AtemMixer : IDisposable
                                    CancellationToken cancellationToken = default)
     {
         if (_disposed)
-            throw new ObjectDisposedException(nameof(AtemMixer));
+            throw new ObjectDisposedException(nameof(AtemSwitcher));
 
         State = new AtemState();
         _connectionCompletionSource = new TaskCompletionSource<bool>();
 
-        await Transport.ConnectAsync(remoteHost, remotePort, cancellationToken);
+        await Client.ConnectAsync(remoteHost, remotePort, cancellationToken);
 
         // Wait for InitCompleteCommand to be received, indicating the connection is fully established
         await _connectionCompletionSource.Task.WaitAsync(cancellationToken);
@@ -91,20 +88,19 @@ public class AtemMixer : IDisposable
     /// <summary>
     /// Disconnects from the ATEM device
     /// </summary>
-    /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Task that completes when disconnected</returns>
-    public async Task DisconnectAsync(CancellationToken cancellationToken = default)
+    public async Task DisconnectAsync()
     {
         if (!_disposed)
         {
-            await Transport.DisconnectAsync(cancellationToken);
+            await Client.DisconnectAsync();
         }
     }
 
     /// <summary>
     /// Gets the current connection state
     /// </summary>
-    public Enums.ConnectionState ConnectionState => Transport.ConnectionState;
+    public Enums.ConnectionState ConnectionState => Client.ConnectionState;
 
     // TODO: Move command deserialization to AtemSocket
     private void OnPacketReceived(object? sender, PacketReceivedEventArgs e)
@@ -152,7 +148,7 @@ public class AtemMixer : IDisposable
                         command.ApplyToState(State!);
 
                         // Check if this is the InitCompleteCommand
-                        if (command is Commands.InitCompleteCommand)
+                        if (command is InitCompleteCommand)
                         {
                             // Signal that the connection is fully established (only once)
                             _connectionCompletionSource?.TrySetResult(true);
@@ -199,17 +195,16 @@ public class AtemMixer : IDisposable
     /// <summary>
     /// Disposes the Atem instance and releases all resources
     /// </summary>
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
         if (_disposed)
             return;
 
         _disposed = true;
 
-        Transport.PacketReceived -= OnPacketReceived;
-        Transport.ConnectionStateChanged -= OnConnectionStateChanged;
-        Transport.ErrorOccurred -= OnErrorOccurred;
-        Transport.Dispose();
+        Client.PacketReceived -= OnPacketReceived;
+        Client.ConnectionStateChanged -= OnConnectionStateChanged;
+        await Client.DisposeAsync();
 
         // Clean up any pending connection completion
         _connectionCompletionSource?.TrySetCanceled();
@@ -217,7 +212,7 @@ public class AtemMixer : IDisposable
 
     public async Task SendCommand(SerializedCommand command)
     {
-        await Transport.SendCommand(command);
+        await Client.SendCommand(command);
     }
 
     /* TODO: Abstract macro handling:

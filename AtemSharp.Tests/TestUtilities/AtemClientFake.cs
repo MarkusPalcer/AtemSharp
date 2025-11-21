@@ -11,7 +11,7 @@ namespace AtemSharp.Tests.TestUtilities;
 /// Fake implementation of IUdpTransport for testing purposes.
 /// Provides control over connection state and allows tests to trigger events manually.
 /// </summary>
-public class UdpTransportFake : IUdpTransport
+public class AtemClientFake : IAtemClient
 {
     private ConnectionState _connectionState = ConnectionState.Closed;
     private ConnectionState _previousConnectionState = ConnectionState.Closed;
@@ -90,7 +90,7 @@ public class UdpTransportFake : IUdpTransport
     {
         if (_disposed)
         {
-            throw new ObjectDisposedException(nameof(UdpTransportFake));
+            throw new ObjectDisposedException(nameof(AtemClientFake));
         }
 
         if (_connectionState != ConnectionState.Closed)
@@ -119,7 +119,7 @@ public class UdpTransportFake : IUdpTransport
     /// <summary>
     /// Simulates disconnecting from the ATEM device
     /// </summary>
-    public async Task DisconnectAsync(CancellationToken cancellationToken = default)
+    public async Task DisconnectAsync()
     {
         if (_disposed)
         {
@@ -138,11 +138,11 @@ public class UdpTransportFake : IUdpTransport
         SetConnectionState(ConnectionState.Closed);
     }
 
-    public Task SendCommand(SerializedCommand command, CancellationToken cancellationToken = default)
+    public Task SendCommand(SerializedCommand command)
     {
         if (_disposed)
         {
-            throw new ObjectDisposedException(nameof(UdpTransportFake));
+            throw new ObjectDisposedException(nameof(AtemClientFake));
         }
 
         if (_connectionState != ConnectionState.Established)
@@ -215,25 +215,6 @@ public class UdpTransportFake : IUdpTransport
     }
 
     /// <summary>
-    /// Simulates an error occurring in the transport layer
-    /// </summary>
-    /// <param name="exception">The exception to simulate</param>
-    public void SimulateError(Exception exception)
-    {
-        if (_disposed)
-        {
-            return;
-        }
-
-        if (exception == null)
-        {
-            throw new ArgumentNullException(nameof(exception));
-        }
-
-        ErrorOccurred?.Invoke(this, exception);
-    }
-
-    /// <summary>
     /// Manually sets the connection state (for advanced test scenarios)
     /// </summary>
     /// <param name="newState">The new connection state</param>
@@ -269,11 +250,11 @@ public class UdpTransportFake : IUdpTransport
     /// <summary>
     /// Disposes the fake transport and cleans up resources
     /// </summary>
-    public void Dispose()
+    public ValueTask DisposeAsync()
     {
         if (_disposed)
         {
-            return;
+            return ValueTask.CompletedTask;
         }
 
         _disposed = true;
@@ -291,5 +272,7 @@ public class UdpTransportFake : IUdpTransport
         _remoteEndPoint = null;
 
         GC.SuppressFinalize(this);
+
+        return ValueTask.CompletedTask;
     }
 }

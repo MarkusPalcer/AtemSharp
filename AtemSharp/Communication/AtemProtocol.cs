@@ -281,7 +281,6 @@ public class AtemProtocol
         }
     }
 
-    // TODO: Make async Task and handle errors
     private async Task SendPacket(byte[] buffer)
     {
         await (_socket?.SendAsync(buffer) ?? Task.CompletedTask);
