@@ -1,0 +1,14 @@
+using AtemSharp.Commands.StartupState;
+
+namespace AtemSharp.Tests.Commands;
+
+[TestFixture]
+public class StartupStateClearCommandTests : SerializedCommandTestBase<StartupStateClearCommand, StartupStateClearCommandTests.CommandData>
+{
+    public class CommandData : CommandDataBase;
+
+    protected override StartupStateClearCommand CreateSut(TestCaseData testCase)
+    {
+        return new StartupStateClearCommand();
+    }
+}
