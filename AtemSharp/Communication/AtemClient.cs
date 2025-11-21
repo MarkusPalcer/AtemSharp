@@ -20,7 +20,6 @@ public class AtemClient : IAtemClient
     private bool _isDisconnecting;
     private IPEndPoint _remoteEndpoint =  new(IPAddress.None, 0);
     private IAtemProtocol? _protocol;
-    private Action? _exitUnsubscribe = () => { };
     private ActionLoop? _receiveLoop;
     private ActionLoop? _ackLoop;
     private readonly ConcurrentDictionary<int, TaskCompletionSource> _commandAckSources = new();
@@ -188,8 +187,5 @@ public class AtemClient : IAtemClient
     public async ValueTask DisposeAsync()
     {
         await DisconnectAsync();
-
-        _exitUnsubscribe?.Invoke();
-        _exitUnsubscribe = null;
     }
 }
