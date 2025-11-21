@@ -1,6 +1,5 @@
 ﻿src\commands\Fairlight\AudioRouting\AudioRoutingOutput.ts - AROC, AROP
 src\commands\Fairlight\AudioRouting\AudioRoutingSource.ts - ARSC, ARSP
-src\commands\Fairlight\FairlightMixerMasterDynamicsResetCommand.ts - RMOD
 src\commands\Fairlight\FairlightMixerMasterEqualizerResetCommand.ts - RMOE
 src\commands\Fairlight\FairlightMixerMasterLevelsCommand.ts - FDLv
 src\commands\Fairlight\FairlightMixerMonitorCommand.ts - CFMH, FMHP
@@ -37,3 +36,4 @@ src\commands\Settings\MediaPool.ts - CMPS, MPSp
 src\commands\SuperSource\SuperSourceBoxParametersCommand.ts - CSBP, SSBP
 src\commands\SuperSource\SuperSourcePropertiesCommand.ts - CSSc, CSSc, CSBd, SSrc, SSrc, SSBd
 src\commands\CameraControlCommand.ts - CCmd, CCdP
+src\commands\Fairlight\FairlightMixerAnalogAudioCommand.ts_ - FAAI, CFAA
