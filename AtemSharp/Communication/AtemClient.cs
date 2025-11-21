@@ -45,9 +45,9 @@ public class AtemClient : IAtemClient
 
         _commandAckSources.Clear();
         _receivedCommands = new();
-        _receiveLoop = ActionLoop.Start(ReceivePacket);
+        _receiveLoop = ActionLoop.Start(DoReceivePacketLoop);
         _ackLoop = ActionLoop.Start(DoAckLoop);
-        await _protocol.Connect(_remoteEndpoint);
+        await _protocol.ConnectAsync(_remoteEndpoint);
     }
 
     private async Task DoAckLoop(CancellationToken cts)
@@ -66,7 +66,8 @@ public class AtemClient : IAtemClient
         {
             try
             {
-                await _protocol.Disconnect();
+                await _protocol.DisconnectAsync();
+                await _protocol.DisposeAsync();
             }
             catch (Exception)
             {
@@ -77,7 +78,7 @@ public class AtemClient : IAtemClient
         }
     }
 
-    private async Task ReceivePacket(CancellationToken token)
+    private async Task DoReceivePacketLoop(CancellationToken token)
     {
         var packet = await _protocol!.ReceivedPackets.ReceiveAsync(token);
 
@@ -139,7 +140,12 @@ public class AtemClient : IAtemClient
         }
     }
 
-    public async Task SendCommands(SerializedCommand[] commands)
+    public async Task SendCommandAsync(SerializedCommand command)
+    {
+        await SendCommandsAsync([command]);
+    }
+
+    public async Task SendCommandsAsync(IEnumerable<SerializedCommand> commands)
     {
         if (_protocol is null) throw new InvalidOperationException("Socket process is not open");
 
@@ -166,17 +172,10 @@ public class AtemClient : IAtemClient
 
         if (packets.Length > 0)
         {
-            await _protocol.SendPackets(packets);
+            await _protocol.SendPacketsAsync(packets);
         }
 
         await Task.WhenAll(ackTcs.Select(t => t.Task));
-    }
-
-
-
-    public async Task SendCommand(SerializedCommand command)
-    {
-        await SendCommands([command]);
     }
 
     public async Task ConnectAsync(string address, int port = AtemConstants.DEFAULT_PORT, CancellationToken cancellationToken = default)

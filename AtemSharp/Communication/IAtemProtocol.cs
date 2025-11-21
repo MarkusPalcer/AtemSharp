@@ -4,11 +4,11 @@ using AtemSharp.Lib;
 
 namespace AtemSharp.Communication;
 
-public interface IAtemProtocol
+public interface IAtemProtocol : IAsyncDisposable
 {
     IReceivableSourceBlock<AtemPacket> ReceivedPackets { get; }
     IReceivableSourceBlock<int> AckedTrackingIds { get; }
-    Task Connect(IPEndPoint endPoint);
-    Task Disconnect();
-    Task SendPackets(AtemPacket[] packets);
+    Task ConnectAsync(IPEndPoint endPoint);
+    Task DisconnectAsync();
+    Task SendPacketsAsync(AtemPacket[] packets);
 }

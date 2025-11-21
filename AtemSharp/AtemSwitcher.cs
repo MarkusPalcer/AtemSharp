@@ -109,6 +109,11 @@ public class AtemSwitcher : IAsyncDisposable
         }
     }
 
+    public async Task SendCommandAsync(SerializedCommand command)
+    {
+        await Client.SendCommandAsync(command);
+    }
+
     /// <summary>
     /// Disposes the Atem instance and releases all resources
     /// </summary>
@@ -125,11 +130,6 @@ public class AtemSwitcher : IAsyncDisposable
 
         // Clean up any pending connection completion
         _connectionCompletionSource?.TrySetCanceled();
-    }
-
-    public async Task SendCommand(SerializedCommand command)
-    {
-        await Client.SendCommand(command);
     }
 
     /* TODO: Abstract macro handling:

@@ -114,7 +114,7 @@ public class AtemClientFake : IAtemClient
         _remoteEndPoint = null;
     }
 
-    public Task SendCommand(SerializedCommand command)
+    public Task SendCommandAsync(SerializedCommand command)
     {
         if (_disposed)
         {
@@ -128,6 +128,14 @@ public class AtemClientFake : IAtemClient
 
         SentCommands.Add(command);
         return Task.CompletedTask;
+    }
+
+    public async Task SendCommandsAsync(IEnumerable<SerializedCommand> commands)
+    {
+        foreach (var command in commands)
+        {
+            await SendCommandAsync(command);
+        }
     }
 
     public void SimulateReceivedCommand(IDeserializedCommand command)

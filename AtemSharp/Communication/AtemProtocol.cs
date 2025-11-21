@@ -9,7 +9,6 @@ namespace AtemSharp.Communication;
 /// <summary>
 /// Handles the communication protocol for the ATEM mixers
 /// </summary>
-// TODO: Make IAsyncDisposable
 public class AtemProtocol : IAtemProtocol
 {
     private ConnectionState _connectionState = ConnectionState.Closed;
@@ -71,7 +70,7 @@ public class AtemProtocol : IAtemProtocol
         CheckForRetransmit().FireAndForget();
     }
 
-    public async Task Connect(IPEndPoint endPoint)
+    public async Task ConnectAsync(IPEndPoint endPoint)
     {
         _remoteEndpoint = endPoint;
 
@@ -82,7 +81,7 @@ public class AtemProtocol : IAtemProtocol
         await _connectionSource.Task;
     }
 
-    public async Task Disconnect()
+    public async Task DisconnectAsync()
     {
         await ClearTimers();
         await CloseSocket();
@@ -120,7 +119,7 @@ public class AtemProtocol : IAtemProtocol
         _connectionState = ConnectionState.SynSent;
     }
 
-    public async Task SendPackets(AtemPacket[] packets)
+    public async Task SendPacketsAsync(AtemPacket[] packets)
     {
         await Task.WhenAll(packets.Select(SendPacket).ToList());
     }
@@ -361,4 +360,9 @@ public class AtemProtocol : IAtemProtocol
     private static readonly uint MaxPacketPerAck = 16;
 
     private static readonly TimeSpan InFlightTimeout = TimeSpan.FromMilliseconds(60);
+
+    public async ValueTask DisposeAsync()
+    {
+        await DisconnectAsync();
+    }
 }
