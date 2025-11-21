@@ -30,6 +30,7 @@ public class AtemSocketChild
     private List<InFlightPacket> _inflight = [];
     private CancellationTokenSource? _ackTimerCancellation;
     private int _receivedWithoutAck;
+    private TaskCompletionSource? _connectionSource;
 
     public event EventHandler? Connected;
     public event EventHandler? Disconnected;
@@ -80,7 +81,6 @@ public class AtemSocketChild
         });
     }
 
-    // TODO: Make async task
     private async Task ClearTimers()
     {
         await Task.WhenAll(
@@ -95,16 +95,17 @@ public class AtemSocketChild
         _address = address;
         _port = port;
 
-        CreateSocket();
+        await CreateSocket();
+
+        _connectionSource = new();
         await RestartConnection();
+        await _connectionSource.Task;
     }
 
     // TODO: Await timer finalization and socket destruction
     public async Task Disconnect()
     {
-        Debug.Print("Clearing timers");
         await ClearTimers();
-        Debug.Print("Closing Socket");
         await CloseSocket();
 
         _receivedPackets = new();
@@ -127,7 +128,7 @@ public class AtemSocketChild
             OnDisconnected();
         } else if (ConnectionState == ConnectionState.Disconnected)
         {
-            CreateSocket();
+            await CreateSocket();
         }
 
         // Reset connection
@@ -141,8 +142,6 @@ public class AtemSocketChild
         SendPacket(CommandConnectHello);
         ConnectionState = ConnectionState.SynSent;
         Debug.Print("Syn Sent");
-
-        // TODO: Await connection event
     }
 
     public void SendPackets(OutboundPacketInfo[] packets)
@@ -182,7 +181,7 @@ public class AtemSocketChild
     private async Task RecreateSocket()
     {
         await CloseSocket();
-        CreateSocket();
+        await CreateSocket();
     }
 
     private async Task CloseSocket()
@@ -192,10 +191,11 @@ public class AtemSocketChild
         _socket?.Dispose();
     }
 
-    private void CreateSocket()
+    private async Task CreateSocket()
     {
-        _socket?.Dispose();
-        _socket = ((Func<IUdpClient>)(() => new UdpClientWrapper()))();
+        if (_socket is not null) await CloseSocket();
+
+        _socket = new UdpClientWrapper();
         _socket.Client.Bind(new IPEndPoint(IPAddress.Any, 0));
         _socket.Connect(new IPEndPoint(IPAddress.Parse(_address), _port));
         _receiveLoop = ActionLoop.Start(ReceiveLoopAsync);
@@ -411,6 +411,7 @@ public class AtemSocketChild
 
     protected virtual void OnConnected()
     {
+        _connectionSource?.TrySetResult();
         Connected?.Invoke(this, EventArgs.Empty);
     }
 
