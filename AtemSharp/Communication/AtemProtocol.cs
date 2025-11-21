@@ -357,22 +357,17 @@ public class AtemProtocol
         if (_inflight.Count == 0) return;
 
         var now = DateTime.Now;
-        // TODO: Simplify using LINQ (.First ...)
-        foreach (var sentPacket in _inflight)
+
+        var foundPacket = _inflight.FirstOrDefault(sentPacket => sentPacket.LastSent + InFlightTimeout < now);
+        if (!foundPacket.NonDefault) return;
+
+        if (foundPacket.Resent <= MaxPacketRetries && IsPacketCoveredByAck(_nextSendPacketId, foundPacket.PacketId))
         {
-            if (sentPacket.LastSent + InFlightTimeout < now)
-            {
-                if (sentPacket.Resent <= MaxPacketRetries && IsPacketCoveredByAck(_nextSendPacketId, sentPacket.PacketId))
-                {
-                    Debug.Print($"Retransmit from timeout: {sentPacket.PacketId}");
-                    await RetransmitFrom(sentPacket.PacketId);
-                    return;
-                } else {
-                    Debug.Print($"Packet timed out {sentPacket.PacketId}");
-                    await RestartConnection();
-                    return;
-                }
-            }
+            Debug.Print($"Retransmit from timeout: {foundPacket.PacketId}");
+            await RetransmitFrom(foundPacket.PacketId);
+        } else {
+            Debug.Print($"Packet timed out {foundPacket.PacketId}");
+            await RestartConnection();
         }
     }
 

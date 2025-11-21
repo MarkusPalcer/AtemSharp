@@ -3,7 +3,6 @@
 using System.Diagnostics;
 using AtemSharp;
 using AtemSharp.Commands.Macro;
-using AtemSharp.Commands.MixEffects;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -13,7 +12,6 @@ Console.WriteLine("=== AtemSharp Demo ===\n");
 // Create a console logger factory and logger
 using var loggerFactory = LoggerFactory.Create(builder =>
     builder.AddConsole().SetMinimumLevel(LogLevel.Information));
-var logger = loggerFactory.CreateLogger<AtemSwitcher>();
 
 var atem = new AtemSwitcher();
 
@@ -31,7 +29,7 @@ Console.WriteLine("Connected, waiting 2s for data to come in ...");
 await Task.Delay(TimeSpan.FromSeconds(2), emergencyCts.Token);
 
 
-Console.WriteLine($"Executing Macro {atem.State.Macros.Macros[0].Name} ...");
+Console.WriteLine($"Executing Macro {atem.State!.Macros.Macros[0].Name} ...");
 await atem.SendCommand(new MacroActionCommand(atem.State.Macros.Macros[0], MacroAction.Run));
 
 var state = atem.State;

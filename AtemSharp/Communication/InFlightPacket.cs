@@ -7,6 +7,7 @@ public struct InFlightPacket
     public readonly byte[] Payload;
     public DateTime LastSent;
     public uint Resent;
+    public readonly bool NonDefault = true;
 
     public InFlightPacket(ushort packetId, int trackingId, byte[] payload)
     {
