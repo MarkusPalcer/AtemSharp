@@ -32,6 +32,10 @@ public class AtemSwitcher : IAsyncDisposable
     private TaskCompletionSource<bool>? _connectionCompletionSource;
     private ActionLoop? _receiveLoop;
 
+
+
+    public ConnectionState ConnectionState { get; private set; } = ConnectionState.Disconnected;
+
     /// <summary>
     /// Gets the current ATEM state
     /// </summary>
@@ -73,13 +77,29 @@ public class AtemSwitcher : IAsyncDisposable
         if (_disposed)
             throw new ObjectDisposedException(nameof(AtemSwitcher));
 
+        if (ConnectionState != ConnectionState.Disconnected)
+            throw new InvalidOperationException("Can not connect while not disconnected");
+
+        ConnectionState = ConnectionState.Connecting;
+
         State = new AtemState();
         _connectionCompletionSource = new TaskCompletionSource<bool>();
 
-        await Client.ConnectAsync(remoteHost, remotePort, cancellationToken);
-        _receiveLoop = ActionLoop.Start(ReceiveCommandLoop);
-        // Wait for InitCompleteCommand to be received, indicating the connection is fully established
-        await _connectionCompletionSource.Task.WaitAsync(cancellationToken);
+        try
+        {
+            await Client.ConnectAsync(remoteHost, remotePort, cancellationToken);
+            _receiveLoop = ActionLoop.Start(ReceiveCommandLoop);
+            // Wait for InitCompleteCommand to be received, indicating the connection is fully established
+            await _connectionCompletionSource.Task.WaitAsync(cancellationToken);
+            ConnectionState = ConnectionState.Connected;
+        }
+        catch (Exception)
+        {
+            ConnectionState = ConnectionState.Disconnected;
+            _receiveLoop?.Cancel();
+            _receiveLoop = null;
+            throw;
+        }
     }
 
     private async Task ReceiveCommandLoop(CancellationToken token)
@@ -103,9 +123,31 @@ public class AtemSwitcher : IAsyncDisposable
     /// <returns>Task that completes when disconnected</returns>
     public async Task DisconnectAsync()
     {
-        if (!_disposed)
+        if (_disposed)
         {
-            await Client.DisconnectAsync();
+            return;
+        }
+
+        // Disconnecting is idempotent
+        switch (ConnectionState)
+        {
+            case ConnectionState.Connecting:
+            case ConnectionState.Disconnecting:
+                throw new InvalidOperationException("Can not disconnect while transitioning connection states");
+            case ConnectionState.Disconnected:
+                return; // Disconnecting is idempotent
+            case ConnectionState.Connected:
+                ConnectionState = ConnectionState.Disconnecting;
+                try
+                {
+                    await Client.DisconnectAsync();
+                }
+                catch (Exception)
+                {
+                    ConnectionState = ConnectionState.Connected;
+                    throw;
+                }
+                break;
         }
     }
 
@@ -137,4 +179,12 @@ public class AtemSwitcher : IAsyncDisposable
      * - Cancellation causes the macro execution to be cancelled
      * - Multiple macros are either queued (default) or the currently executed macro is cancelled and the new one started (optional parameter)
      */
+}
+
+public enum ConnectionState
+{
+    Disconnected,
+    Connecting,
+    Connected,
+    Disconnecting
 }

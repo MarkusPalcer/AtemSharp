@@ -1,3 +1,4 @@
+using AtemSharp.Communication;
 using AtemSharp.Enums;
 
 namespace AtemSharp.Lib;

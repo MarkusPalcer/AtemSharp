@@ -5,15 +5,18 @@ namespace AtemSharp.Tests;
 [TestFixture]
 public class AtemSwitcherTests
 {
-    private readonly AtemSwitcher _atem = new();
-    private readonly AtemClientFake _transportFake = new();
+    private AtemSwitcher _atem;
+    private AtemClientFake _transportFake = new();
 
     [SetUp]
     public void SetUp()
     {
-        // Clear static state
-        AtemSwitcher.UnknownCommands.Clear();
+        _transportFake = new();
+
+        _atem = new();
         _atem.Client = _transportFake;
+
+        AtemSwitcher.UnknownCommands.Clear();
     }
 
     [TearDown]
@@ -127,7 +130,7 @@ public class AtemSwitcherTests
 
         // Second connect should fail since already connected
         var ex = Assert.ThrowsAsync<InvalidOperationException>(() => _atem.ConnectAsync("127.0.0.1", 1234));
-        Assert.That(ex!.Message, Does.Contain("Cannot connect when state is"));
+        Assert.That(ex!.Message, Does.Contain("Can not connect while"));
 
         // Cleanup
         var disconnectTask = _atem.DisconnectAsync();

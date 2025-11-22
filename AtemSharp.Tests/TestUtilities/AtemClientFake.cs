@@ -2,9 +2,9 @@ using System.Net;
 using System.Threading.Tasks.Dataflow;
 using AtemSharp.Commands;
 using AtemSharp.Constants;
-using AtemSharp.Enums;
 using AtemSharp.Lib;
 using JetBrains.Annotations;
+
 
 namespace AtemSharp.Tests.TestUtilities;
 
@@ -14,7 +14,7 @@ namespace AtemSharp.Tests.TestUtilities;
 /// </summary>
 public class AtemClientFake : IAtemClient
 {
-    private ConnectionState _connectionState = ConnectionState.Closed;
+    private Communication.ConnectionState _connectionState = Communication.ConnectionState.Closed;
     private IPEndPoint? _remoteEndPoint;
     private bool _disposed;
 
@@ -75,7 +75,7 @@ public class AtemClientFake : IAtemClient
             throw new ObjectDisposedException(nameof(AtemClientFake));
         }
 
-        if (_connectionState != ConnectionState.Closed)
+        if (_connectionState != Communication.ConnectionState.Closed)
         {
             throw new InvalidOperationException($"Cannot connect when state is {_connectionState}");
         }
@@ -104,7 +104,7 @@ public class AtemClientFake : IAtemClient
             return; // Already disposed, nothing to do
         }
 
-        if (_connectionState == ConnectionState.Closed)
+        if (_connectionState == Communication.ConnectionState.Closed)
         {
             return; // Already disconnected
         }
@@ -121,7 +121,7 @@ public class AtemClientFake : IAtemClient
             throw new ObjectDisposedException(nameof(AtemClientFake));
         }
 
-        if (_connectionState != ConnectionState.Established)
+        if (_connectionState != Communication.ConnectionState.Established)
         {
             throw new InvalidOperationException($"Cannot send packet when state is {_connectionState}");
         }
@@ -160,7 +160,7 @@ public class AtemClientFake : IAtemClient
         SentCommands.Clear();
 
         // Reset state
-        _connectionState = ConnectionState.Closed;
+        _connectionState = Communication.ConnectionState.Closed;
         _remoteEndPoint = null;
 
         GC.SuppressFinalize(this);
