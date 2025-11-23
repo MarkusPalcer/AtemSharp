@@ -55,8 +55,7 @@ public partial class DisplayClockPropertiesSetCommand : SerializedCommand
     /// <summary>
     /// Starting time for countdown/countup modes
     /// </summary>
-    [SerializedField(13,6)]
-    [CustomSerialization]
+    [CustomSerialization(6)]
     private DisplayClockTime _startFrom;
 
     /// <summary>

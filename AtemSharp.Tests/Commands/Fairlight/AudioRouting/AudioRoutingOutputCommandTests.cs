@@ -14,7 +14,7 @@ public class AudioRoutingOutputCommandTests : SerializedCommandTestBase<AudioRou
 
     protected override AudioRoutingOutputCommand CreateSut(TestCaseData testCase)
     {
-        return new AudioRoutingOutputCommand(new AudioRoutingOutput
+        return new AudioRoutingOutputCommand(new AudioRoutingEntry
         {
             Id = testCase.Command.Id,
         })

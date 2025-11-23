@@ -9,8 +9,7 @@ namespace AtemSharp.Commands.Recording;
 [BufferSize(144)]
 public partial class RecordingSettingsCommand(AtemState state) : SerializedCommand
 {
-    [SerializedField(1, 0)]
-    [CustomSerialization]
+    [CustomSerialization(0)]
     private string _fileName = state.Recording.FileName;
 
     [SerializedField(132, 1)]

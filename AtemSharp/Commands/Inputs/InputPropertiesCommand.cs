@@ -18,15 +18,13 @@ public partial class InputPropertiesCommand : SerializedCommand
     /// <summary>
     /// Long descriptive name for the input (max 20 characters)
     /// </summary>
-    [SerializedField(4,0)]
-    [CustomSerialization]
+    [CustomSerialization(0)]
     private string _longName;
 
     /// <summary>
     /// Short name for the input (max 4 characters)
     /// </summary>
-    [SerializedField(24, 1)]
-    [CustomSerialization]
+    [CustomSerialization(1)]
     private string _shortName;
 
     /// <summary>

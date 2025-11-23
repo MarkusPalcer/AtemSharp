@@ -9,4 +9,7 @@ namespace AtemSharp.Helpers;
 [AttributeUsage(AttributeTargets.Field)]
 public class CustomSerializationAttribute : Attribute
 {
+    public CustomSerializationAttribute() {}
+    public CustomSerializationAttribute(byte flag) {}
+
 }

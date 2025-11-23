@@ -18,19 +18,19 @@ public partial class DataTransferFileDescriptionCommand : SerializedCommand
     /// <summary>
     /// Name of the file (max 64 bytes when encoded as UTF-8)
     /// </summary>
-    [SerializedField(2)] [CustomSerialization]
+    [CustomSerialization]
     private string? _name;
 
     /// <summary>
     /// Description of the file (max 128 bytes when encoded as UTF-8)
     /// </summary>
-    [SerializedField(66)] [CustomSerialization]
+    [CustomSerialization]
     private string? _description;
 
     /// <summary>
     /// Base64-encoded hash of the file (16 bytes when decoded)
     /// </summary>
-    [SerializedField(194)] [CustomSerialization]
+    [CustomSerialization]
     private string _fileHash = string.Empty;
 
     /// <summary>

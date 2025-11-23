@@ -107,10 +107,20 @@ namespace AtemSharp.CodeGenerators.Serialization
         private static byte? GetFlag(IFieldSymbol f)
         {
             var attr = f.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "SerializedFieldAttribute");
-            if (attr == null || attr.ConstructorArguments.Length <= 1) return null;
+            if (attr != null && attr.ConstructorArguments.Length > 1)
+            {
+                var arg = attr.ConstructorArguments[1];
+                return arg.Value is byte b ? (byte?)b : null;
+            }
 
-            var arg = attr.ConstructorArguments[1];
-            return arg.Value is byte b ? (byte?)b : null;
+            attr = f.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "CustomSerializationAttribute");
+            if (attr != null && attr.ConstructorArguments.Length > 0)
+            {
+                var arg = attr.ConstructorArguments[0];
+                return arg.Value is byte b ? (byte?)b : null;
+            }
+
+            return null;
         }
 
 

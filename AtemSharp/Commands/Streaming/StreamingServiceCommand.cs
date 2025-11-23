@@ -9,16 +9,13 @@ namespace AtemSharp.Commands.Streaming;
 [BufferSize(1100)]
 public partial class StreamingServiceCommand(AtemState state) : SerializedCommand
 {
-    [SerializedField(1, 0)]
-    [CustomSerialization]
+    [CustomSerialization(0)]
     private string _serviceName = state.Streaming.ServiceName;
 
-    [SerializedField(65, 1)]
-    [CustomSerialization]
+    [CustomSerialization(1)]
     private string _url = state.Streaming.Url;
 
-    [SerializedField(577, 2)]
-    [CustomSerialization]
+    [CustomSerialization(2)]
     private string _key = state.Streaming.Key;
 
     [SerializedField(1092, 3)] private uint _lowBitrate = state.Streaming.VideoBitrates.Low;
