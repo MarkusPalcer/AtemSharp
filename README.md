@@ -7,12 +7,8 @@ This is a C# port of the TypeScript [atem-connection](https://github.com/Sofie-A
 ## Features
 
 - Connect to ATEM switchers via UDP
-- Send commands to control video switching
-- Receive state updates from the ATEM
-- Comprehensive enum definitions for ATEM protocols
-- Event-driven architecture using .NET events
-- Modern async/await patterns
-- .NET 9.0 target framework
+- Send commands to the ATEM switcher
+- Receive state updates from the ATEM switcher
 
 ## Installation
 
@@ -34,7 +30,7 @@ using (var atem = new AtemSwitcher());
 await atem.ConnectAsync("192.168.1.240");
 
 // Send commands
-await atem.SendCommandsAsync(new[] { 
+await atem.SendCommandsAsync(new[] {
     new CutCommand(0),  // Cut on ME1
     new ProgramInputCommand(0, 1),  // Set program to input 1
     new PreviewInputCommand(0, 2),  // Set preview to input 2
