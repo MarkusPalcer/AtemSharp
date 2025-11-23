@@ -1,0 +1,24 @@
+using AtemSharp.State.Audio.Fairlight;
+using FairlightMixerMasterPropertiesCommand = AtemSharp.Commands.Fairlight.Master.FairlightMixerMasterPropertiesCommand;
+
+namespace AtemSharp.Tests.Commands.Fairlight.Master;
+
+public class FairlightMixerMasterPropertiesCommandTests
+    : SerializedCommandTestBase<FairlightMixerMasterPropertiesCommand, FairlightMixerMasterPropertiesCommandTests.CommandData>
+{
+    public class CommandData : CommandDataBase
+    {
+        public bool AudioFollowVideoCrossfadeTransitionEnabled { get; set; }
+    }
+
+
+    protected override FairlightMixerMasterPropertiesCommand CreateSut(TestCaseData testCase)
+    {
+        var state = new MasterProperties()
+        {
+            AudioFollowsVideo = testCase.Command.AudioFollowVideoCrossfadeTransitionEnabled
+        };
+
+        return new FairlightMixerMasterPropertiesCommand(state);
+    }
+}
