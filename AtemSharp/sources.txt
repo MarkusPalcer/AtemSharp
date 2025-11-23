@@ -1,5 +1,4 @@
-﻿src\commands\Fairlight\AudioRouting\AudioRoutingOutput.ts - AROC, AROP
-src\commands\Fairlight\AudioRouting\AudioRoutingSource.ts - ARSC, ARSP
+﻿src\commands\Fairlight\AudioRouting\AudioRoutingSource.ts - ARSC, ARSP
 src\commands\Fairlight\FairlightMixerSourceCommand.ts - CFSP, FASP
 src\commands\Macro\MacroActionCommand.ts - MAct
 src\commands\Macro\MacroAddTimedPauseCommand.ts - MSlp
