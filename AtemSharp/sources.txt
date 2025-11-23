@@ -1,6 +1,5 @@
 ﻿src\commands\Fairlight\AudioRouting\AudioRoutingOutput.ts - AROC, AROP
 src\commands\Fairlight\AudioRouting\AudioRoutingSource.ts - ARSC, ARSP
-src\commands\Fairlight\FairlightMixerSendLevelsCommand.ts - SFLN
 src\commands\Fairlight\FairlightMixerSourceCommand.ts - CFSP, FASP
 src\commands\Fairlight\FairlightMixerSourceDynamicsResetCommand.ts - RICD
 src\commands\Fairlight\FairlightMixerSourceEqualizerResetCommand.ts - RICE
