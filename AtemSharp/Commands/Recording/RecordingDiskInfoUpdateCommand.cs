@@ -13,7 +13,6 @@ public partial class RecordingDiskInfoUpdateCommand : IDeserializedCommand
     [DeserializedField(0)]
     private uint _diskId;
 
-    [DeserializedField(8)]
     [CustomDeserialization]
     private bool _isDelete;
 
@@ -23,7 +22,6 @@ public partial class RecordingDiskInfoUpdateCommand : IDeserializedCommand
     [DeserializedField(4)]
     private uint _recordingTimeAvailable;
 
-    [DeserializedField(10)]
     [CustomDeserialization]
     private string _name = string.Empty;
 

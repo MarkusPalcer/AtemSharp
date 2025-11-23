@@ -42,7 +42,7 @@ namespace AtemSharp.CodeGenerators.Deserialization
                     // Find fields with DeserializedFieldAttribute
                     var fields = symbol.GetMembers()
                                        .OfType<IFieldSymbol>()
-                                       .Where(f => f.GetAttributes().Any(a => a.AttributeClass?.Name == "DeserializedFieldAttribute"))
+                                       .Where(f => f.GetAttributes().Any(a => a.AttributeClass?.Name == "DeserializedFieldAttribute" || a.AttributeClass?.Name == "CustomDeserializationAttribute"))
                                        .Select(f => ProcessField(f, spc))
                                        .ToArray();
 

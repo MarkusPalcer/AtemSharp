@@ -22,14 +22,12 @@ public partial class InputPropertiesUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Long descriptive name for the input
     /// </summary>
-    [DeserializedField(2)]
     [CustomDeserialization]
     private string _longName = string.Empty;
 
     /// <summary>
     /// Short name for the input
     /// </summary>
-    [DeserializedField(22)]
     [CustomDeserialization]
     private string _shortName = string.Empty;
 

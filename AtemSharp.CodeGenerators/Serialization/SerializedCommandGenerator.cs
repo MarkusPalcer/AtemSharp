@@ -147,7 +147,7 @@ namespace AtemSharp.CodeGenerators.Serialization
 
                     var fields = classSymbol.GetMembers()
                                             .OfType<IFieldSymbol>()
-                                            .Where(f => f.GetAttributes().Any(a => a.AttributeClass?.Name == "SerializedFieldAttribute"))
+                                            .Where(f => f.GetAttributes().Any(a => a.AttributeClass?.Name == "SerializedFieldAttribute" || a.AttributeClass?.Name == "CustomSerializationAttribute"))
                                             .Select(f => ProcessField(f, spc))
                                             .ToArray();
 

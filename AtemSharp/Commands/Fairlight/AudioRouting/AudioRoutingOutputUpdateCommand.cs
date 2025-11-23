@@ -22,15 +22,12 @@ public partial class AudioRoutingOutputUpdateCommand : IDeserializedCommand
     [DeserializedField(10)]
     private ushort _internalPortType;
 
-    [DeserializedField(0)]
     [CustomDeserialization]
     private string _name = string.Empty;
 
-    [DeserializedField(0)]
     [CustomDeserialization]
     private uint _audioOutputId;
 
-    [DeserializedField(0)]
     [CustomDeserialization]
     private AudioChannelPair _audioChannelPair;
 

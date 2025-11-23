@@ -9,7 +9,6 @@ namespace AtemSharp.Commands.Recording;
 [Command("RMSu", ProtocolVersion.V8_1_1)]
 public partial class RecordingSettingsUpdateCommand : IDeserializedCommand
 {
-    [DeserializedField(0)]
     [CustomDeserialization]
     private string _fileName;
 

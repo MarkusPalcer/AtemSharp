@@ -18,11 +18,9 @@ public partial class MediaPoolFrameDescriptionCommand : IDeserializedCommand
     [DeserializedField(4)]
     private bool _isUsed;
 
-    [DeserializedField(5)]
     [CustomDeserialization]
     private string _hash = string.Empty;
 
-    [DeserializedField(24)]
     [CustomDeserialization]
     private string _fileName = string.Empty;
 

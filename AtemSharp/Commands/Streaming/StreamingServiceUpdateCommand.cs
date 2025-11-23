@@ -9,15 +9,12 @@ namespace AtemSharp.Commands.Streaming;
 [Command("SRSU", ProtocolVersion.V8_1_1)]
 public partial class StreamingServiceUpdateCommand : IDeserializedCommand
 {
-    [DeserializedField(0)]
     [CustomDeserialization]
     private string _serviceName = string.Empty;
 
-    [DeserializedField(64)]
     [CustomDeserialization]
     private string _url = string.Empty;
 
-    [DeserializedField(576)]
     [CustomDeserialization]
     private string _key = string.Empty;
 

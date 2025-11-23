@@ -15,11 +15,9 @@ public partial class MacroRunStatusUpdateCommand : IDeserializedCommand
     [DeserializedField(1)]
     private bool _loop;
 
-    [DeserializedField(0)]
     [CustomDeserialization]
     private bool _isWaiting;
 
-    [DeserializedField(0)]
     [CustomDeserialization]
     private bool _isRunning;
 
