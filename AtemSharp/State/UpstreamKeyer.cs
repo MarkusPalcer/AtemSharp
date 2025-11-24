@@ -22,12 +22,12 @@ public class UpstreamKeyer
     /// <summary>
     /// Fill source input number
     /// </summary>
-    public int FillSource { get; set; }
+    public ushort FillSource { get; set; }
 
     /// <summary>
     /// Cut source input number
     /// </summary>
-    public int CutSource { get; set; }
+    public ushort CutSource { get; set; }
 
     /// <summary>
     /// Type of keying effect (Luma, Chroma, Pattern, DVE)
