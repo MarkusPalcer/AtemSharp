@@ -9,4 +9,7 @@ public class SuperSource
     public ushort CutSource { get; set; }
     public ArtOption Option { get; set; }
     public bool PreMultiplied { get; set; }
+    public double Clip { get; set; }
+    public double Gain { get; set; }
+    public bool InvertKey { get; set; }
 }

@@ -74,7 +74,7 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
     [UsedImplicitly(ImplicitUseTargetFlags.WithInheritors | ImplicitUseTargetFlags.WithMembers)]
     public new abstract class CommandDataBase : CommandTestBase<TTestData>.CommandDataBase
     {
-        public int Mask { get; set; }
+        public uint Mask { get; set; }
     }
 
     public static IEnumerable<NUnit.Framework.TestCaseData> GetTestCases()
@@ -93,7 +93,7 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
         var expectedPayload = ExtractExpectedPayload(fullPacketBytes);
 
         var command = CreateSut(testCase);
-        command.Flag = (ushort)testCase.Command.Mask;
+        command.Flag = testCase.Command.Mask;
 
         // Act
         var actualPayload = command.Serialize(testCase.FirstVersion);
