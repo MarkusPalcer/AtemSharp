@@ -1,4 +1,3 @@
-using AtemSharp.Helpers;
 using AtemSharp.Lib;
 
 namespace AtemSharp.Commands.DataTransfer;

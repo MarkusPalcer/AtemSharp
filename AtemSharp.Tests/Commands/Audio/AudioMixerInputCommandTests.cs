@@ -1,5 +1,4 @@
 using AtemSharp.Commands.Audio;
-using AtemSharp.Enums.Audio;
 using AtemSharp.State;
 using AtemSharp.State.Audio.ClassicAudio;
 

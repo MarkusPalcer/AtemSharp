@@ -1,5 +1,4 @@
 using AtemSharp.Enums.Fairlight;
-using AtemSharp.Helpers;
 using AtemSharp.Lib;
 
 namespace AtemSharp.Commands.Fairlight.Source;

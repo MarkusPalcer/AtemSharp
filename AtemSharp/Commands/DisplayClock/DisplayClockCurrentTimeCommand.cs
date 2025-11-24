@@ -1,4 +1,3 @@
-using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DisplayClock;

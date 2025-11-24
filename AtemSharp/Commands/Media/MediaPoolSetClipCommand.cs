@@ -1,5 +1,3 @@
-using AtemSharp.Commands;
-using AtemSharp.Helpers;
 using AtemSharp.Lib;
 using AtemSharp.State;
 

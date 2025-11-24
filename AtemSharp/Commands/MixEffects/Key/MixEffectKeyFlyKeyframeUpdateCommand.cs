@@ -1,5 +1,4 @@
 using System.Drawing;
-using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Key;

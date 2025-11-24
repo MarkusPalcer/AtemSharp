@@ -1,4 +1,4 @@
-namespace AtemSharp.Enums.Audio;
+namespace AtemSharp.State.Audio.ClassicAudio;
 
 /// <summary>
 /// Audio mix options

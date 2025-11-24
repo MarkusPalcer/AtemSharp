@@ -1,5 +1,4 @@
 using AtemSharp.Enums;
-using AtemSharp.Helpers;
 
 namespace AtemSharp.Commands.DisplayClock;
 

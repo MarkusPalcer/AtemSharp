@@ -1,4 +1,3 @@
-using AtemSharp.Commands;
 using AtemSharp.Enums;
 using AtemSharp.Lib;
 

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Text;
 using AtemSharp.Commands;
 using AtemSharp.Enums;

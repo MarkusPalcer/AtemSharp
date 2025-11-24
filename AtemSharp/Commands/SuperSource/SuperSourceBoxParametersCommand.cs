@@ -1,5 +1,4 @@
 using AtemSharp.Enums;
-using AtemSharp.Helpers;
 using AtemSharp.Lib;
 
 namespace AtemSharp.Commands.SuperSource;

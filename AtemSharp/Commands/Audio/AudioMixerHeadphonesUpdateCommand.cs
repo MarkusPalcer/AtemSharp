@@ -1,4 +1,3 @@
-using AtemSharp.Helpers;
 using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Audio.ClassicAudio;

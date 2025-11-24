@@ -14,6 +14,7 @@
         <RepositoryUrl>https://github.com/Sofie-Automation/sofie-atem-connection</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>atem;blackmagic;switcher;video</PackageTags>
+        <ImplicitUsings>true</ImplicitUsings>
     </PropertyGroup>
 
     <ItemGroup>

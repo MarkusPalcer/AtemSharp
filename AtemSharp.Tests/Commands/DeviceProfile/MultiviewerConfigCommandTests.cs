@@ -1,6 +1,5 @@
 using AtemSharp.Commands.DeviceProfile;
 using AtemSharp.State;
-using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 

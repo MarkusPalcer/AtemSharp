@@ -1,6 +1,5 @@
 using AtemSharp.Enums;
 using AtemSharp.Enums.Fairlight;
-using AtemSharp.Helpers;
 using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Fairlight;

@@ -1,9 +1,10 @@
-using System.Xml.Schema;
+using System.Diagnostics.CodeAnalysis;
 
-namespace AtemSharp.Helpers;
+namespace AtemSharp.Attributes;
 
 [AttributeUsage(AttributeTargets.Field)]
+[SuppressMessage("ReSharper", "UnusedParameter.Local")]
 public class CustomScalingAttribute : Attribute
 {
-    public CustomScalingAttribute(string scalingMethod) {}
+    public CustomScalingAttribute(string customScalingMethod) {}
 }

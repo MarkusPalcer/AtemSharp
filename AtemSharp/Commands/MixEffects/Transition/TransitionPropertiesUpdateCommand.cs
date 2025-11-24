@@ -1,5 +1,4 @@
 using AtemSharp.Enums;
-using AtemSharp.Helpers;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Transition;

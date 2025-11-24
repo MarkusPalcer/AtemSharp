@@ -1,5 +1,3 @@
-using AtemSharp.Helpers;
-
 namespace AtemSharp.Commands.Macro;
 
 [Command("MSlp")]

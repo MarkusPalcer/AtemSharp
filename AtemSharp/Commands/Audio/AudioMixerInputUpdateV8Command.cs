@@ -1,7 +1,6 @@
 using AtemSharp.Enums;
 using AtemSharp.Enums.Audio;
 using AtemSharp.Enums.Ports;
-using AtemSharp.Helpers;
 using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Audio.ClassicAudio;

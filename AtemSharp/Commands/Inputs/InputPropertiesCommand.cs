@@ -1,5 +1,4 @@
 using AtemSharp.Enums.Ports;
-using AtemSharp.Helpers;
 using AtemSharp.Lib;
 using AtemSharp.State;
 

@@ -1,5 +1,4 @@
 using AtemSharp.Commands.Recording;
-using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Recording;
 

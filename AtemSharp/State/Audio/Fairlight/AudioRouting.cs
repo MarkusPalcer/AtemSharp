@@ -1,5 +1,3 @@
-using AtemSharp.Commands.Fairlight.AudioRouting;
-
 namespace AtemSharp.State.Audio.Fairlight;
 
 public class AudioRouting
