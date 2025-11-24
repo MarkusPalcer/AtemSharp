@@ -180,11 +180,3 @@ public class AtemSwitcher : IAsyncDisposable
      * - Multiple macros are either queued (default) or the currently executed macro is cancelled and the new one started (optional parameter)
      */
 }
-
-public enum ConnectionState
-{
-    Disconnected,
-    Connecting,
-    Connected,
-    Disconnecting
-}
