@@ -31,7 +31,11 @@ namespace AtemSharp.CodeGenerators.Analyzers
                 .OfType<IFieldSymbol>()
                 .Any(f => f.GetAttributes().Any(a => a.AttributeClass?.Name == "CustomSerializationAttribute" || a.AttributeClass?.Name == "CustomSerialization"));
 
-            if (!hasCustomSerializationField)
+            var hasGeneratedSerializationCode = classSymbol.GetMembers()
+                                                           .OfType<IFieldSymbol>()
+                                                           .Any(f => f.GetAttributes().Any(a => a.AttributeClass?.Name == "SerializedFieldAttribute" || a.AttributeClass?.Name == "SerializedField"));
+
+            if (!hasCustomSerializationField || !hasGeneratedSerializationCode)
                 return;
 
             // Check for SerializeInternal method
