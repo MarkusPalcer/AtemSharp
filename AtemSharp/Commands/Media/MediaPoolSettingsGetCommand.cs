@@ -6,7 +6,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Commands.Media;
 
-[Command("MPSp")]
+[Command("MPSp", ProtocolVersion.V8_0)]
 public partial class MediaPoolSettingsGetCommand : IDeserializedCommand
 {
     [CustomDeserialization] private ushort[] _maxFrames = [];
