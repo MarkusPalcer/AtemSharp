@@ -24,7 +24,8 @@ public partial class SuperSourceBorderUpdateCommand: IDeserializedCommand
 
     public void ApplyToState(AtemState state)
     {
-        state.Video.SuperSources[_superSourceId].Border = new SuperSourceBorderProperties
+        var superSource = state.Video.SuperSources[_superSourceId];
+        superSource.Border = new SuperSourceBorderProperties
         {
             Enabled = _borderEnabled,
             Bevel = _borderBevel,
