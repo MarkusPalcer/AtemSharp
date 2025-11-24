@@ -1,4 +1,3 @@
-using System.Drawing;
 using AtemSharp.Enums;
 
 namespace AtemSharp.State;
@@ -48,7 +47,7 @@ public class UpstreamKeyer
     /// <summary>
     /// Mask settings for the upstream keyer
     /// </summary>
-    public UpstreamKeyerMaskSettings MaskSettings { get; } = new();
+    public MaskProperties Mask { get; } = new();
 
     /// <summary>
     /// Luma key settings for the upstream keyer
@@ -91,43 +90,4 @@ public class UpstreamKeyer
 
         ];
     }
-}
-
-public class UpstreamKeyerFlyKeyframe
-{
-    public byte UpstreamKeyerId { get; internal set; }
-
-    public byte MixEffectId { get; internal set; }
-
-    public byte Id { get; internal set; }
-    public SizeF Size { get; internal set; }
-    public PointF Location { get; internal set; }
-    public double Rotation { get; internal set; }
-    public BorderProperties Border { get; internal set; } = new();
-    public double LightSourceDirection { get; internal set; }
-    public byte LightSourceAltitude { get; internal set; }
-    public MaskProperties Mask { get; internal set; } = new();
-}
-
-public class MaskProperties
-{
-    public bool Enabled { get; internal set; }
-    public double Top { get; internal set; }
-    public double Bottom { get; internal set; }
-    public double Left { get; internal set; }
-    public double Right { get; internal set; }
-}
-
-public class BorderProperties
-{
-    public double OuterWidth { get; internal set; }
-    public double InnerWidth { get; internal set; }
-    public byte OuterSoftness { get; internal set; }
-    public byte InnerSoftness { get; internal set; }
-    public byte BevelSoftness { get; internal set; }
-    public byte BevelPosition { get; internal set; }
-    public byte Opacity { get; internal set; }
-    public double Hue { get; internal set; }
-    public double Saturation { get; internal set; }
-    public double Luma { get; internal set; }
 }

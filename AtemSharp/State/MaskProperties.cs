@@ -3,30 +3,30 @@ namespace AtemSharp.State;
 /// <summary>
 /// Mask settings for upstream keyer
 /// </summary>
-public class UpstreamKeyerMaskSettings
+public class MaskProperties
 {
     /// <summary>
     /// Whether masking is enabled
     /// </summary>
-    public bool MaskEnabled { get; set; }
+    public bool Enabled { get; set; }
 
     /// <summary>
     /// Top edge of mask in units
     /// </summary>
-    public double MaskTop { get; set; }
+    public double Top { get; set; }
 
     /// <summary>
     /// Bottom edge of mask in units
     /// </summary>
-    public double MaskBottom { get; set; }
+    public double Bottom { get; set; }
 
     /// <summary>
     /// Left edge of mask in units
     /// </summary>
-    public double MaskLeft { get; set; }
+    public double Left { get; set; }
 
     /// <summary>
     /// Right edge of mask in units
     /// </summary>
-    public double MaskRight { get; set; }
+    public double Right { get; set; }
 }

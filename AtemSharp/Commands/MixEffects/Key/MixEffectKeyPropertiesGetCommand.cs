@@ -81,10 +81,10 @@ public partial class MixEffectKeyPropertiesGetCommand : IDeserializedCommand
         keyer.CutSource = CutSource;
 
         // Update mask settings
-        keyer.MaskSettings.MaskEnabled = MaskEnabled;
-        keyer.MaskSettings.MaskTop = MaskTop;
-        keyer.MaskSettings.MaskBottom = MaskBottom;
-        keyer.MaskSettings.MaskLeft = MaskLeft;
-        keyer.MaskSettings.MaskRight = MaskRight;
+        keyer.Mask.Enabled = MaskEnabled;
+        keyer.Mask.Top = MaskTop;
+        keyer.Mask.Bottom = MaskBottom;
+        keyer.Mask.Left = MaskLeft;
+        keyer.Mask.Right = MaskRight;
     }
 }
