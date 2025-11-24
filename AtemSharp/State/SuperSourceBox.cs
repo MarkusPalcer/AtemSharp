@@ -4,6 +4,7 @@ namespace AtemSharp.State;
 
 public class SuperSourceBox
 {
+    public byte SuperSourceId { get; set; }
     public byte Id { get; set; }
     public bool Enabled { get; set; }
     public ushort Source { get; set; }
