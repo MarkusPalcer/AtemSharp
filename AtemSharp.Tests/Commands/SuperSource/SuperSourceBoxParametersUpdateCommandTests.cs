@@ -1,0 +1,39 @@
+using AtemSharp.Commands.SuperSource;
+using AtemSharp.Enums;
+using AtemSharp.Tests.TestUtilities;
+
+namespace AtemSharp.Tests.Commands.SuperSource;
+
+public class SuperSourceBoxParametersUpdateCommandTests : DeserializedCommandTestBase<SuperSourceBoxParametersUpdateCommand, SuperSourceBoxParametersUpdateCommandTests.CommandData>
+{
+    [MaxProtocolVersion(ProtocolVersion.V7_5_2)]
+    public class CommandData : CommandDataBase
+    {
+        public byte BoxIndex { get; set; }
+        public bool Enabled  { get; set; }
+        public ushort InputSource { get; set; }
+        public double PositionX { get; set; }
+        public double PositionY { get; set; }
+        public double Size { get; set; }
+        public bool Cropped  { get; set; }
+        public double CropTop { get; set; }
+        public double CropBottom { get; set; }
+        public double CropLeft { get; set; }
+        public double CropRight { get; set; }
+    }
+
+    protected override void CompareCommandProperties(SuperSourceBoxParametersUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    {
+        Assert.That(actualCommand.BoxId, Is.EqualTo(expectedData.BoxIndex));
+        Assert.That(actualCommand.Enabled, Is.EqualTo(expectedData.Enabled));
+        Assert.That(actualCommand.Source, Is.EqualTo(expectedData.InputSource));
+        Assert.That(actualCommand.X, Is.EqualTo(expectedData.PositionX).Within(0.01));
+        Assert.That(actualCommand.Y, Is.EqualTo(expectedData.PositionY).Within(0.01));
+        Assert.That(actualCommand.Size, Is.EqualTo(expectedData.Size).Within(0.001));
+        Assert.That(actualCommand.Cropped, Is.EqualTo(expectedData.Cropped));
+        Assert.That(actualCommand.CropTop, Is.EqualTo(expectedData.CropTop).Within(0.001));
+        Assert.That(actualCommand.CropBottom, Is.EqualTo(expectedData.CropBottom).Within(0.001));
+        Assert.That(actualCommand.CropLeft, Is.EqualTo(expectedData.CropLeft).Within(0.001));
+        Assert.That(actualCommand.CropRight, Is.EqualTo(expectedData.CropRight).Within(0.001));
+    }
+}

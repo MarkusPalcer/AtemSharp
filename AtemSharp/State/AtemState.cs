@@ -1,4 +1,3 @@
-using System.Runtime.Serialization;
 using AtemSharp.State.Audio;
 using AtemSharp.State.Recording;
 using AtemSharp.State.Streaming;

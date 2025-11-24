@@ -175,5 +175,8 @@ public class TopologyCommand : IDeserializedCommand
         {
             state.Info.MultiViewer.WindowCount = 0;
         }
+
+        state.Video.SuperSources = AtemStateUtil.CreateArray<State.SuperSource>(SuperSources);
+        state.Video.SuperSources.ForEachWithIndex((ssrc, index) => ssrc.Id = (byte)index);
     }
 }
