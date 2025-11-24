@@ -70,6 +70,7 @@ public class UpstreamKeyer
     public UpstreamKeyerFlyProperties FlyProperties { get; } = new();
 
     public UpstreamKeyerFlyKeyframe[] Keyframes { get; }
+    public UpstreamKeyerPatternProperties Pattern { get; } = new();
 
     public UpstreamKeyer()
     {
