@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -148,11 +149,15 @@ namespace AtemSharp.CodeGenerators.Deserialization
                 return null;
             }
 
-            var scalingLiteral =
-                scalingFactor.ToString("0.0#############################", System.Globalization.CultureInfo.InvariantCulture);
+            var scalingCode = string.Empty;
+            if (scalingFactor.HasValue)
+            {
+                var scalingLiteral = isDouble
+                                         ? scalingFactor.Value.ToString("0.0#############################", CultureInfo.InvariantCulture)
+                                         : scalingFactor.Value.ToString("0", CultureInfo.InvariantCulture);
 
-            var scalingCode = isDouble ? $"/ {scalingLiteral}" : string.Empty;
-
+                scalingCode = $" / {scalingLiteral}";
+            }
 
             var serializationTemplate = isEnum ? Helpers.LoadTemplate("DeserializedField_EnumDeserialization.sbn", spc) : Helpers.LoadTemplate("DeserializedField_Deserialization.sbn", spc);
             if (serializationTemplate is null) return null;

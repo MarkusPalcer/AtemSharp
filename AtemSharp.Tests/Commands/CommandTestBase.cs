@@ -31,7 +31,9 @@ public abstract class CommandTestBase<TTestData>
 		public ProtocolVersion FirstVersion { get; set; }
 		public string Bytes { get; set; } = "";
 		public TTestData Command { get; set; } = new();
-	}
+
+        public string Json { get; set; } = "";
+    }
 
 	public abstract class CommandDataBase
 	{
@@ -68,7 +70,8 @@ public abstract class CommandTestBase<TTestData>
             Name = tc.Name,
             FirstVersion = tc.FirstVersion,
             Bytes = tc.Bytes,
-            Command = tc.Command
+            Command = tc.Command,
+            Json = tc.Json
         }).ToArray();
     }
 
@@ -127,7 +130,8 @@ public abstract class CommandTestBase<TTestData>
 			                    Command = x.Command.ToObject<TTestData>()!,
 			                    Bytes = x.Bytes,
 			                    FirstVersion = x.FirstVersion,
-			                    Name = x.Name
+			                    Name = x.Name,
+                                Json = x.Command.ToString()
 		                    })
 		                   .ToArray();
 	}

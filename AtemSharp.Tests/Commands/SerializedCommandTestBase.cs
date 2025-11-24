@@ -114,33 +114,9 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
             string.Join("-", expectedPayload.Select((b, i) => !IsFloatingPointByte(i, actualPayload.Length) ? "XX" : $"{b:X2}"));
         if (!AreApproximatelyEqual(actualPayload, expectedPayload))
         {
-            Assert.Fail($"Float-bytes differ more than 2 units" +
-                        $"Expected: {expectedFloatBytes}, " +
-                        $"Actual: {actualFloatBytes}");
-        }
-    }
-
-    public void MaxOneOf(params Action[] checks)
-    {
-        var count = 0;
-        foreach (var check in checks)
-        {
-            try
-            {
-                check();
-            }
-            catch (AssertionException)
-            {
-                count++;
-            }
-        }
-
-        if (count > 1)
-        {
-            Assert.Multiple(() =>
-            {
-                foreach (var check in checks) check();
-            });
+            Assert.Fail($"Float-bytes differ more than 2 units\n" +
+                        $"Expected: {expectedFloatBytes}\n" +
+                        $"Actual:   {actualFloatBytes}");
         }
     }
 

@@ -172,11 +172,11 @@ namespace AtemSharp.CodeGenerators
             }
         }
 
-        public static double GetScalingFactor(IFieldSymbol f)
+        public static double? GetScalingFactor(IFieldSymbol f)
         {
             // Check for ScalingFactorAttribute
             var scalingAttr = f.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "ScalingFactorAttribute");
-            if (scalingAttr == null) return 1.0;
+            if (scalingAttr == null) return null;
 
             var arg = scalingAttr.ConstructorArguments[0];
 
@@ -185,7 +185,7 @@ namespace AtemSharp.CodeGenerators
                 double value1 => value1,
                 float value2 => value2,
                 int value3 => value3,
-                _ => 1.0
+                _ => null
             };
         }
 

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Microsoft.CodeAnalysis;
@@ -70,6 +71,7 @@ namespace AtemSharp.CodeGenerators.Serialization
             var fieldType = Helpers.GetFieldType(f);
             var isDouble = fieldType == "double" || fieldType == "System.Double";
             var extensionMethod = Helpers.GetSerializationMethod(f);
+            var scalingFactor = Helpers.GetScalingFactor(f);
 
             if (extensionMethod is null)
             {
@@ -83,8 +85,15 @@ namespace AtemSharp.CodeGenerators.Serialization
             var serializationTemplate = Helpers.LoadTemplate("SerializedField_Serialization.sbn", spc);
             if (serializationTemplate is null) return null;
 
-            var scalingLiteral =
-                Helpers.GetScalingFactor(f).ToString("0.0#############################", System.Globalization.CultureInfo.InvariantCulture);
+            var scalingCode = string.Empty;
+            if (scalingFactor.HasValue)
+            {
+                var scalingLiteral = isDouble
+                                         ? scalingFactor.Value.ToString("0.0#############################", CultureInfo.InvariantCulture)
+                                         : scalingFactor.Value.ToString("0", CultureInfo.InvariantCulture);
+
+                scalingCode = $" * {scalingLiteral}";
+            }
 
             var serializationCode = ScribanLite.Render(serializationTemplate,
                                                        new System.Collections.Generic.Dictionary<string, object>
@@ -94,7 +103,7 @@ namespace AtemSharp.CodeGenerators.Serialization
                                                            { "fieldName", f.Name },
                                                            { "scaling", fieldType },
                                                            { "offset", offset },
-                                                           { "scalingFactor", isDouble ? $"* {scalingLiteral}" : string.Empty },
+                                                           { "scalingFactor", scalingCode },
                                                            {
                                                                "customScalingFunction",
                                                                Helpers.GetAttributeStringValue(f, "CustomScalingAttribute") ??
