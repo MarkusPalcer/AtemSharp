@@ -11,9 +11,9 @@ public class MacroState
 
 public class Macro
 {
-    public ushort Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-    public string Description { get; set; } = string.Empty;
-    public bool IsUsed { get; set; }
-    public bool HasUnsupportedOps { get; set; }
+    public ushort Id { get; internal set; }
+    public string Name { get; internal set; } = string.Empty;
+    public string Description { get; internal set; } = string.Empty;
+    public bool IsUsed { get; internal set; }
+    public bool HasUnsupportedOps { get; internal set; }
 }

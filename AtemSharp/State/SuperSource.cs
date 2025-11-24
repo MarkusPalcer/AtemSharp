@@ -2,14 +2,14 @@ namespace AtemSharp.State;
 
 public class SuperSource
 {
-    public byte Id { get; set; }
+    public byte Id { get; internal set; }
     public Dictionary<byte, SuperSourceBox> Boxes { get; } = new();
     public SuperSourceBorderProperties Border { get; internal set; } = new();
-    public ushort FillSource { get; set; }
-    public ushort CutSource { get; set; }
-    public ArtOption Option { get; set; }
-    public bool PreMultiplied { get; set; }
-    public double Clip { get; set; }
-    public double Gain { get; set; }
-    public bool InvertKey { get; set; }
+    public ushort FillSource { get; internal set; }
+    public ushort CutSource { get; internal set; }
+    public ArtOption Option { get; internal set; }
+    public bool PreMultiplied { get; internal set; }
+    public double Clip { get; internal set; }
+    public double Gain { get; internal set; }
+    public bool InvertKey { get; internal set; }
 }

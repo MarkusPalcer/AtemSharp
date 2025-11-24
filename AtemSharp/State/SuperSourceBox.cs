@@ -4,15 +4,15 @@ namespace AtemSharp.State;
 
 public class SuperSourceBox
 {
-    public byte SuperSourceId { get; set; }
-    public byte Id { get; set; }
-    public bool Enabled { get; set; }
-    public ushort Source { get; set; }
-    public PointF Location { get; set; }
-    public double Size { get; set; }
-    public bool Cropped { get; set; }
-    public double CropTop { get; set; }
-    public double CropBottom { get; set; }
-    public double CropLeft { get; set; }
-    public double CropRight { get; set; }
+    public byte SuperSourceId { get; internal set; }
+    public byte Id { get; internal set; }
+    public bool Enabled { get; internal set; }
+    public ushort Source { get; internal set; }
+    public PointF Location { get; internal set; }
+    public double Size { get; internal set; }
+    public bool Cropped { get; internal set; }
+    public double CropTop { get; internal set; }
+    public double CropBottom { get; internal set; }
+    public double CropLeft { get; internal set; }
+    public double CropRight { get; internal set; }
 }

@@ -8,5 +8,5 @@ public class MixEffectInfo
     /// <summary>
     /// Number of keyers available in this mix effect
     /// </summary>
-    public byte KeyCount { get; set; }
+    public byte KeyCount { get; internal set; }
 }

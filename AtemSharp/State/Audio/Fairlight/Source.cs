@@ -9,15 +9,15 @@ public class Source
     public SourceEqualizer Equalizer { get; } = new();
 
     public Dynamics Dynamics { get; } = new();
-    public FairlightAudioSourceType Type { get; set; }
-    public byte MaxFramesDelay { get; set; }
-    public byte FramesDelay { get; set; }
-    public double Gain { get; set; }
-    public bool HasStereoSimulation { get; set; }
-    public double StereoSimulation { get; set; }
-    public double Balance { get; set; }
-    public double FaderGain { get; set; }
-    public FairlightAudioMixOption[] SupportedMixOptions { get; set; } = [];
-    public FairlightAudioMixOption MixOption { get; set; }
-    public ushort InputId { get; set; }
+    public FairlightAudioSourceType Type { get; internal set; }
+    public byte MaxFramesDelay { get; internal set; }
+    public byte FramesDelay { get; internal set; }
+    public double Gain { get; internal set; }
+    public bool HasStereoSimulation { get; internal set; }
+    public double StereoSimulation { get; internal set; }
+    public double Balance { get; internal set; }
+    public double FaderGain { get; internal set; }
+    public FairlightAudioMixOption[] SupportedMixOptions { get; internal set; } = [];
+    public FairlightAudioMixOption MixOption { get; internal set; }
+    public ushort InputId { get; internal set; }
 }

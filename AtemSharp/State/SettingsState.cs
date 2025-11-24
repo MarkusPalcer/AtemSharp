@@ -10,17 +10,17 @@ public class SettingsState
     /// <summary>
     /// Current video mode of the device
     /// </summary>
-    public VideoMode VideoMode { get; set; }
+    public VideoMode VideoMode { get; internal set; }
 
     /// <summary>
     /// Current time mode of the device
     /// </summary>
-    public TimeMode TimeMode { get; set; }
+    public TimeMode TimeMode { get; internal set; }
 
     /// <summary>
     /// MultiViewer settings indexed by MultiViewer ID using sparse Dictionary for efficient memory usage
     /// </summary>
-    public Dictionary<int, MultiViewer> MultiViewers { get; set; } = [];
+    public Dictionary<int, MultiViewer> MultiViewers { get; internal set; } = [];
 
     public MediaPoolSettings MediaPool { get; } = new();
 }

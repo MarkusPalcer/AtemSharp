@@ -10,11 +10,11 @@ public class AudioRouting
 
 public class AudioRoutingEntry
 {
-    public uint Id { get; set; }
-    public AudioChannelPair ChannelPair { get; set; }
-    public ushort InternalPortType { get; set; }
-    public ushort ExternalPortType { get; set; }
-    public string Name { get; set; }
+    public uint Id { get; internal set; }
+    public AudioChannelPair ChannelPair { get; internal set; }
+    public ushort InternalPortType { get; internal set; }
+    public ushort ExternalPortType { get; internal set; }
+    public string Name { get; internal set; }
 }
 
 

@@ -5,11 +5,11 @@ namespace AtemSharp.State.Audio.Fairlight;
 
 public class FairlightAudioInputProperties
 {
-    public FairlightInputType InputType { get; set; }
-    public ExternalPortType ExternalPortType { get; set; }
-    public FairlightInputConfiguration[] SupportedConfigurations { get; set; } = [];
-    public FairlightInputConfiguration ActiveConfiguration { get; set; }
-    public FairlightAnalogInputLevel[] SupportedInputLevels { get; set; } = [];
-    public FairlightAnalogInputLevel ActiveInputLevel { get; set; }
-    public bool RcaToXlrEnabled { get; set; }
+    public FairlightInputType InputType { get; internal set; }
+    public ExternalPortType ExternalPortType { get; internal set; }
+    public FairlightInputConfiguration[] SupportedConfigurations { get; internal set; } = [];
+    public FairlightInputConfiguration ActiveConfiguration { get; internal set; }
+    public FairlightAnalogInputLevel[] SupportedInputLevels { get; internal set; } = [];
+    public FairlightAnalogInputLevel ActiveInputLevel { get; internal set; }
+    public bool RcaToXlrEnabled { get; internal set; }
 }

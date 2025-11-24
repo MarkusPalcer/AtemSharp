@@ -10,31 +10,31 @@ public class MultiViewerWindowState
     /// <summary>
     /// Whether safe title overlay is enabled for this window (optional)
     /// </summary>
-    public bool SafeTitle { get; set; }
+    public bool SafeTitle { get; internal set; }
 
     /// <summary>
     /// Whether audio meter overlay is enabled for this window (optional)
     /// </summary>
     // TODO: Unify names - Vu vs AudioMeter
-    public bool AudioMeter { get; set; }
+    public bool AudioMeter { get; internal set; }
 
     /// <summary>
     /// The video source assigned to this window (input number)
     /// </summary>
-    public ushort Source { get; set; }
+    public ushort Source { get; internal set; }
 
     /// <summary>
     /// The window index within the MultiViewer (read-only in TypeScript, but settable here for C# flexibility)
     /// </summary>
-    public byte WindowIndex { get; set; }
+    public byte WindowIndex { get; internal set; }
 
     /// <summary>
     /// Whether this window supports VU meter display
     /// </summary>
-    public bool SupportsVuMeter { get; set; }
+    public bool SupportsVuMeter { get; internal set; }
 
     /// <summary>
     /// Whether this window supports safe area overlay
     /// </summary>
-    public bool SupportsSafeArea { get; set; }
+    public bool SupportsSafeArea { get; internal set; }
 }

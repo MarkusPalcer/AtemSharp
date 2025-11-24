@@ -8,5 +8,5 @@ public class MixTransitionSettings
     /// <summary>
     /// Rate of the mix transition in frames (0-250)
     /// </summary>
-    public int Rate { get; set; }
+    public int Rate { get; internal set; }
 }

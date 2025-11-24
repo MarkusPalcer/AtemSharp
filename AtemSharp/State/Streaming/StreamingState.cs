@@ -13,6 +13,6 @@ public class StreamingState
 
     public StreamingError Error { get; internal set; } = StreamingError.None;
     public TimeCode Duration { get; } = new();
-    public uint EncodingBitrate { get; set; }
-    public ushort CacheUsed { get; set; }
+    public uint EncodingBitrate { get; internal set; }
+    public ushort CacheUsed { get; internal set; }
 }

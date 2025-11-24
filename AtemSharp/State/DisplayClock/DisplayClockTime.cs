@@ -8,20 +8,20 @@ public class DisplayClockTime
 	/// <summary>
 	/// Hours (0-23)
 	/// </summary>
-	public byte Hours { get; set; }
+	public byte Hours { get; internal set; }
 
 	/// <summary>
 	/// Minutes (0-59)
 	/// </summary>
-	public byte Minutes { get; set; }
+	public byte Minutes { get; internal set; }
 
 	/// <summary>
 	/// Seconds (0-59)
 	/// </summary>
-	public byte Seconds { get; set; }
+	public byte Seconds { get; internal set; }
 
 	/// <summary>
 	/// Frames (0-59, depends on frame rate)
 	/// </summary>
-	public byte Frames { get; set; }
+	public byte Frames { get; internal set; }
 }

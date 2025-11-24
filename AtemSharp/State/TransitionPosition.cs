@@ -8,15 +8,15 @@ public class TransitionPosition
 	/// <summary>
 	/// Whether a transition is currently in progress
 	/// </summary>
-	public bool InTransition { get; set; }
+	public bool InTransition { get; internal set; }
 
 	/// <summary>
 	/// Number of frames remaining in the transition
 	/// </summary>
-	public int RemainingFrames { get; set; }
+	public int RemainingFrames { get; internal set; }
 
 	/// <summary>
 	/// Current position of the transition handle (0.0 to 1.0)
 	/// </summary>
-	public double HandlePosition { get; set; }
+	public double HandlePosition { get; internal set; }
 }

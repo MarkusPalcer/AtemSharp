@@ -8,40 +8,40 @@ public class UpstreamKeyerAdvancedChromaSample
     /// <summary>
     /// Whether the cursor is enabled
     /// </summary>
-    public bool EnableCursor { get; set; }
+    public bool EnableCursor { get; internal set; }
 
     /// <summary>
     /// Whether to show preview
     /// </summary>
-    public bool Preview { get; set; }
+    public bool Preview { get; internal set; }
 
     /// <summary>
     /// Cursor X position
     /// </summary>
-    public double CursorX { get; set; }
+    public double CursorX { get; internal set; }
 
     /// <summary>
     /// Cursor Y position
     /// </summary>
-    public double CursorY { get; set; }
+    public double CursorY { get; internal set; }
 
     /// <summary>
     /// Cursor size
     /// </summary>
-    public double CursorSize { get; set; }
+    public double CursorSize { get; internal set; }
 
     /// <summary>
     /// Sampled Y (luminance) value
     /// </summary>
-    public double SampledY { get; set; }
+    public double SampledY { get; internal set; }
 
     /// <summary>
     /// Sampled Cb (blue-difference chroma) value
     /// </summary>
-    public double SampledCb { get; set; }
+    public double SampledCb { get; internal set; }
 
     /// <summary>
     /// Sampled Cr (red-difference chroma) value
     /// </summary>
-    public double SampledCr { get; set; }
+    public double SampledCr { get; internal set; }
 }

@@ -8,5 +8,5 @@ public class SuperSourceInfo
     /// <summary>
     /// Number of SuperSource boxes available
     /// </summary>
-    public byte BoxCount { get; set; }
+    public byte BoxCount { get; internal set; }
 }

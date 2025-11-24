@@ -12,66 +12,66 @@ public class DeviceInfo
     /// <summary>
     /// Product identifier string from the device
     /// </summary>
-    public string? ProductIdentifier { get; set; }
+    public string? ProductIdentifier { get; internal set; }
 
     /// <summary>
     /// ATEM device model
     /// </summary>
-    public Model Model { get; set; }
+    public Model Model { get; internal set; }
 
     /// <summary>
     /// ATEM protocol API version
     /// </summary>
-    public ProtocolVersion ApiVersion { get; set; } = ProtocolVersion.Unknown;
+    public ProtocolVersion ApiVersion { get; internal set; } = ProtocolVersion.Unknown;
 
     /// <summary>
     /// Power supply status for each power supply in the device
     /// </summary>
-    public bool[] Power { get; set; } = [];
+    public bool[] Power { get; internal set; } = [];
 
     // TODO: Unify - you either have the classic or the fairlight mixer, not both
     /// <summary>
     /// Audio mixer configuration and capabilities
     /// </summary>
-    public AudioMixerInfo? AudioMixer { get; set; }
+    public AudioMixerInfo? AudioMixer { get; internal set; }
 
     /// <summary>
     /// Fairlight audio mixer configuration and capabilities
     /// </summary>
-    public FairlightAudioMixerInfo? FairlightMixer { get; set; }
+    public FairlightAudioMixerInfo? FairlightMixer { get; internal set; }
 
     /// <summary>
     /// Macro pool configuration and capabilities
     /// </summary>
-    public MacroPoolInfo MacroPool { get; set; } = new();
+    public MacroPoolInfo MacroPool { get; internal set; } = new();
 
     /// <summary>
     /// Media pool configuration and capabilities
     /// </summary>
-    public MediaPoolInfo MediaPool { get; set; } = new();
+    public MediaPoolInfo MediaPool { get; internal set; } = new();
 
     /// <summary>
     /// SuperSource configurations and capabilities
     /// </summary>
-    public Dictionary<int, SuperSourceInfo> SuperSources { get; set; } = new();
+    public Dictionary<int, SuperSourceInfo> SuperSources { get; internal set; } = new();
 
     /// <summary>
     /// Mix effect configurations and capabilities
     /// </summary>
-    public Dictionary<int, MixEffectInfo> MixEffects { get; set; } = new();
+    public Dictionary<int, MixEffectInfo> MixEffects { get; internal set; } = new();
 
     /// <summary>
     /// Device capabilities and hardware configuration
     /// </summary>
-    public AtemCapabilities? Capabilities { get; set; }
+    public AtemCapabilities? Capabilities { get; internal set; }
 
     /// <summary>
     /// Multiviewer configuration and capabilities
     /// </summary>
-    public MultiViewerInfo MultiViewer { get; set; } = new();
+    public MultiViewerInfo MultiViewer { get; internal set; } = new();
 
     /// <summary>
     /// Supported video modes for this device
     /// </summary>
-    public SupportedVideoMode[] SupportedVideoModes { get; set; } = [];
+    public SupportedVideoMode[] SupportedVideoModes { get; internal set; } = [];
 }

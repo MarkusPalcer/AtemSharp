@@ -6,15 +6,15 @@ namespace AtemSharp.State.Audio.Fairlight;
 public class FairlightAudioInput
 {
     public ushort Id { get; internal set; }
-    public FairlightAudioInputProperties Properties { get; set; } = new();
+    public FairlightAudioInputProperties Properties { get; internal set; } = new();
 
     public Dictionary<long, Source> Sources { get; } = [];
 }
 
 public abstract class Equalizer
 {
-    public bool Enabled { get; set; }
-    public double Gain { get; set; }
+    public bool Enabled { get; internal set; }
+    public double Gain { get; internal set; }
 }
 
 public class SourceEqualizer : Equalizer
@@ -29,7 +29,7 @@ public class MasterEqualizer : Equalizer
 
 public class Dynamics
 {
-    public double MakeUpGain { get; set; }
+    public double MakeUpGain { get; internal set; }
 
     public Expander Expander { get;  } = new();
     public Compressor Compressor { get;  } = new();
@@ -39,33 +39,33 @@ public class Dynamics
 
 public class Limiter
 {
-    public bool Enabled { get; set; }
-    public double Threshold { get; set; }
-    public double Attack { get; set; }
-    public double Hold { get; set; }
-    public double Release { get; set; }
+    public bool Enabled { get; internal set; }
+    public double Threshold { get; internal set; }
+    public double Attack { get; internal set; }
+    public double Hold { get; internal set; }
+    public double Release { get; internal set; }
 }
 
 public class Compressor
 {
-    public bool Enabled { get; set; }
-    public double Threshold { get; set; }
-    public double Ratio { get; set; }
-    public double Attack { get; set; }
-    public double Hold { get; set; }
-    public double Release { get; set; }
+    public bool Enabled { get; internal set; }
+    public double Threshold { get; internal set; }
+    public double Ratio { get; internal set; }
+    public double Attack { get; internal set; }
+    public double Hold { get; internal set; }
+    public double Release { get; internal set; }
 }
 
 public class Expander
 {
-    public bool Enabled { get; set; }
-    public bool GateEnabled { get; set; }
-    public double Threshold { get; set; }
-    public double Range { get; set; }
-    public double Ratio { get; set; }
-    public double Attack { get; set; }
-    public double Hold { get; set; }
-    public double Release { get; set; }
+    public bool Enabled { get; internal set; }
+    public bool GateEnabled { get; internal set; }
+    public double Threshold { get; internal set; }
+    public double Range { get; internal set; }
+    public double Ratio { get; internal set; }
+    public double Attack { get; internal set; }
+    public double Hold { get; internal set; }
+    public double Release { get; internal set; }
 }
 
 public class SourceEqualizerBand : EqualizerBand
@@ -81,16 +81,16 @@ public abstract class EqualizerBand
 {
     public byte Id { get; internal set; }
 
-    public bool Enabled { get; set; }
+    public bool Enabled { get; internal set; }
 
     // TODO: Create enum from ATEM Mini ISO Pro behavior
-    public byte[] SupportedShapes { get; set; } = [];
-    public byte Shape { get; set; }
+    public byte[] SupportedShapes { get; internal set; } = [];
+    public byte Shape { get; internal set; }
 
     // TODO: Create enum from ATEM Mini ISO Pro behavior
-    public byte[] SupportedFrequencyRanges { get; set; } = [];
-    public byte FrequencyRange { get; set; }
-    public uint Frequency { get; set; }
-    public double Gain { get; set; }
-    public double QFactor { get; set; }
+    public byte[] SupportedFrequencyRanges { get; internal set; } = [];
+    public byte FrequencyRange { get; internal set; }
+    public uint Frequency { get; internal set; }
+    public double Gain { get; internal set; }
+    public double QFactor { get; internal set; }
 }

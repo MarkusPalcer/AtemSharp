@@ -8,32 +8,32 @@ public class MixEffect
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>
-    public byte Index { get; set; }
+    public byte Index { get; internal set; }
 
     /// <summary>
     /// Currently selected program input source
     /// </summary>
-    public ushort ProgramInput { get; set; }
+    public ushort ProgramInput { get; internal set; }
 
     /// <summary>
     /// Currently selected preview input source
     /// </summary>
-    public ushort PreviewInput { get; set; }
+    public ushort PreviewInput { get; internal set; }
 
     /// <summary>
     /// Whether transition preview is enabled
     /// </summary>
-    public bool TransitionPreview { get; set; }
+    public bool TransitionPreview { get; internal set; }
 
     /// <summary>
     /// Fade to black properties
     /// </summary>
-    public FadeToBlackProperties? FadeToBlack { get; set; }
+    public FadeToBlackProperties? FadeToBlack { get; internal set; }
 
     /// <summary>
     /// Current transition position
     /// </summary>
-    public TransitionPosition TransitionPosition { get; set; } = new();
+    public TransitionPosition TransitionPosition { get; internal set; } = new();
 
     /// <summary>
     /// Transition properties for this mix effect
@@ -49,5 +49,5 @@ public class MixEffect
     /// Upstream keyers for this mix effect
     /// </summary>
     // TODO: Convert to Array and create once number of UpstreamKeyers is sent
-    public Dictionary<int, UpstreamKeyer> UpstreamKeyers { get; set; } = new();
+    public Dictionary<int, UpstreamKeyer> UpstreamKeyers { get; internal set; } = new();
 }

@@ -11,60 +11,60 @@ public class DigitalVideoEffectTransitionSettings
     /// <summary>
     /// Transition rate in frames
     /// </summary>
-    public int Rate { get; set; }
+    public int Rate { get; internal set; }
 
     /// <summary>
     /// Logo/key transition rate in frames
     /// </summary>
-    public int LogoRate { get; set; }
+    public int LogoRate { get; internal set; }
 
     /// <summary>
     /// DVE effect style
     /// </summary>
-    public DigitalVideoEffect Style { get; set; }
+    public DigitalVideoEffect Style { get; internal set; }
 
     /// <summary>
     /// Fill source input number
     /// </summary>
-    public int FillSource { get; set; }
+    public int FillSource { get; internal set; }
 
     /// <summary>
     /// Key source input number
     /// </summary>
-    public int KeySource { get; set; }
+    public int KeySource { get; internal set; }
 
     /// <summary>
     /// Whether the key is enabled
     /// </summary>
-    public bool EnableKey { get; set; }
+    public bool EnableKey { get; internal set; }
 
     /// <summary>
     /// Whether the key is pre-multiplied
     /// </summary>
-    public bool PreMultiplied { get; set; }
+    public bool PreMultiplied { get; internal set; }
 
     /// <summary>
     /// Key clip value (0.0 to 100.0)
     /// </summary>
-    public double Clip { get; set; }
+    public double Clip { get; internal set; }
 
     /// <summary>
     /// Key gain value (0.0 to 100.0)
     /// </summary>
-    public double Gain { get; set; }
+    public double Gain { get; internal set; }
 
     /// <summary>
     /// Whether the key is inverted
     /// </summary>
-    public bool InvertKey { get; set; }
+    public bool InvertKey { get; internal set; }
 
     /// <summary>
     /// Whether the transition is reversed
     /// </summary>
-    public bool Reverse { get; set; }
+    public bool Reverse { get; internal set; }
 
     /// <summary>
     /// Whether flip-flop is enabled
     /// </summary>
-    public bool FlipFlop { get; set; }
+    public bool FlipFlop { get; internal set; }
 }

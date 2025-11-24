@@ -8,7 +8,7 @@ public class MultiViewer
 	/// <summary>
 	/// MultiViewer index
 	/// </summary>
-	public byte Index { get; set; }
+	public byte Index { get; internal set; }
 
     /// <summary>
     /// MultiViewer properties (layout, etc.)
@@ -23,5 +23,5 @@ public class MultiViewer
 	/// <summary>
 	/// VU opacity level (0-100)
 	/// </summary>
-	public byte VuOpacity { get; set; }
+	public byte VuOpacity { get; internal set; }
 }

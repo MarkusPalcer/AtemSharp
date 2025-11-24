@@ -14,47 +14,47 @@ public class DisplayClock
     /// <summary>
     /// Whether the display clock is enabled
     /// </summary>
-    public bool Enabled { get; set; }
+    public bool Enabled { get; internal set; }
 
     /// <summary>
     /// Size of the clock display
     /// </summary>
-    public byte Size { get; set; }
+    public byte Size { get; internal set; }
 
     /// <summary>
     /// Opacity of the clock display (0-255)
     /// </summary>
-    public byte Opacity { get; set; }
+    public byte Opacity { get; internal set; }
 
     /// <summary>
     /// X position of the clock display
     /// </summary>
-    public double PositionX { get; set; }
+    public double PositionX { get; internal set; }
 
     /// <summary>
     /// Y position of the clock display
     /// </summary>
-    public double PositionY { get; set; }
+    public double PositionY { get; internal set; }
 
     /// <summary>
     /// Whether the clock should auto-hide
     /// </summary>
-    public bool AutoHide { get; set; }
+    public bool AutoHide { get; internal set; }
 
     /// <summary>
     /// Starting time for countdown/countup modes
     /// </summary>
-    public DisplayClockTime StartFrom { get; set; } = new();
+    public DisplayClockTime StartFrom { get; internal set; } = new();
 
     /// <summary>
     /// Clock mode (countdown, countup, time of day)
     /// </summary>
-    public DisplayClockClockMode ClockMode { get; set; }
+    public DisplayClockClockMode ClockMode { get; internal set; }
 
     /// <summary>
     /// Clock state (stopped, running, reset)
     /// </summary>
-    public DisplayClockClockState ClockState { get; set; }
+    public DisplayClockClockState ClockState { get; internal set; }
 
     /// <summary>
     /// Current time (only updated following a call to DisplayClockRequestTime)
