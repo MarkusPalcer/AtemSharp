@@ -141,6 +141,7 @@ public class AtemSwitcher : IAsyncDisposable
                 try
                 {
                     await Client.DisconnectAsync();
+                    ConnectionState = ConnectionState.Disconnected;
                 }
                 catch (Exception)
                 {
