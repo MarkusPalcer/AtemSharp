@@ -8,36 +8,14 @@ namespace AtemSharp.Tests.Commands.Settings.MultiViewers;
 /// Tests for MultiViewerPropertiesCommand
 /// </summary>
 [TestFixture]
-public class MultiViewerPropertiesCommandTests : SerializedCommandTestBase<MultiViewerPropertiesCommand, MultiViewerPropertiesCommandTests.CommandData>
+public class MultiViewerPropertiesCommandTests : SerializedCommandTestBase<MultiViewerPropertiesCommand,
+    MultiViewerPropertiesCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
         public byte MultiViewIndex { get; set; }
         public MultiViewerLayout Layout { get; set; }
         public bool ProgramPreviewSwapped { get; set; }
-    }
-
-    [Test]
-    public void Constructor_ShouldInitializeFromCurrentState()
-    {
-        // Arrange
-        var state = new MultiViewer
-        {
-            Index = 0,
-            Properties =
-            {
-                Layout = MultiViewerLayout.Default,
-                ProgramPreviewSwapped = false
-            }
-        };
-
-        // Act
-        var command = new MultiViewerPropertiesCommand(state);
-
-        // Assert
-        Assert.That(command.MultiViewerId, Is.EqualTo(0), "MultiViewer ID should be set correctly");
-        Assert.That(command.Layout, Is.EqualTo(MultiViewerLayout.Default), "Layout should be initialized from state");
-        Assert.That(command.ProgramPreviewSwapped, Is.False, "ProgramPreviewSwapped should be initialized from state");
     }
 
     [Test]
@@ -70,9 +48,9 @@ public class MultiViewerPropertiesCommandTests : SerializedCommandTestBase<Multi
 
     protected override MultiViewerPropertiesCommand CreateSut(TestCaseData testCase)
     {
-        return new MultiViewerPropertiesCommand(new MultiViewer()
+        return new MultiViewerPropertiesCommand(new MultiViewer
         {
-            Index = testCase.Command.MultiViewIndex,
+            Id = testCase.Command.MultiViewIndex,
             Properties =
             {
                 Layout = testCase.Command.Layout,

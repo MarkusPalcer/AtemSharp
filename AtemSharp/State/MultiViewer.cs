@@ -8,7 +8,7 @@ public class MultiViewer
 	/// <summary>
 	/// MultiViewer index
 	/// </summary>
-	public byte Index { get; internal set; }
+	public byte Id { get; internal set; }
 
     /// <summary>
     /// MultiViewer properties (layout, etc.)

@@ -176,5 +176,8 @@ public class TopologyCommand : IDeserializedCommand
 
         state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(MixEffects);
         state.Video.MixEffects.ForEachWithIndex((x, index) => x.Id = (byte)index);
+
+        state.Settings.MultiViewers = AtemStateUtil.CreateArray<MultiViewer>(Math.Min(Multiviewers, 0));
+        state.Settings.MultiViewers.ForEachWithIndex((x, index) => x.Id = (byte)index);
     }
 }

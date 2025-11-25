@@ -9,32 +9,22 @@ namespace AtemSharp.Commands.Settings.MultiViewers;
 [Command("MvPr", ProtocolVersion.V8_0)]
 public partial class MultiViewerPropertiesUpdateCommand : IDeserializedCommand
 {
-    [DeserializedField(0)]
-    private byte _multiViewerId;
+    [DeserializedField(0)] private byte _multiViewerId;
 
     /// <summary>
     /// MultiViewer layout configuration
     /// </summary>
-    [DeserializedField(1)]
-    private MultiViewerLayout _layout;
+    [DeserializedField(1)] private MultiViewerLayout _layout;
 
     /// <summary>
     /// Whether program and preview outputs are swapped
     /// </summary>
-    [DeserializedField(2)]
-    private bool _programPreviewSwapped;
+    [DeserializedField(2)] private bool _programPreviewSwapped;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        // Validate state prerequisites (same pattern as TypeScript update commands)
-        if (state.Info.MultiViewer.Count == 0 || MultiViewerId >= state.Info.MultiViewer.Count)
-        {
-            throw new InvalidIdError("MultiViewer", MultiViewerId);
-        }
-
-        // Get or create the MultiViewer and update its properties
-        var multiViewer = AtemStateUtil.GetMultiViewer(state, MultiViewerId);
+        var multiViewer = state.Settings.MultiViewers[MultiViewerId];
         multiViewer.Properties.Layout = Layout;
         multiViewer.Properties.ProgramPreviewSwapped = ProgramPreviewSwapped;
     }

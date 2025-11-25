@@ -10,6 +10,8 @@ public static class AtemStateUtil
 {
     public static T[] CreateArray<T>(int length) where T : new()
     {
+        if (length <= 0) return [];
+
         // TODO: Add ID to items here
         return Enumerable.Repeat(() => new T(), length).Select(x => x()).ToArray();
     }
@@ -34,19 +36,6 @@ public static class AtemStateUtil
         }
 
         return source;
-    }
-
-    /// <summary>
-    /// Gets a MultiViewer from the state, creating it if it doesn't exist
-    /// </summary>
-    /// <param name="state">The ATEM state</param>
-    /// <param name="index">The MultiViewer index</param>
-    /// <returns>The MultiViewer instance</returns>
-    public static MultiViewer GetMultiViewer(AtemState state, byte index)
-    {
-        var multiViewer = state.Settings.MultiViewers.GetOrCreate(index);
-        multiViewer.Index = index; // Ensure index is set correctly
-        return multiViewer;
     }
 
     public static TValue GetOrCreate<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey index)

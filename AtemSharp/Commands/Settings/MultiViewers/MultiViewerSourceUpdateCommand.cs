@@ -11,44 +11,32 @@ public partial class MultiViewerSourceUpdateCommand : IDeserializedCommand
     /// <summary>
     /// MultiViewer ID for this update
     /// </summary>
-    [DeserializedField(0)]
-    private byte _multiViewerId;
+    [DeserializedField(0)] private byte _multiViewerId;
 
     /// <summary>
     /// The window index within the MultiViewer
     /// </summary>
-    [DeserializedField(1)]
-    private byte _windowIndex;
+    [DeserializedField(1)] private byte _windowIndex;
 
     /// <summary>
     /// The video source assigned to this window
     /// </summary>
-    [DeserializedField(2)]
-    private ushort _source;
+    [DeserializedField(2)] private ushort _source;
 
     /// <summary>
     /// Whether this window supports VU meter display
     /// </summary>
-    [DeserializedField(4)]
-    private bool _supportsVuMeter;
+    [DeserializedField(4)] private bool _supportsVuMeter;
 
     /// <summary>
     /// Whether this window supports safe area overlay
     /// </summary>
-    [DeserializedField(5)]
-    private bool _supportsSafeArea;
+    [DeserializedField(5)] private bool _supportsSafeArea;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        // Validate state prerequisites (same pattern as TypeScript update commands)
-        if (state.Info.MultiViewer.Count == 0 || MultiViewerId >= state.Info.MultiViewer.Count)
-        {
-            throw new InvalidIdError("MultiViewer", MultiViewerId);
-        }
-
-        // Get the MultiViewer and update its window
-        var multiViewer = AtemStateUtil.GetMultiViewer(state, MultiViewerId);
+        var multiViewer = state.Settings.MultiViewers[MultiViewerId];
 
         // Get the current window state or create a new one
         if (!multiViewer.Windows.TryGetValue(WindowIndex, out var currentWindow))

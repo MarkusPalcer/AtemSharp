@@ -20,7 +20,7 @@ public class SettingsState
     /// <summary>
     /// MultiViewer settings indexed by MultiViewer ID using sparse Dictionary for efficient memory usage
     /// </summary>
-    public Dictionary<int, MultiViewer> MultiViewers { get; internal set; } = [];
+    public MultiViewer[] MultiViewers { get; internal set; } = [];
 
     public MediaPoolSettings MediaPool { get; } = new();
 }

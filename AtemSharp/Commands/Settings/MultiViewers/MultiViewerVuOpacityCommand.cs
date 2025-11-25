@@ -10,13 +10,10 @@ namespace AtemSharp.Commands.Settings.MultiViewers;
 [BufferSize(4)]
 public partial class MultiViewerVuOpacityCommand(MultiViewer multiViewer) : SerializedCommand
 {
-    [SerializedField(0)]
-    [NoProperty]
-    internal readonly byte MultiViewerId = multiViewer.Index;
+    [SerializedField(0)] [NoProperty] private readonly byte _multiViewerId = multiViewer.Id;
 
     /// <summary>
     /// VU opacity level (0-100)
     /// </summary>
-    [SerializedField(1)]
-    private byte _opacity = multiViewer.VuOpacity;
+    [SerializedField(1)] private byte _opacity = multiViewer.VuOpacity;
 }

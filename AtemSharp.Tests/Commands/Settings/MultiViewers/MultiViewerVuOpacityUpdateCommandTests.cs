@@ -22,19 +22,9 @@ public class MultiViewerVuOpacityUpdateCommandTests : DeserializedCommandTestBas
 
         var state = new AtemState
         {
-            Info =
-            {
-                MultiViewer =
-                {
-                    Count = multiViewerId + 1
-                }
-            },
             Settings =
             {
-                MultiViewers =
-                {
-                    { 1, new MultiViewer { VuOpacity = 0 } }
-                }
+                MultiViewers = AtemStateUtil.CreateArray<MultiViewer>(multiViewerId + 1)
             }
         };
 
@@ -48,11 +38,12 @@ public class MultiViewerVuOpacityUpdateCommandTests : DeserializedCommandTestBas
         command.ApplyToState(state);
 
         // Assert
-        var multiViewer = AtemStateUtil.GetMultiViewer(state, multiViewerId);
+        var multiViewer = state.Settings.MultiViewers[multiViewerId];
         Assert.That(multiViewer.VuOpacity, Is.EqualTo(opacity));
     }
 
-    protected override void CompareCommandProperties(MultiViewerVuOpacityUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(MultiViewerVuOpacityUpdateCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
         Assert.That(actualCommand.Opacity, Is.EqualTo(expectedData.Opacity));
     }

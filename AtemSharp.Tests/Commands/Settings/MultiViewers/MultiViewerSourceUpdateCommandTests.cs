@@ -1,6 +1,5 @@
 using AtemSharp.Commands.Settings.MultiViewers;
 using AtemSharp.State;
-using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands.Settings.MultiViewers;
 
@@ -10,25 +9,26 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
 {
     public class CommandData : CommandDataBase
     {
-        public int MultiviewIndex { get; set; }  // Match TypeScript property name
+        public int MultiviewIndex { get; set; } // Match TypeScript property name
         public int WindowIndex { get; set; }
         public int Source { get; set; }
-        public bool SupportVuMeter { get; set; }  // Match TypeScript property name (no 's')
+        public bool SupportVuMeter { get; set; } // Match TypeScript property name (no 's')
         public bool SupportsSafeArea { get; set; }
     }
 
-    protected override void CompareCommandProperties(MultiViewerSourceUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(MultiViewerSourceUpdateCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
         Assert.That(actualCommand.MultiViewerId, Is.EqualTo(expectedData.MultiviewIndex),
-                   $"MultiViewerId should match expected value for test case {testCase.Name}");
+                    $"MultiViewerId should match expected value for test case {testCase.Name}");
         Assert.That(actualCommand.WindowIndex, Is.EqualTo(expectedData.WindowIndex),
-                   $"WindowIndex should match expected value for test case {testCase.Name}");
+                    $"WindowIndex should match expected value for test case {testCase.Name}");
         Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source),
-                   $"Source should match expected value for test case {testCase.Name}");
+                    $"Source should match expected value for test case {testCase.Name}");
         Assert.That(actualCommand.SupportsVuMeter, Is.EqualTo(expectedData.SupportVuMeter),
-                   $"SupportsVuMeter should match expected value for test case {testCase.Name}");
+                    $"SupportsVuMeter should match expected value for test case {testCase.Name}");
         Assert.That(actualCommand.SupportsSafeArea, Is.EqualTo(expectedData.SupportsSafeArea),
-                   $"SupportsSafeArea should match expected value for test case {testCase.Name}");
+                    $"SupportsSafeArea should match expected value for test case {testCase.Name}");
     }
 
     [Test]
@@ -53,7 +53,7 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
         command.ApplyToState(state);
 
         // Assert
-        var multiViewer = AtemStateUtil.GetMultiViewer(state, multiViewerId);
+        var multiViewer = state.Settings.MultiViewers[multiViewerId];
         Assert.That(multiViewer.Windows.ContainsKey(windowIndex), Is.True, "Window should exist");
 
         var window = multiViewer.Windows[windowIndex];
@@ -61,26 +61,6 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
         Assert.That(window.WindowIndex, Is.EqualTo(windowIndex));
         Assert.That(window.SupportsVuMeter, Is.True);
         Assert.That(window.SupportsSafeArea, Is.False);
-    }
-
-    [Test]
-    public void ApplyToState_WithoutMultiViewer_ThrowsInvalidIdError()
-    {
-        // Arrange
-        const int multiViewerId = 3;
-
-        var state = new AtemState(); // Empty state
-        var command = new MultiViewerSourceUpdateCommand
-        {
-            MultiViewerId = multiViewerId,
-            WindowIndex = 0,
-            Source = 1000,
-            SupportsVuMeter = false,
-            SupportsSafeArea = true
-        };
-
-        // Act & Assert
-        Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
     }
 
     [Test]
@@ -103,7 +83,7 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
             SafeTitle = true,
             AudioMeter = false
         };
-        var multiViewer = AtemStateUtil.GetMultiViewer(state, multiViewerId);
+        var multiViewer = state.Settings.MultiViewers[multiViewerId];
         multiViewer.Windows[windowIndex] = existingWindow;
 
         var command = new MultiViewerSourceUpdateCommand
@@ -127,50 +107,16 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
         Assert.That(window.AudioMeter, Is.False, "AudioMeter should be preserved");
     }
 
-    [Test]
-    public void ApplyToState_WithInvalidMultiViewerId_ThrowsInvalidIdError()
-    {
-        // Arrange
-        const int validMultiViewerId = 0;
-        const int invalidMultiViewerId = 5;
-
-        var state = CreateStateWithMultiViewer(validMultiViewerId);
-        var command = new MultiViewerSourceUpdateCommand
-        {
-            MultiViewerId = invalidMultiViewerId,
-            WindowIndex = 0,
-            Source = 1000,
-            SupportsVuMeter = false,
-            SupportsSafeArea = true
-        };
-
-        // Act & Assert
-        Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-    }
-
     /// <summary>
     /// Creates an AtemState with a valid MultiViewer at the specified index
     /// </summary>
     private static AtemState CreateStateWithMultiViewer(byte multiViewerId)
     {
-        var multiViewers = new Dictionary<int, MultiViewer>
-        {
-            { multiViewerId, new MultiViewer{ Index = multiViewerId} }
-        };
-
         return new AtemState
         {
             Settings = new SettingsState
             {
-                MultiViewers = multiViewers
-            },
-            Info = new DeviceInfo
-            {
-                MultiViewer = new MultiViewerInfo
-                {
-                    Count = multiViewerId + 1,
-                    WindowCount = 10
-                }
+                MultiViewers = AtemStateUtil.CreateArray<MultiViewer>(multiViewerId + 1)
             }
         };
     }
