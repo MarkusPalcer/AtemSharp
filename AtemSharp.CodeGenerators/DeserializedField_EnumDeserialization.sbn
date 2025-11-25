@@ -1,1 +1,0 @@
-{{propertyName}} = ({{fieldType}})({{customScalingFunction}}(({{serializedType}})rawCommand.Read{{extensionMethod}}({{offset}})){{scaling}}),

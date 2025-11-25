@@ -1,20 +1,14 @@
-using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 
 namespace AtemSharp.CodeGenerators.Deserialization
 {
     [Generator]
     public class DeserializedCommandGenerator : IIncrementalGenerator
     {
-        private const string Template = "DeserializeMethodTemplate.sbn";
-
         public void Initialize(IncrementalGeneratorInitializationContext context)
         {
             var classDeclarations = context.SyntaxProvider
@@ -43,7 +37,9 @@ namespace AtemSharp.CodeGenerators.Deserialization
                     // Find fields with DeserializedFieldAttribute
                     var fields = symbol.GetMembers()
                                        .OfType<IFieldSymbol>()
-                                       .Where(f => f.GetAttributes().Any(a => a.AttributeClass?.Name == "DeserializedFieldAttribute" || a.AttributeClass?.Name == "CustomDeserializationAttribute"))
+                                       .Where(f => f.GetAttributes()
+                                                    .Any(a => a.AttributeClass?.Name == "DeserializedFieldAttribute" ||
+                                                              a.AttributeClass?.Name == "CustomDeserializationAttribute"))
                                        .Select(f => ProcessField(f, spc))
                                        .ToArray();
 
@@ -53,28 +49,38 @@ namespace AtemSharp.CodeGenerators.Deserialization
                         continue;
                     }
 
-                    // Use ScribanLite for template rendering
-                    var templateText = Helpers.LoadTemplate(Template, spc);
-                    if (templateText is null) continue;
+                    var internalDeserialization = HasInternalDeserializationMethod(classDecl)
+                                                      ? "result.DeserializeInternal(rawCommand, protocolVersion);"
+                                                      : string.Empty;
 
-                    string source;
-                    try
-                    {
-                        source = ScribanLite.Render(templateText, new Dictionary<string, object>
-                        {
-                            { "namespace", ns },
-                            { "className", className },
-                            { "deserializedFields", fields },
-                            { "internalDeserialization", HasInternalDeserializationMethod(classDecl) ? "result.DeserializeInternal(rawCommand, protocolVersion);": string.Empty } ,
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        spc.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.CreateRenderError(ex), Location.None));
-                        continue;
-                    }
+                    var fileContent = $$"""
+                                        using System;
+                                        using AtemSharp;
+                                        using AtemSharp.Enums;
+                                        using AtemSharp.Lib;
 
-                    spc.AddSource($"{className}.g.cs", SourceText.From(source, Encoding.UTF8));
+                                        namespace {{ns}};
+
+                                        #nullable enable annotations
+
+                                        public partial class {{className}}
+                                        {
+                                            {{string.Join("\n", fields.Select(x => x!.PropertyCode))}}
+
+                                            public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
+                                            {
+                                                var result = new {{className}} {
+                                                    {{string.Join("\n", fields.Select(x => x!.DeserializationCode))}}
+                                                };
+
+                                                {{internalDeserialization}}
+                                                return result;
+                                            }
+                                        }
+                                        #nullable restore
+                                        """;
+
+                    spc.AddSource($"{className}.g.cs", fileContent);
                 }
             });
         }
@@ -84,70 +90,65 @@ namespace AtemSharp.CodeGenerators.Deserialization
             // Look for: void DeserializeInternal(ReadOnlySpan<byte>, ProtocolVersion)
             foreach (var member in classDecl.Members)
             {
-                if (member is MethodDeclarationSyntax method)
+                if (member is not MethodDeclarationSyntax method) continue;
+
+                if (method.Identifier.Text != "DeserializeInternal" ||
+                    !method.Modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword) || m.IsKind(SyntaxKind.PrivateKeyword) ||
+                                               m.IsKind(SyntaxKind.InternalKeyword)) ||
+                    method.ReturnType is not PredefinedTypeSyntax returnType || !returnType.Keyword.IsKind(SyntaxKind.VoidKeyword) ||
+                    method.ParameterList.Parameters.Count != 2) continue;
+
+                var param1 = method.ParameterList.Parameters[0];
+                var param2 = method.ParameterList.Parameters[1];
+
+                if (param1.Type?.ToString() == "ReadOnlySpan<byte>" && param2.Type?.ToString().Contains("ProtocolVersion") == true)
                 {
-                    if (method.Identifier.Text == "DeserializeInternal" &&
-                        method.Modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword) || m.IsKind(SyntaxKind.PrivateKeyword) || m.IsKind(SyntaxKind.InternalKeyword)) &&
-                        method.ReturnType is PredefinedTypeSyntax returnType && returnType.Keyword.IsKind(SyntaxKind.VoidKeyword) &&
-                        method.ParameterList.Parameters.Count == 2)
-                    {
-                        var param1 = method.ParameterList.Parameters[0];
-                        var param2 = method.ParameterList.Parameters[1];
-                        if (param1.Type?.ToString() == "ReadOnlySpan<byte>" && param2.Type?.ToString().Contains("ProtocolVersion") == true)
-                        {
-                            return true;
-                        }
-                    }
+                    return true;
                 }
             }
+
             return false;
         }
 
-        private static string? CreatePropertyCode(IFieldSymbol f, SourceProductionContext spc)
+        private static string CreatePropertyCode(IFieldSymbol f)
         {
+            var hasProperty = !f.GetAttributes().Any(a => a.AttributeClass?.Name == "NoPropertyAttribute");
+            if (!hasProperty) return string.Empty;
+
             var propertyName = Helpers.GetPropertyName(f);
             var fieldType = Helpers.GetFieldType(f);
-            var serializedType = Helpers.GetSerializedFieldType(f);
-            var hasProperty = !f.GetAttributes().Any(a => a.AttributeClass?.Name == "NoPropertyAttribute");
 
-            var propertyCode = string.Empty;
-            if (hasProperty)
-            {
-                var template = Helpers.LoadTemplate("DeserializedField_FullProperty.sbn", spc);
-                if (template is null) return null;
-                propertyCode = ScribanLite.Render(template, new Dictionary<string, object>
-                {
-                    { "propertyName", propertyName },
-                    { "fieldName", f.Name },
-                    { "fieldType", fieldType },
-                    { "serializedType", serializedType },
-                    { "msdoc", Helpers.GetFieldMsDocComment(f)}
-                });
-            }
-
-            return propertyCode;
+            return $$"""
+                     {{Helpers.GetFieldMsDocComment(f)}}
+                     public {{fieldType}} {{propertyName}}
+                     {
+                         get => {{f.Name}};
+                         internal set {
+                             {{f.Name}} = value;
+                         }
+                     }
+                     """;
         }
 
         private static string? CreateDeserializationCode(IFieldSymbol f, SourceProductionContext spc)
         {
             if (f.GetAttributes().Any(a => a.AttributeClass?.Name == "CustomDeserializationAttribute")) return string.Empty;
-
-            var offset = Helpers.GetDeserializationOffest(f);
-            var propertyName = Helpers.GetPropertyName(f);
-            var fieldType = Helpers.GetFieldType(f);
-            var isDouble = fieldType == "double" || fieldType == "System.Double";
             var extensionMethod = Helpers.GetSerializationMethod(f);
-            var scalingFactor = Helpers.GetScalingFactor(f);
-            var serializedType = Helpers.GetSerializedFieldType(f);
-            var isEnum = serializedType.TypeKind == TypeKind.Enum;
-            var hasProperty = !f.GetAttributes().Any(a => a.AttributeClass?.Name == "NoPropertyAttribute");
-
             if (extensionMethod is null)
             {
                 var descriptor = DiagnosticDescriptors.CreateFieldTypeError(f);
                 spc.ReportDiagnostic(Diagnostic.Create(descriptor, f.Locations.FirstOrDefault() ?? Location.None));
                 return null;
             }
+
+            var offset = Helpers.GetDeserializationOffest(f);
+            var propertyName = Helpers.GetPropertyName(f);
+            var fieldType = Helpers.GetFieldType(f);
+            var isDouble = fieldType == "double" || fieldType == "System.Double";
+            var scalingFactor = Helpers.GetScalingFactor(f);
+            var serializedType = Helpers.GetSerializedFieldType(f);
+            var isEnum = serializedType.TypeKind == TypeKind.Enum;
+            var hasProperty = !f.GetAttributes().Any(a => a.AttributeClass?.Name == "NoPropertyAttribute");
 
             var scalingCode = string.Empty;
             if (scalingFactor.HasValue)
@@ -159,26 +160,19 @@ namespace AtemSharp.CodeGenerators.Deserialization
                 scalingCode = $" / {scalingLiteral}";
             }
 
-            var serializationTemplate = isEnum ? Helpers.LoadTemplate("DeserializedField_EnumDeserialization.sbn", spc) : Helpers.LoadTemplate("DeserializedField_Deserialization.sbn", spc);
-            if (serializationTemplate is null) return null;
+            var customScalingFunction = Helpers.GetAttributeStringValue(f, "CustomScalingAttribute") ?? string.Empty;
 
-            return ScribanLite.Render(serializationTemplate, new Dictionary<string, object>
-            {
-                { "propertyName", hasProperty ? propertyName : f.Name },
-                { "fieldType", fieldType },
-                { "extensionMethod", extensionMethod },
-                { "offset", offset },
-                { "scaling", scalingCode },
-                { "serializedType",  serializedType },
-                { "customScalingFunction", Helpers.GetAttributeStringValue(f, "CustomScalingAttribute") ?? string.Empty },
-            });
+            return isEnum
+                       ? $"    {(hasProperty ? propertyName : f.Name)} = ({fieldType})({customScalingFunction}(({serializedType})rawCommand.Read{extensionMethod}({offset})){scalingCode}),"
+                       : $"    {(hasProperty ? propertyName : f.Name)} = ({fieldType})({customScalingFunction}(rawCommand.Read{extensionMethod}({offset})){scalingCode}),";
         }
 
         private static DeserializedField? ProcessField(IFieldSymbol f, SourceProductionContext spc)
         {
-            var propertyCode = CreatePropertyCode(f, spc);
             var serializationCode = CreateDeserializationCode(f, spc);
-            if (serializationCode is null || propertyCode is null) return null;
+            if (serializationCode is null) return null;
+
+            var propertyCode = CreatePropertyCode(f);
 
             return new DeserializedField
             {

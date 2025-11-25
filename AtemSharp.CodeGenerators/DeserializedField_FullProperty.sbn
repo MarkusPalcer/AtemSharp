@@ -1,8 +1,0 @@
-    {{msdoc}}
-    public {{fieldType}} {{propertyName}}
-    {
-        get => {{fieldName}};
-        internal set {
-            {{fieldName}} = value;
-        }
-    }

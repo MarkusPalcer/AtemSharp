@@ -1,60 +1,49 @@
-using System;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 
 namespace AtemSharp.CodeGenerators.Serialization
 {
     [Generator]
     public class SerializedCommandGenerator : IIncrementalGenerator
     {
-        private const string Template = "SerializeMethodTemplate.sbn";
-
-        private static string? GetPropertyCode(IFieldSymbol f, SourceProductionContext spc)
+        private static string GetPropertyCode(IFieldSymbol f)
         {
-            var flag = GetFlag(f);
-            var propertyName = Helpers.GetPropertyName(f);
-            var validationMethod = GetValidationMethod(f);
-            var fieldType = Helpers.GetFieldType(f);
-
-            // Determine Property-Template
-            string? propertyTemplate;
             if (f.GetAttributes().Any(a => a.AttributeClass?.Name == "NoPropertyAttribute"))
             {
-                propertyTemplate = Helpers.LoadTemplate("SerializedField_NoProperty.sbn", spc);
-            }
-            else if (flag is null)
-            {
-                propertyTemplate = Helpers.LoadTemplate("SerializedField_NoFlag.sbn", spc);
-            }
-            else
-            {
-                propertyTemplate = Helpers.LoadTemplate("SerializedField_FullProperty.sbn", spc);
+                return string.Empty;
             }
 
-            if (propertyTemplate is null) return null;
+            var flag = GetFlag(f);
+            var flagCode = flag is null ? string.Empty : $"Flag |= 1 << {flag};";
+            var propertyName = Helpers.GetPropertyName(f);
+            var validationMethod = GetValidationMethod(f);
+            var validationCode = validationMethod is null ? string.Empty : $"{validationMethod}(value);";
+            var fieldType = Helpers.GetFieldType(f);
+            var docComment = Helpers.GetFieldMsDocComment(f);
 
-            return ScribanLite.Render(propertyTemplate, new System.Collections.Generic.Dictionary<string, object>
-            {
-                { "propertyName", propertyName },
-                { "fieldName", f.Name },
-                { "fieldType", fieldType },
-                { "flagBit", flag ?? 0 },
-                { "validation", validationMethod is null ? string.Empty : $"{validationMethod}(value);" },
-                { "msdoc", Helpers.GetFieldMsDocComment(f) }
-            });
+            return $$"""
+                   {{docComment}}
+                   public {{fieldType}} {{propertyName}}
+                   {
+                       get => {{f.Name}};
+                       set {
+                           {{validationCode}}
+                           {{f.Name}} = value;
+                           {{flagCode}}
+                       }
+                   }
+                   """;
         }
 
         private static SerializedField? ProcessField(IFieldSymbol f, SourceProductionContext spc)
         {
-            var propertyCode = GetPropertyCode(f, spc);
             var serializationCode = GetSerializationCode(f, spc);
+            if (serializationCode is null) return null;
 
-            if (serializationCode is null || propertyCode is null) return null;
+            var propertyCode = GetPropertyCode(f);
 
             return new SerializedField
             {
@@ -82,9 +71,6 @@ namespace AtemSharp.CodeGenerators.Serialization
 
             var extensionMethodType = Helpers.GetExtensionMethodType(extensionMethod);
 
-            var serializationTemplate = Helpers.LoadTemplate("SerializedField_Serialization.sbn", spc);
-            if (serializationTemplate is null) return null;
-
             var scalingCode = string.Empty;
             if (scalingFactor.HasValue)
             {
@@ -95,38 +81,27 @@ namespace AtemSharp.CodeGenerators.Serialization
                 scalingCode = $" * {scalingLiteral}";
             }
 
-            var serializationCode = ScribanLite.Render(serializationTemplate,
-                                                       new System.Collections.Generic.Dictionary<string, object>
-                                                       {
-                                                           { "extensionMethod", extensionMethod },
-                                                           { "extensionMethodType", extensionMethodType },
-                                                           { "fieldName", f.Name },
-                                                           { "scaling", fieldType },
-                                                           { "offset", offset },
-                                                           { "scalingFactor", scalingCode },
-                                                           {
-                                                               "customScalingFunction",
-                                                               Helpers.GetAttributeStringValue(f, "CustomScalingAttribute") ??
-                                                               string.Empty
-                                                           }
-                                                       });
-            return serializationCode;
+            var customScalingFunction = Helpers.GetAttributeStringValue(f, "CustomScalingAttribute") ??
+                                        string.Empty;
+
+            return $"buffer.Write{extensionMethod}(({extensionMethodType}){customScalingFunction}({f.Name} {scalingCode}), {offset});";
+
         }
 
         private static byte? GetFlag(IFieldSymbol f)
         {
             var attr = f.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "SerializedFieldAttribute");
-            if (attr != null && attr.ConstructorArguments.Length > 1)
+            if (attr is { ConstructorArguments.Length: > 1 })
             {
                 var arg = attr.ConstructorArguments[1];
-                return arg.Value is byte b ? (byte?)b : null;
+                return arg.Value is byte b ? b : null;
             }
 
             attr = f.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "CustomSerializationAttribute");
-            if (attr != null && attr.ConstructorArguments.Length > 0)
+            if (attr is { ConstructorArguments.Length: > 0 })
             {
                 var arg = attr.ConstructorArguments[0];
-                return arg.Value is byte b ? (byte?)b : null;
+                return arg.Value is byte b ? b : null;
             }
 
             return null;
@@ -189,33 +164,40 @@ namespace AtemSharp.CodeGenerators.Serialization
                         continue;
                     }
 
-                    // Use ScribanLite for template rendering
-                    var templateText = Helpers.LoadTemplate(Template, spc);
-                    if (templateText is null) continue;
-                    string source;
-                    try
-                    {
-                        source = ScribanLite.Render(templateText, new System.Collections.Generic.Dictionary<string, object>
-                        {
-                            { "namespace", ns },
-                            { "className", className },
-                            { "serializedFields", fields },
-                            { "bufferSize", bufferSize.Value },
-                            {
-                                "internalSerialization",
-                                HasInternalSerializationMethod(classDecl, classSymbol, spc)
-                                    ? "SerializeInternal(buffer);"
-                                    : string.Empty
-                            },
-                        });
-                    }
-                    catch (Exception ex)
-                    {
-                        spc.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.CreateRenderError(ex), Location.None));
-                        continue;
-                    }
+                    var internalSerialization = HasInternalSerializationMethod(classDecl, classSymbol, spc)
+                                                    ? "SerializeInternal(buffer);"
+                                                    : string.Empty;
 
-                    spc.AddSource($"{className}.g.cs", SourceText.From(source, Encoding.UTF8));
+                    var fileContent = $$"""
+                           using System;
+                           using AtemSharp;
+                           using AtemSharp.Enums;
+                           using AtemSharp.Lib;
+                           using static AtemSharp.Lib.SerializationExtensions;
+
+                           namespace {{ns}};
+
+                           #nullable enable annotations
+
+                           public partial class {{className}}
+                           {
+                               {{string.Join("\n", fields.Select(x => x!.PropertyCode))}}
+
+                               public override byte[] Serialize(ProtocolVersion version) {
+                                   var buffer = new byte[{{bufferSize.Value}}];
+                                   buffer.WriteUInt8((byte)this.Flag, 0);
+
+                                   {{string.Join("\n", fields.Select(x => x!.SerializationCode))}}
+
+                                   {{internalSerialization}}
+
+                                   return buffer;
+                               }
+                           }
+                           #nullable restore
+                           """;
+
+                    spc.AddSource($"{className}.g.cs", fileContent);
                 }
             });
         }
