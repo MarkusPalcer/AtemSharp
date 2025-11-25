@@ -4,7 +4,8 @@ using AtemSharp.Lib;
 namespace AtemSharp.Commands.SuperSource;
 
 [Command("CSBP")]
-public class SuperSourceBoxParametersCommand(State.SuperSourceBox box) : SerializedCommand
+[BufferSize(24)]
+public partial class SuperSourceBoxParametersCommand(State.SuperSourceBox box) : SerializedCommand
 {
     private readonly byte _superSourceId = box.SuperSourceId;
     private readonly byte _boxId = box.Id;
@@ -22,10 +23,8 @@ public class SuperSourceBoxParametersCommand(State.SuperSourceBox box) : Seriali
     [CustomSerialization(8)] private double _cropLeft = box.CropLeft;
     [CustomSerialization(9)] private double _cropRight = box.CropRight;
 
-    public override byte[] Serialize(ProtocolVersion version)
+    private void SerializeInternal(byte[] buffer, ProtocolVersion version)
     {
-        var buffer = new byte[24];
-
         buffer.WriteUInt16BigEndian((ushort)Flag, 0);
 
         var i = 0;
@@ -49,6 +48,5 @@ public class SuperSourceBoxParametersCommand(State.SuperSourceBox box) : Seriali
         buffer.WriteUInt16BigEndian((ushort)(_cropBottom * 1000.0), i + 16);
         buffer.WriteUInt16BigEndian((ushort)(_cropLeft * 1000.0), i + 18);
         buffer.WriteUInt16BigEndian((ushort)(_cropRight * 1000.0), i + 20);
-        return buffer;
     }
 }

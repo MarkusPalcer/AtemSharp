@@ -19,7 +19,7 @@ public partial class MacroRunStatusUpdateCommand : IDeserializedCommand
     [CustomDeserialization]
     private bool _isRunning;
 
-    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand, ProtocolVersion _)
+    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {
         var status = rawCommand.ReadUInt8(0);
         IsRunning = (status & 1 << 0) > 0;

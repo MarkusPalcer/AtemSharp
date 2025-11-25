@@ -22,7 +22,7 @@ public partial class MediaPoolFrameDescriptionCommand : IDeserializedCommand
     [CustomDeserialization]
     private string _fileName = string.Empty;
 
-    private void DeserializeInternal(ReadOnlySpan<byte> data, ProtocolVersion _)
+    private void DeserializeInternal(ReadOnlySpan<byte> data)
     {
         Hash = Convert.ToBase64String(data.Slice(5, 16));
         FileName = data.ReadString(24, data.ReadUInt8(23));

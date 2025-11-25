@@ -23,7 +23,7 @@ public partial class RecordingDiskInfoUpdateCommand : IDeserializedCommand
     [CustomDeserialization]
     private string _name = string.Empty;
 
-    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand, ProtocolVersion _)
+    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {
         _isDelete = _status.HasFlag(RecordingDiskStatus.Removed);
         _status &= ~RecordingDiskStatus.Removed;

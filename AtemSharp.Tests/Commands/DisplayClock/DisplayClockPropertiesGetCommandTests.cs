@@ -72,27 +72,27 @@ public class DisplayClockPropertiesGetCommandTests : DeserializedCommandTestBase
         }
 
         // Compare StartFrom.Hours
-        if (actualCommand.StartFrom.Hours != expectedData.StartFrom.Hour)
+        if (actualCommand.StartFromHours != expectedData.StartFrom.Hour)
         {
-            failures.Add($"StartFrom.Hours: expected {expectedData.StartFrom.Hour}, actual {actualCommand.StartFrom.Hours}");
+            failures.Add($"StartFrom.Hours: expected {expectedData.StartFrom.Hour}, actual {actualCommand.StartFromHours}");
         }
 
         // Compare StartFrom.Minutes
-        if (actualCommand.StartFrom.Minutes != expectedData.StartFrom.Minute)
+        if (actualCommand.StartFromMinutes != expectedData.StartFrom.Minute)
         {
-            failures.Add($"StartFrom.Minutes: expected {expectedData.StartFrom.Minute}, actual {actualCommand.StartFrom.Minutes}");
+            failures.Add($"StartFrom.Minutes: expected {expectedData.StartFrom.Minute}, actual {actualCommand.StartFromMinutes}");
         }
 
         // Compare StartFrom.Seconds
-        if (actualCommand.StartFrom.Seconds != expectedData.StartFrom.Second)
+        if (actualCommand.StartFromSeconds != expectedData.StartFrom.Second)
         {
-            failures.Add($"StartFrom.Seconds: expected {expectedData.StartFrom.Second}, actual {actualCommand.StartFrom.Seconds}");
+            failures.Add($"StartFrom.Seconds: expected {expectedData.StartFrom.Second}, actual {actualCommand.StartFromSeconds}");
         }
 
         // Compare StartFrom.Frames
-        if (actualCommand.StartFrom.Frames != expectedData.StartFrom.Frame)
+        if (actualCommand.StartFromFrames != expectedData.StartFrom.Frame)
         {
-            failures.Add($"StartFrom.Frames: expected {expectedData.StartFrom.Frame}, actual {actualCommand.StartFrom.Frames}");
+            failures.Add($"StartFrom.Frames: expected {expectedData.StartFrom.Frame}, actual {actualCommand.StartFromFrames}");
         }
 
         // Compare ClockMode

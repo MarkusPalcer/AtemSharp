@@ -8,7 +8,7 @@ namespace AtemSharp.Commands.Recording;
 public partial class RecordingSettingsUpdateCommand : IDeserializedCommand
 {
     [CustomDeserialization]
-    private string _fileName;
+    private string _fileName = string.Empty;
 
     [DeserializedField(128)]
     private uint _workingSet1DiskId;
@@ -19,7 +19,7 @@ public partial class RecordingSettingsUpdateCommand : IDeserializedCommand
     [DeserializedField(136)]
     private bool _recordInAllCameras;
 
-    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
+    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {
         _fileName = rawCommand.ReadString(0, 128);
     }

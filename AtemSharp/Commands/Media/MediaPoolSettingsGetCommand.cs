@@ -10,7 +10,7 @@ public partial class MediaPoolSettingsGetCommand : IDeserializedCommand
     [CustomDeserialization] private ushort[] _maxFrames = [];
     [DeserializedField(8)] private ushort _unassignedFrames;
 
-    public void DeserializeInternal(ReadOnlySpan<byte> buffer, ProtocolVersion _)
+    public void DeserializeInternal(ReadOnlySpan<byte> buffer)
     {
         _maxFrames =
         [

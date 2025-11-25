@@ -26,7 +26,7 @@ public partial class AudioRoutingSourceUpdateCommand : IDeserializedCommand
     [CustomDeserialization]
     private string _name = string.Empty;
 
-    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand, ProtocolVersion _)
+    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {
         _audioSourceId = _id >> 16;
         _audioChannelPair = (AudioChannelPair)(ushort)(_id & 0xFFFF);

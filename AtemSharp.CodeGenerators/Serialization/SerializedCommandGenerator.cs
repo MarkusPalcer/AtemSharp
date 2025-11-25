@@ -25,17 +25,17 @@ namespace AtemSharp.CodeGenerators.Serialization
             var docComment = Helpers.GetFieldMsDocComment(f);
 
             return $$"""
-                   {{docComment}}
-                   public {{fieldType}} {{propertyName}}
-                   {
-                       get => {{f.Name}};
-                       set {
-                           {{validationCode}}
-                           {{f.Name}} = value;
-                           {{flagCode}}
-                       }
-                   }
-                   """;
+                     {{docComment}}
+                     public {{fieldType}} {{propertyName}}
+                     {
+                         get => {{f.Name}};
+                         set {
+                             {{validationCode}}
+                             {{f.Name}} = value;
+                             {{flagCode}}
+                         }
+                     }
+                     """;
         }
 
         private static SerializedField? ProcessField(IFieldSymbol f, SourceProductionContext spc)
@@ -85,7 +85,6 @@ namespace AtemSharp.CodeGenerators.Serialization
                                         string.Empty;
 
             return $"buffer.Write{extensionMethod}(({extensionMethodType}){customScalingFunction}({f.Name} {scalingCode}), {offset});";
-
         }
 
         private static byte? GetFlag(IFieldSymbol f)
@@ -112,9 +111,7 @@ namespace AtemSharp.CodeGenerators.Serialization
         {
             var classDeclarations = context.SyntaxProvider
                                            .CreateSyntaxProvider(
-                                                predicate: (node, _) =>
-                                                    node is ClassDeclarationSyntax cds &&
-                                                    cds.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)),
+                                                predicate: (node, _) => node is ClassDeclarationSyntax,
                                                 transform: (ctx, _) => (ClassDeclarationSyntax)ctx.Node)
                                            .Where(classDecl => classDecl != null);
 
@@ -141,11 +138,15 @@ namespace AtemSharp.CodeGenerators.Serialization
 
                     var fields = classSymbol.GetMembers()
                                             .OfType<IFieldSymbol>()
-                                            .Where(f => f.GetAttributes().Any(a => a.AttributeClass?.Name == "SerializedFieldAttribute" || a.AttributeClass?.Name == "CustomSerializationAttribute"))
+                                            .Where(f => f.GetAttributes().Any(a =>
+                                                                                  a.AttributeClass?.Name is "SerializedFieldAttribute"
+                                                                                                         or "SerializedField"
+                                                                                                         or "CustomSerializationAttribute"
+                                                                                                         or "CustomSerialization"))
                                             .Select(f => ProcessField(f, spc))
                                             .ToArray();
 
-                    if (fields.Contains(null))
+                    if (fields.Contains(null) || fields.Length == 0)
                     {
                         // Do not generate code if any field is missing a mapping
                         continue;
@@ -164,38 +165,36 @@ namespace AtemSharp.CodeGenerators.Serialization
                         continue;
                     }
 
-                    var internalSerialization = HasInternalSerializationMethod(classDecl, classSymbol, spc)
-                                                    ? "SerializeInternal(buffer);"
-                                                    : string.Empty;
+                    var internalSerialization = GetInternalSerializationCode(classDecl, classSymbol, spc);
 
                     var fileContent = $$"""
-                           using System;
-                           using AtemSharp;
-                           using AtemSharp.Enums;
-                           using AtemSharp.Lib;
-                           using static AtemSharp.Lib.SerializationExtensions;
+                                        using System;
+                                        using AtemSharp;
+                                        using AtemSharp.Enums;
+                                        using AtemSharp.Lib;
+                                        using static AtemSharp.Lib.SerializationExtensions;
 
-                           namespace {{ns}};
+                                        namespace {{ns}};
 
-                           #nullable enable annotations
+                                        #nullable enable annotations
 
-                           public partial class {{className}}
-                           {
-                               {{string.Join("\n", fields.Select(x => x!.PropertyCode))}}
+                                        public partial class {{className}}
+                                        {
+                                            {{string.Join("\n", fields.Select(x => x!.PropertyCode))}}
 
-                               public override byte[] Serialize(ProtocolVersion version) {
-                                   var buffer = new byte[{{bufferSize.Value}}];
-                                   buffer.WriteUInt8((byte)this.Flag, 0);
+                                            public override byte[] Serialize(ProtocolVersion version) {
+                                                var buffer = new byte[{{bufferSize.Value}}];
+                                                buffer.WriteUInt8((byte)this.Flag, 0);
 
-                                   {{string.Join("\n", fields.Select(x => x!.SerializationCode))}}
+                                                {{string.Join("\n", fields.Select(x => x!.SerializationCode))}}
 
-                                   {{internalSerialization}}
+                                                {{internalSerialization}}
 
-                                   return buffer;
-                               }
-                           }
-                           #nullable restore
-                           """;
+                                                return buffer;
+                                            }
+                                        }
+                                        #nullable restore
+                                        """;
 
                     spc.AddSource($"{className}.g.cs", fileContent);
                 }
@@ -225,7 +224,7 @@ namespace AtemSharp.CodeGenerators.Serialization
             return false;
         }
 
-        private bool HasInternalSerializationMethod(ClassDeclarationSyntax classDecl, INamedTypeSymbol classSymbol,
+        private string GetInternalSerializationCode(ClassDeclarationSyntax classDecl, INamedTypeSymbol classSymbol,
                                                     SourceProductionContext spc)
         {
             // Look for: void SerializeInternal(ReadOnlySpan<byte>)
@@ -237,24 +236,31 @@ namespace AtemSharp.CodeGenerators.Serialization
                     !method.Modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword) || m.IsKind(SyntaxKind.PrivateKeyword) ||
                                                m.IsKind(SyntaxKind.InternalKeyword))) continue;
 
-                if (method.ReturnType is PredefinedTypeSyntax returnType && returnType.Keyword.IsKind(SyntaxKind.VoidKeyword) &&
-                    method.ParameterList.Parameters.Count == 1 && method.ParameterList.Parameters[0].Type?.ToString() == "byte[]")
+                if (method.ReturnType is PredefinedTypeSyntax returnType && returnType.Keyword.IsKind(SyntaxKind.VoidKeyword))
                 {
-                    return true;
-                }
-                else
-                {
-                    var diag = Diagnostic.Create(
-                        DiagnosticDescriptors.CustomSerializationSignature,
-                        classDecl.Identifier.GetLocation(),
-                        classSymbol.Name);
-                    spc.ReportDiagnostic(diag);
+                    var parameterTypes = method.ParameterList.Parameters.Select(p => p.Type?.ToString()).ToArray();
 
-                    return false;
+                    if (parameterTypes.SequenceEqual(new[] {"byte[]"}))
+                    {
+                        return "SerializeInternal(buffer);";
+                    }
+
+                    if (parameterTypes.SequenceEqual(new[] { "byte[]", "ProtocolVersion" }))
+                    {
+                        return "SerializeInternal(buffer, version);";
+                    }
                 }
+
+                var diag = Diagnostic.Create(
+                    DiagnosticDescriptors.CustomSerializationSignature,
+                    classDecl.Identifier.GetLocation(),
+                    classSymbol.Name);
+                spc.ReportDiagnostic(diag);
+
+                return string.Empty;
             }
 
-            return false;
+            return string.Empty;
         }
 
         private static string? GetValidationMethod(IFieldSymbol f)

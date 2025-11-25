@@ -14,7 +14,7 @@ public partial class MediaPoolClipDescriptionCommand : IDeserializedCommand
     [CustomDeserialization] private string _name = string.Empty;
     [DeserializedField(66)] private ushort _frameCount;
 
-    private void DeserializeInternal(ReadOnlySpan<byte> data, ProtocolVersion _)
+    private void DeserializeInternal(ReadOnlySpan<byte> data)
     {
         _name = data.ReadString(2, 64);
     }

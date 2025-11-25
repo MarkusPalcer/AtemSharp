@@ -6,7 +6,7 @@ public class MediaPoolSettingsGetCommandTests : DeserializedCommandTestBase<Medi
 {
     public class CommandData : CommandDataBase
     {
-        public ushort[] MaxFrames { get; set; }
+        public ushort[] MaxFrames { get; set; } = [];
         public ushort UnassignedFrames { get; set; }
     }
 

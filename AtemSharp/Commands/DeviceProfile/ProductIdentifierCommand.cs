@@ -24,7 +24,7 @@ public partial class ProductIdentifierCommand : IDeserializedCommand
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
-    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
+    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {
         ProductIdentifier = rawCommand.ReadString(0, 40);
     }

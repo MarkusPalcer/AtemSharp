@@ -14,8 +14,7 @@ namespace AtemSharp.CodeGenerators.Deserialization
             var classDeclarations = context.SyntaxProvider
                                            .CreateSyntaxProvider(
                                                 predicate: (node, _) =>
-                                                    node is ClassDeclarationSyntax cds &&
-                                                    cds.Modifiers.Any(m => m.IsKind(SyntaxKind.PartialKeyword)),
+                                                    node is ClassDeclarationSyntax,
                                                 transform: (ctx, _) => (ClassDeclarationSyntax)ctx.Node)
                                            .Where(classDecl => classDecl != null);
 
@@ -38,20 +37,18 @@ namespace AtemSharp.CodeGenerators.Deserialization
                     var fields = symbol.GetMembers()
                                        .OfType<IFieldSymbol>()
                                        .Where(f => f.GetAttributes()
-                                                    .Any(a => a.AttributeClass?.Name == "DeserializedFieldAttribute" ||
-                                                              a.AttributeClass?.Name == "CustomDeserializationAttribute"))
+                                                    .Any(a => a.AttributeClass?.Name is "DeserializedFieldAttribute"
+                                                                                     or "CustomDeserializationAttribute"))
                                        .Select(f => ProcessField(f, spc))
                                        .ToArray();
 
-                    if (fields.Contains(null))
+                    if (fields.Contains(null) || fields.Length == 0)
                     {
                         // Do not generate code if any field is missing a mapping
                         continue;
                     }
 
-                    var internalDeserialization = HasInternalDeserializationMethod(classDecl)
-                                                      ? "result.DeserializeInternal(rawCommand, protocolVersion);"
-                                                      : string.Empty;
+                    var internalDeserialization = GetInternalDeserializationMethod(classDecl);
 
                     var fileContent = $$"""
                                         using System;
@@ -85,29 +82,30 @@ namespace AtemSharp.CodeGenerators.Deserialization
             });
         }
 
-        private static bool HasInternalDeserializationMethod(ClassDeclarationSyntax classDecl)
+        private static string GetInternalDeserializationMethod(ClassDeclarationSyntax classDecl)
         {
             // Look for: void DeserializeInternal(ReadOnlySpan<byte>, ProtocolVersion)
             foreach (var member in classDecl.Members)
             {
                 if (member is not MethodDeclarationSyntax method) continue;
+                if (method.Identifier.Text != "DeserializeInternal") continue;
+                if (!method.Modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword) || m.IsKind(SyntaxKind.PrivateKeyword) || m.IsKind(SyntaxKind.InternalKeyword)))  continue;
+                if (method.ReturnType is not PredefinedTypeSyntax returnType || !returnType.Keyword.IsKind(SyntaxKind.VoidKeyword)) continue;
+                var parameterTypes = method.ParameterList.Parameters.Select(p => p.Type?.ToString()).ToArray();
 
-                if (method.Identifier.Text != "DeserializeInternal" ||
-                    !method.Modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword) || m.IsKind(SyntaxKind.PrivateKeyword) ||
-                                               m.IsKind(SyntaxKind.InternalKeyword)) ||
-                    method.ReturnType is not PredefinedTypeSyntax returnType || !returnType.Keyword.IsKind(SyntaxKind.VoidKeyword) ||
-                    method.ParameterList.Parameters.Count != 2) continue;
-
-                var param1 = method.ParameterList.Parameters[0];
-                var param2 = method.ParameterList.Parameters[1];
-
-                if (param1.Type?.ToString() == "ReadOnlySpan<byte>" && param2.Type?.ToString().Contains("ProtocolVersion") == true)
+                if (parameterTypes.SequenceEqual(new[] { "ReadOnlySpan<byte>" }))
                 {
-                    return true;
+                    return "result.DeserializeInternal(rawCommand);";
                 }
+
+                if (parameterTypes.SequenceEqual(new[] { "ReadOnlySpan<byte>", "ProtocolVersion" }))
+                {
+                    return "result.DeserializeInternal(rawCommand, protocolVersion);";
+                }
+
             }
 
-            return false;
+            return string.Empty;
         }
 
         private static string CreatePropertyCode(IFieldSymbol f)

@@ -74,7 +74,7 @@ public partial class InputPropertiesUpdateCommand : IDeserializedCommand
     [DeserializedField(35)]
     private MeAvailability _meAvailability;
 
-    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand, ProtocolVersion _)
+    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {
         LongName = rawCommand.ReadString(2, 20);
         ShortName = rawCommand.ReadString(22, 4);

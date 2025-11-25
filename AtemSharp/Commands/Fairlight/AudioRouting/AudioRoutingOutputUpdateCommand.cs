@@ -29,7 +29,7 @@ public partial class AudioRoutingOutputUpdateCommand : IDeserializedCommand
     [CustomDeserialization]
     private AudioChannelPair _audioChannelPair;
 
-    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand, ProtocolVersion _)
+    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {
         _audioOutputId = _id >> 16;
         _audioChannelPair = (AudioChannelPair)(ushort)(_id & 0xFFFF);

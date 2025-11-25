@@ -1,5 +1,4 @@
 using AtemSharp.Enums;
-using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.DisplayClock;
@@ -56,18 +55,11 @@ public partial class DisplayClockPropertiesGetCommand : IDeserializedCommand
     /// <summary>
     /// Starting time for countdown/countup modes
     /// </summary>
-    public DisplayClockTime StartFrom { get; internal set; } = new();
+    [DeserializedField(11)] private byte _startFromHours;
 
-    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
-    {
-        StartFrom = new DisplayClockTime
-        {
-            Hours = rawCommand.ReadUInt8(11),
-            Minutes = rawCommand.ReadUInt8(12),
-            Seconds = rawCommand.ReadUInt8(13),
-            Frames = rawCommand.ReadUInt8(14)
-        };
-    }
+    [DeserializedField(12)] private byte _startFromMinutes;
+    [DeserializedField(13)] private byte _startFromSeconds;
+    [DeserializedField(14)] private byte _startFromFrames;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
@@ -80,7 +72,13 @@ public partial class DisplayClockPropertiesGetCommand : IDeserializedCommand
         state.DisplayClock.PositionX = PositionX;
         state.DisplayClock.PositionY = PositionY;
         state.DisplayClock.AutoHide = AutoHide;
-        state.DisplayClock.StartFrom = StartFrom;
+        state.DisplayClock.StartFrom = new()
+        {
+            Hours = StartFromHours,
+            Minutes = StartFromMinutes,
+            Seconds = StartFromSeconds,
+            Frames = StartFromFrames
+        };
         state.DisplayClock.ClockMode = ClockMode;
         state.DisplayClock.ClockState = ClockState;
     }

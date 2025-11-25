@@ -1,4 +1,3 @@
-using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
 
@@ -16,7 +15,7 @@ public partial class MacroPropertiesUpdateCommand : IDeserializedCommand
     [DeserializedField(3)]
     private bool _hasUnsupportedOps;
 
-    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
+    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {
         var nameLength = rawCommand.ReadUInt16BigEndian(4);
         var descriptionLength = rawCommand.ReadUInt16BigEndian(6);

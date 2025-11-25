@@ -19,7 +19,7 @@ public partial class StreamingServiceUpdateCommand : IDeserializedCommand
     [DeserializedField(1088)] private uint _bitrate1;
     [DeserializedField(1092)] private uint _bitrate2;
 
-    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand, ProtocolVersion _)
+    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {
         _serviceName = rawCommand.ReadString(0, 64);
         _url = rawCommand.ReadString(64, 512);
