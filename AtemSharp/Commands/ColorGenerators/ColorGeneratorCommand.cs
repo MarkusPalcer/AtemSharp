@@ -22,14 +22,9 @@ public partial class ColorGeneratorCommand : SerializedCommand
     [ScalingFactor(10.0)]
     private double _luma;
 
-    public ColorGeneratorCommand(AtemState state, byte id)
+    public ColorGeneratorCommand(ColorGeneratorState colorGenerator)
     {
-        if (!state.ColorGenerators.TryGetValue(id, out var colorGenerator))
-        {
-            throw new IndexOutOfRangeException("Color generator with ID {id} does not exist");
-        }
-
-        _id = id;
+        _id = colorGenerator.Id;
         _hue = colorGenerator.Hue;
         _saturation = colorGenerator.Saturation;
         _luma = colorGenerator.Luma;

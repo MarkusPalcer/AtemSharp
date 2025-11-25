@@ -1,6 +1,7 @@
 using AtemSharp.Commands.Inputs;
-using AtemSharp.Enums;
-using AtemSharp.Enums.Ports;
+using AtemSharp.State;
+using AtemSharp.State.Ports;
+using AtemSharp.State.Video.InputChannel;
 
 namespace AtemSharp.Tests.Commands.Inputs;
 

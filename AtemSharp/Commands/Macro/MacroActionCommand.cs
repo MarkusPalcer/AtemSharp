@@ -4,7 +4,7 @@ namespace AtemSharp.Commands.Macro;
 
 [Command("MAct")]
 [BufferSize(4)]
-public partial class MacroActionCommand(State.Macro macro, MacroAction action) : SerializedCommand
+public partial class MacroActionCommand(State.Macro.Macro macro, MacroAction action) : SerializedCommand
 {
     [SerializedField(0)]
     [NoProperty]

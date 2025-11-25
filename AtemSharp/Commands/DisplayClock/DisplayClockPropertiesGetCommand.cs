@@ -1,5 +1,5 @@
-using AtemSharp.Enums;
 using AtemSharp.State;
+using AtemSharp.State.DisplayClock;
 
 namespace AtemSharp.Commands.DisplayClock;
 
@@ -64,8 +64,6 @@ public partial class DisplayClockPropertiesGetCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        state.DisplayClock ??= new State.DisplayClock();
-
         state.DisplayClock.Enabled = Enabled;
         state.DisplayClock.Size = Size;
         state.DisplayClock.Opacity = Opacity;

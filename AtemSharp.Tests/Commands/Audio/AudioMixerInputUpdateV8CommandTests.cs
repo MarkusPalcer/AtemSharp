@@ -1,7 +1,6 @@
 using AtemSharp.Commands.Audio;
-using AtemSharp.Enums.Audio;
-using AtemSharp.Enums.Ports;
 using AtemSharp.State.Audio.ClassicAudio;
+using AtemSharp.State.Ports;
 using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.Audio;

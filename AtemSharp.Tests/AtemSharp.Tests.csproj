@@ -33,4 +33,8 @@
         <None Remove="TestData\RunMacro.json" />
         <EmbeddedResource Include="TestData\RunMacro.json" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="State\" />
+    </ItemGroup>
 </Project>

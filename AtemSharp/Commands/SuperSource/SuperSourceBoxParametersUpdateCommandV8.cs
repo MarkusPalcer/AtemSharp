@@ -1,6 +1,6 @@
 using System.Drawing;
-using AtemSharp.Enums;
 using AtemSharp.State;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.SuperSource;
 

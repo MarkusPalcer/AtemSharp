@@ -1,4 +1,5 @@
 using AtemSharp.State;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
@@ -26,6 +27,6 @@ public partial class MacroPoolConfigCommand : IDeserializedCommand
             MacroCount = MacroCount
         };
 
-        state.Macros.Macros = AtemStateUtil.CreateArray<State.Macro>(MacroCount);
+        state.Macros.Macros = AtemStateUtil.CreateArray<State.Macro.Macro>(MacroCount);
     }
 }

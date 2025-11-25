@@ -1,5 +1,5 @@
 using AtemSharp.Commands;
-using AtemSharp.Enums;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands.Recording;
 

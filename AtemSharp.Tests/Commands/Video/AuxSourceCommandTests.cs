@@ -1,5 +1,5 @@
 using AtemSharp.Commands.Video;
-using AtemSharp.State;
+using AtemSharp.State.Video;
 
 namespace AtemSharp.Tests.Commands.Video;
 

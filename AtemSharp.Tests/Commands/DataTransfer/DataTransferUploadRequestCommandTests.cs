@@ -1,5 +1,5 @@
 using AtemSharp.Commands.DataTransfer;
-using AtemSharp.Enums;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands.DataTransfer;
 
@@ -60,7 +60,7 @@ public class DataTransferUploadRequestCommandTests : SerializedCommandTestBase<D
         Assert.That(command.Size, Is.EqualTo(1024576));
         Assert.That(command.Mode, Is.EqualTo(256));
     }
-    
+
     [Test]
     public void Constructor_WithParameters_ShouldSetProperties()
     {
@@ -81,7 +81,7 @@ public class DataTransferUploadRequestCommandTests : SerializedCommandTestBase<D
         Assert.That(command.Size, Is.EqualTo(size));
         Assert.That(command.Mode, Is.EqualTo(mode));
     }
-    
+
     [Test]
     public void Constructor_Default_ShouldSetPropertiesToZero()
     {
@@ -107,7 +107,7 @@ public class DataTransferUploadRequestCommandTests : SerializedCommandTestBase<D
 
         // Assert
         Assert.That(result.Length, Is.EqualTo(16));
-        
+
         // Check each field is serialized in big-endian format
         Assert.That(result[0], Is.EqualTo(0x12)); // TransferId high byte
         Assert.That(result[1], Is.EqualTo(0x34)); // TransferId low byte
@@ -126,7 +126,7 @@ public class DataTransferUploadRequestCommandTests : SerializedCommandTestBase<D
         Assert.That(result[14], Is.EqualTo(0x00)); // Padding
         Assert.That(result[15], Is.EqualTo(0x00)); // Padding
     }
-    
+
     [Test]
     public void Properties_ShouldBeSettable()
     {
@@ -173,7 +173,7 @@ public class DataTransferUploadRequestCommandTests : SerializedCommandTestBase<D
 
         // Assert
         Assert.That(result.Length, Is.EqualTo(16));
-        
+
         // Check that max values are properly serialized (except padding bytes)
         Assert.That(result[0], Is.EqualTo(0xFF)); // TransferId high
         Assert.That(result[1], Is.EqualTo(0xFF)); // TransferId low

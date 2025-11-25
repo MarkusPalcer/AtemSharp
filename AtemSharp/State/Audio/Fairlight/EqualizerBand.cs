@@ -4,7 +4,6 @@ public abstract class EqualizerBand : ArrayItem
 {
     internal override void SetId(int id) => Id = (byte)id;
     public byte Id { get; internal set; }
-
     public bool Enabled { get; internal set; }
 
     // TODO: Create enum from ATEM Mini ISO Pro behavior

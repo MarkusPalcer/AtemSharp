@@ -1,12 +1,12 @@
-using AtemSharp.Enums;
 using AtemSharp.Lib;
-using AtemSharp.State;
+using AtemSharp.State.Border;
+using AtemSharp.State.Video.SuperSource;
 
 namespace AtemSharp.Commands.SuperSource;
 
 [Command("CSSc")]
 [BufferSize(36)]
-public partial class SuperSourcePropertiesCommand(State.SuperSource superSource) : SerializedCommand
+public partial class SuperSourcePropertiesCommand(State.Video.SuperSource.SuperSource superSource) : SerializedCommand
 {
     [SerializedField(4,0)] private ushort _artFillSource = superSource.FillSource;
     [SerializedField(6,1)] private ushort _artCutSource = superSource.CutSource;

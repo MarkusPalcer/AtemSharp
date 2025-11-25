@@ -1,4 +1,4 @@
-namespace AtemSharp.Enums.Fairlight;
+namespace AtemSharp.State.Audio.Fairlight;
 
 public enum FairlightInputType : byte
 {

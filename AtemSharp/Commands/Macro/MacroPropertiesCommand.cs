@@ -1,12 +1,12 @@
-using AtemSharp.Enums;
 using AtemSharp.Lib;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.Macro;
 
 // This class needs to be serialized manually, because the buffer size is
 // dynamic which is not supported by code generation
 [Command("CMPr")]
-public class MacroPropertiesCommand(State.Macro macro) : SerializedCommand
+public class MacroPropertiesCommand(State.Macro.Macro macro) : SerializedCommand
 {
     private readonly ushort _id = macro.Id;
     private string _name = macro.Name;
@@ -34,7 +34,7 @@ public class MacroPropertiesCommand(State.Macro macro) : SerializedCommand
 
     public override byte[] Serialize(ProtocolVersion version)
     {
-        var buffer = new byte[AtemUtil.PadToMultiple(8+ _name.Length + _description.Length, 4)];
+        var buffer = new byte[SerializationExtensions.PadToMultiple(8+ _name.Length + _description.Length, 4)];
         buffer.WriteUInt8((byte)Flag,0);
         buffer.WriteUInt16BigEndian(_id, 2);
         buffer.WriteUInt16BigEndian((ushort)_name.Length, 4);

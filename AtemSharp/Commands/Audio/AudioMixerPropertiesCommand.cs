@@ -1,4 +1,4 @@
-using AtemSharp.State;
+using AtemSharp.State.Audio.ClassicAudio;
 
 namespace AtemSharp.Commands.Audio;
 
@@ -7,17 +7,10 @@ namespace AtemSharp.Commands.Audio;
 /// </summary>
 [Command("CAMP")]
 [BufferSize(4)]
-public partial class AudioMixerPropertiesCommand : SerializedCommand
+public partial class AudioMixerPropertiesCommand(ClassicAudioState audio) : SerializedCommand
 {
     /// <summary>
     /// Whether audio follows video crossfade transition
     /// </summary>
-    [SerializedField(1,0)]
-    private bool _audioFollowVideo;
-
-    public AudioMixerPropertiesCommand(AtemState currentState)
-    {
-        var audio = currentState.GetClassicAudio();
-        _audioFollowVideo = audio.AudioFollowsVideo ?? false;
-    }
+    [SerializedField(1, 0)] private bool _audioFollowVideo = audio.AudioFollowsVideo;
 }

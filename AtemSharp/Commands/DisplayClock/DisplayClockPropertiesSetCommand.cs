@@ -1,6 +1,6 @@
-using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
+using AtemSharp.State.DisplayClock;
 
 namespace AtemSharp.Commands.DisplayClock;
 
@@ -72,7 +72,7 @@ public partial class DisplayClockPropertiesSetCommand : SerializedCommand
     /// <summary>
     /// Create command initialized with current state values
     /// </summary>
-    public DisplayClockPropertiesSetCommand(State.DisplayClock currentState)
+    public DisplayClockPropertiesSetCommand(State.DisplayClock.DisplayClock currentState)
     {
         _enabled = currentState.Enabled;
         _size = currentState.Size;

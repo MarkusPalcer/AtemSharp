@@ -1,4 +1,4 @@
-using AtemSharp.State;
+using AtemSharp.State.Video;
 
 namespace AtemSharp.Commands.Video;
 

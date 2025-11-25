@@ -1,5 +1,5 @@
 using AtemSharp.Commands.SuperSource;
-using AtemSharp.State;
+using AtemSharp.State.Video.SuperSource;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 

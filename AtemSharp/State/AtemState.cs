@@ -1,6 +1,10 @@
 using AtemSharp.State.Audio;
+using AtemSharp.State.Info;
+using AtemSharp.State.Macro;
+using AtemSharp.State.Media;
 using AtemSharp.State.Recording;
 using AtemSharp.State.Streaming;
+using AtemSharp.State.Video;
 
 namespace AtemSharp.State;
 
@@ -12,7 +16,7 @@ public class AtemState
     /// <summary>
     /// Device information and capabilities
     /// </summary>
-    public DeviceInfo Info { get; internal set; } = new();
+    public DeviceInfo Info { get; } = new();
 
     /// <summary>
     /// Audio state for classic ATEM devices
@@ -22,7 +26,7 @@ public class AtemState
     /// <summary>
     /// Display clock state and configuration
     /// </summary>
-    public DisplayClock? DisplayClock { get; internal set; }
+    public DisplayClock.DisplayClock DisplayClock { get; } = new();
 
     /// <summary>
     /// Video state including downstream keyers, mix effects, etc.
@@ -34,7 +38,7 @@ public class AtemState
     /// </summary>
     public SettingsState Settings { get; internal set; } = new();
 
-    public Dictionary<int, ColorGeneratorState> ColorGenerators { get; } = new();
+    public List<ColorGeneratorState> ColorGenerators { get; } = new();
 
     public MediaState Media { get; } = new();
 

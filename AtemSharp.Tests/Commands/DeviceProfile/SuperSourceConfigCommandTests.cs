@@ -1,5 +1,6 @@
 using AtemSharp.Commands.DeviceProfile;
 using AtemSharp.State;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
@@ -45,7 +46,14 @@ public class SuperSourceConfigCommandTests : DeserializedCommandTestBase<SuperSo
     public void ApplyToState_WithValidData_ShouldUpdateSuperSourceInfo()
     {
         // Arrange
-        var state = new AtemState();
+        var state = new AtemState
+        {
+            Info =
+            {
+                SuperSources = AtemStateUtil.CreateArray<SuperSourceInfo>(3)
+            }
+        };
+
         var command = new SuperSourceConfigCommand
         {
             SuperSourceId = 1,
@@ -56,9 +64,6 @@ public class SuperSourceConfigCommandTests : DeserializedCommandTestBase<SuperSo
         command.ApplyToState(state);
 
         // Assert
-        Assert.That(state.Info.SuperSources, Is.Not.Null);
-        Assert.That(state.Info.SuperSources.ContainsKey(1), Is.True);
-        Assert.That(state.Info.SuperSources[1], Is.Not.Null);
         Assert.That(state.Info.SuperSources[1].BoxCount, Is.EqualTo(54));
     }
 
@@ -66,7 +71,14 @@ public class SuperSourceConfigCommandTests : DeserializedCommandTestBase<SuperSo
     public void ApplyToState_WithDifferentSsrcIds_ShouldUpdateCorrectSuperSource()
     {
         // Arrange
-        var state = new AtemState();
+        var state = new AtemState
+        {
+            Info =
+            {
+                SuperSources = AtemStateUtil.CreateArray<SuperSourceInfo>(3)
+            }
+        };
+
         var command1 = new SuperSourceConfigCommand
         {
             SuperSourceId = 0,
@@ -83,10 +95,8 @@ public class SuperSourceConfigCommandTests : DeserializedCommandTestBase<SuperSo
         command2.ApplyToState(state);
 
         // Assert
-        Assert.That(state.Info.SuperSources.ContainsKey(0), Is.True);
         Assert.That(state.Info.SuperSources[0].BoxCount, Is.EqualTo(48));
-
-        Assert.That(state.Info.SuperSources.ContainsKey(2), Is.True);
+        Assert.That(state.Info.SuperSources[1].BoxCount, Is.EqualTo(0));
         Assert.That(state.Info.SuperSources[2].BoxCount, Is.EqualTo(196));
     }
 }

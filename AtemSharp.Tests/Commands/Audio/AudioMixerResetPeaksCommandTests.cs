@@ -1,5 +1,5 @@
 using AtemSharp.Commands.Audio;
-using AtemSharp.Enums;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands.Audio;
 
@@ -25,7 +25,7 @@ public class AudioMixerResetPeaksCommandTests : SerializedCommandTestBase<AudioM
 		command.Input = testCase.Command.Input;
 		command.Master = testCase.Command.Master;
 		command.Monitor = testCase.Command.Monitor;
-		
+
 		return command;
 	}
 

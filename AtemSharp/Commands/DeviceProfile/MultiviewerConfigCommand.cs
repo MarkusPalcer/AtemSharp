@@ -1,4 +1,3 @@
-using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Info;
@@ -29,8 +28,6 @@ public class MultiviewerConfigCommand : IDeserializedCommand
 
 	public void ApplyToState(AtemState state)
 	{
-		state.Info.MultiViewer ??= new MultiViewerInfo();
-
 		// For V8_1_1+, Count is not part of the protocol, so only update WindowCount
 		if (Version >= ProtocolVersion.V8_1_1)
 		{

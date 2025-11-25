@@ -115,12 +115,8 @@ public class MultiViewerWindowVuMeterUpdateCommandTests : DeserializedCommandTes
     /// </summary>
     private static AtemState CreateStateWithMultiViewer(byte multiViewerId)
     {
-        return new AtemState
-        {
-            Settings = new SettingsState
-            {
-                MultiViewers = AtemStateUtil.CreateArray<MultiViewer>(multiViewerId + 1)
-            },
-        };
+        var state = new AtemState();
+        state.Settings.MultiViewers.ExpandToFit(multiViewerId);
+        return state;
     }
 }

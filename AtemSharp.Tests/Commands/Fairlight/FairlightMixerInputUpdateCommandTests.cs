@@ -1,8 +1,7 @@
 using AtemSharp.Commands.Fairlight;
-using AtemSharp.Enums;
-using AtemSharp.Enums.Fairlight;
-using AtemSharp.Enums.Ports;
-using AtemSharp.Lib;
+using AtemSharp.State.Audio.Fairlight;
+using AtemSharp.State.Info;
+using AtemSharp.State.Ports;
 
 namespace AtemSharp.Tests.Commands.Fairlight;
 
@@ -29,13 +28,13 @@ public class FairlightMixerInputUpdateCommandTests : DeserializedCommandTestBase
         Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.InputType, Is.EqualTo(expectedData.InputType));
         Assert.That(actualCommand.ExternalPortType, Is.EqualTo(expectedData.ExternalPortType));
-        Assert.That(AtemUtil.CombineComponents(actualCommand.SupportedConfigurations), Is.EqualTo(expectedData.SupportedConfigurations));
+        Assert.That(CommandTestUtilities.CombineComponents(actualCommand.SupportedConfigurations), Is.EqualTo(expectedData.SupportedConfigurations));
         Assert.That(actualCommand.ActiveConfiguration, Is.EqualTo(expectedData.ActiveConfiguration));
 
         // TODO: Split command into two
         if (testCase.FirstVersion >= ProtocolVersion.V8_1_1)
         {
-            Assert.That(AtemUtil.CombineComponents(actualCommand.SupportedInputLevels), Is.EqualTo(expectedData.SupportedInputLevels));
+            Assert.That(CommandTestUtilities.CombineComponents(actualCommand.SupportedInputLevels), Is.EqualTo(expectedData.SupportedInputLevels));
             Assert.That(actualCommand.ActiveInputLevel, Is.EqualTo(expectedData.ActiveInputLevel));
         }
     }

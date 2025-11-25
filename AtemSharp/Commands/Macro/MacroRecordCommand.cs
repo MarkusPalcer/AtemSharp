@@ -1,11 +1,11 @@
-using AtemSharp.Enums;
 using AtemSharp.Lib;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.Macro;
 
 // Manual serialization due to variable buffer size
 [Command("MSRc")]
-public class MacroRecordCommand(AtemSharp.State.Macro targetSlot) : SerializedCommand
+public class MacroRecordCommand(AtemSharp.State.Macro.Macro targetSlot) : SerializedCommand
 {
     private ushort _index = targetSlot.Id;
 
@@ -14,7 +14,7 @@ public class MacroRecordCommand(AtemSharp.State.Macro targetSlot) : SerializedCo
 
     public override byte[] Serialize(ProtocolVersion version)
     {
-        var buffer = new byte[AtemUtil.PadToMultiple(8 + Name.Length + Description.Length, 4)];
+        var buffer = new byte[SerializationExtensions.PadToMultiple(8 + Name.Length + Description.Length, 4)];
         buffer.WriteUInt16BigEndian(_index, 0);
         buffer.WriteUInt16BigEndian((ushort)Name.Length, 2);
         buffer.WriteUInt16BigEndian((ushort)Description.Length, 4);

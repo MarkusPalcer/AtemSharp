@@ -1,5 +1,5 @@
 using AtemSharp.Commands.DownstreamKey;
-using AtemSharp.State;
+using AtemSharp.State.Video.DownstreamKeyer;
 
 namespace AtemSharp.Tests.Commands.DownstreamKey;
 

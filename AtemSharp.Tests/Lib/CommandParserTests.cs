@@ -1,7 +1,7 @@
-using AtemSharp.Lib;
 using AtemSharp.Commands;
 using AtemSharp.Commands.DeviceProfile;
-using AtemSharp.Enums;
+using AtemSharp.Lib;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Lib;
 

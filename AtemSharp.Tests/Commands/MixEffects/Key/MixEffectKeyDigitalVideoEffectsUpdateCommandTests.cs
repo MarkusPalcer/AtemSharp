@@ -1,5 +1,5 @@
 using AtemSharp.Commands.MixEffects.Key;
-using AtemSharp.Enums;
+using AtemSharp.State.Border;
 using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;

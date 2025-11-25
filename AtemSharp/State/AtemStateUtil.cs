@@ -21,6 +21,16 @@ public static class AtemStateUtil
         return result;
     }
 
+    public static void ExpandToFit<T>(this IList<T> self, uint id) where T : ArrayItem, new()
+    {
+        while (self.Count <= id)
+        {
+            var newItem = new T();
+            newItem.SetId(self.Count);
+            self.Add(newItem);
+        }
+    }
+
     public static FairlightAudioState GetFairlight(this AtemState state)
         => state.Audio as FairlightAudioState ?? throw new InvalidOperationException("Fairlight audio state is not available");
 

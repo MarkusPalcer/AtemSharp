@@ -28,9 +28,9 @@ public class FairlightMixerSourceEqualizerBandUpdateCommandTests : DeserializedC
         Assert.That(actualCommand.SourceId, Is.EqualTo(expectedData.SourceId));
         Assert.That(actualCommand.BandIndex, Is.EqualTo(expectedData.Band));
         Assert.That(actualCommand.Enabled, Is.EqualTo(expectedData.BandEnabled));
-        Assert.That(actualCommand.SupportedShapes, Is.EquivalentTo(AtemUtil.GetComponentsLegacy(expectedData.SupportedShapes)));
+        Assert.That(actualCommand.SupportedShapes, Is.EquivalentTo(DeserializationExtensions.GetComponentsLegacy(expectedData.SupportedShapes)));
         Assert.That(actualCommand.Shape, Is.EqualTo(expectedData.Shape));
-        Assert.That(actualCommand.SupportedFrequencyRanges, Is.EquivalentTo(AtemUtil.GetComponentsLegacy(expectedData.SupportedFrequencyRanges)));
+        Assert.That(actualCommand.SupportedFrequencyRanges, Is.EquivalentTo(DeserializationExtensions.GetComponentsLegacy(expectedData.SupportedFrequencyRanges)));
         Assert.That(actualCommand.FrequencyRange, Is.EqualTo(expectedData.FrequencyRange));
         Assert.That(actualCommand.Frequency, Is.EqualTo(expectedData.Frequency));
         Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));

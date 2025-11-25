@@ -1,9 +1,10 @@
-using AtemSharp.Enums.Fairlight;
+using AtemSharp.State.Audio.Fairlight;
 using FairlightMixerSourceCommand = AtemSharp.Commands.Fairlight.Source.FairlightMixerSourceCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
-public class FairlightMixerSourceCommandTests : SerializedCommandTestBase<FairlightMixerSourceCommand, FairlightMixerSourceCommandTests.CommandData>
+public class FairlightMixerSourceCommandTests : SerializedCommandTestBase<FairlightMixerSourceCommand,
+    FairlightMixerSourceCommandTests.CommandData>
 {
     protected override Range[] GetFloatingPointByteRanges()
         =>
@@ -17,7 +18,7 @@ public class FairlightMixerSourceCommandTests : SerializedCommandTestBase<Fairli
         ];
 
 
-    public class CommandData:CommandDataBase
+    public class CommandData : CommandDataBase
     {
         public ushort Index { get; set; }
         public string SourceId { get; set; } = string.Empty;

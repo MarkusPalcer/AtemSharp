@@ -1,5 +1,5 @@
 using AtemSharp.Commands.SuperSource;
-using AtemSharp.State;
+using AtemSharp.State.Video.SuperSource;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
@@ -25,7 +25,7 @@ public class SuperSourcePropertiesV8CommandTests : SerializedCommandTestBase<Sup
 
     protected override SuperSourcePropertiesV8Command CreateSut(TestCaseData testCase)
     {
-        return new SuperSourcePropertiesV8Command(new AtemSharp.State.SuperSource()
+        return new SuperSourcePropertiesV8Command(new AtemSharp.State.Video.SuperSource.SuperSource()
         {
             Id = testCase.Command.SSrcId,
             FillSource = testCase.Command.ArtFillSource,

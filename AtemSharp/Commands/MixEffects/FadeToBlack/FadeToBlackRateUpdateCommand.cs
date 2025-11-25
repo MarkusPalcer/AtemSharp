@@ -12,7 +12,6 @@ public partial class FadeToBlackRateUpdateCommand : IDeserializedCommand
     public void ApplyToState(AtemState state)
     {
         var mixEffect = state.Video.MixEffects[MixEffectId];
-        mixEffect.FadeToBlack ??= new FadeToBlackProperties();
         mixEffect.FadeToBlack.Rate = Rate;
         mixEffect.FadeToBlack.IsFullyBlack = false;
         mixEffect.FadeToBlack.InTransition = false;

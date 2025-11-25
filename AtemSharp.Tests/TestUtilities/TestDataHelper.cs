@@ -1,7 +1,7 @@
 using System.Reflection;
+using AtemSharp.State.Info;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using AtemSharp.Enums;
 
 namespace AtemSharp.Tests.TestUtilities;
 
@@ -25,13 +25,13 @@ public static class TestDataHelper
     {
         var assembly = Assembly.GetExecutingAssembly();
         var resourceName = "AtemSharp.Tests.TestData.libatem-data.json";
-        
+
         using var stream = assembly.GetManifestResourceStream(resourceName);
         if (stream == null)
         {
             throw new FileNotFoundException($"Could not find embedded resource: {resourceName}");
         }
-        
+
         using var reader = new StreamReader(stream);
         var json = reader.ReadToEnd();
         return JsonConvert.DeserializeObject<CommandTestData[]>(json) ?? Array.Empty<CommandTestData>();

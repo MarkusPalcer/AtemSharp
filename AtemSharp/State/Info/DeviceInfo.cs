@@ -1,8 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.State.Audio.Fairlight;
-using AtemSharp.State.Info;
-
-namespace AtemSharp.State;
+namespace AtemSharp.State.Info;
 
 /// <summary>
 /// Device information and capabilities
@@ -29,16 +25,7 @@ public class DeviceInfo
     /// </summary>
     public bool[] Power { get; internal set; } = [];
 
-    // TODO: Unify - you either have the classic or the fairlight mixer, not both
-    /// <summary>
-    /// Audio mixer configuration and capabilities
-    /// </summary>
-    public AudioMixerInfo? AudioMixer { get; internal set; }
-
-    /// <summary>
-    /// Fairlight audio mixer configuration and capabilities
-    /// </summary>
-    public FairlightAudioMixerInfo? FairlightMixer { get; internal set; }
+    public MixerInfo? Mixer { get; internal set; }
 
     /// <summary>
     /// Macro pool configuration and capabilities
@@ -53,22 +40,22 @@ public class DeviceInfo
     /// <summary>
     /// SuperSource configurations and capabilities
     /// </summary>
-    public Dictionary<int, SuperSourceInfo> SuperSources { get; internal set; } = new();
+    public SuperSourceInfo[] SuperSources { get; internal set; } = [];
 
     /// <summary>
     /// Mix effect configurations and capabilities
     /// </summary>
-    public Dictionary<int, MixEffectInfo> MixEffects { get; internal set; } = new();
+    public MixEffectInfo[] MixEffects { get; internal set; } = [];
 
     /// <summary>
     /// Device capabilities and hardware configuration
     /// </summary>
-    public AtemCapabilities? Capabilities { get; internal set; }
+    public AtemCapabilities Capabilities { get; } = new();
 
     /// <summary>
     /// Multiviewer configuration and capabilities
     /// </summary>
-    public MultiViewerInfo MultiViewer { get; internal set; } = new();
+    public MultiViewerInfo MultiViewer { get; } = new();
 
     /// <summary>
     /// Supported video modes for this device

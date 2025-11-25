@@ -1,6 +1,8 @@
 using AtemSharp.Commands.DownstreamKey;
-using AtemSharp.Enums;
 using AtemSharp.State;
+using AtemSharp.State.Info;
+using AtemSharp.State.Video;
+using AtemSharp.State.Video.DownstreamKeyer;
 
 namespace AtemSharp.Tests.Commands.DownstreamKey;
 

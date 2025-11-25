@@ -1,5 +1,5 @@
 using AtemSharp.Commands.DisplayClock;
-using AtemSharp.Enums;
+using AtemSharp.State.DisplayClock;
 using AtemSharp.Tests.TestUtilities;
 using JetBrains.Annotations;
 

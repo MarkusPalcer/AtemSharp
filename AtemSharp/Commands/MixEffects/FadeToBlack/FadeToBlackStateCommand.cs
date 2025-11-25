@@ -16,7 +16,6 @@ public partial class FadeToBlackStateCommand : IDeserializedCommand
     public void ApplyToState(AtemState state)
     {
         var mixEffect = state.Video.MixEffects[MixEffectId];
-        mixEffect.FadeToBlack ??= new FadeToBlackProperties();
         mixEffect.FadeToBlack.IsFullyBlack = IsFullyBlack;
         mixEffect.FadeToBlack.InTransition = InTransition;
         mixEffect.FadeToBlack.RemainingFrames = RemainingFrames;

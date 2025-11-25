@@ -112,12 +112,8 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
     /// </summary>
     private static AtemState CreateStateWithMultiViewer(byte multiViewerId)
     {
-        return new AtemState
-        {
-            Settings = new SettingsState
-            {
-                MultiViewers = AtemStateUtil.CreateArray<MultiViewer>(multiViewerId + 1)
-            }
-        };
+        var state = new AtemState();
+        state.Settings.MultiViewers.ExpandToFit(multiViewerId);
+        return state;
     }
 }

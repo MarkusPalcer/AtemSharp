@@ -1,6 +1,6 @@
-using AtemSharp.Enums.Ports;
 using AtemSharp.Lib;
-using AtemSharp.State;
+using AtemSharp.State.Ports;
+using AtemSharp.State.Video.InputChannel;
 
 namespace AtemSharp.Commands.Inputs;
 
@@ -11,26 +11,22 @@ namespace AtemSharp.Commands.Inputs;
 [BufferSize(32)]
 public partial class InputPropertiesCommand : SerializedCommand
 {
-    [SerializedField(2)]
-    private ushort _inputId;
+    [SerializedField(2)] private ushort _inputId;
 
     /// <summary>
     /// Long descriptive name for the input (max 20 characters)
     /// </summary>
-    [CustomSerialization(0)]
-    private string _longName;
+    [CustomSerialization(0)] private string _longName;
 
     /// <summary>
     /// Short name for the input (max 4 characters)
     /// </summary>
-    [CustomSerialization(1)]
-    private string _shortName;
+    [CustomSerialization(1)] private string _shortName;
 
     /// <summary>
     /// External port type for the input
     /// </summary>
-    [SerializedField(28, 2)]
-    private ExternalPortType _externalPortType;
+    [SerializedField(28, 2)] private ExternalPortType _externalPortType;
 
     public InputPropertiesCommand(InputChannel inputChannel)
     {

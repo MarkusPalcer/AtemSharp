@@ -1,6 +1,7 @@
 using AtemSharp.Commands.MixEffects.Transition;
 using AtemSharp.State;
-using AtemSharp.State.Info;
+using AtemSharp.State.Video;
+using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
@@ -60,9 +61,9 @@ public class TransitionWipeUpdateCommandTests : DeserializedCommandTestBase<Tran
 
         var state = new AtemState
         {
-            Info = new DeviceInfo
+            Info =
             {
-                Capabilities = new AtemCapabilities
+                Capabilities =
                 {
                     MixEffects = 1
                 }

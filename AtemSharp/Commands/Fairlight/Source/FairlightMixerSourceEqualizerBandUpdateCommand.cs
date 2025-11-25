@@ -19,7 +19,7 @@ public partial class FairlightMixerSourceEqualizerBandUpdateCommand : IDeseriali
     private bool _enabled;
 
     [DeserializedField(18)]
-    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.GetComponentsLegacy)}")]
+    [CustomScaling($"{nameof(DeserializationExtensions)}.{nameof(DeserializationExtensions.GetComponentsLegacy)}")]
     [SerializedType(typeof(byte))]
     private byte[] _supportedShapes = [];
 
@@ -27,7 +27,7 @@ public partial class FairlightMixerSourceEqualizerBandUpdateCommand : IDeseriali
     private byte _shape;
 
     [DeserializedField(20)]
-    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.GetComponentsLegacy)}")]
+    [CustomScaling($"{nameof(DeserializationExtensions)}.{nameof(DeserializationExtensions.GetComponentsLegacy)}")]
     [SerializedType(typeof(byte))]
     private byte[] _supportedFrequencyRanges = [];
 

@@ -59,14 +59,14 @@ public class VideoMixerConfigCommandTests
         // Check first mode
         var mode1 = command.SupportedVideoModes[0];
         Assert.That(mode1.Mode, Is.EqualTo(VideoMode.P1080p25));
-        Assert.That(mode1.RequiresReconfig, Is.False);
+        Assert.That(mode1.RequiresReconfiguration, Is.False);
         Assert.That(mode1.MultiviewerModes, Is.EqualTo(new[] { VideoMode.N525i5994169, VideoMode.P720p50 }));
         Assert.That(mode1.DownConvertModes, Is.EqualTo(new[] { VideoMode.N525i5994169 }));
 
         // Check second mode
         var mode2 = command.SupportedVideoModes[1];
         Assert.That(mode2.Mode, Is.EqualTo(VideoMode.N4KHDp2398));
-        Assert.That(mode2.RequiresReconfig, Is.False);
+        Assert.That(mode2.RequiresReconfiguration, Is.False);
         Assert.That(mode2.MultiviewerModes, Is.EqualTo(new[] { VideoMode.N525i5994NTSC }));
         Assert.That(mode2.DownConvertModes, Is.EqualTo(new[] { VideoMode.P625i50PAL, VideoMode.P625i50169 }));
     }
@@ -105,7 +105,7 @@ public class VideoMixerConfigCommandTests
 
         // Assert
         Assert.That(command.SupportedVideoModes.Length, Is.EqualTo(1));
-        Assert.That(command.SupportedVideoModes[0].RequiresReconfig, Is.True);
+        Assert.That(command.SupportedVideoModes[0].RequiresReconfiguration, Is.True);
     }
 
     [Test]
@@ -118,14 +118,14 @@ public class VideoMixerConfigCommandTests
             new SupportedVideoMode
             {
                 Mode = VideoMode.P1080p25,
-                RequiresReconfig = false,
+                RequiresReconfiguration = false,
                 MultiviewerModes = [VideoMode.P720p50, VideoMode.P1080p25],
                 DownConvertModes = [VideoMode.P720p50]
             },
             new SupportedVideoMode
             {
                 Mode = VideoMode.N4KHDp2398,
-                RequiresReconfig = true,
+                RequiresReconfiguration = true,
                 MultiviewerModes = [VideoMode.P1080p25],
                 DownConvertModes = [VideoMode.P1080p25, VideoMode.P720p50]
             }

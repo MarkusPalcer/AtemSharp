@@ -1,5 +1,6 @@
 using AtemSharp.State;
 using AtemSharp.State.Audio.ClassicAudio;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
@@ -12,20 +13,17 @@ public partial class AudioMixerConfigCommand : IDeserializedCommand
     /// <summary>
     /// Number of audio inputs available
     /// </summary>
-    [DeserializedField(0)]
-    private byte _inputs;
+    [DeserializedField(0)] private byte _inputs;
 
     /// <summary>
     /// Number of monitor channels available
     /// </summary>
-    [DeserializedField(1)]
-    private byte _monitors;
+    [DeserializedField(1)] private byte _monitors;
 
     /// <summary>
     /// Number of headphone channels available
     /// </summary>
-    [DeserializedField(2)]
-    private byte _headphones;
+    [DeserializedField(2)] private byte _headphones;
 
     /// <summary>
     /// Apply the command's values to the ATEM state
@@ -35,17 +33,14 @@ public partial class AudioMixerConfigCommand : IDeserializedCommand
     public void ApplyToState(AtemState state)
     {
         // Update device info audio mixer configuration
-        state.Info.AudioMixer = new AudioMixerInfo
+        state.Info.Mixer = new AudioMixerInfo
         {
             Inputs = Inputs,
             Monitors = Monitors,
             Headphones = Headphones
         };
 
-        // Initialize audio state with the received configuration
-        state.Audio = new ClassicAudioState
-        {
-            Channels = new Dictionary<int, ClassicAudioChannel>()
-        };
+        // Initialize audio state
+        state.Audio = new ClassicAudioState();
     }
 }

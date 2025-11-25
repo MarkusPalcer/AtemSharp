@@ -1,11 +1,12 @@
-using AtemSharp.Enums;
 using AtemSharp.Lib;
+using AtemSharp.State.Info;
+using AtemSharp.State.Video.SuperSource;
 
 namespace AtemSharp.Commands.SuperSource;
 
 [Command("CSBP")]
 [BufferSize(24)]
-public partial class SuperSourceBoxParametersCommand(State.SuperSourceBox box) : SerializedCommand
+public partial class SuperSourceBoxParametersCommand(SuperSourceBox box) : SerializedCommand
 {
     private readonly byte _superSourceId = box.SuperSourceId;
     private readonly byte _boxId = box.Id;

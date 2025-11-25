@@ -1,6 +1,6 @@
 using AtemSharp.Commands.DisplayClock;
-using AtemSharp.Enums;
 using AtemSharp.State;
+using AtemSharp.State.DisplayClock;
 
 namespace AtemSharp.Tests.Commands.DisplayClock;
 
@@ -41,9 +41,9 @@ public class DisplayClockPropertiesSetCommandTests : SerializedCommandTestBase<D
     /// <summary>
     /// Creates an AtemState with a valid display clock containing default values
     /// </summary>
-    private static AtemSharp.State.DisplayClock CreateStateWithDisplayClock()
+    private static AtemSharp.State.DisplayClock.DisplayClock CreateStateWithDisplayClock()
     {
-        return new AtemSharp.State.DisplayClock
+        return new AtemSharp.State.DisplayClock.DisplayClock
         {
             Enabled = false,
             Size = 0,
@@ -134,7 +134,7 @@ public class DisplayClockPropertiesSetCommandTests : SerializedCommandTestBase<D
     protected override DisplayClockPropertiesSetCommand CreateSut(TestCaseData testCase)
     {
         // Create a new state with default display clock values
-        var state = new AtemSharp.State.DisplayClock
+        var state = new AtemSharp.State.DisplayClock.DisplayClock
         {
             Enabled = false,
             Size = 0,

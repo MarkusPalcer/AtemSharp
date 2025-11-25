@@ -1,6 +1,5 @@
 using AtemSharp.Commands.Media;
-using AtemSharp.Enums;
-using AtemSharp.State;
+using AtemSharp.State.Media;
 
 namespace AtemSharp.Tests.Commands.Media;
 

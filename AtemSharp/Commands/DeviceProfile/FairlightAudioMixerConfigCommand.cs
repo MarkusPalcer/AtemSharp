@@ -1,5 +1,6 @@
 using AtemSharp.State;
 using AtemSharp.State.Audio.Fairlight;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
@@ -29,7 +30,7 @@ public partial class FairlightAudioMixerConfigCommand : IDeserializedCommand
     public void ApplyToState(AtemState state)
     {
         // Update device info fairlight mixer configuration
-        state.Info.FairlightMixer = new FairlightAudioMixerInfo
+        state.Info.Mixer = new FairlightAudioMixerInfo
         {
             Inputs = Inputs,
             Monitors = Monitors

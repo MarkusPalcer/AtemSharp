@@ -1,6 +1,6 @@
 using System.Reflection;
 using AtemSharp.Commands;
-using AtemSharp.Enums;
+using AtemSharp.State.Info;
 using AtemSharp.Tests.TestUtilities;
 using JetBrains.Annotations;
 using Newtonsoft.Json;

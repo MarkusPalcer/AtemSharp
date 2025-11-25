@@ -1,6 +1,7 @@
 using AtemSharp.Commands.SuperSource;
-using AtemSharp.Enums;
-using AtemSharp.State;
+using AtemSharp.State.Border;
+using AtemSharp.State.Info;
+using AtemSharp.State.Video.SuperSource;
 using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
@@ -48,7 +49,7 @@ public class SuperSourcePropertiesCommandTests : SerializedCommandTestBase<Super
 
     protected override SuperSourcePropertiesCommand CreateSut(TestCaseData testCase)
     {
-        return new SuperSourcePropertiesCommand(new AtemSharp.State.SuperSource
+        return new SuperSourcePropertiesCommand(new AtemSharp.State.Video.SuperSource.SuperSource
         {
             FillSource = testCase.Command.ArtFillSource,
             CutSource = testCase.Command.ArtCutSource,

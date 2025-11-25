@@ -20,13 +20,8 @@ public class MultiViewerVuOpacityUpdateCommandTests : DeserializedCommandTestBas
         const int multiViewerId = 1;
         const int opacity = 85;
 
-        var state = new AtemState
-        {
-            Settings =
-            {
-                MultiViewers = AtemStateUtil.CreateArray<MultiViewer>(multiViewerId + 1)
-            }
-        };
+        var state = new AtemState();
+        state.Settings.MultiViewers.ExpandToFit(multiViewerId);
 
         var command = new MultiViewerVuOpacityUpdateCommand
         {

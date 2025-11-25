@@ -1,5 +1,7 @@
 using AtemSharp.Commands.DeviceProfile;
 using AtemSharp.State;
+using AtemSharp.State.Info;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
@@ -67,7 +69,7 @@ public class MacroPoolConfigCommandTests : DeserializedCommandTestBase<MacroPool
     {
         // Arrange
         var state = new AtemState();
-        state.Info.AudioMixer = new AudioMixerInfo
+        state.Info.Mixer = new AudioMixerInfo
         {
             Inputs = 20,
             Monitors = 2,
@@ -84,9 +86,9 @@ public class MacroPoolConfigCommandTests : DeserializedCommandTestBase<MacroPool
         Assert.That(state.Info.MacroPool.MacroCount, Is.EqualTo(213));
 
         // Verify other device info is preserved
-        Assert.That(state.Info.AudioMixer, Is.Not.Null);
-        Assert.That(state.Info.AudioMixer.Inputs, Is.EqualTo(20));
-        Assert.That(state.Info.AudioMixer.Monitors, Is.EqualTo(2));
-        Assert.That(state.Info.AudioMixer.Headphones, Is.EqualTo(1));
+        var mixer = state.Info.Mixer.As<AudioMixerInfo>();
+        Assert.That(mixer.Inputs, Is.EqualTo(20));
+        Assert.That(mixer.Monitors, Is.EqualTo(2));
+        Assert.That(mixer.Headphones, Is.EqualTo(1));
     }
 }

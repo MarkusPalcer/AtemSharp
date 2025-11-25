@@ -1,13 +1,14 @@
 using AtemSharp.Commands.DeviceProfile;
 using AtemSharp.State;
-using AtemSharp.State.Audio.ClassicAudio;
 using AtemSharp.State.Audio.Fairlight;
+using AtemSharp.State.Info;
 using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
 [TestFixture]
-public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase<FairlightAudioMixerConfigCommand, FairlightAudioMixerConfigCommandTests.CommandData>
+public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase<FairlightAudioMixerConfigCommand,
+    FairlightAudioMixerConfigCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -15,7 +16,8 @@ public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase
         public byte Monitors { get; set; }
     }
 
-    protected override void CompareCommandProperties(FairlightAudioMixerConfigCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(FairlightAudioMixerConfigCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
         var failures = new List<string>();
 
@@ -52,41 +54,11 @@ public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase
         command.ApplyToState(state);
 
         // Assert
-        Assert.That(state.Info.FairlightMixer, Is.Not.Null);
-        Assert.That(state.Info.FairlightMixer.Inputs, Is.EqualTo(24));
-        Assert.That(state.Info.FairlightMixer.Monitors, Is.EqualTo(4));
+        var mixer = state.Info.Mixer.As<FairlightAudioMixerInfo>();
+        Assert.That(mixer.Inputs, Is.EqualTo(24));
+        Assert.That(mixer.Monitors, Is.EqualTo(4));
 
-        Assert.That(state.Audio.As<FairlightAudioState>(), Is.Not.Null);
         Assert.That(state.Audio.As<FairlightAudioState>().Inputs, Is.Not.Null);
-    }
-
-    [Test]
-    public void ApplyToState_ShouldNotAffectExistingClassicAudioState()
-    {
-        // Arrange
-        var state = new AtemState
-        {
-            Audio = new ClassicAudioState
-            {
-                Channels = new Dictionary<int, ClassicAudioChannel>
-                {
-                    { 1, new ClassicAudioChannel() }
-                }
-            }
-        };
-
-        var command = new FairlightAudioMixerConfigCommand
-        {
-            Inputs = 24,
-            Monitors = 4
-        };
-
-        // Act
-        command.ApplyToState(state);
-
-        // Fairlight state should be initialized
-        Assert.That(state.Audio, Is.InstanceOf<FairlightAudioState>());
-        Assert.That(state.Info.FairlightMixer, Is.Not.Null);
     }
 
     [Test]
@@ -102,8 +74,9 @@ public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase
         command2.ApplyToState(state);
 
         // Assert - Should have the latest values
-        Assert.That(state.Info.FairlightMixer?.Inputs, Is.EqualTo(24));
-        Assert.That(state.Info.FairlightMixer?.Monitors, Is.EqualTo(4));
+        var mixer = state.Info.Mixer.As<FairlightAudioMixerInfo>();
+        Assert.That(mixer.Inputs, Is.EqualTo(24));
+        Assert.That(mixer.Monitors, Is.EqualTo(4));
         Assert.That(state.Audio.As<FairlightAudioState>(), Is.Not.Null);
     }
 }

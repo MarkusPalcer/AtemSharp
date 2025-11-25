@@ -1,6 +1,6 @@
 using AtemSharp.Commands.Inputs;
-using AtemSharp.Enums.Ports;
-using AtemSharp.State;
+using AtemSharp.State.Ports;
+using AtemSharp.State.Video.InputChannel;
 
 namespace AtemSharp.Tests.Commands.Inputs;
 
@@ -19,72 +19,17 @@ public class InputPropertiesCommandTests : SerializedCommandTestBase<InputProper
     protected override InputPropertiesCommand CreateSut(TestCaseData testCase)
     {
         // Create state with the required input channel
-        var state = CreateInput(testCase.Command.Id,
-            testCase.Command.LongName,
-            testCase.Command.ShortName,
-            testCase.Command.ExternalPortType);
 
         // Create command with the input ID
-        var command = new InputPropertiesCommand(state);
-
-        // Set the properties from test data
-        command.LongName = testCase.Command.LongName;
-        command.ShortName = testCase.Command.ShortName;
-        command.ExternalPortType = testCase.Command.ExternalPortType;
+        var command = new InputPropertiesCommand(new InputChannel
+        {
+            InputId = testCase.Command.Id,
+            LongName = testCase.Command.LongName,
+            ShortName = testCase.Command.ShortName,
+            ExternalPortType = testCase.Command.ExternalPortType
+        });
 
         return command;
-    }
-
-    /// <summary>
-    /// Creates an AtemState with a valid input channel at the specified index
-    /// </summary>
-    private static InputChannel CreateInput(ushort inputId, string longName = "", string shortName = "", ExternalPortType externalPortType = ExternalPortType.Unknown)
-    {
-        return new InputChannel
-        {
-            InputId = inputId,
-            LongName = longName,
-            ShortName = shortName,
-            ExternalPortType = externalPortType
-        };
-    }
-
-    [Test]
-    public void Constructor_WithEmptyState_InitializesWithDefaults()
-    {
-        // Arrange
-        const int inputId = 1;
-
-        // Act
-        var command = new InputPropertiesCommand(CreateInput(inputId));
-
-        // Assert
-        Assert.That(command.InputId, Is.EqualTo(inputId));
-        Assert.That(command.LongName, Is.EqualTo(string.Empty));
-        Assert.That(command.ShortName, Is.EqualTo(string.Empty));
-        Assert.That(command.ExternalPortType, Is.EqualTo(ExternalPortType.Unknown));
-        Assert.That(command.Flag, Is.EqualTo(0), "No");
-    }
-
-    [Test]
-    public void Constructor_WithExistingState_InitializesFromState()
-    {
-        // Arrange
-        const int inputId = 2;
-        const string longName = "Camera 1";
-        const string shortName = "CAM1";
-        const ExternalPortType externalPortType = ExternalPortType.HDMI;
-        var state = CreateInput(inputId, longName, shortName, externalPortType);
-
-        // Act
-        var command = new InputPropertiesCommand(state);
-
-        // Assert
-        Assert.That(command.InputId, Is.EqualTo(inputId));
-        Assert.That(command.LongName, Is.EqualTo(longName));
-        Assert.That(command.ShortName, Is.EqualTo(shortName));
-        Assert.That(command.ExternalPortType, Is.EqualTo(externalPortType));
-        Assert.That(command.Flag, Is.EqualTo(0), "Flag should not be set when initializing from existing state");
     }
 
     [Test]
@@ -92,7 +37,13 @@ public class InputPropertiesCommandTests : SerializedCommandTestBase<InputProper
     {
         // Arrange
         const int inputId = 0;
-        var state = CreateInput(inputId, "Original", "ORIG", ExternalPortType.SDI);
+        var state = new InputChannel
+        {
+            InputId = inputId,
+            LongName = "Original",
+            ShortName = "ORIG",
+            ExternalPortType = ExternalPortType.SDI
+        };
         var command = new InputPropertiesCommand(state);
 
         // Reset flag after constructor
@@ -111,7 +62,13 @@ public class InputPropertiesCommandTests : SerializedCommandTestBase<InputProper
     {
         // Arrange
         const int inputId = 0;
-        var state = CreateInput(inputId, "Original", "ORIG", ExternalPortType.SDI);
+        var state = new InputChannel
+        {
+            InputId = inputId,
+            LongName = "Original",
+            ShortName = "ORIG",
+            ExternalPortType = ExternalPortType.SDI
+        };
         var command = new InputPropertiesCommand(state);
 
         // Reset flag after constructor
@@ -130,7 +87,13 @@ public class InputPropertiesCommandTests : SerializedCommandTestBase<InputProper
     {
         // Arrange
         const int inputId = 0;
-        var state = CreateInput(inputId, "Original", "ORIG", ExternalPortType.SDI);
+        var state = new InputChannel
+        {
+            InputId = inputId,
+            LongName = "Original",
+            ShortName = "ORIG",
+            ExternalPortType = ExternalPortType.SDI
+        };
         var command = new InputPropertiesCommand(state);
 
         // Reset flag after constructor
@@ -149,7 +112,13 @@ public class InputPropertiesCommandTests : SerializedCommandTestBase<InputProper
     {
         // Arrange
         const int inputId = 0;
-        var state = CreateInput(inputId);
+        var state = new InputChannel
+        {
+            InputId = inputId,
+            LongName = "",
+            ShortName = "",
+            ExternalPortType = ExternalPortType.Unknown
+        };
         var command = new InputPropertiesCommand(state);
 
         // Reset flag after constructor

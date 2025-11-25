@@ -1,4 +1,4 @@
-namespace AtemSharp.State;
+namespace AtemSharp.State.Info;
 
 /// <summary>
 /// Media pool configuration and capabilities

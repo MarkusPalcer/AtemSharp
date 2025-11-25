@@ -22,19 +22,12 @@ public class ColorGeneratorCommandTests : SerializedCommandTestBase<ColorGenerat
 
     protected override ColorGeneratorCommand CreateSut(TestCaseData testCase)
     {
-        var state = new AtemState
-        {
-            ColorGenerators =
+        return new ColorGeneratorCommand(new ColorGeneratorState()
             {
-                [testCase.Command.Index] = new()
-            }
-        };
-
-        return new ColorGeneratorCommand(state, testCase.Command.Index)
-        {
-            Hue = testCase.Command.Hue,
-            Saturation = testCase.Command.Saturation,
-            Luma = testCase.Command.Luma
-        };
+                Id = testCase.Command.Index,
+                Hue = testCase.Command.Hue,
+                Saturation = testCase.Command.Saturation,
+                Luma = testCase.Command.Luma,
+            });
     }
 }

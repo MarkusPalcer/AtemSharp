@@ -1,11 +1,11 @@
-using AtemSharp.Enums;
-using AtemSharp.State;
+using AtemSharp.State.Info;
+using AtemSharp.State.Video.SuperSource;
 
 namespace AtemSharp.Commands.SuperSource;
 
 [Command("CSSc", ProtocolVersion.V8_0)]
 [BufferSize(16)]
-public partial class SuperSourcePropertiesV8Command(State.SuperSource source) : SerializedCommand
+public partial class SuperSourcePropertiesV8Command(State.Video.SuperSource.SuperSource source) : SerializedCommand
 {
     [SerializedField(1)] [NoProperty] private readonly byte _superSourceId = source.Id;
     [SerializedField(2,0)] private ushort _artFillSource = source.FillSource;

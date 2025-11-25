@@ -15,7 +15,7 @@ public class SupportedVideoMode
     /// <summary>
     /// Whether this mode requires device reconfiguration to activate
     /// </summary>
-    public bool RequiresReconfig { get; internal set; }
+    public bool RequiresReconfiguration { get; internal set; }
 
     /// <summary>
     /// Video modes supported for multiviewer output when in this mode

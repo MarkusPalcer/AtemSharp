@@ -1,5 +1,5 @@
 using AtemSharp.Lib;
-using AtemSharp.Enums;
+using AtemSharp.State.Info;
 using AtemSharp.Tests.Lib.TestCommands;
 
 namespace AtemSharp.Tests.Lib;

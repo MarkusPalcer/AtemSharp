@@ -1,5 +1,7 @@
 using System.Drawing;
 using AtemSharp.State;
+using AtemSharp.State.Border;
+using AtemSharp.State.Video;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 

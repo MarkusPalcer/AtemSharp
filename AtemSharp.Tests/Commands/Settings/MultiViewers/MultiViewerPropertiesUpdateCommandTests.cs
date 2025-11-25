@@ -46,17 +46,8 @@ public class MultiViewerPropertiesUpdateCommandTests : DeserializedCommandTestBa
     public void ApplyToState_ShouldUpdateMultiViewerProperties()
     {
         // Arrange
-        var state = new AtemState
-        {
-            Settings =
-            {
-                MultiViewers =
-                [
-                    new MultiViewer { Id = 0 },
-                    new MultiViewer { Id = 1 }
-                ]
-            }
-        };
+        var state = new AtemState();
+        state.Settings.MultiViewers.ExpandToFit(1);
 
         var command = new MultiViewerPropertiesUpdateCommand
         {

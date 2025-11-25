@@ -1,5 +1,5 @@
 using AtemSharp.Commands.MixEffects.FadeToBlack;
-using AtemSharp.State;
+using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects.FadeToBlack;
 
@@ -13,15 +13,13 @@ public class FadeToBlackRateCommandTests : SerializedCommandTestBase<FadeToBlack
 
     protected override FadeToBlackRateCommand CreateSut(TestCaseData testCase)
     {
-        var mixEffect = new MixEffect
+        return new FadeToBlackRateCommand(new MixEffect
         {
             Id = testCase.Command.Index,
-            FadeToBlack = new FadeToBlackProperties()
-        };
-
-        return new FadeToBlackRateCommand(mixEffect)
-        {
-            Rate = testCase.Command.Rate
-        };
+            FadeToBlack =
+            {
+                Rate = testCase.Command.Rate,
+            }
+        });
     }
 }

@@ -1,10 +1,10 @@
 using AtemSharp.Commands.Fairlight;
-using AtemSharp.Enums.Fairlight;
 using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Tests.Commands.Fairlight;
 
-public class FairlightMixerInputV8CommandTests : SerializedCommandTestBase<FairlightMixerInputV8Command, FairlightMixerInputV8CommandTests.CommandData>
+public class FairlightMixerInputV8CommandTests : SerializedCommandTestBase<FairlightMixerInputV8Command,
+    FairlightMixerInputV8CommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -18,11 +18,8 @@ public class FairlightMixerInputV8CommandTests : SerializedCommandTestBase<Fairl
         var input = new FairlightAudioInput
         {
             Id = testCase.Command.Index,
-            Properties =
-            {
-                ActiveConfiguration = testCase.Command.ActiveConfiguration,
-                ActiveInputLevel = testCase.Command.ActiveInputLevel
-            }
+            ActiveConfiguration = testCase.Command.ActiveConfiguration,
+            ActiveInputLevel = testCase.Command.ActiveInputLevel
         };
 
         return new FairlightMixerInputV8Command(input);

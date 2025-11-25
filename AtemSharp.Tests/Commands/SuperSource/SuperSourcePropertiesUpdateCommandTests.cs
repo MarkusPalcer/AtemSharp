@@ -1,6 +1,7 @@
 using AtemSharp.Commands.SuperSource;
-using AtemSharp.Enums;
-using AtemSharp.State;
+using AtemSharp.State.Border;
+using AtemSharp.State.Info;
+using AtemSharp.State.Video.SuperSource;
 using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.SuperSource;

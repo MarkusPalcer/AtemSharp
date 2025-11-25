@@ -14,14 +14,14 @@ public partial class AudioMixerMasterCommand : SerializedCommand
     /// Audio gain in decibels
     /// </summary>
     [SerializedField(2,0)]
-    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.DecibelToUInt16)}")]
+    [CustomScaling($"{nameof(SerializationExtensions)}.{nameof(SerializationExtensions.DecibelToUInt16)}")]
     private double _gain;
 
     /// <summary>
     /// Audio balance
     /// </summary>
     [SerializedField(4,1)]
-    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.BalanceToInt16)}")]
+    [CustomScaling($"{nameof(SerializationExtensions)}.{nameof(SerializationExtensions.BalanceToInt16)}")]
     [SerializedType(typeof(short))]
     private double _balance;
 

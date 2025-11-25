@@ -1,5 +1,5 @@
 using AtemSharp.Lib;
-using AtemSharp.State;
+using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Commands.MixEffects.FadeToBlack;
 

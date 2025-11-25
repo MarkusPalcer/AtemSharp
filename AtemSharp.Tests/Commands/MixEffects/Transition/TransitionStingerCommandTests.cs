@@ -1,5 +1,5 @@
 using AtemSharp.Commands.MixEffects.Transition;
-using AtemSharp.State;
+using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 

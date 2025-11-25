@@ -1,6 +1,8 @@
 using AtemSharp.Commands.MixEffects.Transition;
-using AtemSharp.Enums;
 using AtemSharp.State;
+using AtemSharp.State.Video;
+using AtemSharp.State.Video.MixEffect;
+using AtemSharp.State.Video.MixEffect.Transition;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 

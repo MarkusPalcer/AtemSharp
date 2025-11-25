@@ -1,6 +1,8 @@
 using AtemSharp.Commands.MixEffects.Key;
 using AtemSharp.State;
-using AtemSharp.State.Info;
+using AtemSharp.State.Video;
+using AtemSharp.State.Video.MixEffect;
+using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
@@ -83,6 +85,7 @@ public class MixEffectKeyAdvancedChromaPropertiesCommandTests : SerializedComman
         return command;
     }
 
+    // TODO: Simplify
     /// <summary>
     /// Creates an AtemState with a valid mix effect and upstream keyer with advanced chroma settings at the specified indices
     /// </summary>
@@ -95,32 +98,6 @@ public class MixEffectKeyAdvancedChromaPropertiesCommandTests : SerializedComman
                                                                         double green = 0.0, double blue = 0.0)
     {
         var mixEffects = new MixEffect[mixEffectId + 1];
-        var upstreamKeyers = new Dictionary<int, UpstreamKeyer>();
-
-        upstreamKeyers[keyerId] = new UpstreamKeyer
-        {
-            Id = keyerId,
-            OnAir = false,
-            FillSource = 1000,
-            CutSource = 1001,
-            AdvancedChromaSettings =
-            {
-                Properties =
-                {
-                    ForegroundLevel = foregroundLevel,
-                    BackgroundLevel = backgroundLevel,
-                    KeyEdge = keyEdge,
-                    SpillSuppression = spillSuppression,
-                    FlareSuppression = flareSuppression,
-                    Brightness = brightness,
-                    Contrast = contrast,
-                    Saturation = saturation,
-                    Red = red,
-                    Green = green,
-                    Blue = blue
-                }
-            }
-        };
 
         mixEffects[mixEffectId] = new MixEffect
         {
@@ -128,13 +105,39 @@ public class MixEffectKeyAdvancedChromaPropertiesCommandTests : SerializedComman
             ProgramInput = 1000,
             PreviewInput = 2001,
             TransitionPreview = false,
-            TransitionPosition = new TransitionPosition
+            TransitionPosition =
             {
                 InTransition = false,
                 HandlePosition = 0,
                 RemainingFrames = 0
             },
-            UpstreamKeyers = upstreamKeyers
+            UpstreamKeyers =
+            {
+                [keyerId] = new UpstreamKeyer
+                {
+                    Id = keyerId,
+                    OnAir = false,
+                    FillSource = 1000,
+                    CutSource = 1001,
+                    AdvancedChromaSettings =
+                    {
+                        Properties =
+                        {
+                            ForegroundLevel = foregroundLevel,
+                            BackgroundLevel = backgroundLevel,
+                            KeyEdge = keyEdge,
+                            SpillSuppression = spillSuppression,
+                            FlareSuppression = flareSuppression,
+                            Brightness = brightness,
+                            Contrast = contrast,
+                            Saturation = saturation,
+                            Red = red,
+                            Green = green,
+                            Blue = blue
+                        }
+                    }
+                }
+            }
         };
 
         return new AtemState
@@ -143,9 +146,9 @@ public class MixEffectKeyAdvancedChromaPropertiesCommandTests : SerializedComman
             {
                 MixEffects = mixEffects
             },
-            Info = new DeviceInfo
+            Info =
             {
-                Capabilities = new AtemCapabilities
+                Capabilities =
                 {
                     MixEffects = mixEffectId + 1
                 }

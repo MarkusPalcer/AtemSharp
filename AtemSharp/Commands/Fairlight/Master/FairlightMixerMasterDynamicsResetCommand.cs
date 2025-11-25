@@ -1,5 +1,5 @@
-using AtemSharp.Enums;
 using AtemSharp.Lib;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.Fairlight.Master;
 

@@ -20,7 +20,7 @@ public partial class AudioMixerMonitorCommand : SerializedCommand
     /// Gain in decibel
     /// </summary>
 	[SerializedField(2, 1)]
-    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.DecibelToUInt16)}")]
+    [CustomScaling($"{nameof(SerializationExtensions)}.{nameof(SerializationExtensions.DecibelToUInt16)}")]
     private double _gain;
 
     /// <summary>

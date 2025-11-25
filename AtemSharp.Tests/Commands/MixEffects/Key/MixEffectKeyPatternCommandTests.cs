@@ -1,6 +1,6 @@
 using System.Drawing;
 using AtemSharp.Commands.MixEffects.Key;
-using AtemSharp.State;
+using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 

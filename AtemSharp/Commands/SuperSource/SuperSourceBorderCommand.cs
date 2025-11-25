@@ -1,11 +1,12 @@
-using AtemSharp.Enums;
 using AtemSharp.Lib;
+using AtemSharp.State.Border;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.SuperSource;
 
 [Command("CSBd", ProtocolVersion.V8_0)]
 [BufferSize(24)]
-public partial class SuperSourceBorderCommand(State.SuperSource superSource) : SerializedCommand
+public partial class SuperSourceBorderCommand(State.Video.SuperSource.SuperSource superSource) : SerializedCommand
 {
     [SerializedField(2)] [NoProperty] private readonly byte _superSourceId = superSource.Id;
     [SerializedField(3, 0)] private bool _enabled = superSource.Border.Enabled;

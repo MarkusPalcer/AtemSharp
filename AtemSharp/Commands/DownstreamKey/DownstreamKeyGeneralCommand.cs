@@ -1,4 +1,4 @@
-using AtemSharp.State;
+using AtemSharp.State.Video.DownstreamKeyer;
 
 namespace AtemSharp.Commands.DownstreamKey;
 
@@ -45,7 +45,7 @@ public partial class DownstreamKeyGeneralCommand : SerializedCommand
     public DownstreamKeyGeneralCommand(DownstreamKeyer dsk)
     {
         DownstreamKeyerId = dsk.Id;
-        var dskProps = dsk.Properties!;
+        var dskProps = dsk.Properties;
 
         // Initialize from current state (direct field access = no flags set)
         _preMultiply = dskProps.PreMultiply;

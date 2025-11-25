@@ -46,7 +46,7 @@ public class VideoMixerConfigCommand : IDeserializedCommand
                 Mode = (VideoMode)mode,
                 MultiviewerModes = ReadVideoModeBitmask(multiviewerModeMask),
                 DownConvertModes = ReadVideoModeBitmask(downConvertModeMask),
-                RequiresReconfig = requiresReconfig
+                RequiresReconfiguration = requiresReconfig
             };
         }
 

@@ -84,6 +84,7 @@ public class AtemProtocol : IAtemProtocol
     public async Task DisconnectAsync()
     {
         await ClearTimers();
+        await (_ackTimerCancellation?.CancelAsync() ?? Task.CompletedTask);
         await CloseSocket();
 
         _receivedPackets = new();
@@ -256,7 +257,17 @@ public class AtemProtocol : IAtemProtocol
 
     private async Task SendPacket(byte[] buffer)
     {
-        await (_socket?.SendAsync(buffer) ?? Task.CompletedTask);
+        try
+        {
+            await (_socket?.SendAsync(buffer) ?? Task.CompletedTask);
+        }
+        catch (ObjectDisposedException)
+        {
+            // NOP
+            // This might happen when disconnecting when a racing condition happens
+            // That causes a last packet to be sent after the socket is closed.
+            // We can ignore this sent packet
+        }
     }
 
     private async Task SendOrQueueAck()

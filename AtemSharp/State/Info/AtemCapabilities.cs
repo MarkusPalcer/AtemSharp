@@ -43,7 +43,6 @@ public class AtemCapabilities
     /// <summary>
     /// Number of Digital Video Effects available
     /// </summary>
-    // ReSharper disable once InconsistentNaming - Domain Specific Acronym
     public int DigitalVideoEffects { get; internal set; }
 
     /// <summary>

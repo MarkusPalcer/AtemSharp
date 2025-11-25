@@ -1,11 +1,12 @@
+using System.Reflection;
+using System.Text;
 using AtemSharp.Commands;
 using AtemSharp.Commands.DeviceProfile;
 using AtemSharp.Commands.MixEffects;
 using AtemSharp.Enums;
 using AtemSharp.Lib;
+using AtemSharp.State.Info;
 using AtemSharp.Tests.TestUtilities;
-using System.Reflection;
-using System.Text;
 
 namespace AtemSharp.Tests;
 

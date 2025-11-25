@@ -1,9 +1,11 @@
 namespace AtemSharp.State;
 
-// TODO: Extract color base class and use that in other places that represent HSL colors (e.g. USK border color)
-public class ColorGeneratorState
+public class ColorGeneratorState : ArrayItem
 {
+    public byte Id { get; internal set; }
     public double Hue { get; internal set; }
     public double Saturation { get; internal set; }
     public double Luma { get; internal set; }
+
+    internal override void SetId(int id) => Id = (byte)id;
 }

@@ -1,5 +1,7 @@
-using AtemSharp.Enums;
 using AtemSharp.State;
+using AtemSharp.State.Border;
+using AtemSharp.State.Info;
+using AtemSharp.State.Video.SuperSource;
 
 namespace AtemSharp.Commands.SuperSource;
 

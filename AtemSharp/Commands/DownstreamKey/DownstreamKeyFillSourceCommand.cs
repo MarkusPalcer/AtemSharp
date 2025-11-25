@@ -1,4 +1,4 @@
-using AtemSharp.State;
+using AtemSharp.State.Video.DownstreamKeyer;
 
 namespace AtemSharp.Commands.DownstreamKey;
 

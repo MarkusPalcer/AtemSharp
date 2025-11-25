@@ -1,6 +1,6 @@
 using AtemSharp.Commands.MixEffects.Key;
-using AtemSharp.Enums;
-using AtemSharp.State;
+using AtemSharp.State.Border;
+using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 

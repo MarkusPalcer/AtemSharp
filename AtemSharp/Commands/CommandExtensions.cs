@@ -1,4 +1,4 @@
-using AtemSharp.Enums;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands;
 
@@ -9,7 +9,7 @@ public static class CommandExtensions
 {
 	private static readonly Dictionary<Type, string?> CommandRawNameCache = new();
 	private static readonly Dictionary<Type, ProtocolVersion?> CommandMinimumVersionCache = new();
-	
+
 	/// <summary>
 	/// Returns the raw name of the command (e.g. "CAMI" for AudioMixerInputCommand)
 	/// or null if the command does not have a CommandAttribute
@@ -22,7 +22,7 @@ public static class CommandExtensions
 	{
 		return GetRawName(command.GetType());
 	}
-	
+
 
 	private static string? GetRawName(Type commandType)
 	{
@@ -32,7 +32,7 @@ public static class CommandExtensions
 		CommandRawNameCache[commandType] = rawName;
 		return rawName;
 	}
-	
+
 	/// <summary>
 	/// Returns the raw name of the command type (e.g. "CAMI" for AudioMixerInputCommand)
 	/// or null if the command does not have a CommandAttribute
@@ -72,5 +72,5 @@ public static class CommandExtensions
 	{
 		return GetMinimumVersion(typeof(TCommand));
 	}
-	
+
 }

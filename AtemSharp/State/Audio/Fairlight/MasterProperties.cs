@@ -8,8 +8,7 @@ public class MasterProperties
     public bool AudioFollowsVideo { get; internal set; }
 
     public double FaderGain { get; internal set; }
-
-    public Dynamics Dynamics { get;  } = new();
-    public MasterEqualizer Equalizer { get;  } = new();
+    public Dynamics Dynamics { get; } = new();
+    public MasterEqualizer Equalizer { get; } = new();
     public bool FollowFadeToBlack { get; internal set; }
 }

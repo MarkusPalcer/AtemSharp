@@ -1,4 +1,4 @@
-namespace AtemSharp.Enums;
+namespace AtemSharp.State.DisplayClock;
 
 /// <summary>
 /// Display clock mode (countdown, countup, or time of day)

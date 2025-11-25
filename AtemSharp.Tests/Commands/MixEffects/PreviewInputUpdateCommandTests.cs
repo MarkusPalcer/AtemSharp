@@ -1,6 +1,7 @@
 using AtemSharp.Commands.MixEffects;
 using AtemSharp.State;
-using AtemSharp.State.Info;
+using AtemSharp.State.Video;
+using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects;
 
@@ -56,7 +57,7 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
             ProgramInput = 1000,
             PreviewInput = previewInput,
             TransitionPreview = false,
-            TransitionPosition = new TransitionPosition
+            TransitionPosition =
             {
                 InTransition = false,
                 HandlePosition = 0,
@@ -66,9 +67,9 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
 
         return new AtemState
         {
-            Info = new DeviceInfo
+            Info =
             {
-                Capabilities = new AtemCapabilities
+                Capabilities =
                 {
                     MixEffects = Math.Max(mixEffectId + 1, 2)
                 }

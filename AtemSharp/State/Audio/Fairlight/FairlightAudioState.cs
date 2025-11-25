@@ -8,6 +8,9 @@ public class FairlightAudioState : AudioState
     /// <summary>
     /// Fairlight audio inputs indexed by input number
     /// </summary>
+    /// <remarks>
+    /// Fairlight input IDs are not array indices but have semantics
+    /// </remarks>
     public Dictionary<int, FairlightAudioInput> Inputs { get; init; } = [];
 
     public MasterProperties Master { get; } = new();

@@ -1,10 +1,10 @@
-using AtemSharp.Enums.Fairlight;
-using AtemSharp.Lib;
+using AtemSharp.State.Audio.Fairlight;
 using FairlightMixerSourceUpdateCommand = AtemSharp.Commands.Fairlight.Source.FairlightMixerSourceUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
-public class FairlightMixerSourceUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerSourceUpdateCommand, FairlightMixerSourceUpdateCommandTests.CommandData>
+public class FairlightMixerSourceUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerSourceUpdateCommand,
+    FairlightMixerSourceUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -26,10 +26,10 @@ public class FairlightMixerSourceUpdateCommandTests : DeserializedCommandTestBas
         public FairlightAudioSourceType SourceType { get; set; }
 
         public int MaxFramesDelay { get; set; }
-
     }
 
-    protected override void CompareCommandProperties(FairlightMixerSourceUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(FairlightMixerSourceUpdateCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
         Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.SourceId.ToString(), Is.EqualTo(expectedData.SourceId));
@@ -44,7 +44,7 @@ public class FairlightMixerSourceUpdateCommandTests : DeserializedCommandTestBas
         Assert.That(actualCommand.Balance, Is.EqualTo(expectedData.Balance).Within(0.1));
         Assert.That(actualCommand.FaderGain, Is.EqualTo(expectedData.FaderGain).Within(0.1));
         Assert.That(actualCommand.MixOption, Is.EqualTo(expectedData.MixOption));
-        Assert.That(AtemUtil.CombineComponents(actualCommand.SupportedMixOptions), Is.EqualTo(expectedData.SupportedMixOptions));
+        Assert.That(CommandTestUtilities.CombineComponents(actualCommand.SupportedMixOptions), Is.EqualTo(expectedData.SupportedMixOptions));
         Assert.That(actualCommand.SourceType, Is.EqualTo(expectedData.SourceType));
         Assert.That(actualCommand.MaxFramesDelay, Is.EqualTo(expectedData.MaxFramesDelay));
     }

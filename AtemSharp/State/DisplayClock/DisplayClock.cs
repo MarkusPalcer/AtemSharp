@@ -1,6 +1,4 @@
-using AtemSharp.Enums;
-
-namespace AtemSharp.State;
+namespace AtemSharp.State.DisplayClock;
 
 /// <summary>
 /// Display clock state container

@@ -1,4 +1,6 @@
 using AtemSharp.State;
+using AtemSharp.State.Info;
+using AtemSharp.State.Media;
 
 namespace AtemSharp.Commands.DeviceProfile;
 

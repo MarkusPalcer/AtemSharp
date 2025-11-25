@@ -1,5 +1,5 @@
 using AtemSharp.Commands.DataTransfer;
-using AtemSharp.Enums;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands.DataTransfer;
 

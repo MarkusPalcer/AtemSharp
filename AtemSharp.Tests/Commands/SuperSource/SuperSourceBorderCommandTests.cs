@@ -1,5 +1,5 @@
 using AtemSharp.Commands.SuperSource;
-using AtemSharp.Enums;
+using AtemSharp.State.Border;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
@@ -35,7 +35,7 @@ public class SuperSourceBorderCommandTests : SerializedCommandTestBase<SuperSour
 
     protected override SuperSourceBorderCommand CreateSut(TestCaseData testCase)
     {
-        return new SuperSourceBorderCommand(new AtemSharp.State.SuperSource()
+        return new SuperSourceBorderCommand(new AtemSharp.State.Video.SuperSource.SuperSource()
         {
             Id = testCase.Command.SSrcId,
             Border =

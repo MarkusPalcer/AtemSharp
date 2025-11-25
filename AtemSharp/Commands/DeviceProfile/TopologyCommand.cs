@@ -1,7 +1,10 @@
-using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Info;
+using AtemSharp.State.Media;
+using AtemSharp.State.Video;
+using AtemSharp.State.Video.DownstreamKeyer;
+using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
@@ -138,30 +141,34 @@ public class TopologyCommand : IDeserializedCommand
     public void ApplyToState(AtemState state)
     {
         // Create capabilities object with all the topology data
-        state.Info.Capabilities = new AtemCapabilities
-        {
-            MixEffects = MixEffects,
-            Sources = Sources,
-            Auxiliaries = Auxiliaries,
-            MixMinusOutputs = MixMinusOutputs, // TODO: What are those?
-            MediaPlayers = MediaPlayers,
-            MultiViewers = Multiviewers,
-            SerialPorts = SerialPorts,
-            MaxHyperdecks = MaxHyperdecks,
-            DigitalVideoEffects = DigitalVideoEffects,
-            Stingers = Stingers,
-            SuperSources = SuperSources,
-            TalkbackChannels = TalkbackChannels,
-            DownstreamKeyers = DownstreamKeyers,
-            CameraControl = CameraControl,
-            AdvancedChromaKeyers = AdvancedChromaKeyers,
-            OnlyConfigurableOutputs = OnlyConfigurableOutputs
-        };
+        state.Info.Capabilities.MixEffects = MixEffects;
+        state.Info.Capabilities.Sources = Sources;
+        state.Info.Capabilities.Auxiliaries = Auxiliaries;
+        state.Info.Capabilities.MixMinusOutputs = MixMinusOutputs; // TODO: What are those?
+        state.Info.Capabilities.MediaPlayers = MediaPlayers;
+        state.Info.Capabilities.MultiViewers = Multiviewers;
+        state.Info.Capabilities.SerialPorts = SerialPorts;
+        state.Info.Capabilities.MaxHyperdecks = MaxHyperdecks;
+        state.Info.Capabilities.DigitalVideoEffects = DigitalVideoEffects;
+        state.Info.Capabilities.Stingers = Stingers;
+        state.Info.Capabilities.SuperSources = SuperSources;
+        state.Info.Capabilities.TalkbackChannels = TalkbackChannels;
+        state.Info.Capabilities.DownstreamKeyers = DownstreamKeyers;
+        state.Info.Capabilities.CameraControl = CameraControl;
+        state.Info.Capabilities.AdvancedChromaKeyers = AdvancedChromaKeyers;
+        state.Info.Capabilities.OnlyConfigurableOutputs = OnlyConfigurableOutputs;
 
+        // Create arrays now that their sizes are known
+        state.Info.MixEffects = AtemStateUtil.CreateArray<MixEffectInfo>(MixEffects);
         state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(MixEffects);
+
         state.Video.Auxiliaries = AtemStateUtil.CreateArray<AuxiliaryOutput>(Auxiliaries);
+
         state.Media.Players = AtemStateUtil.CreateArray<MediaPlayer>(MediaPlayers);
-        state.Video.SuperSources = AtemStateUtil.CreateArray<State.SuperSource>(SuperSources);
+
+        state.Info.SuperSources = new SuperSourceInfo[SuperSources];
+        state.Video.SuperSources = AtemStateUtil.CreateArray<State.Video.SuperSource.SuperSource>(SuperSources);
+
         state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(DownstreamKeyers);
 
         state.Info.MultiViewer.Count = Multiviewers;
@@ -171,6 +178,5 @@ public class TopologyCommand : IDeserializedCommand
             < 0 => -1,
             _ => 0
         };
-        state.Settings.MultiViewers = AtemStateUtil.CreateArray<MultiViewer>(Math.Min(Multiviewers, 0));
     }
 }

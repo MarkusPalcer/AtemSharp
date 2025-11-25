@@ -1,6 +1,7 @@
 using AtemSharp.Commands.MixEffects.Transition;
 using AtemSharp.State;
-using AtemSharp.State.Info;
+using AtemSharp.State.Video;
+using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
@@ -52,9 +53,9 @@ public class TransitionPositionUpdateCommandTests : DeserializedCommandTestBase<
     {
         return new AtemState
         {
-            Info = new DeviceInfo
+            Info =
             {
-                Capabilities = new AtemCapabilities
+                Capabilities =
                 {
                     MixEffects = 1
                 }
@@ -65,8 +66,7 @@ public class TransitionPositionUpdateCommandTests : DeserializedCommandTestBase<
                 [
                     new MixEffect
                     {
-                        Id = 0,
-                        TransitionPosition = new TransitionPosition()
+                        Id = 0
                     }
                 ]
             }

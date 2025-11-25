@@ -1,5 +1,5 @@
 using AtemSharp.Commands.MixEffects.Transition;
-using AtemSharp.State;
+using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
@@ -23,7 +23,7 @@ public class TransitionPositionCommandTests : SerializedCommandTestBase<Transiti
         return new TransitionPositionCommand(new MixEffect
         {
             Id = testCase.Command.Index,
-            TransitionPosition = new TransitionPosition
+            TransitionPosition =
             {
                 HandlePosition = testCase.Command.HandlePosition
             }
@@ -39,7 +39,7 @@ public class TransitionPositionCommandTests : SerializedCommandTestBase<Transiti
         var state = new MixEffect
         {
             Id = mixEffectId,
-            TransitionPosition = new TransitionPosition
+            TransitionPosition =
             {
                 HandlePosition = expectedHandlePosition
             }
@@ -61,7 +61,7 @@ public class TransitionPositionCommandTests : SerializedCommandTestBase<Transiti
         var state = new MixEffect
         {
             Id = 0,
-            TransitionPosition = new TransitionPosition
+            TransitionPosition =
             {
                 HandlePosition = 0
             }

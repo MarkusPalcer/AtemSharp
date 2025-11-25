@@ -1,5 +1,4 @@
 using AtemSharp.Lib;
-using AtemSharp.State;
 using AtemSharp.State.Audio.ClassicAudio;
 
 namespace AtemSharp.Commands.Audio;
@@ -9,55 +8,29 @@ namespace AtemSharp.Commands.Audio;
 /// </summary>
 [Command("CAMI")]
 [BufferSize(12)]
-public partial class AudioMixerInputCommand : SerializedCommand
+public partial class AudioMixerInputCommand(ClassicAudioChannel audioChannel) : SerializedCommand
 {
-    [SerializedField(2)]
-    [NoProperty]
-    private readonly ushort _index;
+    [SerializedField(2)] [NoProperty] private readonly ushort _index = audioChannel.Id;
 
     /// <summary>
     /// Audio mix option
     /// </summary>
-    [SerializedField(4, 0)]
-    private AudioMixOption _mixOption;
+    [SerializedField(4, 0)] private AudioMixOption _mixOption = audioChannel.MixOption;
 
     /// <summary>
     /// Audio gain in decibels
     /// </summary>
-    [SerializedField(6, 1)]
-    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.DecibelToUInt16)}")]
-    private double _gain;
+    [SerializedField(6, 1)] [CustomScaling($"{nameof(SerializationExtensions)}.{nameof(SerializationExtensions.DecibelToUInt16)}")]
+    private double _gain = audioChannel.Gain;
 
     /// <summary>
     /// Audio balance
     /// </summary>
-    [SerializedField(8,2)]
-    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.BalanceToInt16)}")]
-    [SerializedType(typeof(short))]
-    private double _balance;
+    [SerializedField(8, 2)] [CustomScaling($"{nameof(SerializationExtensions)}.{nameof(SerializationExtensions.BalanceToInt16)}")] [SerializedType(typeof(short))]
+    private double _balance = audioChannel.Balance;
 
     /// <summary>
     /// Whether RCA to XLR conversion is enabled
     /// </summary>
-    [SerializedField(10, 3)]
-    private bool _rcaToXlrEnabled;
-
-    public AudioMixerInputCommand(ushort index, AtemState currentState)
-    {
-        _index = index;
-
-        var audio = currentState.GetClassicAudio();
-
-        // Validate audio input exists (like TypeScript update command)
-        if (!audio.Channels.TryGetValue(index, out var audioChannel))
-        {
-            throw new IndexOutOfRangeException("Audio input with index {index} does not exist");
-        }
-
-        // Initialize from current state (direct field access = no flags)
-        _mixOption = audioChannel.MixOption;
-        _gain = audioChannel.Gain;
-        _balance = audioChannel.Balance;
-        _rcaToXlrEnabled = audioChannel.RcaToXlrEnabled;
-    }
+    [SerializedField(10, 3)] private bool _rcaToXlrEnabled = audioChannel.RcaToXlrEnabled;
 }

@@ -1,7 +1,8 @@
 namespace AtemSharp.State.Recording;
 
 [Flags]
-public enum RecordingError : ushort {
+public enum RecordingError : ushort
+{
     NoMedia = 0,
     None = 1 << 1,
     MediaFull = 1 << 2,

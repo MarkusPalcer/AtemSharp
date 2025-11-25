@@ -1,5 +1,4 @@
-using AtemSharp.Lib;
-using AtemSharp.State;
+using AtemSharp.State.Video.DownstreamKeyer;
 
 namespace AtemSharp.Commands.DownstreamKey;
 
@@ -33,7 +32,7 @@ public partial class DownstreamKeyMaskCommand : SerializedCommand
     /// </summary>
     [SerializedField(6,2)]
     [SerializedType(typeof(short))]
-    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.CoordinateToInt16)}")]
+    [ScalingFactor(1000.0)]
     private double _bottom;
 
     /// <summary>
@@ -41,7 +40,7 @@ public partial class DownstreamKeyMaskCommand : SerializedCommand
     /// </summary>
     [SerializedField(8,3)]
     [SerializedType(typeof(short))]
-    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.CoordinateToInt16)}")]
+    [ScalingFactor(1000.0)]
     private double _left;
 
     /// <summary>
@@ -49,13 +48,13 @@ public partial class DownstreamKeyMaskCommand : SerializedCommand
     /// </summary>
     [SerializedField(10,4)]
     [SerializedType(typeof(short))]
-    [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.CoordinateToInt16)}")]
+    [ScalingFactor(1000.0)]
     private double _right;
 
     public DownstreamKeyMaskCommand(DownstreamKeyer dsk)
     {
         DownstreamKeyerId = dsk.Id;
-        var maskProps = dsk.Properties!.Mask;
+        var maskProps = dsk.Properties.Mask;
 
         // Initialize from current state (direct field access = no flags set)
         _enabled = maskProps.Enabled;

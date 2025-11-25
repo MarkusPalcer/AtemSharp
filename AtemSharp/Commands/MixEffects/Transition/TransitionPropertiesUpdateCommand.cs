@@ -1,5 +1,5 @@
-using AtemSharp.Enums;
 using AtemSharp.State;
+using AtemSharp.State.Video.MixEffect.Transition;
 
 namespace AtemSharp.Commands.MixEffects.Transition;
 

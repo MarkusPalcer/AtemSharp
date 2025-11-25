@@ -1,5 +1,7 @@
 using AtemSharp.Commands.MixEffects.Transition;
 using AtemSharp.State;
+using AtemSharp.State.Video;
+using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
@@ -55,7 +57,7 @@ public class PreviewTransitionUpdateCommandTests : DeserializedCommandTestBase<P
             ProgramInput = 1000,
             PreviewInput = 2000,
             TransitionPreview = transitionPreview,
-            TransitionPosition = new TransitionPosition
+            TransitionPosition =
             {
                 InTransition = false,
                 HandlePosition = 0,

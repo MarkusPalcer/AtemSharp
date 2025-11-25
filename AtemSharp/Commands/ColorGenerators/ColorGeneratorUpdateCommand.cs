@@ -22,7 +22,8 @@ public partial class ColorGeneratorUpdateCommand : IDeserializedCommand
 
     public void ApplyToState(AtemState state)
     {
-        var colorGeneratorState = state.ColorGenerators.GetOrCreate(Id);
+        state.ColorGenerators.ExpandToFit(Id);
+        var colorGeneratorState = state.ColorGenerators[Id];
         colorGeneratorState.Hue = Hue;
         colorGeneratorState.Saturation = Saturation;
         colorGeneratorState.Luma = Luma;

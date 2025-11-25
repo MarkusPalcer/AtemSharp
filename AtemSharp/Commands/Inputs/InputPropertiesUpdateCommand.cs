@@ -1,7 +1,7 @@
-using AtemSharp.Enums;
-using AtemSharp.Enums.Ports;
 using AtemSharp.Lib;
 using AtemSharp.State;
+using AtemSharp.State.Ports;
+using AtemSharp.State.Video.InputChannel;
 
 namespace AtemSharp.Commands.Inputs;
 
@@ -14,26 +14,22 @@ public partial class InputPropertiesUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Input identifier/number
     /// </summary>
-    [DeserializedField(0)]
-    private ushort _inputId;
+    [DeserializedField(0)] private ushort _inputId;
 
     /// <summary>
     /// Long descriptive name for the input
     /// </summary>
-    [CustomDeserialization]
-    private string _longName = string.Empty;
+    [CustomDeserialization] private string _longName = string.Empty;
 
     /// <summary>
     /// Short name for the input
     /// </summary>
-    [CustomDeserialization]
-    private string _shortName = string.Empty;
+    [CustomDeserialization] private string _shortName = string.Empty;
 
     /// <summary>
     /// Whether the names are using default values
     /// </summary>
-    [DeserializedField(26)]
-    private bool _areNamesDefault;
+    [DeserializedField(26)] private bool _areNamesDefault;
 
     /// <summary>
     /// Available external port types for this input
@@ -45,34 +41,28 @@ public partial class InputPropertiesUpdateCommand : IDeserializedCommand
     /// - Need to determine if this should be derived from the raw value or if both serve different purposes
     /// - TypeScript original uses Util.getComponents() to convert raw value to array
     /// </remarks>
-    [DeserializedField(28)]
-    [SerializedType(typeof(ExternalPortType))]
-    [CustomScaling("AtemUtil.GetComponents")]
+    [DeserializedField(28)] [SerializedType(typeof(ExternalPortType))] [CustomScaling("DeserializationExtensions.GetComponents")]
     private ExternalPortType[]? _externalPorts;
 
     /// <summary>
     /// Current external port type being used
     /// </summary>
-    [DeserializedField(30)]
-    private ExternalPortType _externalPortType;
+    [DeserializedField(30)] private ExternalPortType _externalPortType;
 
     /// <summary>
     /// Internal port type for this input
     /// </summary>
-    [DeserializedField(32)]
-    private InternalPortType _internalPortType;
+    [DeserializedField(32)] private InternalPortType _internalPortType;
 
     /// <summary>
     /// Source availability flags indicating where this input can be used
     /// </summary>
-    [DeserializedField(34)]
-    private SourceAvailability _sourceAvailability;
+    [DeserializedField(34)] private SourceAvailability _sourceAvailability;
 
     /// <summary>
     /// Mix effect availability flags indicating which MEs can use this input
     /// </summary>
-    [DeserializedField(35)]
-    private MeAvailability _meAvailability;
+    [DeserializedField(35)] private MeAvailability _meAvailability;
 
     private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {

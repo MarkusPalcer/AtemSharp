@@ -17,13 +17,9 @@ public class MultiViewerWindowSafeAreaUpdateCommandTests : DeserializedCommandTe
 
     private static AtemState CreateStateWithMultiViewer(byte multiViewerId)
     {
-        return new AtemState
-        {
-            Settings =
-            {
-                MultiViewers = AtemStateUtil.CreateArray<MultiViewer>(multiViewerId + 1)
-            }
-        };
+        var state = new AtemState();
+        state.Settings.MultiViewers.ExpandToFit(multiViewerId);
+        return state;
     }
 
     [Test]

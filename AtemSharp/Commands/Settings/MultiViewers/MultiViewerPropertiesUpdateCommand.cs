@@ -1,5 +1,6 @@
 using AtemSharp.Enums;
 using AtemSharp.State;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.Settings.MultiViewers;
 
@@ -24,7 +25,9 @@ public partial class MultiViewerPropertiesUpdateCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
+        state.Settings.MultiViewers.ExpandToFit(MultiViewerId);
         var multiViewer = state.Settings.MultiViewers[MultiViewerId];
+        multiViewer.Id = _multiViewerId;
         multiViewer.Properties.Layout = Layout;
         multiViewer.Properties.ProgramPreviewSwapped = ProgramPreviewSwapped;
     }

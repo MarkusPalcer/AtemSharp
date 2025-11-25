@@ -1,4 +1,4 @@
-namespace AtemSharp.State;
+namespace AtemSharp.State.Info;
 
 /// <summary>
 /// Macro pool configuration and capabilities

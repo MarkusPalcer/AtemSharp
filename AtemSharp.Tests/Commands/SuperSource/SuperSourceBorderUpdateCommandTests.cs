@@ -1,5 +1,5 @@
 using AtemSharp.Commands.SuperSource;
-using AtemSharp.Enums;
+using AtemSharp.State.Border;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 

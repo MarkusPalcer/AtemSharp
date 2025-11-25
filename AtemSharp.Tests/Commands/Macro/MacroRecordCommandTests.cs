@@ -13,7 +13,7 @@ public class MacroRecordCommandTests : SerializedCommandTestBase<MacroRecordComm
 
     protected override MacroRecordCommand CreateSut(TestCaseData testCase)
     {
-        return new MacroRecordCommand(new AtemSharp.State.Macro
+        return new MacroRecordCommand(new AtemSharp.State.Macro.Macro
         {
             Id = testCase.Command.Index,
             Name = testCase.Command.Name,

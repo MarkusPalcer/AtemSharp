@@ -1,7 +1,8 @@
 namespace AtemSharp.State.Recording;
 
 [Flags]
-public enum RecordingDiskStatus : ushort {
+public enum RecordingDiskStatus : ushort
+{
     Idle = 1 << 0,
     Unformatted = 1 << 1,
     Active = 1 << 2,

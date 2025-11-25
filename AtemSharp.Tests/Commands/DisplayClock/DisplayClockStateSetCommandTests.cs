@@ -1,5 +1,5 @@
 using AtemSharp.Commands.DisplayClock;
-using AtemSharp.Enums;
+using AtemSharp.State.DisplayClock;
 
 namespace AtemSharp.Tests.Commands.DisplayClock;
 
@@ -15,7 +15,7 @@ public class DisplayClockStateSetCommandTests : SerializedCommandTestBase<Displa
     protected override DisplayClockStateSetCommand CreateSut(TestCaseData testCase)
     {
         // Create command with the state from test data
-        var command = new DisplayClockStateSetCommand(new AtemSharp.State.DisplayClock { ClockState = testCase.Command.State });
+        var command = new DisplayClockStateSetCommand(new AtemSharp.State.DisplayClock.DisplayClock { ClockState = testCase.Command.State });
         return command;
     }
 
@@ -23,7 +23,7 @@ public class DisplayClockStateSetCommandTests : SerializedCommandTestBase<Displa
     public void Constructor_ShouldSetStateCorrectly()
     {
         // Arrange & Act
-        var command = new DisplayClockStateSetCommand(new AtemSharp.State.DisplayClock { ClockState = DisplayClockClockState.Running });
+        var command = new DisplayClockStateSetCommand(new AtemSharp.State.DisplayClock.DisplayClock { ClockState = DisplayClockClockState.Running });
 
         // Assert
         Assert.That(command.State, Is.EqualTo(DisplayClockClockState.Running));
@@ -36,7 +36,7 @@ public class DisplayClockStateSetCommandTests : SerializedCommandTestBase<Displa
     public void State_ShouldAcceptAllValidValues(DisplayClockClockState state)
     {
         // Arrange
-        var command = new DisplayClockStateSetCommand(new AtemSharp.State.DisplayClock { ClockState = DisplayClockClockState.Stopped });
+        var command = new DisplayClockStateSetCommand(new AtemSharp.State.DisplayClock.DisplayClock { ClockState = DisplayClockClockState.Stopped });
 
         // Act
         command.State = state;

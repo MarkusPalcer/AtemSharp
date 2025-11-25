@@ -170,7 +170,7 @@ namespace AtemSharp.CodeGenerators.Serialization
                     var fileContent = $$"""
                                         using System;
                                         using AtemSharp;
-                                        using AtemSharp.Enums;
+                                        using AtemSharp.State.Info;
                                         using AtemSharp.Lib;
                                         using static AtemSharp.Lib.SerializationExtensions;
 

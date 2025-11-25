@@ -1,4 +1,3 @@
-using AtemSharp.Enums.Fairlight;
 using AtemSharp.State;
 using AtemSharp.State.Audio.Fairlight;
 
@@ -13,7 +12,7 @@ public partial class FairlightMixerSourceUpdateCommand : IDeserializedCommand
 
     [DeserializedField(49)] private FairlightAudioMixOption _mixOption;
 
-    [DeserializedField(48)] [SerializedType(typeof(FairlightAudioMixOption))] [CustomScaling("AtemUtil.GetComponents")]
+    [DeserializedField(48)] [SerializedType(typeof(FairlightAudioMixOption))] [CustomScaling("DeserializationExtensions.GetComponents")]
     private FairlightAudioMixOption[] _supportedMixOptions = [];
 
     [DeserializedField(44)] [SerializedType(typeof(int))] [ScalingFactor(100)]

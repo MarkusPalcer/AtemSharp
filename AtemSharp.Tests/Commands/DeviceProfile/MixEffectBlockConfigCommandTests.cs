@@ -1,5 +1,6 @@
 using AtemSharp.Commands.DeviceProfile;
 using AtemSharp.State;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
@@ -38,7 +39,14 @@ public class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixE
     public void ApplyToState_WithValidData_ShouldUpdateMixEffectInfo()
     {
         // Arrange
-        var state = new AtemState();
+        var state = new AtemState
+        {
+            Info =
+            {
+                MixEffects = AtemStateUtil.CreateArray<MixEffectInfo>(2)
+            }
+        };
+
         var command = new MixEffectBlockConfigCommand
         {
             Index = 1,
@@ -49,8 +57,6 @@ public class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixE
         command.ApplyToState(state);
 
         // Assert
-        Assert.That(state.Info.MixEffects, Is.Not.Null);
-        Assert.That(state.Info.MixEffects.ContainsKey(1), Is.True);
         Assert.That(state.Info.MixEffects[1], Is.Not.Null);
         Assert.That(state.Info.MixEffects[1].KeyCount, Is.EqualTo(4));
     }
@@ -59,7 +65,13 @@ public class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixE
     public void ApplyToState_MultipleMixEffects_ShouldHandleMultipleIndices()
     {
         // Arrange
-        var state = new AtemState();
+        var state = new AtemState
+        {
+            Info =
+            {
+                MixEffects = AtemStateUtil.CreateArray<MixEffectInfo>(2)
+            }
+        };
 
         var command1 = new MixEffectBlockConfigCommand
         {
@@ -78,13 +90,7 @@ public class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixE
         command2.ApplyToState(state);
 
         // Assert
-        Assert.That(state.Info.MixEffects, Is.Not.Null);
-        Assert.That(state.Info.MixEffects.Count, Is.EqualTo(2));
-
-        Assert.That(state.Info.MixEffects.ContainsKey(0), Is.True);
         Assert.That(state.Info.MixEffects[0].KeyCount, Is.EqualTo(2));
-
-        Assert.That(state.Info.MixEffects.ContainsKey(1), Is.True);
         Assert.That(state.Info.MixEffects[1].KeyCount, Is.EqualTo(4));
     }
 
@@ -92,7 +98,13 @@ public class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixE
     public void ApplyToState_ReplacingExistingMixEffect_ShouldReplaceInfo()
     {
         // Arrange
-        var state = new AtemState();
+        var state = new AtemState
+        {
+            Info =
+            {
+                MixEffects = AtemStateUtil.CreateArray<MixEffectInfo>(2)
+            }
+        };
 
         var firstCommand = new MixEffectBlockConfigCommand
         {
@@ -112,7 +124,6 @@ public class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixE
 
         // Assert - should have the values from the second command
         Assert.That(state.Info.MixEffects, Is.Not.Null);
-        Assert.That(state.Info.MixEffects.ContainsKey(1), Is.True);
         Assert.That(state.Info.MixEffects[1].KeyCount, Is.EqualTo(8));
     }
 }

@@ -1,5 +1,5 @@
 using AtemSharp.Lib;
-using AtemSharp.State;
+using AtemSharp.State.Audio.ClassicAudio;
 
 namespace AtemSharp.Commands.Audio;
 
@@ -8,49 +8,29 @@ namespace AtemSharp.Commands.Audio;
 /// </summary>
 [Command("CAMH")]
 [BufferSize(12)]
-public partial class AudioMixerHeadphonesCommand : SerializedCommand
+public partial class AudioMixerHeadphonesCommand(ClassicAudioState audio) : SerializedCommand
 {
     /// <summary>
     /// Gain in decibel
     /// </summary>
-    [SerializedField(2, 0)] [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.DecibelToUInt16)}")]
-    private double _gain;
+    [SerializedField(2, 0)] [CustomScaling($"{nameof(SerializationExtensions)}.{nameof(SerializationExtensions.DecibelToUInt16)}")]
+    private double _gain = audio.Headphones.Gain;
 
     /// <summary>
     /// Program out gain in decibel
     /// </summary>
-    [SerializedField(4, 1)] [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.DecibelToUInt16)}")]
-    private double _programOutGain;
+    [SerializedField(4, 1)] [CustomScaling($"{nameof(SerializationExtensions)}.{nameof(SerializationExtensions.DecibelToUInt16)}")]
+    private double _programOutGain = audio.Headphones.ProgramOutGain;
 
     /// <summary>
     /// Talkback gain in decibel
     /// </summary>
-    [SerializedField(6, 2)] [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.DecibelToUInt16)}")]
-    private double _talkbackGain;
+    [SerializedField(6, 2)] [CustomScaling($"{nameof(SerializationExtensions)}.{nameof(SerializationExtensions.DecibelToUInt16)}")]
+    private double _talkbackGain = audio.Headphones.TalkbackGain;
 
     /// <summary>
     /// Sidetone gain in decibel
     /// </summary>
-    [SerializedField(8, 3)] [CustomScaling($"{nameof(AtemUtil)}.{nameof(AtemUtil.DecibelToUInt16)}")]
-    private double _sidetoneGain;
-
-    public AudioMixerHeadphonesCommand(AtemState currentState)
-    {
-        var audio = currentState.GetClassicAudio();
-        // If the audio state or headphones do not exist, initialize to default values
-        // by setting the properties, thus setting the changed-flag for each property
-        if (audio.Headphones is null)
-        {
-            Gain = 0.0;
-            ProgramOutGain = 0.0;
-            TalkbackGain = 0.0;
-            SidetoneGain = 0.0;
-            return;
-        }
-
-        _gain = audio.Headphones.Gain;
-        _programOutGain = audio.Headphones.ProgramOutGain;
-        _talkbackGain = audio.Headphones.TalkbackGain;
-        _sidetoneGain = audio.Headphones.SidetoneGain;
-    }
+    [SerializedField(8, 3)] [CustomScaling($"{nameof(SerializationExtensions)}.{nameof(SerializationExtensions.DecibelToUInt16)}")]
+    private double _sidetoneGain = audio.Headphones.SidetoneGain;
 }

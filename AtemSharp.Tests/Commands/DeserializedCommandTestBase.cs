@@ -1,7 +1,7 @@
 using System.Reflection;
 using AtemSharp.Commands;
-using AtemSharp.Enums;
 using AtemSharp.Lib;
+using AtemSharp.State.Info;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 

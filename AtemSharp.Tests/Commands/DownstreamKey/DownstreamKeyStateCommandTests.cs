@@ -1,5 +1,5 @@
 using AtemSharp.Commands.DownstreamKey;
-using AtemSharp.Enums;
+using AtemSharp.State.Info;
 using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DownstreamKey;

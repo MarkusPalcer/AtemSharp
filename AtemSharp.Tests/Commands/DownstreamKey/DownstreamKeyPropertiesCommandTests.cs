@@ -1,5 +1,7 @@
 using AtemSharp.Commands.DownstreamKey;
 using AtemSharp.State;
+using AtemSharp.State.Video;
+using AtemSharp.State.Video.DownstreamKeyer;
 
 namespace AtemSharp.Tests.Commands.DownstreamKey;
 
@@ -161,7 +163,7 @@ public class DownstreamKeyPropertiesCommandTests : DeserializedCommandTestBase<D
                 Clip = 10.0,
                 Gain = 20.0,
                 Invert = false,
-                Mask = new DownstreamKeyerMask { Enabled = false }
+                Mask = new MaskProperties { Enabled = false }
             }
         };
 

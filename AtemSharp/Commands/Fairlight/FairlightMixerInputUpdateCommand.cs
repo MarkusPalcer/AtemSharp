@@ -1,9 +1,8 @@
-using AtemSharp.Enums;
-using AtemSharp.Enums.Fairlight;
-using AtemSharp.Enums.Ports;
 using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Audio.Fairlight;
+using AtemSharp.State.Info;
+using AtemSharp.State.Ports;
 
 namespace AtemSharp.Commands.Fairlight;
 
@@ -28,17 +27,17 @@ public class FairlightMixerInputUpdateCommand : IDeserializedCommand
             Id = rawCommand.ReadUInt16BigEndian(0),
             InputType = (FairlightInputType)rawCommand.ReadUInt8(2),
             ExternalPortType = (ExternalPortType)rawCommand.ReadUInt16BigEndian(6),
-            SupportedConfigurations = AtemUtil.GetComponents((FairlightInputConfiguration)rawCommand.ReadUInt8(rcaToXlr ? 11 : 9)),
+            SupportedConfigurations = DeserializationExtensions.GetComponents((FairlightInputConfiguration)rawCommand.ReadUInt8(rcaToXlr ? 11 : 9)),
             ActiveConfiguration = (FairlightInputConfiguration)rawCommand.ReadUInt8(rcaToXlr ? 12 : 10),
             SupportedInputLevels = rcaToXlr
                                        ? (rawCommand.ReadBoolean(9)
                                               ? [FairlightAnalogInputLevel.ProLine, FairlightAnalogInputLevel.Microphone]
                                               : [])
-                                       : AtemUtil.GetComponents((FairlightAnalogInputLevel)rawCommand.ReadUInt8(11)),
+                                       : DeserializationExtensions.GetComponents((FairlightAnalogInputLevel)rawCommand.ReadUInt8(11)),
             ActiveInputLevel = rcaToXlr
-                                   ? (rawCommand.ReadUInt8(9) > 0
-                                          ? FairlightAnalogInputLevel.ProLine
-                                          : FairlightAnalogInputLevel.Microphone)
+                                   ? rawCommand.ReadUInt8(9) > 0
+                                         ? FairlightAnalogInputLevel.ProLine
+                                         : FairlightAnalogInputLevel.Microphone
                                    : (FairlightAnalogInputLevel)rawCommand.ReadUInt8(12),
         };
     }
@@ -47,14 +46,11 @@ public class FairlightMixerInputUpdateCommand : IDeserializedCommand
     {
         var fairlightAudioInput = state.GetFairlight().Inputs.GetOrCreate(Id);
         fairlightAudioInput.Id = Id;
-        fairlightAudioInput.Properties = new FairlightAudioInputProperties
-        {
-            InputType = InputType,
-            ExternalPortType = ExternalPortType,
-            SupportedConfigurations = SupportedConfigurations,
-            ActiveConfiguration = ActiveConfiguration,
-            SupportedInputLevels = SupportedInputLevels,
-            ActiveInputLevel = ActiveInputLevel
-        };
+        fairlightAudioInput.InputType = InputType;
+        fairlightAudioInput.ExternalPortType = ExternalPortType;
+        fairlightAudioInput.SupportedConfigurations = SupportedConfigurations;
+        fairlightAudioInput.ActiveConfiguration = ActiveConfiguration;
+        fairlightAudioInput.SupportedInputLevels = SupportedInputLevels;
+        fairlightAudioInput.ActiveInputLevel = ActiveInputLevel;
     }
 }

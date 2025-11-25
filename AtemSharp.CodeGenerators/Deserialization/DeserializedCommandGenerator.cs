@@ -53,7 +53,7 @@ namespace AtemSharp.CodeGenerators.Deserialization
                     var fileContent = $$"""
                                         using System;
                                         using AtemSharp;
-                                        using AtemSharp.Enums;
+                                        using AtemSharp.State.Info;
                                         using AtemSharp.Lib;
 
                                         namespace {{ns}};

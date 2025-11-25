@@ -1,9 +1,9 @@
-namespace AtemSharp.State;
+namespace AtemSharp.State.Info;
 
 /// <summary>
 /// Information about the audio mixer capabilities
 /// </summary>
-public class AudioMixerInfo
+public class AudioMixerInfo : MixerInfo
 {
     /// <summary>
     /// Number of audio inputs available

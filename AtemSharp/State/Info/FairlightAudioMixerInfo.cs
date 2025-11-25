@@ -1,9 +1,9 @@
-namespace AtemSharp.State.Audio.Fairlight;
+namespace AtemSharp.State.Info;
 
 /// <summary>
 /// Information about the Fairlight audio mixer capabilities
 /// </summary>
-public class FairlightAudioMixerInfo
+public class FairlightAudioMixerInfo : MixerInfo
 {
     /// <summary>
     /// Number of Fairlight audio inputs available

@@ -35,8 +35,6 @@ public partial class DisplayClockCurrentTimeCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        state.DisplayClock ??= new State.DisplayClock();
-
         state.DisplayClock.CurrentTime = new DisplayClockTime()
         {
             Hours = _hours,

@@ -1,5 +1,3 @@
-using AtemSharp.Enums.Fairlight;
-
 namespace AtemSharp.State.Audio.Fairlight;
 
 public class Source

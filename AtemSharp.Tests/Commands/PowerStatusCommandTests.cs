@@ -1,6 +1,6 @@
 using AtemSharp.Commands;
-using AtemSharp.Enums;
 using AtemSharp.State;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands;
 
@@ -105,7 +105,7 @@ public class PowerStatusCommandTests {
         Span<byte> buffer = [0b00000010];
 
         // Act - Deserialize the command
-        var command = PowerStatusCommand.Deserialize(buffer, ProtocolVersion.V7_2);
+        var command = PowerStatusCommand.Deserialize(buffer, protocolVersion: ProtocolVersion.V7_2);
 
         // Assert - Only second power supply should be on
         Assert.That(command.PowerSupplies, Has.Length.EqualTo(2));
