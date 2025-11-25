@@ -1,6 +1,7 @@
 using AtemSharp.Enums;
 using AtemSharp.Lib;
 using AtemSharp.State;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
@@ -54,7 +55,7 @@ public class TopologyCommand : IDeserializedCommand
     /// Number of Digital Video Effects available
     /// </summary>
     // ReSharper disable once InconsistentNaming Domain Specific Acronym
-    public int DVEs { get; init; }
+    public int DigitalVideoEffects { get; init; }
 
     /// <summary>
     /// Number of stinger transitions available
@@ -111,7 +112,7 @@ public class TopologyCommand : IDeserializedCommand
             Multiviewers = v230Offset > 0 ? rawCommand.ReadUInt8(6) : -1,
             SerialPorts = rawCommand.ReadUInt8(6 + v230Offset),
             MaxHyperdecks = rawCommand.ReadUInt8(7 + v230Offset),
-            DVEs = rawCommand.ReadUInt8(8 + v230Offset),
+            DigitalVideoEffects = rawCommand.ReadUInt8(8 + v230Offset),
             Stingers = rawCommand.ReadUInt8(9 + v230Offset),
             SuperSources = rawCommand.ReadUInt8(10 + v230Offset),
             TalkbackChannels = rawCommand.ReadUInt8(12 + v230Offset),
@@ -142,12 +143,12 @@ public class TopologyCommand : IDeserializedCommand
             MixEffects = MixEffects,
             Sources = Sources,
             Auxiliaries = Auxiliaries,
-            MixMinusOutputs = MixMinusOutputs,
+            MixMinusOutputs = MixMinusOutputs, // TODO: What are those?
             MediaPlayers = MediaPlayers,
             MultiViewers = Multiviewers,
             SerialPorts = SerialPorts,
             MaxHyperdecks = MaxHyperdecks,
-            DVEs = DVEs,
+            DigitalVideoEffects = DigitalVideoEffects,
             Stingers = Stingers,
             SuperSources = SuperSources,
             TalkbackChannels = TalkbackChannels,
@@ -158,10 +159,10 @@ public class TopologyCommand : IDeserializedCommand
         };
 
         state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(MixEffects);
+        state.Video.Auxiliaries = AtemStateUtil.CreateArray<AuxiliaryOutput>(Auxiliaries);
         state.Media.Players = AtemStateUtil.CreateArray<MediaPlayer>(MediaPlayers);
         state.Video.SuperSources = AtemStateUtil.CreateArray<State.SuperSource>(SuperSources);
         state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(DownstreamKeyers);
-        state.Video.Auxiliaries = AtemStateUtil.CreateArray<AuxiliaryOutput>(Auxiliaries);
 
         state.Info.MultiViewer.Count = Multiviewers;
         state.Info.MultiViewer.WindowCount = Multiviewers switch

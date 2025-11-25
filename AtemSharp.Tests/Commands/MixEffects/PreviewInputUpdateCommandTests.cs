@@ -1,5 +1,6 @@
 using AtemSharp.Commands.MixEffects;
 using AtemSharp.State;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands.MixEffects;
 

@@ -1,4 +1,4 @@
-namespace AtemSharp.State;
+namespace AtemSharp.State.Info;
 
 /// <summary>
 /// ATEM device capabilities and hardware configuration
@@ -44,7 +44,7 @@ public class AtemCapabilities
     /// Number of Digital Video Effects available
     /// </summary>
     // ReSharper disable once InconsistentNaming - Domain Specific Acronym
-    public int DVEs { get; internal set; }
+    public int DigitalVideoEffects { get; internal set; }
 
     /// <summary>
     /// Number of stinger transitions available

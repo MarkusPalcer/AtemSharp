@@ -58,8 +58,8 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
         if (actualCommand.MaxHyperdecks != expectedData.HyperDecks)
             failures.Add($"MaxHyperdecks: expected {expectedData.HyperDecks}, actual {actualCommand.MaxHyperdecks}");
 
-        if (actualCommand.DVEs != expectedData.DVE)
-            failures.Add($"DVEs: expected {expectedData.DVE}, actual {actualCommand.DVEs}");
+        if (actualCommand.DigitalVideoEffects != expectedData.DVE)
+            failures.Add($"DVEs: expected {expectedData.DVE}, actual {actualCommand.DigitalVideoEffects}");
 
         if (actualCommand.Stingers != expectedData.Stingers)
             failures.Add($"Stingers: expected {expectedData.Stingers}, actual {actualCommand.Stingers}");
@@ -82,10 +82,12 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
                 failures.Add($"CameraControl: expected {expectedData.CameraControl}, actual {actualCommand.CameraControl}");
 
             if (actualCommand.AdvancedChromaKeyers != expectedData.AdvancedChromaKeyers)
-                failures.Add($"AdvancedChromaKeyers: expected {expectedData.AdvancedChromaKeyers}, actual {actualCommand.AdvancedChromaKeyers}");
+                failures.Add(
+                    $"AdvancedChromaKeyers: expected {expectedData.AdvancedChromaKeyers}, actual {actualCommand.AdvancedChromaKeyers}");
 
             if (actualCommand.OnlyConfigurableOutputs != expectedData.OnlyConfigurableOutputs)
-                failures.Add($"OnlyConfigurableOutputs: expected {expectedData.OnlyConfigurableOutputs}, actual {actualCommand.OnlyConfigurableOutputs}");
+                failures.Add(
+                    $"OnlyConfigurableOutputs: expected {expectedData.OnlyConfigurableOutputs}, actual {actualCommand.OnlyConfigurableOutputs}");
         }
         else
         {
@@ -128,7 +130,7 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
             Multiviewers = -1, // Older protocol version
             SerialPorts = 4,
             MaxHyperdecks = 4,
-            DVEs = 1,
+            DigitalVideoEffects = 1,
             Stingers = 1,
             SuperSources = 1,
             TalkbackChannels = 16,
@@ -151,7 +153,7 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
         Assert.That(state.Info.Capabilities.MultiViewers, Is.EqualTo(-1));
         Assert.That(state.Info.Capabilities.SerialPorts, Is.EqualTo(4));
         Assert.That(state.Info.Capabilities.MaxHyperdecks, Is.EqualTo(4));
-        Assert.That(state.Info.Capabilities.DVEs, Is.EqualTo(1));
+        Assert.That(state.Info.Capabilities.DigitalVideoEffects, Is.EqualTo(1));
         Assert.That(state.Info.Capabilities.Stingers, Is.EqualTo(1));
         Assert.That(state.Info.Capabilities.SuperSources, Is.EqualTo(1));
         Assert.That(state.Info.Capabilities.TalkbackChannels, Is.EqualTo(16));
@@ -178,7 +180,7 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
             Multiviewers = 2, // Newer protocol with multiviewers
             SerialPorts = 8,
             MaxHyperdecks = 8,
-            DVEs = 4,
+            DigitalVideoEffects = 4,
             Stingers = 4,
             SuperSources = 4,
             TalkbackChannels = 64,
@@ -220,7 +222,7 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
             Multiviewers = 0, // Zero multiviewers
             SerialPorts = 2,
             MaxHyperdecks = 2,
-            DVEs = 0,
+            DigitalVideoEffects = 0,
             Stingers = 0,
             SuperSources = 0,
             TalkbackChannels = 8,

@@ -1,6 +1,7 @@
 using AtemSharp.Commands.MixEffects.Transition;
 using AtemSharp.Enums;
 using AtemSharp.State;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
@@ -71,7 +72,7 @@ public class TransitionDigitalVideoEffectsUpdateCommandTests : DeserializedComma
                 Capabilities = new AtemCapabilities
                 {
                     MixEffects = 1,
-                    DVEs = 1
+                    DigitalVideoEffects = 1
                 }
             },
             Video = new VideoState
