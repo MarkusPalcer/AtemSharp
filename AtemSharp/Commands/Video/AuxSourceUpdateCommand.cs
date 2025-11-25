@@ -11,25 +11,16 @@ public partial class AuxSourceUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Auxiliary output index (0-based)
     /// </summary>
-    [DeserializedField(0)]
-    private byte _auxBus;
+    [DeserializedField(0)] private byte _auxId;
 
     /// <summary>
     /// Source input number for the auxiliary output
     /// </summary>
-    [DeserializedField(2)]
-    private ushort _source;
+    [DeserializedField(2)] private ushort _source;
 
-	/// <inheritdoc />
-	public void ApplyToState(AtemState state)
-	{
-		// Validate auxiliary output index
-		if (state.Info.Capabilities is null || AuxBus >= state.Info.Capabilities.Auxiliaries)
-		{
-			throw new InvalidIdError("Auxiliary", AuxBus);
-		}
-
-		// Update the auxiliary source
-		state.Video.Auxiliaries[AuxBus] = Source;
-	}
+    /// <inheritdoc />
+    public void ApplyToState(AtemState state)
+    {
+        state.Video.Auxiliaries[AuxId].Source = Source;
+    }
 }

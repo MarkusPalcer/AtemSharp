@@ -161,6 +161,7 @@ public class TopologyCommand : IDeserializedCommand
         state.Media.Players = AtemStateUtil.CreateArray<MediaPlayer>(MediaPlayers);
         state.Video.SuperSources = AtemStateUtil.CreateArray<State.SuperSource>(SuperSources);
         state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(DownstreamKeyers);
+        state.Video.Auxiliaries = AtemStateUtil.CreateArray<AuxiliaryOutput>(Auxiliaries);
 
         state.Info.MultiViewer.Count = Multiviewers;
         state.Info.MultiViewer.WindowCount = Multiviewers switch
