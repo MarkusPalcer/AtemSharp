@@ -11,14 +11,12 @@ public partial class MediaPoolConfigCommand : IDeserializedCommand
     /// <summary>
     /// Number of still images available in the media pool
     /// </summary>
-    [DeserializedField(0)]
-    private byte _stillCount;
+    [DeserializedField(0)] private byte _stillCount;
 
     /// <summary>
     /// Number of video clips available in the media pool
     /// </summary>
-    [DeserializedField(1)]
-    private byte _clipCount;
+    [DeserializedField(1)] private byte _clipCount;
 
     /// <summary>
     /// Apply the command's values to the ATEM state
@@ -36,8 +34,5 @@ public partial class MediaPoolConfigCommand : IDeserializedCommand
 
         state.Media.Frames = AtemStateUtil.CreateArray<MediaPoolEntry>(StillCount);
         state.Media.Clips = AtemStateUtil.CreateArray<MediaPoolEntry>(ClipCount);
-
-        state.Media.Frames.ForEachWithIndex((item, index) => item.Id = (byte)index);
-        state.Media.Clips.ForEachWithIndex((item, index) => item.Id = (byte)index);
     }
 }

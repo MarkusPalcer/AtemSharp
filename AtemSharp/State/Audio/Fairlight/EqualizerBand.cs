@@ -1,7 +1,8 @@
 namespace AtemSharp.State.Audio.Fairlight;
 
-public abstract class EqualizerBand
+public abstract class EqualizerBand : ArrayItem
 {
+    internal override void SetId(int id) => Id = (byte)id;
     public byte Id { get; internal set; }
 
     public bool Enabled { get; internal set; }

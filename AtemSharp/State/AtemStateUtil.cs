@@ -8,12 +8,17 @@ namespace AtemSharp.State;
 /// </summary>
 public static class AtemStateUtil
 {
-    public static T[] CreateArray<T>(int length) where T : new()
+    public static T[] CreateArray<T>(int length) where T : ArrayItem, new()
     {
         if (length <= 0) return [];
 
-        // TODO: Add ID to items here
-        return Enumerable.Repeat(() => new T(), length).Select(x => x()).ToArray();
+        var result = Enumerable.Repeat(() => new T(), length).Select(x => x()).ToArray();
+        foreach (var (value, id) in result.Select((x, i) => (x, i)))
+        {
+            value.SetId(id);
+        }
+
+        return result;
     }
 
     public static FairlightAudioState GetFairlight(this AtemState state)
@@ -21,22 +26,6 @@ public static class AtemStateUtil
 
     public static ClassicAudioState GetClassicAudio(this AtemState state)
         => state.Audio as ClassicAudioState ?? throw new InvalidOperationException("Classic audio state is not available");
-
-    // TODO: remove when ID is added in CreateArray
-    public static T[] ForEachWithIndex<T>(this T[] source, Action<T, int> action)
-    {
-        if (source == null) throw new ArgumentNullException(nameof(source));
-        if (action == null) throw new ArgumentNullException(nameof(action));
-
-        int index = 0;
-        foreach (var item in source)
-        {
-            action(item, index);
-            index++;
-        }
-
-        return source;
-    }
 
     public static TValue GetOrCreate<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey index)
         where TValue : new() where TKey : notnull

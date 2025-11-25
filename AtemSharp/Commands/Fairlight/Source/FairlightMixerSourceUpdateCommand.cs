@@ -5,68 +5,45 @@ using AtemSharp.State.Audio.Fairlight;
 namespace AtemSharp.Commands.Fairlight.Source;
 
 [Command("FASP")]
-public partial class FairlightMixerSourceUpdateCommand  : IDeserializedCommand
+public partial class FairlightMixerSourceUpdateCommand : IDeserializedCommand
 {
-    [DeserializedField(0)]
-    private ushort _inputId;
+    [DeserializedField(0)] private ushort _inputId;
 
-    [DeserializedField(8)]
-    private long _sourceId;
+    [DeserializedField(8)] private long _sourceId;
 
-    [DeserializedField(49)]
-    private FairlightAudioMixOption _mixOption;
+    [DeserializedField(49)] private FairlightAudioMixOption _mixOption;
 
-    [DeserializedField(48)]
-    [SerializedType(typeof(FairlightAudioMixOption))]
-    [CustomScaling("AtemUtil.GetComponents")]
+    [DeserializedField(48)] [SerializedType(typeof(FairlightAudioMixOption))] [CustomScaling("AtemUtil.GetComponents")]
     private FairlightAudioMixOption[] _supportedMixOptions = [];
 
-    [DeserializedField(44)]
-    [SerializedType(typeof(int))]
-    [ScalingFactor(100)]
+    [DeserializedField(44)] [SerializedType(typeof(int))] [ScalingFactor(100)]
     private double _faderGain;
 
-    [DeserializedField(40)]
-    [SerializedType(typeof(short))]
-    [ScalingFactor(100)]
+    [DeserializedField(40)] [SerializedType(typeof(short))] [ScalingFactor(100)]
     private double _balance;
 
-    [DeserializedField(36)]
-    [SerializedType(typeof(int))]
-    [ScalingFactor(100)]
+    [DeserializedField(36)] [SerializedType(typeof(int))] [ScalingFactor(100)]
     private double _makeUpGain;
 
-    [DeserializedField(32)]
-    [SerializedType(typeof(int))]
-    [ScalingFactor(100)]
+    [DeserializedField(32)] [SerializedType(typeof(int))] [ScalingFactor(100)]
     private double _equalizerGain;
 
-    [DeserializedField(29)]
-    private bool _equalizerEnabled;
+    [DeserializedField(29)] private bool _equalizerEnabled;
 
-    [DeserializedField(28)]
-    private byte _bandCount;
+    [DeserializedField(28)] private byte _bandCount;
 
-    [DeserializedField(26)]
-    [SerializedType(typeof(short))]
-    [ScalingFactor(100)]
+    [DeserializedField(26)] [SerializedType(typeof(short))] [ScalingFactor(100)]
     private double _stereoSimulation;
 
-    [DeserializedField(24)]
-    private bool _hasStereoSimulation;
+    [DeserializedField(24)] private bool _hasStereoSimulation;
 
-    [DeserializedField(18)]
-    private byte _framesDelay;
+    [DeserializedField(18)] private byte _framesDelay;
 
-    [DeserializedField(17)]
-    private byte _maxFramesDelay;
+    [DeserializedField(17)] private byte _maxFramesDelay;
 
-    [DeserializedField(16)]
-    private FairlightAudioSourceType _sourceType;
+    [DeserializedField(16)] private FairlightAudioSourceType _sourceType;
 
-    [DeserializedField(20)]
-    [SerializedType(typeof(int))]
-    [ScalingFactor(100)]
+    [DeserializedField(20)] [SerializedType(typeof(int))] [ScalingFactor(100)]
     private double _gain;
 
     public void ApplyToState(AtemState state)
@@ -84,14 +61,14 @@ public partial class FairlightMixerSourceUpdateCommand  : IDeserializedCommand
 
         source.Equalizer.Enabled = EqualizerEnabled;
         source.Equalizer.Gain = EqualizerGain;
-        if (source.Equalizer.Bands.Length  < BandCount)
+        if (source.Equalizer.Bands.Length < BandCount)
         {
-            source.Equalizer.Bands = AtemStateUtil.CreateArray<SourceEqualizerBand>(BandCount).ForEachWithIndex((band, index) =>
+            source.Equalizer.Bands = AtemStateUtil.CreateArray<SourceEqualizerBand>(BandCount);
+            foreach (var band in source.Equalizer.Bands)
             {
-                band.Id = (byte)index;
                 band.InputId = InputId;
                 band.SourceId = SourceId;
-            });
+            }
         }
 
         source.Dynamics.MakeUpGain = MakeUpGain;
@@ -106,7 +83,4 @@ public partial class FairlightMixerSourceUpdateCommand  : IDeserializedCommand
         source.SupportedMixOptions = SupportedMixOptions;
         source.MixOption = MixOption;
     }
-
-
-
 }

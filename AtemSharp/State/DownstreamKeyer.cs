@@ -3,8 +3,9 @@ namespace AtemSharp.State;
 /// <summary>
 /// Downstream keyer state
 /// </summary>
-public class DownstreamKeyer
+public class DownstreamKeyer : ArrayItem
 {
+    internal override void SetId(int id) => Id = (byte)id;
     public byte Id { get; internal set; }
 
     /// <summary>
@@ -38,7 +39,7 @@ public class DownstreamKeyer
     /// <summary>
     /// Downstream keyer source configuration
     /// </summary>
-    public DownstreamKeyerSources Sources { get; internal  set; } = new();
+    public DownstreamKeyerSources Sources { get; internal set; } = new();
 
     /// <summary>
     /// Downstream keyer properties and configuration

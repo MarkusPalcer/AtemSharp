@@ -1,10 +1,17 @@
 namespace AtemSharp.State;
 
+public abstract class ArrayItem
+{
+    internal abstract void SetId(int id);
+}
+
 /// <summary>
 /// Mix effect block state containing program/preview inputs, transitions, and upstream keyers
 /// </summary>
-public class MixEffect
+public class MixEffect : ArrayItem
 {
+    internal override void SetId(int id) => Id = (byte)id;
+
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>

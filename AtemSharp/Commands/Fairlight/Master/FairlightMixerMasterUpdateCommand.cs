@@ -6,29 +6,20 @@ namespace AtemSharp.Commands.Fairlight.Master;
 [Command("FAMP")]
 public partial class FairlightMixerMasterUpdateCommand : IDeserializedCommand
 {
-    [DeserializedField(0)]
-    private byte _bandCount;
+    [DeserializedField(0)] private byte _bandCount;
 
-    [DeserializedField(1)]
-    private bool _equalizerEnabled;
+    [DeserializedField(1)] private bool _equalizerEnabled;
 
-    [DeserializedField(4)]
-    [SerializedType(typeof(int))]
-    [ScalingFactor(100.0)]
+    [DeserializedField(4)] [SerializedType(typeof(int))] [ScalingFactor(100.0)]
     private double _equalizerGain;
 
-    [DeserializedField(8)]
-    [SerializedType(typeof(int))]
-    [ScalingFactor(100.0)]
+    [DeserializedField(8)] [SerializedType(typeof(int))] [ScalingFactor(100.0)]
     private double _makeUpGain;
 
-    [DeserializedField(12)]
-    [SerializedType(typeof(int))]
-    [ScalingFactor(100.0)]
+    [DeserializedField(12)] [SerializedType(typeof(int))] [ScalingFactor(100.0)]
     private double _faderGain;
 
-    [DeserializedField(16)]
-    private bool _followFadeToBlack;
+    [DeserializedField(16)] private bool _followFadeToBlack;
 
     public void ApplyToState(AtemState state)
     {
@@ -41,8 +32,7 @@ public partial class FairlightMixerMasterUpdateCommand : IDeserializedCommand
 
         if (fairlight.Master.Equalizer.Bands.Length != BandCount)
         {
-            fairlight.Master.Equalizer.Bands = AtemStateUtil.CreateArray<MasterEqualizerBand>(BandCount)
-                                                            .ForEachWithIndex((band, index) => band.Id = (byte)index);
+            fairlight.Master.Equalizer.Bands = AtemStateUtil.CreateArray<MasterEqualizerBand>(BandCount);
         }
     }
 }

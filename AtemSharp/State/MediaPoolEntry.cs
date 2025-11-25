@@ -1,7 +1,9 @@
 namespace AtemSharp.State;
 
-public class MediaPoolEntry
+public class MediaPoolEntry : ArrayItem
 {
+    internal override void SetId(int id) => Id = (byte)id;
+
     public byte Id { get; internal set; }
     public bool IsUsed { get; internal set; }
 

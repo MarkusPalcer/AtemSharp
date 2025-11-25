@@ -11,8 +11,7 @@ public partial class MacroPoolConfigCommand : IDeserializedCommand
     /// <summary>
     /// Number of macros available in the macro pool
     /// </summary>
-    [DeserializedField(0)]
-    private byte _macroCount;
+    [DeserializedField(0)] private byte _macroCount;
 
     /// <summary>
     /// Apply the command's values to the ATEM state
@@ -27,6 +26,6 @@ public partial class MacroPoolConfigCommand : IDeserializedCommand
             MacroCount = MacroCount
         };
 
-        state.Macros.Macros = AtemStateUtil.CreateArray<State.Macro>(MacroCount).ForEachWithIndex((macro, i) => macro.Id = (ushort)i);
+        state.Macros.Macros = AtemStateUtil.CreateArray<State.Macro>(MacroCount);
     }
 }

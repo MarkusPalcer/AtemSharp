@@ -2,8 +2,10 @@ using AtemSharp.Enums;
 
 namespace AtemSharp.State;
 
-public class MediaPlayer
+public class MediaPlayer : ArrayItem
 {
+    internal override void SetId(int id) => Id = (byte)id;
+
     public byte Id { get; internal set; }
     public MediaSourceType SourceType { get; internal set; }
     public byte StillIndex { get; internal set; }

@@ -157,11 +157,10 @@ public class TopologyCommand : IDeserializedCommand
             OnlyConfigurableOutputs = OnlyConfigurableOutputs
         };
 
-        state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(DownstreamKeyers);
-        state.Video.DownstreamKeyers.ForEachWithIndex((dsk, index) => dsk.Id = (byte)index);
-
+        state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(MixEffects);
         state.Media.Players = AtemStateUtil.CreateArray<MediaPlayer>(MediaPlayers);
-        state.Media.Players.ForEachWithIndex((player, index) => player.Id = (byte)index);
+        state.Video.SuperSources = AtemStateUtil.CreateArray<State.SuperSource>(SuperSources);
+        state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(DownstreamKeyers);
 
         state.Info.MultiViewer.Count = Multiviewers;
         state.Info.MultiViewer.WindowCount = Multiviewers switch
@@ -170,14 +169,6 @@ public class TopologyCommand : IDeserializedCommand
             < 0 => -1,
             _ => 0
         };
-
-        state.Video.SuperSources = AtemStateUtil.CreateArray<State.SuperSource>(SuperSources);
-        state.Video.SuperSources.ForEachWithIndex((ssrc, index) => ssrc.Id = (byte)index);
-
-        state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(MixEffects);
-        state.Video.MixEffects.ForEachWithIndex((x, index) => x.Id = (byte)index);
-
         state.Settings.MultiViewers = AtemStateUtil.CreateArray<MultiViewer>(Math.Min(Multiviewers, 0));
-        state.Settings.MultiViewers.ForEachWithIndex((x, index) => x.Id = (byte)index);
     }
 }

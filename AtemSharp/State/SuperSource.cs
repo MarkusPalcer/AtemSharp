@@ -1,7 +1,8 @@
 namespace AtemSharp.State;
 
-public class SuperSource
+public class SuperSource : ArrayItem
 {
+    internal override void SetId(int id) => Id = (byte)id;
     public byte Id { get; internal set; }
     public Dictionary<byte, SuperSourceBox> Boxes { get; } = new();
     public SuperSourceBorderProperties Border { get; internal set; } = new();

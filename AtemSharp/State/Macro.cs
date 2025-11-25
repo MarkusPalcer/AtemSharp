@@ -1,7 +1,9 @@
 namespace AtemSharp.State;
 
-public class Macro
+public class Macro : ArrayItem
 {
+    internal override void SetId(int id) => Id = (ushort)id;
+
     public ushort Id { get; internal set; }
     public string Name { get; internal set; } = string.Empty;
     public string Description { get; internal set; } = string.Empty;
