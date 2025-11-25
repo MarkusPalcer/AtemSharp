@@ -7,39 +7,41 @@ using AtemSharp.State;
 namespace AtemSharp;
 
 /// <summary>
-/// Represents an ATEM switcher that is connected
+/// Represents an ATEM switcher
 /// </summary>
-public class AtemSwitcher : IAsyncDisposable
+public class AtemSwitcher : IAtemSwitcher
 {
-    internal IAtemClient Client
-    {
-        get => _client;
-        set
-        {
-            // Subscribe to transport events
-            _receiveLoop?.Cancel().FireAndForget();
-
-            _client = value;
-            if (_receiveLoop is not null)
-            {
-                _receiveLoop = ActionLoop.Start(ReceiveCommandLoop);
-            }
-        }
-    }
-
     private bool _disposed;
-    private IAtemClient _client;
+    private readonly string _remoteHost;
+    private readonly int _remotePort;
+    private readonly IAtemClient _client;
     private TaskCompletionSource<bool>? _connectionCompletionSource;
     private ActionLoop? _receiveLoop;
+    private ConnectionState _connectionState = ConnectionState.Disconnected;
 
+    /// <summary>
+    /// Fires, when the value of <see cref="ConnectionState"/> has changed
+    /// </summary>
+    public event EventHandler<ConnectionStateChangedEventArgs>? ConnectionStateChanged;
 
-
-    public ConnectionState ConnectionState { get; private set; } = ConnectionState.Disconnected;
+    /// <summary>
+    /// The state of the connection to the ATEM switcher
+    /// </summary>
+    public ConnectionState ConnectionState
+    {
+        get => _connectionState;
+        private set
+        {
+            var oldValue = _connectionState;
+            _connectionState = value;
+            OnConnectionStateChanged(oldValue, value);
+        }
+    }
 
     /// <summary>
     /// Gets the current ATEM state
     /// </summary>
-    public AtemState? State { get; private set; }
+    public AtemState State { get; private set; } = new();
 
     /// <summary>
     /// Gets a collection of unknown command raw names encountered during communication
@@ -49,30 +51,27 @@ public class AtemSwitcher : IAsyncDisposable
     /// <summary>
     /// Initializes a new instance of the Atem class
     /// </summary>
-    public AtemSwitcher() : this(new AtemClient())
+    /// <param name="remoteHost">IP address of the ATEM device</param>
+    /// <param name="remotePort">Port number (default: 9910)</param>
+    public AtemSwitcher(string remoteHost, int remotePort = Constants.AtemConstants.DEFAULT_PORT) : this(
+        remoteHost, remotePort, new AtemClient())
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the Atem class with the specified transport
-    /// This constructor is useful for testing scenarios where you want to inject a mock transport
-    /// </summary>
-    /// <param name="transport">The UDP transport to use for communication</param>
-    /// <remarks>This constructor is solely for testing purposes to mock the IUdpTransport</remarks>
-    internal AtemSwitcher(IAtemClient transport)
+    // internal constructor for passing in mocked AtemClient during tests
+    internal AtemSwitcher(string remoteHost, int remotePort, IAtemClient transport)
     {
+        _remoteHost = remoteHost;
+        _remotePort = remotePort;
         _client = transport ?? throw new ArgumentNullException(nameof(transport));
     }
 
     /// <summary>
     /// Connects to an ATEM device
     /// </summary>
-    /// <param name="remoteHost">IP address of the ATEM device</param>
-    /// <param name="remotePort">Port number (default: 9910)</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Task that completes when connected</returns>
-    public async Task ConnectAsync(string remoteHost, int remotePort = Constants.AtemConstants.DEFAULT_PORT,
-                                   CancellationToken cancellationToken = default)
+    public async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
         if (_disposed)
             throw new ObjectDisposedException(nameof(AtemSwitcher));
@@ -87,8 +86,9 @@ public class AtemSwitcher : IAsyncDisposable
 
         try
         {
-            await Client.ConnectAsync(remoteHost, remotePort, cancellationToken);
+            await _client.ConnectAsync(_remoteHost, _remotePort, cancellationToken);
             _receiveLoop = ActionLoop.Start(ReceiveCommandLoop);
+
             // Wait for InitCompleteCommand to be received, indicating the connection is fully established
             await _connectionCompletionSource.Task.WaitAsync(cancellationToken);
             ConnectionState = ConnectionState.Connected;
@@ -107,7 +107,7 @@ public class AtemSwitcher : IAsyncDisposable
         var command = await _client.ReceivedCommands.ReceiveAsync(token);
 
         // Apply the command to the current state
-        command.ApplyToState(State!);
+        command.ApplyToState(State);
 
         // Check if this is the InitCompleteCommand
         if (command is InitCompleteCommand)
@@ -140,7 +140,7 @@ public class AtemSwitcher : IAsyncDisposable
                 ConnectionState = ConnectionState.Disconnecting;
                 try
                 {
-                    await Client.DisconnectAsync();
+                    await _client.DisconnectAsync();
                     ConnectionState = ConnectionState.Disconnected;
                 }
                 catch (Exception)
@@ -148,18 +148,28 @@ public class AtemSwitcher : IAsyncDisposable
                     ConnectionState = ConnectionState.Connected;
                     throw;
                 }
+
                 break;
         }
     }
 
+    /// <summary>
+    /// Sends the given command to the ATEM switcher
+    /// </summary>
     public async Task SendCommandAsync(SerializedCommand command)
     {
-        await Client.SendCommandAsync(command);
+        await _client.SendCommandAsync(command);
     }
 
     /// <summary>
-    /// Disposes the Atem instance and releases all resources
+    /// Sends the given commands to the ATEM switcher as a batch
     /// </summary>
+    public async Task SendCommandsAsync(IEnumerable<SerializedCommand> commands)
+    {
+        await _client.SendCommandsAsync(commands);
+    }
+
+    /// <inheritdoc />
     public async ValueTask DisposeAsync()
     {
         if (_disposed)
@@ -169,7 +179,7 @@ public class AtemSwitcher : IAsyncDisposable
 
         if (_receiveLoop != null) await _receiveLoop.Cancel();
 
-        await Client.DisposeAsync();
+        await _client.DisposeAsync();
 
         // Clean up any pending connection completion
         _connectionCompletionSource?.TrySetCanceled();
@@ -180,4 +190,9 @@ public class AtemSwitcher : IAsyncDisposable
      * - Cancellation causes the macro execution to be cancelled
      * - Multiple macros are either queued (default) or the currently executed macro is cancelled and the new one started (optional parameter)
      */
+
+    protected virtual void OnConnectionStateChanged(ConnectionState oldState, ConnectionState newState)
+    {
+        ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(oldState, newState));
+    }
 }

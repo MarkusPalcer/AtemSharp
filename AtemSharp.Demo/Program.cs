@@ -13,7 +13,6 @@ Console.WriteLine("=== AtemSharp Demo ===\n");
 using var loggerFactory = LoggerFactory.Create(builder =>
     builder.AddConsole().SetMinimumLevel(LogLevel.Information));
 
-var atem = new AtemSwitcher();
 
 var emergencyCts = new CancellationTokenSource();
 if (!Debugger.IsAttached)
@@ -23,13 +22,16 @@ if (!Debugger.IsAttached)
 
 Console.CancelKeyPress += (_, _) => emergencyCts.Cancel();
 
-Console.WriteLine("Attempting to connect to 192.168.178.69:9910...");
-await atem.ConnectAsync("192.168.178.69", cancellationToken: emergencyCts.Token);
-Console.WriteLine("Connected, waiting 2s for data to come in ...");
+var atem = new AtemSwitcher("192.168.178.69");
+atem.ConnectionStateChanged += (_, args) => Console.WriteLine($"Connection state changed from {args.OldState} to {args.NewState}");
+
+Console.WriteLine("Connecting...");
+await atem.ConnectAsync(cancellationToken: emergencyCts.Token);
+
+Console.WriteLine("Waiting 2s for data to come in...");
 await Task.Delay(TimeSpan.FromSeconds(2), emergencyCts.Token);
 
-
-Console.WriteLine($"Executing Macro {atem.State!.Macros.Macros[0].Name} ...");
+Console.WriteLine($"Executing Macro {atem.State.Macros.Macros[0].Name} ...");
 await atem.SendCommandAsync(new MacroActionCommand(atem.State.Macros.Macros[0], MacroAction.Run));
 
 var state = atem.State;
@@ -50,10 +52,14 @@ Console.WriteLine("Disconnecting...");
 await atem.DisconnectAsync();
 
 Console.WriteLine("Reconnecting...");
-await atem.ConnectAsync("192.168.178.69", cancellationToken: emergencyCts.Token);
-Console.WriteLine("Connected, waiting 2s for data to come in ...");
+await atem.ConnectAsync( cancellationToken: emergencyCts.Token);
+
+Console.WriteLine("Waiting 2s for data to come in ...");
 await Task.Delay(TimeSpan.FromSeconds(2), emergencyCts.Token);
+
 Console.WriteLine($"Executing Macro {atem.State.Macros.Macros[1].Name} ...");
 await atem.SendCommandAsync(new MacroActionCommand(atem.State.Macros.Macros[1], MacroAction.Run));
+
+
 Console.WriteLine("Disconnecting...");
 await atem.DisconnectAsync();

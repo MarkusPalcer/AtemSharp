@@ -6,15 +6,13 @@ namespace AtemSharp.Tests;
 public class AtemSwitcherTests
 {
     private AtemSwitcher _atem;
-    private AtemClientFake _transportFake = new();
+    private AtemClientFake _clientFake = new();
 
     [SetUp]
     public void SetUp()
     {
-        _transportFake = new();
-
-        _atem = new();
-        _atem.Client = _transportFake;
+        _clientFake = new();
+        _atem = new("127.0.0.1", 1234, _clientFake);
 
         AtemSwitcher.UnknownCommands.Clear();
     }
@@ -23,7 +21,7 @@ public class AtemSwitcherTests
     public async Task TearDown()
     {
         await _atem.DisposeAsync();
-        await _transportFake.DisposeAsync();
+        await _clientFake.DisposeAsync();
     }
 
     [Test]
@@ -38,8 +36,8 @@ public class AtemSwitcherTests
     public async Task ConnectAsync_ShouldInitializeState()
     {
         // Act
-        var connectTask = _atem.ConnectAsync("127.0.0.1", 1234);
-        _transportFake.SuccessfullyConnect();
+        var connectTask = _atem.ConnectAsync();
+        _clientFake.SuccessfullyConnect();
         await connectTask.WithTimeout();
 
         // Assert
@@ -47,7 +45,7 @@ public class AtemSwitcherTests
 
         // Cleanup
         var disconnectTask = _atem.DisconnectAsync();
-        _transportFake.SuccessfullyDisconnect();
+        _clientFake.SuccessfullyDisconnect();
         await disconnectTask.WithTimeout();
     }
 
@@ -58,16 +56,17 @@ public class AtemSwitcherTests
         var customPort = 8888;
 
         // Act
-        var connectTask = _atem.ConnectAsync("127.0.0.1", customPort);
-        _transportFake.SuccessfullyConnect();
+        _atem = new("127.0.0.1", customPort, _clientFake);
+        var connectTask = _atem.ConnectAsync();
+        _clientFake.SuccessfullyConnect();
         await connectTask.WithTimeout();
 
         // Assert
-        Assert.That(_transportFake.RemoteEndPoint?.Port, Is.EqualTo(customPort));
+        Assert.That(_clientFake.RemoteEndPoint?.Port, Is.EqualTo(customPort));
 
         // Cleanup
         var disconnectTask = _atem.DisconnectAsync();
-        _transportFake.SuccessfullyDisconnect();
+        _clientFake.SuccessfullyDisconnect();
         await disconnectTask.WithTimeout();
     }
 
@@ -86,7 +85,7 @@ public class AtemSwitcherTests
         await _atem.DisposeAsync().AsTask();
 
         // Act & Assert
-        Assert.ThrowsAsync<ObjectDisposedException>(() => _atem.ConnectAsync("127.0.0.1"));
+        Assert.ThrowsAsync<ObjectDisposedException>(() => _atem.ConnectAsync());
     }
 
     [Test]
@@ -96,7 +95,7 @@ public class AtemSwitcherTests
         await _atem.DisposeAsync().AsTask();
 
         // Assert
-        Assert.That(_transportFake.IsDisposed, Is.True);
+        Assert.That(_clientFake.IsDisposed, Is.True);
     }
 
     [Test]
@@ -106,8 +105,8 @@ public class AtemSwitcherTests
         var oldState = _atem.State;
 
         // Act
-        var connectTask = _atem.ConnectAsync("127.0.0.1", 1234);
-        _transportFake.SuccessfullyConnect();
+        var connectTask = _atem.ConnectAsync();
+        _clientFake.SuccessfullyConnect();
         await connectTask.WithTimeout();
 
         // Assert
@@ -116,7 +115,7 @@ public class AtemSwitcherTests
 
         // Cleanup
         var disconnectTask = _atem.DisconnectAsync();
-        _transportFake.SuccessfullyDisconnect();
+        _clientFake.SuccessfullyDisconnect();
         await disconnectTask.WithTimeout();
     }
 
@@ -124,17 +123,17 @@ public class AtemSwitcherTests
     public async Task MultipleConnectAttempts_ShouldHandleGracefully()
     {
         // Act & Assert - Multiple connect attempts should be handled properly
-        var connectTask = _atem.ConnectAsync("127.0.0.1", 1234);
-        _transportFake.SuccessfullyConnect();
+        var connectTask = _atem.ConnectAsync();
+        _clientFake.SuccessfullyConnect();
         await connectTask.WithTimeout();
 
         // Second connect should fail since already connected
-        var ex = Assert.ThrowsAsync<InvalidOperationException>(() => _atem.ConnectAsync("127.0.0.1", 1234));
+        var ex = Assert.ThrowsAsync<InvalidOperationException>(() => _atem.ConnectAsync());
         Assert.That(ex!.Message, Does.Contain("Can not connect while"));
 
         // Cleanup
         var disconnectTask = _atem.DisconnectAsync();
-        _transportFake.SuccessfullyDisconnect();
+        _clientFake.SuccessfullyDisconnect();
         await disconnectTask.WithTimeout();
     }
 }

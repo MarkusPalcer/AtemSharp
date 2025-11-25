@@ -24,18 +24,14 @@ using AtemSharp;
 using AtemSharp.Commands.MixEffects;
 
 // Create ATEM connection
-using (var atem = new AtemSwitcher());
+using (var atem = new AtemSwitcher("192.168.1.240"));
 
 // Connect to ATEM
-await atem.ConnectAsync("192.168.1.240");
+await atem.ConnectAsync();
 
 // Send commands
-await atem.SendCommandsAsync(new[] {
-    new CutCommand(0),  // Cut on ME1
-    new ProgramInputCommand(0, 1),  // Set program to input 1
-    new PreviewInputCommand(0, 2),  // Set preview to input 2
-    new AutoTransitionCommand(0)    // Auto transition
-});
+await atem.SendCommandsAsync([..., ...]);
+await atem.SendCommandAsync(...);
 
 // Access the state (Assumes that the ATEM switcher has already sent the initial values)
 Console.WriteLine(atem.State.Video.MixEffects.Values.First().ProgramInput);

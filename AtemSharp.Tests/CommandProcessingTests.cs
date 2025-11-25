@@ -12,7 +12,7 @@ namespace AtemSharp.Tests;
 [TestFixture]
 public class CommandProcessingTests
 {
-    private AtemSwitcher _atem = new();
+    private AtemSwitcher _atem = new("127.0.0.1");
 
     [SetUp]
     public void SetUp()
