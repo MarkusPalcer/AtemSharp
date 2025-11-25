@@ -6,5 +6,5 @@ namespace AtemSharp.Commands.MixEffects.FadeToBlack;
 [BufferSize(4)]
 public partial class FadeToBlackAutoCommand(MixEffect mixEffect) : SerializedCommand
 {
-    [SerializedField(0)] [NoProperty] private byte _id = mixEffect.Index;
+    [SerializedField(0)] [NoProperty] private readonly byte _id = mixEffect.Id;
 }

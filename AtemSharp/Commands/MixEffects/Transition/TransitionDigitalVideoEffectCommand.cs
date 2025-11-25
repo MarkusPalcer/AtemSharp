@@ -27,7 +27,7 @@ public class TransitionDigitalVideoEffectCommand : SerializedCommand
 
     public TransitionDigitalVideoEffectCommand(MixEffect mixEffect)
     {
-        MixEffectId = mixEffect.Index;
+        MixEffectId = mixEffect.Id;
 
         // Initialize from current state (direct field access = no flags set)
         var dveSettings = mixEffect.TransitionSettings.DigitalVideoEffect;
@@ -201,6 +201,7 @@ public class TransitionDigitalVideoEffectCommand : SerializedCommand
         }
     }
 
+    // TODO: Serialize using code generation
     /// <summary>
     /// Serialize command to binary stream for transmission to ATEM
     /// </summary>
@@ -211,23 +212,23 @@ public class TransitionDigitalVideoEffectCommand : SerializedCommand
         using var memoryStream = new MemoryStream(20);
         using var writer = new BinaryWriter(memoryStream);
 
-        writer.WriteUInt16BigEndian((ushort)Flag);  // Flag as 16-bit big endian (matches TypeScript)
-        writer.Write((byte)MixEffectId);           // Mix effect index
-        writer.Write((byte)Rate);                  // Rate
-        writer.Write((byte)LogoRate);              // Logo rate
-        writer.Write((byte)Style);                 // Style
+        writer.WriteUInt16BigEndian((ushort)Flag); // Flag as 16-bit big endian (matches TypeScript)
+        writer.Write((byte)MixEffectId); // Mix effect index
+        writer.Write((byte)Rate); // Rate
+        writer.Write((byte)LogoRate); // Logo rate
+        writer.Write((byte)Style); // Style
 
         writer.WriteUInt16BigEndian((ushort)FillSource); // Fill source
-        writer.WriteUInt16BigEndian((ushort)KeySource);  // Key source
+        writer.WriteUInt16BigEndian((ushort)KeySource); // Key source
 
-        writer.WriteBoolean(EnableKey);    // Enable key
+        writer.WriteBoolean(EnableKey); // Enable key
         writer.WriteBoolean(PreMultiplied); // Pre-multiplied
-        writer.WriteUInt16BigEndian((ushort)Math.Round(Clip * 10.0));   // Clip (multiply by 10)
-        writer.WriteUInt16BigEndian((ushort)Math.Round(Gain * 10.0));   // Gain (multiply by 10)
-        writer.WriteBoolean(InvertKey);     // Invert key
-        writer.WriteBoolean(Reverse);       // Reverse
-        writer.WriteBoolean(FlipFlop);      // Flip flop
-        writer.Pad(1);                              // 1 byte padding to reach 20 bytes
+        writer.WriteUInt16BigEndian((ushort)Math.Round(Clip * 10.0)); // Clip (multiply by 10)
+        writer.WriteUInt16BigEndian((ushort)Math.Round(Gain * 10.0)); // Gain (multiply by 10)
+        writer.WriteBoolean(InvertKey); // Invert key
+        writer.WriteBoolean(Reverse); // Reverse
+        writer.WriteBoolean(FlipFlop); // Flip flop
+        writer.Pad(1); // 1 byte padding to reach 20 bytes
 
         return memoryStream.ToArray();
     }

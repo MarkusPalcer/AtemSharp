@@ -132,7 +132,7 @@ public class AtemStateUtilTests
         Assert.That(dictionary[2], Is.SameAs(result), "Should store in dictionary");
 
         // Verify default MixEffect values
-        Assert.That(result.Index, Is.EqualTo(0), "Should have default Index value");
+        Assert.That(result.Id, Is.EqualTo(0), "Should have default Index value");
         Assert.That(result.ProgramInput, Is.EqualTo(0), "Should have default ProgramInput value");
         Assert.That(result.PreviewInput, Is.EqualTo(0), "Should have default PreviewInput value");
     }

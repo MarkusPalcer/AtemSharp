@@ -11,7 +11,7 @@ namespace AtemSharp.Commands.MixEffects.Transition;
 [BufferSize(4)]
 public class TransitionMixCommand(MixEffect mixEffect) : SerializedCommand
 {
-    internal readonly int MixEffectId = mixEffect.Index;
+    internal readonly int MixEffectId = mixEffect.Id;
 
     private int _rate = mixEffect.TransitionSettings.Mix.Rate;
 
@@ -25,7 +25,7 @@ public class TransitionMixCommand(MixEffect mixEffect) : SerializedCommand
         set
         {
             _rate = value;
-            Flag |= 1 << 0;  // Automatic flag setting!
+            Flag |= 1 << 0; // Automatic flag setting!
         }
     }
 

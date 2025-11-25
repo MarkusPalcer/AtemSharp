@@ -9,13 +9,10 @@ namespace AtemSharp.Commands.MixEffects;
 [BufferSize(4)]
 public partial class ProgramInputCommand(MixEffect mixEffect) : SerializedCommand
 {
-    [SerializedField(0)]
-    [NoProperty]
-    internal readonly byte MixEffectId = mixEffect.Index;
+    [SerializedField(0)] [NoProperty] internal readonly byte MixEffectId = mixEffect.Id;
 
     /// <summary>
     /// Program input source number
     /// </summary>
-    [SerializedField(2)]
-    private ushort _source = mixEffect.ProgramInput;
+    [SerializedField(2)] private ushort _source = mixEffect.ProgramInput;
 }

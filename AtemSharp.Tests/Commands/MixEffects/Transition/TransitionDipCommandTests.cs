@@ -16,10 +16,9 @@ public class TransitionDipCommandTests : SerializedCommandTestBase<TransitionDip
 
     protected override TransitionDipCommand CreateSut(TestCaseData testCase)
     {
-        // Create state with the required mix effect and transition settings
-        var state = new MixEffect
+        return new TransitionDipCommand(new MixEffect
         {
-            Index = testCase.Command.Index,
+            Id = testCase.Command.Index,
             TransitionSettings =
             {
                 Dip =
@@ -28,16 +27,7 @@ public class TransitionDipCommandTests : SerializedCommandTestBase<TransitionDip
                     Input = testCase.Command.Input
                 }
             }
-        };
-
-        // Create command with the mix effect ID
-        var command = new TransitionDipCommand(state);
-
-        // Set the actual values that should be written
-        command.Rate = testCase.Command.Rate;
-        command.Input = testCase.Command.Input;
-
-        return command;
+        });
     }
 
     [Test]
@@ -46,7 +36,7 @@ public class TransitionDipCommandTests : SerializedCommandTestBase<TransitionDip
         // Arrange
         var state = new MixEffect
         {
-            Index = 0,
+            Id = 0,
             TransitionSettings =
             {
                 Dip =
@@ -74,7 +64,7 @@ public class TransitionDipCommandTests : SerializedCommandTestBase<TransitionDip
         // Arrange
         var state = new MixEffect
         {
-            Index = 0,
+            Id = 0,
             TransitionSettings =
             {
                 Dip =
@@ -101,7 +91,7 @@ public class TransitionDipCommandTests : SerializedCommandTestBase<TransitionDip
         // Arrange
         var state = new MixEffect
         {
-            Index = 0,
+            Id = 0,
             TransitionSettings =
             {
                 Dip =
@@ -127,7 +117,7 @@ public class TransitionDipCommandTests : SerializedCommandTestBase<TransitionDip
         // Arrange
         var state = new MixEffect
         {
-            Index = 0,
+            Id = 0,
             TransitionSettings =
             {
                 Dip =

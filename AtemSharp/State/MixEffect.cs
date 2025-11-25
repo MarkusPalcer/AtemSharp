@@ -8,7 +8,7 @@ public class MixEffect
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>
-    public byte Index { get; internal set; }
+    public byte Id { get; internal set; }
 
     /// <summary>
     /// Currently selected program input source

@@ -4,6 +4,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Transition;
 
+// TODO: Switch to generated code
 /// <summary>
 /// Command received from ATEM device containing wipe transition settings update
 /// </summary>
@@ -89,13 +90,7 @@ public class TransitionWipeUpdateCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        // Validate mix effect index
-        if (!state.Video.MixEffects.TryGetValue(MixEffectId, out var mixEffect))
-        {
-            throw new InvalidIdError("MixEffect", MixEffectId.ToString());
-        }
-
-        // Update the wipe settings
+        var mixEffect = state.Video.MixEffects[MixEffectId];
         mixEffect.TransitionSettings.Wipe.Rate = Rate;
         mixEffect.TransitionSettings.Wipe.Pattern = Pattern;
         mixEffect.TransitionSettings.Wipe.BorderWidth = BorderWidth;

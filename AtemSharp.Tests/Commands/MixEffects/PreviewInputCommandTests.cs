@@ -15,13 +15,11 @@ public class PreviewInputCommandTests : SerializedCommandTestBase<PreviewInputCo
 
     protected override PreviewInputCommand CreateSut(TestCaseData testCase)
     {
-        var state = new MixEffect
+        return new PreviewInputCommand(new MixEffect
         {
-            Index = testCase.Command.Index,
+            Id = testCase.Command.Index,
             PreviewInput = testCase.Command.Source
-        };
-
-        return new PreviewInputCommand(state);
+        });
     }
 
     [Test]
@@ -32,7 +30,7 @@ public class PreviewInputCommandTests : SerializedCommandTestBase<PreviewInputCo
         const int expectedSource = 1234;
         var state = new MixEffect()
         {
-            Index = mixEffectId,
+            Id = mixEffectId,
             PreviewInput = expectedSource
         };
 

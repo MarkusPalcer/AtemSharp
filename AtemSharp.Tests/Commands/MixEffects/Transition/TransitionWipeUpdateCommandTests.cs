@@ -68,15 +68,15 @@ public class TransitionWipeUpdateCommandTests : DeserializedCommandTestBase<Tran
             },
             Video = new VideoState
             {
-                MixEffects = new Dictionary<int, MixEffect>
-                {
-                    [0] = new MixEffect
+                MixEffects =
+                [
+                    new MixEffect
                     {
-                        Index = 0,
+                        Id = 0,
                         ProgramInput = 1000,
                         PreviewInput = 1001
                     }
-                }
+                ]
             }
         };
 
@@ -99,34 +99,5 @@ public class TransitionWipeUpdateCommandTests : DeserializedCommandTestBase<Tran
         Assert.That(wipeSettings.YPosition, Is.EqualTo(0.2341));
         Assert.That(wipeSettings.ReverseDirection, Is.True);
         Assert.That(wipeSettings.FlipFlop, Is.False);
-    }
-
-    [Test]
-    public void ApplyToState_InvalidMixEffect_ThrowsException()
-    {
-        // Arrange
-        var command = new TransitionWipeUpdateCommand
-        {
-            MixEffectId = 5, // Invalid mix effect index
-            Rate = 50
-        };
-
-        var state = new AtemState
-        {
-            Info = new DeviceInfo
-            {
-                Capabilities = new AtemCapabilities
-                {
-                    MixEffects = 2 // Only 2 mix effects available (0, 1)
-                }
-            },
-            Video = new VideoState
-            {
-                MixEffects = new Dictionary<int, MixEffect>()
-            }
-        };
-
-        // Act & Assert
-        Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
     }
 }

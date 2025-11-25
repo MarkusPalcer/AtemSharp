@@ -20,23 +20,14 @@ public class TransitionPositionCommandTests : SerializedCommandTestBase<Transiti
 
     protected override TransitionPositionCommand CreateSut(TestCaseData testCase)
     {
-        // Create state with the required mix effect and transition position
-        var state = new MixEffect
+        return new TransitionPositionCommand(new MixEffect
         {
-            Index = testCase.Command.Index,
+            Id = testCase.Command.Index,
             TransitionPosition = new TransitionPosition
             {
                 HandlePosition = testCase.Command.HandlePosition
             }
-        };
-
-        // Create command with the mix effect ID
-        var command = new TransitionPositionCommand(state);
-
-        // Set the actual value that should be written
-        command.HandlePosition = testCase.Command.HandlePosition;
-
-        return command;
+        });
     }
 
     [Test]
@@ -47,7 +38,7 @@ public class TransitionPositionCommandTests : SerializedCommandTestBase<Transiti
         const double expectedHandlePosition = 0.5;
         var state = new MixEffect
         {
-            Index = mixEffectId,
+            Id = mixEffectId,
             TransitionPosition = new TransitionPosition
             {
                 HandlePosition = expectedHandlePosition
@@ -69,7 +60,7 @@ public class TransitionPositionCommandTests : SerializedCommandTestBase<Transiti
         // Arrange
         var state = new MixEffect
         {
-            Index = 0,
+            Id = 0,
             TransitionPosition = new TransitionPosition
             {
                 HandlePosition = 0

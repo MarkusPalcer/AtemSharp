@@ -12,10 +12,11 @@ public class MixEffectKeyAdvancedChromaPropertiesCommandTests : SerializedComman
     /// </summary>
     protected override Range[] GetFloatingPointByteRanges()
     {
-        return [
-            4..6,   // ForegroundLevel field (UInt16)
-            6..8,   // BackgroundLevel field (UInt16)
-            8..10,  // KeyEdge field (UInt16)
+        return
+        [
+            4..6, // ForegroundLevel field (UInt16)
+            6..8, // BackgroundLevel field (UInt16)
+            8..10, // KeyEdge field (UInt16)
             10..12, // SpillSuppression field (UInt16)
             12..14, // FlareSuppression field (UInt16)
             14..16, // Brightness field (Int16)
@@ -23,7 +24,7 @@ public class MixEffectKeyAdvancedChromaPropertiesCommandTests : SerializedComman
             18..20, // Saturation field (UInt16)
             20..22, // Red field (Int16)
             22..24, // Green field (Int16)
-            24..26  // Blue field (Int16)
+            24..26 // Blue field (Int16)
         ];
     }
 
@@ -85,11 +86,14 @@ public class MixEffectKeyAdvancedChromaPropertiesCommandTests : SerializedComman
     /// Creates an AtemState with a valid mix effect and upstream keyer with advanced chroma settings at the specified indices
     /// </summary>
     private static AtemState CreateStateWithUpstreamKeyerAdvancedChroma(byte mixEffectId, byte keyerId,
-        double foregroundLevel = 0.0, double backgroundLevel = 0.0, double keyEdge = 0.0,
-        double spillSuppression = 0.0, double flareSuppression = 0.0, double brightness = 0.0,
-        double contrast = 0.0, double saturation = 0.0, double red = 0.0, double green = 0.0, double blue = 0.0)
+                                                                        double foregroundLevel = 0.0, double backgroundLevel = 0.0,
+                                                                        double keyEdge = 0.0,
+                                                                        double spillSuppression = 0.0, double flareSuppression = 0.0,
+                                                                        double brightness = 0.0,
+                                                                        double contrast = 0.0, double saturation = 0.0, double red = 0.0,
+                                                                        double green = 0.0, double blue = 0.0)
     {
-        var mixEffects = new Dictionary<int, MixEffect>();
+        var mixEffects = new MixEffect[mixEffectId + 1];
         var upstreamKeyers = new Dictionary<int, UpstreamKeyer>();
 
         upstreamKeyers[keyerId] = new UpstreamKeyer
@@ -119,7 +123,7 @@ public class MixEffectKeyAdvancedChromaPropertiesCommandTests : SerializedComman
 
         mixEffects[mixEffectId] = new MixEffect
         {
-            Index = mixEffectId,
+            Id = mixEffectId,
             ProgramInput = 1000,
             PreviewInput = 2001,
             TransitionPreview = false,

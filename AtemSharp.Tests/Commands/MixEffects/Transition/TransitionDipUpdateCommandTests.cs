@@ -14,7 +14,8 @@ public class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<Trans
         public ushort Input { get; set; }
     }
 
-    protected override void CompareCommandProperties(TransitionDipUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(TransitionDipUpdateCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(testCase.Command.Index));
         Assert.That(actualCommand.Rate, Is.EqualTo(testCase.Command.Rate));
@@ -36,13 +37,13 @@ public class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<Trans
         {
             Video = new VideoState
             {
-                MixEffects = new Dictionary<int, MixEffect>
-                {
-                    [0] = new()
+                MixEffects =
+                [
+                    new MixEffect
                     {
-                        Index = 0,
+                        Id = 0,
                     }
-                }
+                ]
             }
         };
 
@@ -70,13 +71,11 @@ public class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<Trans
         {
             Video = new VideoState
             {
-                MixEffects = new Dictionary<int, MixEffect>() // Empty mix effects
+                MixEffects = [] // Empty mix effects
             }
         };
 
         // Act & Assert
-        var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-        Assert.That(ex.Message, Does.Contain("MixEffect"));
-        Assert.That(ex.Message, Does.Contain("99"));
+        Assert.Throws<IndexOutOfRangeException>(() => command.ApplyToState(state));
     }
 }

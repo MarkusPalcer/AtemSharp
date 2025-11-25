@@ -17,25 +17,15 @@ public class TransitionPropertiesCommandTests : SerializedCommandTestBase<Transi
 
     protected override TransitionPropertiesCommand CreateSut(TestCaseData testCase)
     {
-        // Create state with the required mix effect and transition properties
-        var state = new MixEffect
+        return new TransitionPropertiesCommand(new MixEffect
         {
-            Index = testCase.Command.Index,
+            Id = testCase.Command.Index,
             TransitionProperties =
             {
                 NextStyle = testCase.Command.NextStyle,
                 NextSelection = testCase.Command.NextSelection
             }
-        };
-
-        // Create command with the mix effect ID
-        var command = new TransitionPropertiesCommand(state);
-
-        // Set the actual values that should be written
-        command.NextStyle = testCase.Command.NextStyle;
-        command.NextSelection = testCase.Command.NextSelection;
-
-        return command;
+        });
     }
 
     [Test]
@@ -47,7 +37,7 @@ public class TransitionPropertiesCommandTests : SerializedCommandTestBase<Transi
         const TransitionSelection expectedNextSelection = TransitionSelection.Key1 | TransitionSelection.Background;
         var state = new MixEffect
         {
-            Index = mixEffectId,
+            Id = mixEffectId,
             TransitionProperties =
             {
                 NextStyle = expectedNextStyle,
@@ -71,7 +61,7 @@ public class TransitionPropertiesCommandTests : SerializedCommandTestBase<Transi
         // Arrange
         var state = new MixEffect
         {
-            Index = 0,
+            Id = 0,
             TransitionProperties =
             {
                 NextStyle = TransitionStyle.DVE,
@@ -96,7 +86,7 @@ public class TransitionPropertiesCommandTests : SerializedCommandTestBase<Transi
         // Arrange
         var state = new MixEffect
         {
-            Index = 0,
+            Id = 0,
             TransitionProperties =
             {
                 NextStyle = TransitionStyle.DVE,
@@ -121,7 +111,7 @@ public class TransitionPropertiesCommandTests : SerializedCommandTestBase<Transi
         // Arrange
         var state = new MixEffect
         {
-            Index = 0,
+            Id = 0,
             TransitionProperties =
             {
                 NextStyle = TransitionStyle.DVE,

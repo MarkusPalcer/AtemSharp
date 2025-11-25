@@ -15,13 +15,11 @@ public class ProgramInputCommandTests : SerializedCommandTestBase<ProgramInputCo
 
     protected override ProgramInputCommand CreateSut(TestCaseData testCase)
     {
-        var state = new MixEffect
+        return new ProgramInputCommand(new MixEffect
         {
-            Index = testCase.Command.Index,
+            Id = testCase.Command.Index,
             ProgramInput = testCase.Command.Source
-        };
-
-        return new ProgramInputCommand(state);
+        });
     }
 
     [Test]
@@ -32,7 +30,7 @@ public class ProgramInputCommandTests : SerializedCommandTestBase<ProgramInputCo
         const int expectedSource = 1234;
         var state = new MixEffect
         {
-            Index = mixEffectId,
+            Id = mixEffectId,
             ProgramInput = expectedSource
         };
 

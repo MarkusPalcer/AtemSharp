@@ -5,14 +5,11 @@ namespace AtemSharp.Commands.MixEffects.FadeToBlack;
 
 [Command("FtbC")]
 [BufferSize(4)]
-public partial class FadeToBlackRateCommand: SerializedCommand
+public partial class FadeToBlackRateCommand : SerializedCommand
 {
-    [SerializedField(1)]
-    [NoProperty]
-    private readonly byte _mixEffectId;
+    [SerializedField(1)] [NoProperty] private readonly byte _mixEffectId;
 
-    [SerializedField(2)]
-    private byte _rate;
+    [SerializedField(2)] private byte _rate;
 
     private void SerializeInternal(byte[] buffer)
     {
@@ -27,7 +24,7 @@ public partial class FadeToBlackRateCommand: SerializedCommand
             throw new InvalidOperationException("Can't set fade to black rate before fade to black properties are initialized");
         }
 
-        _mixEffectId = mixEffect.Index;
+        _mixEffectId = mixEffect.Id;
         Rate = mixEffect.FadeToBlack.Rate;
     }
 }

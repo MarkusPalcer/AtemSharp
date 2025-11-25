@@ -18,14 +18,15 @@ public class TransitionDigitalVideoEffectsUpdateCommandTests : DeserializedComma
         public ushort KeySource { get; set; }
         public bool EnableKey { get; set; }
         public bool PreMultiplied { get; set; }
-        public double Clip { get; set; }  // Use double for fractional values
-        public double Gain { get; set; }  // Use double for fractional values
+        public double Clip { get; set; }
+        public double Gain { get; set; }
         public bool InvertKey { get; set; }
         public bool Reverse { get; set; }
         public bool FlipFlop { get; set; }
     }
 
-    protected override void CompareCommandProperties(TransitionDigitalVideoEffectsUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(TransitionDigitalVideoEffectsUpdateCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.Rate, Is.EqualTo(expectedData.Rate));
@@ -46,10 +47,9 @@ public class TransitionDigitalVideoEffectsUpdateCommandTests : DeserializedComma
     public void ApplyToState_WithValidState_UpdatesDVESettings()
     {
         // Arrange
-        byte mixEffectId = 0;
         var command = new TransitionDigitalVideoEffectsUpdateCommand
         {
-            MixEffectId = mixEffectId,
+            MixEffectId = 0,
             Rate = 30,
             LogoRate = 20,
             Style = DigitalVideoEffect.SwooshBottom,
@@ -76,13 +76,13 @@ public class TransitionDigitalVideoEffectsUpdateCommandTests : DeserializedComma
             },
             Video = new VideoState
             {
-                MixEffects = new Dictionary<int, MixEffect>
-                {
-                    [mixEffectId] = new()
+                MixEffects =
+                [
+                    new MixEffect
                     {
-                        Index = mixEffectId,
+                        Id = 0,
                     }
-                }
+                ]
             }
         };
 
@@ -90,7 +90,7 @@ public class TransitionDigitalVideoEffectsUpdateCommandTests : DeserializedComma
         command.ApplyToState(state);
 
         // Assert
-        var dveSettings = state.Video.MixEffects[mixEffectId].TransitionSettings.DigitalVideoEffect;
+        var dveSettings = state.Video.MixEffects[0].TransitionSettings.DigitalVideoEffect;
         Assert.That(dveSettings, Is.Not.Null);
         Assert.That(dveSettings.Rate, Is.EqualTo(30));
         Assert.That(dveSettings.LogoRate, Is.EqualTo(20));
@@ -104,50 +104,5 @@ public class TransitionDigitalVideoEffectsUpdateCommandTests : DeserializedComma
         Assert.That(dveSettings.InvertKey, Is.True);
         Assert.That(dveSettings.Reverse, Is.False);
         Assert.That(dveSettings.FlipFlop, Is.True);
-    }
-
-    [Test]
-    public void ApplyToState_WithInvalidMixEffect_ThrowsInvalidIdError()
-    {
-        // Arrange
-        var command = new TransitionDigitalVideoEffectsUpdateCommand { MixEffectId = 5 };
-        var state = new AtemState
-        {
-            Video = new VideoState { MixEffects = new Dictionary<int, MixEffect>() }
-        };
-
-        // Act & Assert
-        var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-        Assert.That(ex.Message, Contains.Substring("MixEffect"));
-        Assert.That(ex.Message, Contains.Substring("5"));
-    }
-
-    [Test]
-    public void ApplyToState_WithoutDVECapability_ThrowsInvalidIdError()
-    {
-        // Arrange
-        var command = new TransitionDigitalVideoEffectsUpdateCommand { MixEffectId = 0 };
-        var state = new AtemState
-        {
-            Info = new DeviceInfo
-            {
-                Capabilities = new AtemCapabilities
-                {
-                    MixEffects = 1,
-                    DVEs = 0  // No DVE capability
-                }
-            },
-            Video = new VideoState
-            {
-                MixEffects = new Dictionary<int, MixEffect>
-                {
-                    [0] = new MixEffect { Index = 0 }
-                }
-            }
-        };
-
-        // Act & Assert
-        var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-        Assert.That(ex.Message, Contains.Substring("Invalid DVE id: is not supported"));
     }
 }

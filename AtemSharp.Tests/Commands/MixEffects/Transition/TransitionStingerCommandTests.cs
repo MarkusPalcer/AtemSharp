@@ -10,9 +10,10 @@ public class TransitionStingerCommandTests : SerializedCommandTestBase<Transitio
     /// <inheritdoc />
     protected override Range[] GetFloatingPointByteRanges()
     {
-        return [
-            6..8,   // Clip
-            8..10   // Gain
+        return
+        [
+            6..8, // Clip
+            8..10 // Gain
         ];
     }
 
@@ -32,10 +33,9 @@ public class TransitionStingerCommandTests : SerializedCommandTestBase<Transitio
 
     protected override TransitionStingerCommand CreateSut(TestCaseData testCase)
     {
-        // Create state with the required mix effect and transition settings
-        var state = new MixEffect
+        return new TransitionStingerCommand(new MixEffect
         {
-            Index = testCase.Command.Index,
+            Id = testCase.Command.Index,
             TransitionSettings =
             {
                 Stinger =
@@ -51,23 +51,7 @@ public class TransitionStingerCommandTests : SerializedCommandTestBase<Transitio
                     MixRate = testCase.Command.MixRate
                 }
             }
-        };
-
-        // Create command with the mix effect ID
-        var command = new TransitionStingerCommand(state);
-
-        // Set the actual values that should be written
-        command.Source = testCase.Command.Source;
-        command.PreMultipliedKey = testCase.Command.PreMultipliedKey;
-        command.Clip = testCase.Command.Clip;
-        command.Gain = testCase.Command.Gain;
-        command.Invert = testCase.Command.Invert;
-        command.Preroll = testCase.Command.Preroll;
-        command.ClipDuration = testCase.Command.ClipDuration;
-        command.TriggerPoint = testCase.Command.TriggerPoint;
-        command.MixRate = testCase.Command.MixRate;
-
-        return command;
+        });
     }
 
     [Test]
@@ -87,7 +71,7 @@ public class TransitionStingerCommandTests : SerializedCommandTestBase<Transitio
 
         var state = new MixEffect
         {
-            Index = mixEffectId,
+            Id = mixEffectId,
             TransitionSettings =
             {
                 Stinger =

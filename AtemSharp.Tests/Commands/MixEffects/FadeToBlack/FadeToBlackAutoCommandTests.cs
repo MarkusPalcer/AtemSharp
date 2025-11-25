@@ -7,11 +7,11 @@ public class FadeToBlackAutoCommandTests : SerializedCommandTestBase<FadeToBlack
 {
     public class CommandData : CommandDataBase
     {
-        public byte Index  { get; set; }
+        public byte Index { get; set; }
     }
 
     protected override FadeToBlackAutoCommand CreateSut(TestCaseData testCase)
     {
-        return new FadeToBlackAutoCommand(new MixEffect { Index = testCase.Command.Index });
+        return new FadeToBlackAutoCommand(new MixEffect { Id = testCase.Command.Index });
     }
 }

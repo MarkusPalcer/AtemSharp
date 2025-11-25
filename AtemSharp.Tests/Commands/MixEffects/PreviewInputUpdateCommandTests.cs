@@ -13,12 +13,13 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
         public int Source { get; set; }
     }
 
-    protected override void CompareCommandProperties(PreviewInputUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(PreviewInputUpdateCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index),
-                   $"MixEffectId should match expected value for test case {testCase.Name}");
+                    $"MixEffectId should match expected value for test case {testCase.Name}");
         Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source),
-                   $"Source should match expected value for test case {testCase.Name}");
+                    $"Source should match expected value for test case {testCase.Name}");
     }
 
     [Test]
@@ -42,102 +43,15 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
         Assert.That(state.Video.MixEffects[mixEffectId].PreviewInput, Is.EqualTo(newSource));
     }
 
-    [Test]
-    public void ApplyToState_WithoutMixEffect_CreatesAndUpdates()
-    {
-        // Arrange
-        const int mixEffectId = 1;
-        const int newSource = 2000;
-
-        var state = new AtemState
-        {
-            Info = new DeviceInfo
-            {
-                Capabilities = new AtemCapabilities
-                {
-                    MixEffects = 4 // Allow mix effect 1
-                }
-            }
-        };
-
-        var command = new PreviewInputUpdateCommand
-        {
-            MixEffectId = mixEffectId,
-            Source = newSource
-        };
-
-        // Act
-        command.ApplyToState(state);
-
-        // Assert
-        Assert.That(state.Video, Is.Not.Null);
-        Assert.That(state.Video.MixEffects[mixEffectId], Is.Not.Null);
-        Assert.That(state.Video.MixEffects[mixEffectId].PreviewInput, Is.EqualTo(newSource));
-    }
-
-    [Test]
-    public void ApplyToState_WithInvalidMixEffectId_ThrowsInvalidIdError()
-    {
-        // Arrange
-        const int invalidMixEffectId = 10;
-
-        var state = new AtemState
-        {
-            Info = new DeviceInfo
-            {
-                Capabilities = new AtemCapabilities
-                {
-                    MixEffects = 2 // Only 2 mix effects available (0 and 1)
-                }
-            }
-        };
-
-        var command = new PreviewInputUpdateCommand
-        {
-            MixEffectId = invalidMixEffectId,
-            Source = 2000
-        };
-
-        // Act & Assert
-        var exception = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-        Assert.That(exception!.Message, Does.Contain("MixEffect"));
-        Assert.That(exception.Message, Does.Contain(invalidMixEffectId.ToString()));
-    }
-
-    [Test]
-    public void ApplyToState_WithNullCapabilities_ThrowsInvalidIdError()
-    {
-        // Arrange
-        const int mixEffectId = 1;
-
-        var state = new AtemState
-        {
-            Info = new DeviceInfo
-            {
-                Capabilities = null // No capabilities
-            }
-        };
-
-        var command = new PreviewInputUpdateCommand
-        {
-            MixEffectId = mixEffectId,
-            Source = 2000
-        };
-
-        // Act & Assert
-        var exception = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-        Assert.That(exception!.Message, Does.Contain("MixEffect"));
-    }
-
     /// <summary>
     /// Creates an AtemState with a valid mix effect at the specified index
     /// </summary>
     private static AtemState CreateStateWithMixEffect(byte mixEffectId, ushort previewInput = 0)
     {
-        Dictionary<int, MixEffect> mixEffects = new Dictionary<int, MixEffect>();
+        var mixEffects = new MixEffect[mixEffectId + 1];
         mixEffects[mixEffectId] = new MixEffect
         {
-            Index = mixEffectId,
+            Id = mixEffectId,
             ProgramInput = 1000,
             PreviewInput = previewInput,
             TransitionPreview = false,
@@ -169,10 +83,12 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
     public void ApplyToState_ValidIndex_ShouldSucceed()
     {
         // Arrange
-        var state = new AtemState();
-        state.Info.Capabilities = new AtemCapabilities
+        var state = new AtemState
         {
-            MixEffects = 2 // 0-1 valid
+            Video =
+            {
+                MixEffects = AtemStateUtil.CreateArray<MixEffect>(2)
+            }
         };
 
         var command = new PreviewInputUpdateCommand
@@ -182,29 +98,7 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
         };
 
         // Act & Assert
-        Assert.DoesNotThrow(() => command.ApplyToState(state));
+        command.ApplyToState(state);
         Assert.That(state.Video.MixEffects[1].PreviewInput, Is.EqualTo(2000));
-    }
-
-    [Test]
-    public void ApplyToState_InvalidIndex_ShouldThrowInvalidIdError()
-    {
-        // Arrange
-        var state = new AtemState();
-        state.Info.Capabilities = new AtemCapabilities
-        {
-            MixEffects = 2 // 0-1 valid
-        };
-
-        var command = new PreviewInputUpdateCommand
-        {
-            MixEffectId = 5, // Invalid - only 0-1 are valid
-            Source = 2000
-        };
-
-        // Act & Assert
-        var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-        Assert.That(ex.Message, Contains.Substring("MixEffect"));
-        Assert.That(ex.Message, Contains.Substring("5"));
     }
 }

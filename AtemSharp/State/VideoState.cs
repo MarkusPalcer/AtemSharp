@@ -8,13 +8,12 @@ public class VideoState
     /// <summary>
     /// Input channels available on this device
     /// </summary>
-    public Dictionary<ushort, InputChannel> Inputs { get; internal set; } = [];
+    public Dictionary<ushort, InputChannel> Inputs { get; } = [];
 
     /// <summary>
     /// Mix effects available on this device
     /// </summary>
-    // TODO: Convert to Array and instantiate with size from Topology command
-    public Dictionary<int, MixEffect> MixEffects { get; internal set; } = [];
+    public MixEffect[] MixEffects { get; internal set; } = [];
 
     /// <summary>
     /// Downstream keyers available on this device

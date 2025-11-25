@@ -5,7 +5,6 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
 [TestFixture]
-// ReSharper disable once InconsistentNaming Domain Specific Acronym
 public class TransitionDigitalVideoEffectCommandTests : SerializedCommandTestBase<TransitionDigitalVideoEffectCommand,
     TransitionDigitalVideoEffectCommandTests.CommandData>
 {
@@ -19,8 +18,8 @@ public class TransitionDigitalVideoEffectCommandTests : SerializedCommandTestBas
         public int KeySource { get; set; }
         public bool EnableKey { get; set; }
         public bool PreMultiplied { get; set; }
-        public double Clip { get; set; }  // Use double for fractional values
-        public double Gain { get; set; }  // Use double for fractional values
+        public double Clip { get; set; } // Use double for fractional values
+        public double Gain { get; set; } // Use double for fractional values
         public bool InvertKey { get; set; }
         public bool Reverse { get; set; }
         public bool FlipFlop { get; set; }
@@ -28,10 +27,9 @@ public class TransitionDigitalVideoEffectCommandTests : SerializedCommandTestBas
 
     protected override TransitionDigitalVideoEffectCommand CreateSut(TestCaseData testCase)
     {
-        // Create state with the required mix effect and transition settings
-        var state = new MixEffect
+        return new TransitionDigitalVideoEffectCommand(new MixEffect
         {
-            Index = testCase.Command.Index,
+            Id = testCase.Command.Index,
             TransitionSettings =
             {
                 DigitalVideoEffect =
@@ -50,75 +48,7 @@ public class TransitionDigitalVideoEffectCommandTests : SerializedCommandTestBas
                     FlipFlop = testCase.Command.FlipFlop
                 }
             }
-        };
-
-        // Create command with the mix effect ID
-        var command = new TransitionDigitalVideoEffectCommand(state);
-
-        // Set the actual values that should be written
-        command.Rate = testCase.Command.Rate;
-        command.LogoRate = testCase.Command.LogoRate;
-        command.Style = testCase.Command.Style;
-        command.FillSource = testCase.Command.FillSource;
-        command.KeySource = testCase.Command.KeySource;
-        command.EnableKey = testCase.Command.EnableKey;
-        command.PreMultiplied = testCase.Command.PreMultiplied;
-        command.Clip = testCase.Command.Clip;  // Direct assignment - now both are double
-        command.Gain = testCase.Command.Gain;  // Direct assignment - now both are double
-        command.InvertKey = testCase.Command.InvertKey;
-        command.Reverse = testCase.Command.Reverse;
-        command.FlipFlop = testCase.Command.FlipFlop;
-
-        return command;
-    }
-
-    [Test]
-    public void Constructor_WithValidState_InitializesFromState()
-    {
-        // Arrange
-        var state = new MixEffect
-        {
-            Index = 0,
-            TransitionSettings =
-            {
-                DigitalVideoEffect =
-                {
-                    Rate = 50,
-                    LogoRate = 30,
-                    Style = DigitalVideoEffect.SwooshTop,
-                    FillSource = 1000,
-                    KeySource = 2000,
-                    EnableKey = true,
-                    PreMultiplied = true,
-                    Clip = 500,
-                    Gain = 750,
-                    InvertKey = true,
-                    Reverse = true,
-                    FlipFlop = true
-                }
-            }
-        };
-
-        // Act
-        var command = new TransitionDigitalVideoEffectCommand(state);
-
-        // Assert
-        Assert.That(command.MixEffectId, Is.EqualTo(0));
-        Assert.That(command.Rate, Is.EqualTo(50));
-        Assert.That(command.LogoRate, Is.EqualTo(30));
-        Assert.That(command.Style, Is.EqualTo(DigitalVideoEffect.SwooshTop));
-        Assert.That(command.FillSource, Is.EqualTo(1000));
-        Assert.That(command.KeySource, Is.EqualTo(2000));
-        Assert.That(command.EnableKey, Is.True);
-        Assert.That(command.PreMultiplied, Is.True);
-        Assert.That(command.Clip, Is.EqualTo(500));
-        Assert.That(command.Gain, Is.EqualTo(750));
-        Assert.That(command.InvertKey, Is.True);
-        Assert.That(command.Reverse, Is.True);
-        Assert.That(command.FlipFlop, Is.True);
-
-        // No flags should be set since we initialized from state
-        Assert.That(command.Flag, Is.EqualTo(0));
+        });
     }
 
     [Test]

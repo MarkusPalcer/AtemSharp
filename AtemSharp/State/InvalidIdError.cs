@@ -7,9 +7,4 @@ public class InvalidIdError : Exception
 		: base($"Invalid {entityType} id: {id}")
 	{
 	}
-
-	public InvalidIdError(string entityType, string id)
-		: base($"Invalid {entityType} id: {id}")
-	{
-	}
 }

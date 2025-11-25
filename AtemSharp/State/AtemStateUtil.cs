@@ -10,6 +10,7 @@ public static class AtemStateUtil
 {
     public static T[] CreateArray<T>(int length) where T : new()
     {
+        // TODO: Add ID to items here
         return Enumerable.Repeat(() => new T(), length).Select(x => x()).ToArray();
     }
 
@@ -19,6 +20,7 @@ public static class AtemStateUtil
     public static ClassicAudioState GetClassicAudio(this AtemState state)
         => state.Audio as ClassicAudioState ?? throw new InvalidOperationException("Classic audio state is not available");
 
+    // TODO: remove when ID is added in CreateArray
     public static T[] ForEachWithIndex<T>(this T[] source, Action<T, int> action)
     {
         if (source == null) throw new ArgumentNullException(nameof(source));
@@ -47,7 +49,8 @@ public static class AtemStateUtil
         return multiViewer;
     }
 
-    public static TValue GetOrCreate<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey index) where TValue : new() where TKey : notnull
+    public static TValue GetOrCreate<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey index)
+        where TValue : new() where TKey : notnull
     {
         ArgumentNullException.ThrowIfNull(dict);
 

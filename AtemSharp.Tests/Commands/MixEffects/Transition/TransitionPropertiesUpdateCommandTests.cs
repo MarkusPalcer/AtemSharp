@@ -18,7 +18,7 @@ public class TransitionPropertiesUpdateCommandTests : DeserializedCommandTestBas
     }
 
     protected override void CompareCommandProperties(TransitionPropertiesUpdateCommand actualCommand,
-        CommandData expectedData, TestCaseData testCase)
+                                                     CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.Style, Is.EqualTo(expectedData.Style));
@@ -52,27 +52,6 @@ public class TransitionPropertiesUpdateCommandTests : DeserializedCommandTestBas
         Assert.That(mixEffect.TransitionProperties.Selection, Is.EqualTo(TransitionSelection.Background | TransitionSelection.Key1));
         Assert.That(mixEffect.TransitionProperties.NextStyle, Is.EqualTo(TransitionStyle.DVE));
         Assert.That(mixEffect.TransitionProperties.NextSelection, Is.EqualTo(TransitionSelection.Key2 | TransitionSelection.Key3));
-    }
-
-    [Test]
-    public void ApplyToState_InvalidMixEffect_ThrowsInvalidIdError()
-    {
-        // Arrange
-        var command = new TransitionPropertiesUpdateCommand
-        {
-            MixEffectId = 5, // Beyond capabilities
-            Style = TransitionStyle.Mix,
-            Selection = TransitionSelection.Background,
-            NextStyle = TransitionStyle.Mix,
-            NextSelection = TransitionSelection.Background
-        };
-
-        var state = CreateMinimalState(); // Only has 2 mix effects
-
-        // Act & Assert
-        var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-        Assert.That(ex!.Message, Does.Contain("MixEffect"));
-        Assert.That(ex.Message, Does.Contain("5"));
     }
 
     [Test]
@@ -111,20 +90,13 @@ public class TransitionPropertiesUpdateCommandTests : DeserializedCommandTestBas
     {
         return new AtemState
         {
-            Info = new DeviceInfo
-            {
-                Capabilities = new AtemCapabilities
-                {
-                    MixEffects = 2
-                }
-            },
             Video = new VideoState
             {
-                MixEffects = new Dictionary<int, MixEffect>
-                {
-                    [0] = new MixEffect { Index = 0 },
-                    [1] = new MixEffect { Index = 1 }
-                }
+                MixEffects =
+                [
+                    new MixEffect { Id = 0 },
+                    new MixEffect { Id = 1 }
+                ]
             }
         };
     }

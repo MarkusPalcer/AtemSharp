@@ -15,7 +15,7 @@ public class FadeToBlackRateCommandTests : SerializedCommandTestBase<FadeToBlack
     {
         var mixEffect = new MixEffect
         {
-            Index = testCase.Command.Index,
+            Id = testCase.Command.Index,
             FadeToBlack = new FadeToBlackProperties()
         };
 

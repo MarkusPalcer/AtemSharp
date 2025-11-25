@@ -10,12 +10,13 @@ public class TransitionWipeCommandTests : SerializedCommandTestBase<TransitionWi
     /// <inheritdoc />
     protected override Range[] GetFloatingPointByteRanges()
     {
-        return [
-            6..8,   // BorderWidth
+        return
+        [
+            6..8, // BorderWidth
             10..12, // Symmetry
             12..14, // BorderSoftness
             14..16, // XPosition
-            16..18  // YPosition
+            16..18 // YPosition
         ];
     }
 
@@ -36,10 +37,9 @@ public class TransitionWipeCommandTests : SerializedCommandTestBase<TransitionWi
 
     protected override TransitionWipeCommand CreateSut(TestCaseData testCase)
     {
-        // Create state with the required mix effect and transition settings
-        var state = new MixEffect
+        return new TransitionWipeCommand(new MixEffect
         {
-            Index = testCase.Command.Index,
+            Id = testCase.Command.Index,
             TransitionSettings =
             {
                 Wipe =
@@ -56,9 +56,7 @@ public class TransitionWipeCommandTests : SerializedCommandTestBase<TransitionWi
                     FlipFlop = testCase.Command.FlipFlop
                 }
             }
-        };
-
-        return new TransitionWipeCommand(state);
+        });
     }
 
     [Test]
@@ -79,7 +77,7 @@ public class TransitionWipeCommandTests : SerializedCommandTestBase<TransitionWi
 
         var state = new MixEffect
         {
-            Index = mixEffectId,
+            Id = mixEffectId,
             TransitionSettings =
             {
                 Wipe =

@@ -9,15 +9,11 @@ namespace AtemSharp.Commands.MixEffects.Transition;
 [BufferSize(4)]
 public partial class TransitionPositionCommand(MixEffect mixEffect) : SerializedCommand
 {
-    [SerializedField(0)]
-    [NoProperty]
-    internal readonly byte MixEffectId = mixEffect.Index;
+    [SerializedField(0)] [NoProperty] internal readonly byte MixEffectId = mixEffect.Id;
 
     /// <summary>
     /// The position of the transition handle (0.0 to 1.0, where 1.0 = 100%)
     /// </summary>
-    [SerializedField(2,0)]
-    [ScalingFactor(10000)]
-    [SerializedType(typeof(ushort))]
+    [SerializedField(2, 0)] [ScalingFactor(10000)] [SerializedType(typeof(ushort))]
     private double _handlePosition = mixEffect.TransitionPosition.HandlePosition;
 }

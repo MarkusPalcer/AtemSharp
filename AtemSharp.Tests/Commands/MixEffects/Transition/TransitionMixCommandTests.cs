@@ -15,53 +15,17 @@ public class TransitionMixCommandTests : SerializedCommandTestBase<TransitionMix
 
     protected override TransitionMixCommand CreateSut(TestCaseData testCase)
     {
-        // Create state with the required mix effect and transition settings
-        var state = new MixEffect()
+        return new TransitionMixCommand(new MixEffect
         {
-            Index = testCase.Command.Index,
+            Id = testCase.Command.Index,
             TransitionSettings =
             {
                 Mix =
                 {
-                    Rate = 25 // Default rate
+                    Rate = testCase.Command.Rate
                 }
             }
-        };
-
-        // Create command with the mix effect ID
-        var command = new TransitionMixCommand(state);
-
-        // Set the actual value that should be written
-        command.Rate = testCase.Command.Rate;
-
-        return command;
-    }
-
-    [Test]
-    public void Constructor_WithValidState_InitializesFromState()
-    {
-        // Arrange
-        const int mixEffectId = 0;
-        const int expectedRate = 50;
-        var state = new MixEffect
-        {
-            Index = mixEffectId,
-            TransitionSettings =
-            {
-                Mix =
-                {
-                    Rate = expectedRate
-                }
-            }
-        };
-
-        // Act
-        var command = new TransitionMixCommand(state);
-
-        // Assert
-        Assert.That(command.MixEffectId, Is.EqualTo(mixEffectId));
-        Assert.That(command.Rate, Is.EqualTo(expectedRate));
-        Assert.That(command.Flag, Is.EqualTo(0)); // No flags set when initializing from state
+        });
     }
 
     [Test]
@@ -71,7 +35,7 @@ public class TransitionMixCommandTests : SerializedCommandTestBase<TransitionMix
         const int mixEffectId = 0;
         var state = new MixEffect
         {
-            Index = mixEffectId,
+            Id = mixEffectId,
             TransitionSettings =
             {
                 Mix =

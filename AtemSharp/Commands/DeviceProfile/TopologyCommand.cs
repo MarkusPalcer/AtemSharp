@@ -164,19 +164,17 @@ public class TopologyCommand : IDeserializedCommand
         state.Media.Players.ForEachWithIndex((player, index) => player.Id = (byte)index);
 
         state.Info.MultiViewer.Count = Multiviewers;
-        if (Multiviewers > 0)
+        state.Info.MultiViewer.WindowCount = Multiviewers switch
         {
-            state.Info.MultiViewer.WindowCount = 10;
-        } else if (Multiviewers < 0)
-        {
-            state.Info.MultiViewer.WindowCount = -1;
-        }
-        else
-        {
-            state.Info.MultiViewer.WindowCount = 0;
-        }
+            > 0 => 10,
+            < 0 => -1,
+            _ => 0
+        };
 
         state.Video.SuperSources = AtemStateUtil.CreateArray<State.SuperSource>(SuperSources);
         state.Video.SuperSources.ForEachWithIndex((ssrc, index) => ssrc.Id = (byte)index);
+
+        state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(MixEffects);
+        state.Video.MixEffects.ForEachWithIndex((x, index) => x.Id = (byte)index);
     }
 }

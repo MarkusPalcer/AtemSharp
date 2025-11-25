@@ -15,7 +15,8 @@ public class TransitionPositionUpdateCommandTests : DeserializedCommandTestBase<
         public double HandlePosition { get; set; }
     }
 
-    protected override void CompareCommandProperties(TransitionPositionUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(TransitionPositionUpdateCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.InTransition, Is.EqualTo(expectedData.InTransition));
@@ -46,24 +47,6 @@ public class TransitionPositionUpdateCommandTests : DeserializedCommandTestBase<
         Assert.That(mixEffect.TransitionPosition.HandlePosition, Is.EqualTo(0.75));
     }
 
-    [Test]
-    public void ApplyToState_InvalidMixEffect_ThrowsException()
-    {
-        // Arrange
-        var state = CreateMinimalState();
-        var command = new TransitionPositionUpdateCommand
-        {
-            MixEffectId = 1, // Only MixEffect 0 exists
-            InTransition = true,
-            RemainingFrames = 15,
-            HandlePosition = 0.75
-        };
-
-        // Act & Assert
-        var ex = Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-        Assert.That(ex!.Message, Contains.Substring("MixEffect"));
-    }
-
     private static AtemState CreateMinimalState()
     {
         return new AtemState
@@ -77,14 +60,14 @@ public class TransitionPositionUpdateCommandTests : DeserializedCommandTestBase<
             },
             Video = new VideoState
             {
-                MixEffects = new Dictionary<int, MixEffect>
-                {
-                    [0] = new MixEffect
+                MixEffects =
+                [
+                    new MixEffect
                     {
-                        Index = 0,
+                        Id = 0,
                         TransitionPosition = new TransitionPosition()
                     }
-                }
+                ]
             }
         };
     }

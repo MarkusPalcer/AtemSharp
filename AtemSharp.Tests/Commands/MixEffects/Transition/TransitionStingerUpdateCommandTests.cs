@@ -21,7 +21,8 @@ public class TransitionStingerUpdateCommandTests : DeserializedCommandTestBase<T
         public ushort MixRate { get; set; }
     }
 
-    protected override void CompareCommandProperties(TransitionStingerUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(TransitionStingerUpdateCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source));
@@ -43,14 +44,7 @@ public class TransitionStingerUpdateCommandTests : DeserializedCommandTestBase<T
         {
             Video = new VideoState
             {
-                MixEffects = new Dictionary<int, MixEffect>
-                {
-                    [1] = new()
-                    {
-                        Index = 1,
-
-                    }
-                }
+                MixEffects = [new MixEffect { Id = 0 }, new MixEffect { Id = 1 }]
             }
         };
 
@@ -84,26 +78,4 @@ public class TransitionStingerUpdateCommandTests : DeserializedCommandTestBase<T
         Assert.That(stingerSettings.TriggerPoint, Is.EqualTo(1500));
         Assert.That(stingerSettings.MixRate, Is.EqualTo(30));
     }
-
-    [Test]
-    public void ApplyToState_MixEffectNotFound_ThrowsInvalidIdError()
-    {
-        // Arrange
-        var state = new AtemState
-        {
-            Video = new VideoState
-            {
-                MixEffects = new Dictionary<int, MixEffect>()
-            }
-        };
-
-        var command = new TransitionStingerUpdateCommand
-        {
-            MixEffectId = 1
-        };
-
-        // Act & Assert
-        Assert.Throws<InvalidIdError>(() => command.ApplyToState(state));
-    }
-
 }
