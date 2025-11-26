@@ -9,7 +9,6 @@ namespace AtemSharp.Tests.Commands.Settings;
 /// All test cases have Mode=N525i5994NTSC but expect different byte inputs.
 /// </summary>
 [TestFixture]
-// TODO: Check test data
 public class VideoModeUpdateCommandTests : DeserializedCommandTestBase<VideoModeUpdateCommand, VideoModeUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

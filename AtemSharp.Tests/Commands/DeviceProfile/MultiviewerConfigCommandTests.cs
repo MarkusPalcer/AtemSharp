@@ -11,22 +11,16 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
         public int Count { get; set; }
         public int WindowCount { get; set; }
 
-        // TODO: Check how this is deserialized and applied
         public bool CanRouteInputs { get; set; }
 
-        // TODO: Check how this is deserialized and applied
         public bool CanSwapPreviewProgram { get; set; }
 
-        // TODO: Check how this is deserialized and applied
         public bool CanToggleSafeArea { get; set; }
 
-        // TODO: Check how this is deserialized and applied
         public bool SupportsVuMeters { get; set; }
 
-        // TODO: Check how this is deserialized and applied
         public bool SupportsQuadrants { get; set; }
 
-        // TODO: Check how this is deserialized and applied
         public bool CanChangeLayout { get; set; }
     }
 

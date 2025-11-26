@@ -19,7 +19,6 @@ public class AudioMixerInputUpdateV8CommandTests : DeserializedCommandTestBase<A
 		public bool SupportsRcaToXlrEnabled { get; set; }
 		public bool RcaToXlrEnabled { get; set; }
 
-        // TODO: Check how this is deserialized and applied
         public bool IndexOfSourceType { get; set; }
 	}
 

@@ -185,11 +185,6 @@ public class AtemSwitcher : IAtemSwitcher
         _connectionCompletionSource?.TrySetCanceled();
     }
 
-    /* TODO: Abstract macro handling:
-     * - When executing a task is returned that returns when the macro is finished executing
-     * - Cancellation causes the macro execution to be cancelled
-     * - Multiple macros are either queued (default) or the currently executed macro is cancelled and the new one started (optional parameter)
-     */
 
     protected virtual void OnConnectionStateChanged(ConnectionState oldState, ConnectionState newState)
     {

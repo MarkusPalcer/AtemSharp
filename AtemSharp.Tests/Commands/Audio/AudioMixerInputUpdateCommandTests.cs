@@ -17,13 +17,10 @@ public class AudioMixerInputUpdateCommandTests : DeserializedCommandTestBase<Aud
         public double Gain { get; set; }
         public double Balance { get; set; }
 
-        // TODO: Check how this is deserialized and applied
         public bool IndexOfSourceType { get; set; }
 
-        // TODO: Check how this is deserialized and applied
         public bool SupportsRcaToXlrEnabled { get; set; }
 
-        // TODO: Check how this is deserialized and applied
         public bool RcaToXlrEnabled { get; set; }
     }
 

@@ -5,7 +5,6 @@ using AtemSharp.State.Info;
 namespace AtemSharp.Tests.Commands;
 
 [TestFixture]
-// TODO: Check generated tests
 public class PowerStatusCommandTests {
 
     [Test]
