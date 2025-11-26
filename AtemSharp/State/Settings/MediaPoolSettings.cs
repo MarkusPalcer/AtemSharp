@@ -1,4 +1,4 @@
-namespace AtemSharp.State;
+namespace AtemSharp.State.Settings;
 
 public class MediaPoolSettings
 {

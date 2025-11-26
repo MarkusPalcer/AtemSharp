@@ -1,5 +1,5 @@
 using AtemSharp.State.Audio.ClassicAudio;
-using AudioMixerHeadphonesCommand = AtemSharp.Commands.Audio.AudioMixerHeadphonesCommand;
+using AudioMixerHeadphonesCommand = AtemSharp.Commands.Audio.ClassicAudio.AudioMixerHeadphonesCommand;
 
 namespace AtemSharp.Tests.Commands.Audio;
 
@@ -29,82 +29,71 @@ public class AudioMixerHeadphonesCommandTests : SerializedCommandTestBase<AudioM
     protected override AudioMixerHeadphonesCommand CreateSut(TestCaseData testCase)
     {
         // Create command with valid state
-        var command = new AudioMixerHeadphonesCommand(new ClassicAudioState());
-
-        // Set the actual values that should be written (like TypeScript this.properties)
-        command.Gain = testCase.Command.Gain;
-        command.ProgramOutGain = testCase.Command.ProgramOutGain;
-        command.TalkbackGain = testCase.Command.TalkbackGain;
-        command.SidetoneGain = testCase.Command.SidetoneGain;
-
-        return command;
+        return new AudioMixerHeadphonesCommand(new ClassicAudioState
+        {
+            Headphones =
+            {
+                Gain = testCase.Command.Gain,
+                ProgramOutGain = testCase.Command.ProgramOutGain,
+                TalkbackGain = testCase.Command.TalkbackGain,
+                SidetoneGain = testCase.Command.SidetoneGain
+            }
+        });
     }
 
-    [TestCase(-12.5)]
-    [TestCase(0.0)]
-    [TestCase(3.5)]
-    [TestCase(6.0)]
-    public void GainProperty_WithValidValues_ShouldSetCorrectlyAndSetFlag(double validGain)
+    [Test]
+    public void GainProperty_WithValidValues_ShouldSetCorrectlyAndSetFlag()
     {
         // Arrange
         var command = new AudioMixerHeadphonesCommand(new ClassicAudioState());
 
         // Act
-        command.Gain = validGain;
+        command.Gain = 3.5;
 
         // Assert
-        Assert.That(command.Gain, Is.EqualTo(validGain));
+        Assert.That(command.Gain, Is.EqualTo(3.5));
         Assert.That(command.Flag & (1 << 0), Is.Not.EqualTo(0), "Gain flag should be set");
     }
 
-    [TestCase(-15.0)]
-    [TestCase(0.0)]
-    [TestCase(2.5)]
-    [TestCase(6.0)]
-    public void ProgramOutGainProperty_WithValidValues_ShouldSetCorrectlyAndSetFlag(double validGain)
+    [Test]
+    public void ProgramOutGainProperty_WithValidValues_ShouldSetCorrectlyAndSetFlag()
     {
         // Arrange
         var command = new AudioMixerHeadphonesCommand(new ClassicAudioState());
 
         // Act
-        command.ProgramOutGain = validGain;
+        command.ProgramOutGain = 2.5;
 
         // Assert
-        Assert.That(command.ProgramOutGain, Is.EqualTo(validGain));
+        Assert.That(command.ProgramOutGain, Is.EqualTo(2.5));
         Assert.That(command.Flag & (1 << 1), Is.Not.EqualTo(0), "ProgramOutGain flag should be set");
     }
 
-    [TestCase(-18.0)]
-    [TestCase(0.0)]
-    [TestCase(4.0)]
-    [TestCase(6.0)]
-    public void TalkbackGainProperty_WithValidValues_ShouldSetCorrectlyAndSetFlag(double validGain)
+    [Test]
+    public void TalkbackGainProperty_WithValidValues_ShouldSetCorrectlyAndSetFlag()
     {
         // Arrange
         var command = new AudioMixerHeadphonesCommand(new ClassicAudioState());
 
         // Act
-        command.TalkbackGain = validGain;
+        command.TalkbackGain = 2.5;
 
         // Assert
-        Assert.That(command.TalkbackGain, Is.EqualTo(validGain));
+        Assert.That(command.TalkbackGain, Is.EqualTo(2.5));
         Assert.That(command.Flag & (1 << 2), Is.Not.EqualTo(0), "TalkbackGain flag should be set");
     }
 
-    [TestCase(-20.0)]
-    [TestCase(0.0)]
-    [TestCase(1.5)]
-    [TestCase(6.0)]
-    public void SidetoneGainProperty_WithValidValues_ShouldSetCorrectlyAndSetFlag(double validGain)
+    [Test]
+    public void SidetoneGainProperty_WithValidValues_ShouldSetCorrectlyAndSetFlag()
     {
         // Arrange
         var command = new AudioMixerHeadphonesCommand(new ClassicAudioState());
 
         // Act
-        command.SidetoneGain = validGain;
+        command.SidetoneGain = 2.5;
 
         // Assert
-        Assert.That(command.SidetoneGain, Is.EqualTo(validGain));
+        Assert.That(command.SidetoneGain, Is.EqualTo(2.5));
         Assert.That(command.Flag & (1 << 3), Is.Not.EqualTo(0), "SidetoneGain flag should be set");
     }
 

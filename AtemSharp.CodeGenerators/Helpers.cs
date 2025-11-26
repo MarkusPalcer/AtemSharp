@@ -70,7 +70,7 @@ namespace AtemSharp.CodeGenerators
                 }
             }
 
-            return SerializationMethods.TryGetValue(name, out string value)
+            return SerializationMethods.TryGetValue(name, out var value)
                        ? value
                        : $"Unknown/* For {name} */";
         }

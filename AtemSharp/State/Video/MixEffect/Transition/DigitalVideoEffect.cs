@@ -14,12 +14,12 @@ public enum DigitalVideoEffect : byte
     SwooshBottomLeft = 5,
     SwooshBottom = 6,
     SwooshBottomRight = 7,
-    SpinCWTopLeft = 8,
-    SpinCWTopRight = 9,
-    SpinCWBottomLeft = 10,
-    SpinCWBottomRight = 11,
-    SpinCCWTopLeft = 12,
-    SpinCCWTopRight = 13,
-    SpinCCWBottomLeft = 14,
-    SpinCCWBottomRight = 15
+    SpinClockWiseTopLeft = 8,
+    SpinClockWiseTopRight = 9,
+    SpinClockWiseBottomLeft = 10,
+    SpinClockWiseBottomRight = 11,
+    SpinCounterClockWiseTopLeft = 12,
+    SpinCounterClockWiseTopRight = 13,
+    SpinCounterClockWiseBottomLeft = 14,
+    SpinCounterClockWiseBottomRight = 15
 }

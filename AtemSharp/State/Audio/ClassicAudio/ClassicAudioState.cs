@@ -5,9 +5,6 @@ namespace AtemSharp.State.Audio.ClassicAudio;
 /// </summary>
 public class ClassicAudioState : AudioState
 {
-
-    // TODO: Is this an array? (My Device has Fairlight Audio)
-    //       If so: Create array when applying AudioMixerConfigCommand (analogous to TopologyCommand)
     /// <summary>
     /// Audio channels indexed by channel number
     /// </summary>

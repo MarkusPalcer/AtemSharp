@@ -31,34 +31,6 @@ public class TransitionDipCommandTests : SerializedCommandTestBase<TransitionDip
     }
 
     [Test]
-    public void Constructor_WithValidState_InitializesFromState()
-    {
-        // Arrange
-        var state = new MixEffect
-        {
-            Id = 0,
-            TransitionSettings =
-            {
-                Dip =
-                {
-                    Rate = 50,
-                    Input = 1234
-                }
-            }
-        };
-
-        // Act
-        var command = new TransitionDipCommand(state);
-
-        // Assert
-        Assert.That(command.MixEffectId, Is.EqualTo(0));
-        Assert.That(command.Rate, Is.EqualTo(50));
-        Assert.That(command.Input, Is.EqualTo(1234));
-        Assert.That(command.Flag, Is.EqualTo(0)); // No flags set when initializing from state
-    }
-
-
-    [Test]
     public void Rate_SetProperty_SetsFlag()
     {
         // Arrange

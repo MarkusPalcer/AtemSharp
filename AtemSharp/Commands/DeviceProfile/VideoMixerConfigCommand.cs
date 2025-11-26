@@ -1,7 +1,6 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Info;
+using AtemSharp.State.Settings;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
@@ -16,7 +15,6 @@ public class VideoMixerConfigCommand : IDeserializedCommand
     /// </summary>
     public SupportedVideoMode[] SupportedVideoModes { get; init; } = [];
 
-    // TODO: Split by Version
     public static VideoMixerConfigCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion version)
     {
         var hasRequiresReconfig = version >= ProtocolVersion.V8_0;
@@ -26,7 +24,7 @@ public class VideoMixerConfigCommand : IDeserializedCommand
 
         var modes = new SupportedVideoMode[count];
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             var baseOffset = 4 + (i * size); // Start after the count (4 bytes) plus mode data
 
@@ -66,7 +64,7 @@ public class VideoMixerConfigCommand : IDeserializedCommand
         var modes = new List<VideoMode>();
 
         // Check each possible VideoMode enum value
-        foreach (VideoMode possibleMode in Enum.GetValues<VideoMode>())
+        foreach (var possibleMode in Enum.GetValues<VideoMode>())
         {
             if ((rawVal & (1u << (int)possibleMode)) != 0)
             {

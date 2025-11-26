@@ -15,31 +15,8 @@ public class MixEffectKeyOnAirUpdateCommandTests : DeserializedCommandTestBase<M
 
     protected override void CompareCommandProperties(MixEffectKeyOnAirUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        var failures = new List<string>();
-
-        // Compare MixEffectId
-        if (!actualCommand.MixEffectId.Equals(expectedData.MixEffectIndex))
-        {
-            failures.Add($"MixEffectId: expected {expectedData.MixEffectIndex}, actual {actualCommand.MixEffectId}");
-        }
-
-        // Compare KeyerId
-        if (!actualCommand.KeyerId.Equals(expectedData.KeyerIndex))
-        {
-            failures.Add($"KeyerId: expected {expectedData.KeyerIndex}, actual {actualCommand.KeyerId}");
-        }
-
-        // Compare OnAir
-        if (!actualCommand.OnAir.Equals(expectedData.OnAir))
-        {
-            failures.Add($"OnAir: expected {expectedData.OnAir}, actual {actualCommand.OnAir}");
-        }
-
-        // Assert results
-        if (failures.Count > 0)
-        {
-            Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
-                       string.Join("\n", failures));
-        }
+        Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.MixEffectIndex));
+        Assert.That(actualCommand.KeyerId, Is.EqualTo(expectedData.KeyerIndex));
+        Assert.That(actualCommand.OnAir, Is.EqualTo(expectedData.OnAir));
     }
 }

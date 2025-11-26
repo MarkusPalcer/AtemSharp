@@ -12,19 +12,6 @@ public class LockObtainedCommandTests : DeserializedCommandTestBase<LockObtained
 
     protected override void CompareCommandProperties(LockObtainedCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        var failures = new List<string>();
-
-        // Compare Index - it is not floating point so it needs to equal exactly
-        if (!actualCommand.Index.Equals(expectedData.Index))
-        {
-            failures.Add($"Index: expected {expectedData.Index}, actual {actualCommand.Index}");
-        }
-
-        // Assert results
-        if (failures.Count > 0)
-        {
-            Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
-                       string.Join("\n", failures));
-        }
+        Assert.That(actualCommand.Index, Is.EqualTo(expectedData.Index));
     }
 }

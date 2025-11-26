@@ -1,4 +1,4 @@
-using FairlightMixerSourceDeleteCommand = AtemSharp.Commands.Fairlight.Source.FairlightMixerSourceDeleteCommand;
+using FairlightMixerSourceDeleteCommand = AtemSharp.Commands.Audio.Fairlight.Source.FairlightMixerSourceDeleteCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 

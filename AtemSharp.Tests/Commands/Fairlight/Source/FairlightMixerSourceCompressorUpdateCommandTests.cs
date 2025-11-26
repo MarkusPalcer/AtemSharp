@@ -1,4 +1,4 @@
-using FairlightMixerSourceCompressorUpdateCommand = AtemSharp.Commands.Fairlight.Source.FairlightMixerSourceCompressorUpdateCommand;
+using FairlightMixerSourceCompressorUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Source.FairlightMixerSourceCompressorUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
@@ -18,13 +18,13 @@ public class FairlightMixerSourceCompressorUpdateCommandTests : DeserializedComm
 
     protected override void CompareCommandProperties(FairlightMixerSourceCompressorUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Index), $"{testCase.Name} - Index");
-        Assert.That(actualCommand.SourceId, Is.EqualTo(expectedData.SourceId), $"{testCase.Name} - SourceId");
-        Assert.That(actualCommand.CompressorEnabled, Is.EqualTo(expectedData.CompressorEnabled), $"{testCase.Name} - CompressorEnabled");
-        Assert.That(actualCommand.Threshold, Is.EqualTo(expectedData.Threshold).Within(0.01), $"{testCase.Name} - Threshold");
-        Assert.That(actualCommand.Ratio, Is.EqualTo(expectedData.Ratio).Within(0.01), $"{testCase.Name} - Ratio");
-        Assert.That(actualCommand.Attack, Is.EqualTo(expectedData.Attack).Within(0.01), $"{testCase.Name} - Attack");
-        Assert.That(actualCommand.Hold, Is.EqualTo(expectedData.Hold).Within(0.01), $"{testCase.Name} - Hold");
-        Assert.That(actualCommand.Release, Is.EqualTo(expectedData.Release).Within(0.01), $"{testCase.Name} - Release");
+        Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.SourceId, Is.EqualTo(expectedData.SourceId));
+        Assert.That(actualCommand.CompressorEnabled, Is.EqualTo(expectedData.CompressorEnabled));
+        Assert.That(actualCommand.Threshold, Is.EqualTo(expectedData.Threshold).Within(0.01));
+        Assert.That(actualCommand.Ratio, Is.EqualTo(expectedData.Ratio).Within(0.01));
+        Assert.That(actualCommand.Attack, Is.EqualTo(expectedData.Attack).Within(0.01));
+        Assert.That(actualCommand.Hold, Is.EqualTo(expectedData.Hold).Within(0.01));
+        Assert.That(actualCommand.Release, Is.EqualTo(expectedData.Release).Within(0.01));
     }
 }

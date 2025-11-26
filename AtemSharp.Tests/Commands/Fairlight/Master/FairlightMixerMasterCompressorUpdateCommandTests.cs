@@ -1,4 +1,4 @@
-using FairlightMixerMasterCompressorUpdateCommand = AtemSharp.Commands.Fairlight.Master.FairlightMixerMasterCompressorUpdateCommand;
+using FairlightMixerMasterCompressorUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Master.FairlightMixerMasterCompressorUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Master;
 
@@ -16,11 +16,11 @@ public class FairlightMixerMasterCompressorUpdateCommandTests : DeserializedComm
 
     protected override void CompareCommandProperties(FairlightMixerMasterCompressorUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        Assert.That(actualCommand.Enabled, Is.EqualTo(expectedData.CompressorEnabled), $"{testCase.Name} - CompressorEnabled");
-        Assert.That(actualCommand.Threshold, Is.EqualTo(expectedData.Threshold).Within(0.01), $"{testCase.Name} - Threshold");
-        Assert.That(actualCommand.Ratio, Is.EqualTo(expectedData.Ratio).Within(0.01), $"{testCase.Name} - Ratio");
-        Assert.That(actualCommand.Attack, Is.EqualTo(expectedData.Attack).Within(0.01), $"{testCase.Name} - Attack");
-        Assert.That(actualCommand.Hold, Is.EqualTo(expectedData.Hold).Within(0.01), $"{testCase.Name} - Hold");
-        Assert.That(actualCommand.Release, Is.EqualTo(expectedData.Release).Within(0.01), $"{testCase.Name} - Release");
+        Assert.That(actualCommand.Enabled, Is.EqualTo(expectedData.CompressorEnabled));
+        Assert.That(actualCommand.Threshold, Is.EqualTo(expectedData.Threshold).Within(0.01));
+        Assert.That(actualCommand.Ratio, Is.EqualTo(expectedData.Ratio).Within(0.01));
+        Assert.That(actualCommand.Attack, Is.EqualTo(expectedData.Attack).Within(0.01));
+        Assert.That(actualCommand.Hold, Is.EqualTo(expectedData.Hold).Within(0.01));
+        Assert.That(actualCommand.Release, Is.EqualTo(expectedData.Release).Within(0.01));
     }
 }

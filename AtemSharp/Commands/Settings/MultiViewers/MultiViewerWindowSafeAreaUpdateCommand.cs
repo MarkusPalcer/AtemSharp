@@ -1,4 +1,5 @@
 using AtemSharp.State;
+using AtemSharp.State.Settings.MultiViewer;
 
 namespace AtemSharp.Commands.Settings.MultiViewers;
 
@@ -19,13 +20,6 @@ public partial class MultiViewerWindowSafeAreaUpdateCommand : IDeserializedComma
     /// Whether safe area display should be enabled for this window
     /// </summary>
     [DeserializedField(2)] private bool _safeAreaEnabled;
-
-    /// <summary>
-    /// Parameterless constructor for deserialization
-    /// </summary>
-    public MultiViewerWindowSafeAreaUpdateCommand()
-    {
-    }
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)

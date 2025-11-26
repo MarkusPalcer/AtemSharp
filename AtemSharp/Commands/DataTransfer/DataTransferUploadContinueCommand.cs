@@ -11,20 +11,17 @@ public partial class DataTransferUploadContinueCommand : IDeserializedCommand
     /// <summary>
     /// ID of the transfer that should continue
     /// </summary>
-    [DeserializedField(0)]
-    private ushort _transferId;
+    [DeserializedField(0)] private ushort _transferId;
 
     /// <summary>
     /// Size of each chunk to be sent in bytes
     /// </summary>
-    [DeserializedField(6)]
-    private ushort _chunkSize;
+    [DeserializedField(6)] private ushort _chunkSize;
 
     /// <summary>
     /// Number of chunks to send in sequence
     /// </summary>
-    [DeserializedField(8)]
-    private ushort _chunkCount;
+    [DeserializedField(8)] private ushort _chunkCount;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)

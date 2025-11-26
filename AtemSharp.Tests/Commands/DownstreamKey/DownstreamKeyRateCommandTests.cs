@@ -13,18 +13,13 @@ public class DownstreamKeyRateCommandTests : SerializedCommandTestBase<Downstrea
 
     protected override DownstreamKeyRateCommand CreateSut(TestCaseData testCase)
     {
-        var state = new DownstreamKeyer
+        return new DownstreamKeyRateCommand(new DownstreamKeyer
         {
             Id = testCase.Command.Index,
             Properties =
             {
                 Rate = testCase.Command.Rate
             }
-        };
-
-        return new DownstreamKeyRateCommand(state)
-        {
-            Rate = testCase.Command.Rate
-        };
+        });
     }
 }

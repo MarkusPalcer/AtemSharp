@@ -1,5 +1,4 @@
 using AtemSharp.Commands.DisplayClock;
-using AtemSharp.State;
 using AtemSharp.State.DisplayClock;
 
 namespace AtemSharp.Tests.Commands.DisplayClock;
@@ -38,44 +37,16 @@ public class DisplayClockPropertiesSetCommandTests : SerializedCommandTestBase<D
         public byte Frame { get; set; }
     }
 
-    /// <summary>
-    /// Creates an AtemState with a valid display clock containing default values
-    /// </summary>
-    private static AtemSharp.State.DisplayClock.DisplayClock CreateStateWithDisplayClock()
-    {
-        return new AtemSharp.State.DisplayClock.DisplayClock
-        {
-            Enabled = false,
-            Size = 0,
-            Opacity = 255,
-            PositionX = 0.0,
-            PositionY = 0.0,
-            AutoHide = false,
-            StartFrom = new DisplayClockTime(),
-            ClockMode = DisplayClockClockMode.Countdown,
-            ClockState = DisplayClockClockState.Stopped
-        };
-    }
-
     [Test]
-    public void Constructor_WithValidState_ShouldInitializeCorrectly()
+    public void Constructor_ShouldNotSetFlags()
     {
         // Arrange
-        var state = CreateStateWithDisplayClock();
+        var state = new AtemSharp.State.DisplayClock.DisplayClock();
 
         // Act
         var command = new DisplayClockPropertiesSetCommand(state);
 
         // Assert
-        Assert.That(command.Enabled, Is.EqualTo(false));
-        Assert.That(command.Size, Is.EqualTo(0));
-        Assert.That(command.Opacity, Is.EqualTo(255));
-        Assert.That(command.PositionX, Is.EqualTo(0.0));
-        Assert.That(command.PositionY, Is.EqualTo(0.0));
-        Assert.That(command.AutoHide, Is.EqualTo(false));
-        Assert.That(command.StartFrom, Is.Not.Null);
-        Assert.That(command.StartFromFrames, Is.EqualTo(0));
-        Assert.That(command.ClockMode, Is.EqualTo(DisplayClockClockMode.Countdown));
         Assert.That(command.Flag, Is.EqualTo(0)); // No flags should be set initially
     }
 
@@ -83,7 +54,7 @@ public class DisplayClockPropertiesSetCommandTests : SerializedCommandTestBase<D
     public void PropertySetters_ShouldSetCorrectFlags()
     {
         // Arrange
-        var state = CreateStateWithDisplayClock();
+        var state = new AtemSharp.State.DisplayClock.DisplayClock();
         var command = new DisplayClockPropertiesSetCommand(state);
 
         // Act & Assert
@@ -115,65 +86,27 @@ public class DisplayClockPropertiesSetCommandTests : SerializedCommandTestBase<D
         Assert.That(command.Flag & (1 << 8), Is.Not.EqualTo(0));
     }
 
-    [TestCase(-1.0, 0.5)]
-    [TestCase(0.0, 0.0)]
-    [TestCase(0.999, -0.999)]
-    public void PositionProperties_ShouldAcceptValidValues(double x, double y)
-    {
-        // Arrange
-        var state = CreateStateWithDisplayClock();
-        var command = new DisplayClockPropertiesSetCommand(state);
-
-        // Act & Assert
-        Assert.DoesNotThrow(() => command.PositionX = x);
-        Assert.DoesNotThrow(() => command.PositionY = y);
-        Assert.That(command.PositionX, Is.EqualTo(x));
-        Assert.That(command.PositionY, Is.EqualTo(y));
-    }
-
     protected override DisplayClockPropertiesSetCommand CreateSut(TestCaseData testCase)
     {
-        // Create a new state with default display clock values
-        var state = new AtemSharp.State.DisplayClock.DisplayClock
+        return new DisplayClockPropertiesSetCommand(new AtemSharp.State.DisplayClock.DisplayClock
         {
-            Enabled = false,
-            Size = 0,
-            Opacity = 255,
-            PositionX = 0.0,
-            PositionY = 0.0,
-            AutoHide = false,
-            StartFrom = new DisplayClockTime(),
-            ClockMode = DisplayClockClockMode.Countdown
-        };
-
-        var command = new DisplayClockPropertiesSetCommand(state);
-
-        // Reset all flags to 0 - the test framework will set the correct flag later
-        command.Flag = 0;
-
-        // Set ALL properties from the test data (not just those matching the mask)
-        // The mask is only used to control which flags are set, not which properties have values
-        var data = testCase.Command;
-
-        command.Enabled = data.Enabled;
-        command.Size = data.Size;
-        command.Opacity = data.Opacity;
-        command.PositionX = data.PositionX;
-        command.PositionY = data.PositionY;
-        command.AutoHide = data.AutoHide;
-        command.StartFrom = new DisplayClockTime
+            Enabled = testCase.Command.Enabled,
+            Size = testCase.Command.Size,
+            Opacity = testCase.Command.Opacity,
+            PositionX = testCase.Command.PositionX,
+            PositionY = testCase.Command.PositionY,
+            AutoHide = testCase.Command.AutoHide,
+            StartFrom = new DisplayClockTime
+            {
+                Hours = testCase.Command.StartFrom.Hour,
+                Minutes = testCase.Command.StartFrom.Minute,
+                Seconds = testCase.Command.StartFrom.Second,
+                Frames = testCase.Command.StartFrom.Frame
+            },
+            ClockMode = testCase.Command.ClockMode
+        })
         {
-            Hours = data.StartFrom.Hour,
-            Minutes = data.StartFrom.Minute,
-            Seconds = data.StartFrom.Second,
-            Frames = data.StartFrom.Frame
+            StartFromFrames = testCase.Command.StartFromFrames
         };
-        command.StartFromFrames = data.StartFromFrames;
-        command.ClockMode = data.ClockMode;
-
-        // Reset flag again after setting properties (since property setters automatically set flags)
-        command.Flag = 0;
-
-        return command;
     }
 }

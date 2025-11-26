@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Info;
 
@@ -13,27 +12,19 @@ public partial class ProductIdentifierCommand : IDeserializedCommand
     /// <summary>
     /// ATEM device model
     /// </summary>
-    [DeserializedField(40)]
-    private Model _model;
+    [DeserializedField(40)] private Model _model;
 
     /// <summary>
     /// Product identifier string from the device
     /// </summary>
     public string ProductIdentifier { get; internal set; } = string.Empty;
 
-    /// <summary>
-    /// Deserialize the command from binary stream
-    /// </summary>
     private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {
         ProductIdentifier = rawCommand.ReadString(0, 40);
     }
 
-    /// <summary>
-    /// Apply the command's values to the ATEM state
-    /// </summary>
-    /// <param name="state">Current ATEM state to update</param>
-    /// <returns>Paths indicating what was changed in the state</returns>
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         // Update device info

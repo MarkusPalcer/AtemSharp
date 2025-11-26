@@ -38,8 +38,7 @@ public class MixEffectKeyAdvancedChromaSampleCommandTests : SerializedCommandTes
 
     protected override MixEffectKeyAdvancedChromaSampleCommand CreateSut(TestCaseData testCase)
     {
-        // Create state with the required mix effect and upstream keyer
-        var state = new UpstreamKeyer
+        return new MixEffectKeyAdvancedChromaSampleCommand(new UpstreamKeyer
         {
             Id = testCase.Command.KeyerIndex,
             MixEffectId = testCase.Command.MixEffectIndex,
@@ -57,8 +56,6 @@ public class MixEffectKeyAdvancedChromaSampleCommandTests : SerializedCommandTes
                     SampledCr = testCase.Command.SampledCr
                 }
             }
-        };
-
-        return new MixEffectKeyAdvancedChromaSampleCommand(state);
+        });
     }
 }

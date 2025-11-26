@@ -2,6 +2,9 @@ using AtemSharp.State;
 
 namespace AtemSharp.Commands;
 
+/// <summary>
+/// A command sent from the ATEM device
+/// </summary>
 public interface IDeserializedCommand : ICommand
 {
 	/// <summary>

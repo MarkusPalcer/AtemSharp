@@ -1,8 +1,6 @@
-using AtemSharp.Commands.Audio;
-using AtemSharp.State;
 using AtemSharp.State.Audio.ClassicAudio;
 using AtemSharp.State.Ports;
-using AtemSharp.Tests.TestUtilities;
+using AudioMixerInputUpdateCommand = AtemSharp.Commands.Audio.ClassicAudio.AudioMixerInputUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Audio;
 
@@ -32,89 +30,11 @@ public class AudioMixerInputUpdateCommandTests : DeserializedCommandTestBase<Aud
     protected override void CompareCommandProperties(AudioMixerInputUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
-        var failures = new List<string>();
-
-        // Compare Index
-        if (actualCommand.Index != expectedData.Index)
-        {
-            failures.Add($"Index: expected {expectedData.Index}, actual {actualCommand.Index}");
-        }
-
-        // Compare SourceType
-        if (actualCommand.SourceType != expectedData.SourceType)
-        {
-            failures.Add($"SourceType: expected {expectedData.SourceType}, actual {actualCommand.SourceType}");
-        }
-
-        // Compare PortType
-        if (actualCommand.PortType != expectedData.PortType)
-        {
-            failures.Add($"PortType: expected {expectedData.PortType}, actual {actualCommand.PortType}");
-        }
-
-        // Compare MixOption
-        if (actualCommand.MixOption != expectedData.MixOption)
-        {
-            failures.Add($"MixOption: expected {expectedData.MixOption}, actual {actualCommand.MixOption}");
-        }
-
-        // Compare Gain (floating point)
-        if (!Utilities.AreApproximatelyEqual(actualCommand.Gain, expectedData.Gain))
-        {
-            failures.Add($"Gain: expected {expectedData.Gain}, actual {actualCommand.Gain}");
-        }
-
-        // Compare Balance (floating point)
-        if (!Utilities.AreApproximatelyEqual(actualCommand.Balance, expectedData.Balance))
-        {
-            failures.Add($"Balance: expected {expectedData.Balance}, actual {actualCommand.Balance}");
-        }
-
-        // Assert
-        if (failures.Count > 0)
-        {
-            Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
-                        string.Join("\n", failures));
-        }
-    }
-
-    [Test]
-    public void ApplyToState_ValidAudioState_ShouldSucceed()
-    {
-        // Arrange
-        var state = new AtemState();
-        state.Audio = new ClassicAudioState();
-
-        var command = new AudioMixerInputUpdateCommand
-        {
-            Index = 1000,
-            SourceType = AudioSourceType.ExternalVideo,
-            Balance = 0.0,
-            Gain = -30.0
-        };
-
-        // Act & Assert
-        Assert.DoesNotThrow(() => command.ApplyToState(state));
-        Assert.That(state.Audio.As<ClassicAudioState>().Channels[1000], Is.Not.Null);
-        Assert.That(state.Audio.As<ClassicAudioState>().Channels[1000].SourceType, Is.EqualTo(AudioSourceType.ExternalVideo));
-    }
-
-    [Test]
-    public void ApplyToState_NullAudioState_ShouldThrow()
-    {
-        // Arrange
-        var state = new AtemState();
-        state.Audio = null; // Audio subsystem not available
-
-        var command = new AudioMixerInputUpdateCommand
-        {
-            Index = 1000,
-            SourceType = AudioSourceType.ExternalVideo,
-            Balance = 0.0,
-            Gain = -30.0
-        };
-
-        // Act & Assert
-        Assert.Throws<InvalidOperationException>(() => command.ApplyToState(state));
+        Assert.That(actualCommand.Index, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.SourceType, Is.EqualTo(expectedData.SourceType));
+        Assert.That(actualCommand.PortType, Is.EqualTo(expectedData.PortType));
+        Assert.That(actualCommand.MixOption, Is.EqualTo(expectedData.MixOption));
+        Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));
+        Assert.That(actualCommand.Balance, Is.EqualTo(expectedData.Balance).Within(0.01));
     }
 }

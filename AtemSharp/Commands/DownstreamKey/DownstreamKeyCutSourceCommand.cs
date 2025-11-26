@@ -7,25 +7,15 @@ namespace AtemSharp.Commands.DownstreamKey;
 /// </summary>
 [Command("CDsC")]
 [BufferSize(4)]
-public partial class DownstreamKeyCutSourceCommand : SerializedCommand
+public partial class DownstreamKeyCutSourceCommand(DownstreamKeyer dsk) : SerializedCommand
 {
     /// <summary>
     /// Downstream keyer index (0-based)
     /// </summary>
-    [SerializedField(0)]
-    [NoProperty]
-    internal readonly byte DownstreamKeyerId;
+    [SerializedField(0)] [NoProperty] internal readonly byte DownstreamKeyerId = dsk.Id;
 
     /// <summary>
     /// Cut source input number
     /// </summary>
-    [SerializedField(2, 0)]
-    private ushort _input;
-
-    public DownstreamKeyCutSourceCommand(DownstreamKeyer dsk)
-    {
-        // Initialize from current state (direct field access = no flags set)
-        DownstreamKeyerId = dsk.Id;
-        _input = dsk.Sources.CutSource;
-    }
+    [SerializedField(2, 0)] private ushort _input = dsk.Sources.CutSource;
 }

@@ -1,4 +1,4 @@
-namespace AtemSharp.State;
+namespace AtemSharp.State.DisplayClock;
 
 /// <summary>
 /// Display clock time representation

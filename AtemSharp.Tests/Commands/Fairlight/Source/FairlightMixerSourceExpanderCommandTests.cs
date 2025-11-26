@@ -1,4 +1,4 @@
-using FairlightMixerSourceExpanderCommand = AtemSharp.Commands.Fairlight.Source.FairlightMixerSourceExpanderCommand;
+using FairlightMixerSourceExpanderCommand = AtemSharp.Commands.Audio.Fairlight.Source.FairlightMixerSourceExpanderCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
@@ -29,7 +29,7 @@ public class FairlightMixerSourceExpanderCommandTests : SerializedCommandTestBas
 
     protected override FairlightMixerSourceExpanderCommand CreateSut(TestCaseData testCase)
     {
-        var source = new AtemSharp.State.Audio.Fairlight.Source
+        return new FairlightMixerSourceExpanderCommand(new AtemSharp.State.Audio.Fairlight.Source
         {
             Id = testCase.Command.SourceId,
             InputId = testCase.Command.Index,
@@ -47,7 +47,6 @@ public class FairlightMixerSourceExpanderCommandTests : SerializedCommandTestBas
                     Release = testCase.Command.Release
                 }
             }
-        };
-        return new FairlightMixerSourceExpanderCommand(source);
+        });
     }
 }

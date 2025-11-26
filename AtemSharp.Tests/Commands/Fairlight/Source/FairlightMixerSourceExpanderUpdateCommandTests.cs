@@ -1,4 +1,4 @@
-using FairlightMixerSourceExpanderUpdateCommand = AtemSharp.Commands.Fairlight.Source.FairlightMixerSourceExpanderUpdateCommand;
+using FairlightMixerSourceExpanderUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Source.FairlightMixerSourceExpanderUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 

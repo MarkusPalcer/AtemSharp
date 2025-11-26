@@ -39,10 +39,10 @@ public class DownstreamKeyer : ArrayItem
     /// <summary>
     /// Downstream keyer source configuration
     /// </summary>
-    public DownstreamKeyerSources Sources { get; internal set; } = new();
+    public DownstreamKeyerSources Sources { get; } = new();
 
     /// <summary>
     /// Downstream keyer properties and configuration
     /// </summary>
-    public DownstreamKeyerProperties Properties { get; internal set; } = new();
+    public DownstreamKeyerProperties Properties { get; } = new();
 }

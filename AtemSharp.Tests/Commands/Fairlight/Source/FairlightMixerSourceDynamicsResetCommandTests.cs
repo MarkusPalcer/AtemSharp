@@ -1,4 +1,4 @@
-using FairlightMixerSourceDynamicsResetCommand = AtemSharp.Commands.Fairlight.Source.FairlightMixerSourceDynamicsResetCommand;
+using FairlightMixerSourceDynamicsResetCommand = AtemSharp.Commands.Audio.Fairlight.Source.FairlightMixerSourceDynamicsResetCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 

@@ -1,4 +1,4 @@
-using FairlightMixerSourceLimiterCommand = AtemSharp.Commands.Fairlight.Source.FairlightMixerSourceLimiterCommand;
+using FairlightMixerSourceLimiterCommand = AtemSharp.Commands.Audio.Fairlight.Source.FairlightMixerSourceLimiterCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
@@ -25,7 +25,7 @@ public class FairlightMixerSourceLimiterCommandTests : SerializedCommandTestBase
 
     protected override FairlightMixerSourceLimiterCommand CreateSut(TestCaseData testCase)
     {
-        var source = new AtemSharp.State.Audio.Fairlight.Source
+        return new FairlightMixerSourceLimiterCommand(new AtemSharp.State.Audio.Fairlight.Source
         {
             InputId = testCase.Command.Index,
             Id = testCase.Command.SourceId,
@@ -40,7 +40,6 @@ public class FairlightMixerSourceLimiterCommandTests : SerializedCommandTestBase
                     Release = testCase.Command.Release
                 }
             }
-        };
-        return new FairlightMixerSourceLimiterCommand(source);
+        });
     }
 }

@@ -110,7 +110,7 @@ public class AtemSwitcherTests
         await connectTask.WithTimeout();
 
         // Assert
-        Assert.That(_atem.State, Is.TypeOf<AtemSharp.State.AtemState>());
+        Assert.That(_atem.State, Is.TypeOf<State.AtemState>());
         Assert.That(_atem.State, Is.Not.SameAs(oldState));
 
         // Cleanup

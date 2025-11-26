@@ -1,0 +1,41 @@
+using AtemSharp.Commands.DownstreamKey;
+
+namespace AtemSharp.Tests.Commands.DownstreamKey;
+
+[TestFixture]
+public class DownstreamKeyPropertiesUpdateCommandTests : DeserializedCommandTestBase<DownstreamKeyPropertiesUpdateCommand,
+    DownstreamKeyPropertiesUpdateCommandTests.CommandData>
+{
+    public class CommandData : CommandDataBase
+    {
+        public int Index { get; set; }
+        public bool Tie { get; set; }
+        public int Rate { get; set; }
+        public bool PreMultipliedKey { get; set; }
+        public double Clip { get; set; }
+        public double Gain { get; set; }
+        public bool Invert { get; set; }
+        public bool MaskEnabled { get; set; }
+        public double MaskTop { get; set; }
+        public double MaskBottom { get; set; }
+        public double MaskLeft { get; set; }
+        public double MaskRight { get; set; }
+    }
+
+    protected override void CompareCommandProperties(DownstreamKeyPropertiesUpdateCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
+    {
+        Assert.That(actualCommand.DownstreamKeyerId, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.Tie, Is.EqualTo(expectedData.Tie));
+        Assert.That(actualCommand.Rate, Is.EqualTo(expectedData.Rate));
+        Assert.That(actualCommand.PreMultiply, Is.EqualTo(expectedData.PreMultipliedKey));
+        Assert.That(actualCommand.Clip, Is.EqualTo(expectedData.Clip).Within(0.1));
+        Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.1));
+        Assert.That(actualCommand.Invert, Is.EqualTo(expectedData.Invert));
+        Assert.That(actualCommand.MaskEnabled, Is.EqualTo(expectedData.MaskEnabled));
+        Assert.That(actualCommand.MaskTop, Is.EqualTo(expectedData.MaskTop).Within(0.001));
+        Assert.That(actualCommand.MaskBottom, Is.EqualTo(expectedData.MaskBottom).Within(0.001));
+        Assert.That(actualCommand.MaskLeft, Is.EqualTo(expectedData.MaskLeft).Within(0.001));
+        Assert.That(actualCommand.MaskRight, Is.EqualTo(expectedData.MaskRight).Within(0.001));
+    }
+}

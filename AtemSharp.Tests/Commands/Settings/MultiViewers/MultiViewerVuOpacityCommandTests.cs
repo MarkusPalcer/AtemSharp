@@ -1,5 +1,5 @@
 using AtemSharp.Commands.Settings.MultiViewers;
-using AtemSharp.State;
+using AtemSharp.State.Settings.MultiViewer;
 
 namespace AtemSharp.Tests.Commands.Settings.MultiViewers;
 
@@ -15,12 +15,10 @@ public class MultiViewerVuOpacityCommandTests : SerializedCommandTestBase<MultiV
 
     protected override MultiViewerVuOpacityCommand CreateSut(TestCaseData testCase)
     {
-        var state = new MultiViewer
+        return new MultiViewerVuOpacityCommand(new MultiViewer
         {
             Id = testCase.Command.MultiviewIndex,
             VuOpacity = testCase.Command.Opacity
-        };
-
-        return new MultiViewerVuOpacityCommand(state);
+        });
     }
 }

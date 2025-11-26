@@ -1,4 +1,4 @@
-namespace AtemSharp.Enums;
+namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 /// <summary>
 /// Indicates which key frame positions are set for fly key functionality
@@ -10,17 +10,17 @@ public enum IsAtKeyFrame : byte
     /// No key frame set
     /// </summary>
     None = 0,
-    
+
     /// <summary>
     /// Key frame A is set
     /// </summary>
     A = 1 << 0,
-    
+
     /// <summary>
     /// Key frame B is set
     /// </summary>
     B = 1 << 1,
-    
+
     /// <summary>
     /// Run to infinite is set
     /// </summary>

@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks.Dataflow;
-using AtemSharp.Enums;
 using AtemSharp.Lib;
 
 namespace AtemSharp.Communication;
@@ -16,7 +15,7 @@ public class AtemProtocol : IAtemProtocol
     private readonly Lock _nextSendPacketIdLock = new();
     private ushort _sessionId;
 
-    private IPEndPoint _remoteEndpoint = new(IPAddress.None, Constants.AtemConstants.DEFAULT_PORT);
+    private IPEndPoint _remoteEndpoint = new(IPAddress.None, Constants.AtemConstants.DefaultPort);
     private IUdpClient? _socket;
 
     private DateTime _lastReceivedAt = DateTime.Now;

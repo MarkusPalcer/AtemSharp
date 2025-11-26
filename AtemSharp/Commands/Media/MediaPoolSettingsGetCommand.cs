@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Info;
 
@@ -10,7 +9,7 @@ public partial class MediaPoolSettingsGetCommand : IDeserializedCommand
     [CustomDeserialization] private ushort[] _maxFrames = [];
     [DeserializedField(8)] private ushort _unassignedFrames;
 
-    public void DeserializeInternal(ReadOnlySpan<byte> buffer)
+    private void DeserializeInternal(ReadOnlySpan<byte> buffer)
     {
         _maxFrames =
         [
@@ -21,6 +20,7 @@ public partial class MediaPoolSettingsGetCommand : IDeserializedCommand
         ];
     }
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         state.Settings.MediaPool.MaxFrames = _maxFrames;

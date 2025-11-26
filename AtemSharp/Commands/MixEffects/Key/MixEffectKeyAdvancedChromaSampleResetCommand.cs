@@ -1,14 +1,13 @@
-using AtemSharp.Lib;
 using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 
 [Command("RACK")]
 [BufferSize(4)]
-public partial class MixEffectKeyAdvancedChromaSampleResetCommand(UpstreamKeyer keyer) :SerializedCommand
+public partial class MixEffectKeyAdvancedChromaSampleResetCommand(UpstreamKeyer keyer) : SerializedCommand
 {
-    [SerializedField(0)][NoProperty] private byte _mixEffectId = keyer.MixEffectId;
-    [SerializedField(1)] [NoProperty] private byte _id = keyer.Id;
+    [SerializedField(0)] [NoProperty] private readonly byte _mixEffectId = keyer.MixEffectId;
+    [SerializedField(1)] [NoProperty] private readonly byte _id = keyer.Id;
     [CustomSerialization] private bool _resetKeyAdjustments;
     [CustomSerialization] private bool _resetChromaCorrection;
     [CustomSerialization] private bool _resetColorAdjustments;

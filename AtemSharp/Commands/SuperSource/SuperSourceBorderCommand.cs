@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State.Border;
 using AtemSharp.State.Info;
 

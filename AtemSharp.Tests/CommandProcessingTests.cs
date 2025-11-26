@@ -1,10 +1,10 @@
 using System.Reflection;
 using System.Text;
+using AtemSharp.Attributes;
 using AtemSharp.Commands;
 using AtemSharp.Commands.DeviceProfile;
 using AtemSharp.Commands.MixEffects;
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Communication;
 using AtemSharp.State.Info;
 using AtemSharp.Tests.TestUtilities;
 
@@ -112,7 +112,7 @@ public class CommandProcessingTests
     {
         // Arrange
         var parser = new CommandParser();
-        Span<byte> data = Span<byte>.Empty;
+        var data = Span<byte>.Empty;
 
         // Act
         var command = parser.ParseCommand("InCm", data);
@@ -128,7 +128,7 @@ public class CommandProcessingTests
         // Arrange
         var payload = CreateMalformedCommandPayload();
         var parser = new CommandParser();
-        var state = new AtemSharp.State.AtemState();
+        var state = new State.AtemState();
 
         // Act - Simulate OnPacketReceived logic with malformed data
         var offset = 0;
@@ -237,7 +237,7 @@ public class CommandProcessingTests
     {
         // Arrange
         // Initialize the state (normally done in ConnectAsync)
-        _atem.GetType().GetProperty("State")?.SetValue(_atem, new AtemSharp.State.AtemState());
+        _atem.GetType().GetProperty("State")?.SetValue(_atem, new State.AtemState());
 
         var validPayload = CreateMultiCommandPayload();
         var packet = new AtemPacket(validPayload)
@@ -258,7 +258,7 @@ public class CommandProcessingTests
     {
         // Arrange
         // Initialize the state (normally done in ConnectAsync)
-        _atem.GetType().GetProperty("State")?.SetValue(_atem, new AtemSharp.State.AtemState());
+        _atem.GetType().GetProperty("State")?.SetValue(_atem, new State.AtemState());
 
         var malformedPayload = CreateMalformedCommandPayload();
         var packet = new AtemPacket(malformedPayload)
@@ -279,7 +279,7 @@ public class CommandProcessingTests
     {
         // Arrange
         // Initialize the state (normally done in ConnectAsync)
-        _atem.GetType().GetProperty("State")?.SetValue(_atem, new AtemSharp.State.AtemState());
+        _atem.GetType().GetProperty("State")?.SetValue(_atem, new State.AtemState());
 
         var emptyPacket = new AtemPacket([])
         {

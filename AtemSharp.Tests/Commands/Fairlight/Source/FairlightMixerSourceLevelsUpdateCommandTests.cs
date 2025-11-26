@@ -1,4 +1,4 @@
-using AtemSharp.Commands.Fairlight.Source;
+using FairlightMixerSourceLevelsUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Source.FairlightMixerSourceLevelsUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 

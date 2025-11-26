@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace AtemSharp.Lib;
+namespace AtemSharp.Communication;
 
 /// <summary>
 /// Concrete implementation of IUdpClient that wraps the .NET Framework UdpClient

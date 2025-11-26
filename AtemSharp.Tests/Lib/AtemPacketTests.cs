@@ -1,5 +1,4 @@
-using AtemSharp.Enums;
-using AtemSharp.Lib;
+using AtemSharp.Communication;
 
 namespace AtemSharp.Tests.Lib;
 
@@ -11,7 +10,7 @@ public class AtemPacketTests
     {
         // Arrange
         var payload = new byte[] { 0x01, 0x02, 0x03, 0x04 };
-        
+
         // Act
         var packet = new AtemPacket(payload)
         {
@@ -46,20 +45,20 @@ public class AtemPacketTests
 
         // Assert
         Assert.That(serialized.Length, Is.EqualTo(16)); // 12 byte header + 4 byte payload
-        
+
         // Check flags and length in first two bytes
-        ushort flagsAndLength = (ushort)((serialized[0] << 8) | serialized[1]);
-        ushort expectedFlagsAndLength = (ushort)(((int)PacketFlag.AckRequest << 11) | 16);
+        var flagsAndLength = (ushort)((serialized[0] << 8) | serialized[1]);
+        const ushort expectedFlagsAndLength = ((int)PacketFlag.AckRequest << 11) | 16;
         Assert.That(flagsAndLength, Is.EqualTo(expectedFlagsAndLength));
-        
+
         // Check session ID
-        ushort sessionId = (ushort)((serialized[2] << 8) | serialized[3]);
+        var sessionId = (ushort)((serialized[2] << 8) | serialized[3]);
         Assert.That(sessionId, Is.EqualTo(0x1234));
-        
+
         // Check packet ID
-        ushort packetId = (ushort)((serialized[10] << 8) | serialized[11]);
+        var packetId = (ushort)((serialized[10] << 8) | serialized[11]);
         Assert.That(packetId, Is.EqualTo(0x5678));
-        
+
         // Check payload
         var actualPayload = new byte[4];
         Array.Copy(serialized, 12, actualPayload, 0, 4);
@@ -71,32 +70,32 @@ public class AtemPacketTests
     {
         // Arrange
         var rawData = new byte[16];
-        
+
         // Flags (AckRequest = 0x01) shifted left 11 positions + Length (16)
-        ushort flagsAndLength = (ushort)(((int)PacketFlag.AckRequest << 11) | 16);
+        ushort flagsAndLength = ((int)PacketFlag.AckRequest << 11) | 16;
         rawData[0] = (byte)(flagsAndLength >> 8);
         rawData[1] = (byte)(flagsAndLength & 0xFF);
-        
+
         // Session ID (0x1234)
         rawData[2] = 0x12;
         rawData[3] = 0x34;
-        
+
         // Ack Packet ID (0x5678)
         rawData[4] = 0x56;
         rawData[5] = 0x78;
-        
+
         // Reserved (0x9ABC)
         rawData[6] = 0x9A;
         rawData[7] = 0xBC;
-        
+
         // Reserved (0x0000)
         rawData[8] = 0x00;
         rawData[9] = 0x00;
-        
+
         // Packet ID (0xDEF0)
         rawData[10] = 0xDE;
         rawData[11] = 0xF0;
-        
+
         // Payload
         rawData[12] = 0xAA;
         rawData[13] = 0xBB;
@@ -114,7 +113,7 @@ public class AtemPacketTests
         Assert.That(parsedPacket.AckPacketId, Is.EqualTo(0x5678));
         Assert.That(parsedPacket.RetransmitFromPacketId, Is.EqualTo(0x9ABC));
         Assert.That(parsedPacket.PacketId, Is.EqualTo(0xDEF0));
-        
+
         var expectedPayload = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD };
         Assert.That(parsedPacket.Payload, Is.EqualTo(expectedPayload));
     }
@@ -130,7 +129,7 @@ public class AtemPacketTests
         Assert.That(ackPacket.SessionId, Is.EqualTo(0x1234));
         Assert.That(ackPacket.AckPacketId, Is.EqualTo(0x5678));
         Assert.That(ackPacket.Payload.Length, Is.EqualTo(0)); // ACK packets have no payload
-        
+
         // The packet should be valid after calling ToBytes() which sets the length
         var bytes = ackPacket.ToBytes();
         Assert.That(bytes.Length, Is.EqualTo(12)); // Header only
@@ -149,7 +148,7 @@ public class AtemPacketTests
         Assert.That(helloPacket.HasFlag(PacketFlag.AckRequest), Is.True);
         Assert.That(helloPacket.SessionId, Is.EqualTo(0x0000)); // Hello packets start with session ID 0
         Assert.That(helloPacket.Payload.Length, Is.EqualTo(8)); // Hello payload is 8 bytes
-        
+
         // Check hello payload matches expected pattern
         var expectedHelloPayload = new byte[] { 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
         Assert.That(helloPacket.Payload, Is.EqualTo(expectedHelloPayload));
@@ -159,7 +158,7 @@ public class AtemPacketTests
     public void HasFlag_ShouldDetectFlagsCorrectly()
     {
         // Arrange
-        var packet = new AtemPacket(Array.Empty<byte>())
+        var packet = new AtemPacket([])
         {
             Flags = PacketFlag.AckRequest | PacketFlag.NewSessionId
         };
@@ -176,7 +175,7 @@ public class AtemPacketTests
     public void RoundTripSerialization_ShouldPreserveAllData()
     {
         // Arrange
-        var originalPacket = new AtemPacket(new byte[] { 0xAA, 0xBB, 0xCC })
+        var originalPacket = new AtemPacket([0xAA, 0xBB, 0xCC])
         {
             Flags = PacketFlag.AckRequest | PacketFlag.NewSessionId,
             SessionId = 0x1234,
@@ -203,7 +202,7 @@ public class AtemPacketTests
     public void IsValid_ShouldReturnTrueForValidPackets()
     {
         // Arrange
-        var validPacket = new AtemPacket(new byte[] { 0x01, 0x02 });
+        var validPacket = new AtemPacket([0x01, 0x02]);
 
         // Act & Assert
         Assert.That(validPacket.IsValid(), Is.True);
@@ -236,7 +235,7 @@ public class AtemPacketTests
     public void ToString_ShouldProvideReadableFormat()
     {
         // Arrange
-        var packet = new AtemPacket(new byte[] { 0x01, 0x02 })
+        var packet = new AtemPacket([0x01, 0x02])
         {
             Flags = PacketFlag.AckRequest,
             SessionId = 0x1234,
@@ -269,9 +268,9 @@ public class AtemPacketTests
     {
         // Arrange
         var combinedFlags = PacketFlag.AckRequest | PacketFlag.NewSessionId | PacketFlag.AckReply;
-        
+
         // Act
-        var packet = new AtemPacket(Array.Empty<byte>()) { Flags = combinedFlags };
+        var packet = new AtemPacket([]) { Flags = combinedFlags };
 
         // Assert
         Assert.That(packet.HasFlag(PacketFlag.AckRequest), Is.True);

@@ -7,21 +7,24 @@ namespace AtemSharp.Commands.MixEffects.Key;
 [Command("KePt")]
 public partial class MixEffectKeyPatternUpdateCommand : IDeserializedCommand
 {
-    [DeserializedField(0)]
-    private byte _mixEffectId;
+    [DeserializedField(0)] private byte _mixEffectId;
 
-    [DeserializedField(1)]
-    private byte _keyerId;
+    [DeserializedField(1)] private byte _keyerId;
 
     [DeserializedField(2)] private UpstreamKeyerPatternStyle _style;
-    [DeserializedField(4)] [SerializedType(typeof(ushort))] [ScalingFactor(100)] private double _size;
-    [DeserializedField(6)] [SerializedType(typeof(ushort))] [ScalingFactor(100)] private double _symmetry;
+
+    [DeserializedField(4)] [SerializedType(typeof(ushort))] [ScalingFactor(100)]
+    private double _size;
+
+    [DeserializedField(6)] [SerializedType(typeof(ushort))] [ScalingFactor(100)]
+    private double _symmetry;
 
     [DeserializedField(8)] [SerializedType(typeof(ushort))] [ScalingFactor(100)]
     private double _softness;
 
     [DeserializedField(10)] [SerializedType(typeof(ushort))] [ScalingFactor(10000)]
     private double _positionX;
+
     [DeserializedField(12)] [SerializedType(typeof(ushort))] [ScalingFactor(10000)]
     private double _positionY;
 

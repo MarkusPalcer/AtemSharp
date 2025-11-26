@@ -7,21 +7,15 @@ namespace AtemSharp.Commands.DownstreamKey;
 /// </summary>
 [Command("CDsF")]
 [BufferSize(4)]
-public partial class DownstreamKeyFillSourceCommand : SerializedCommand
+public partial class DownstreamKeyFillSourceCommand(DownstreamKeyer dsk) : SerializedCommand
 {
     [SerializedField(0)]
     [NoProperty]
-    internal readonly byte DownstreamKeyerId;
+    private readonly byte _downstreamKeyerId = dsk.Id;
 
     /// <summary>
     /// Fill source input number
     /// </summary>
     [SerializedField(2)]
-    private ushort _input;
-
-    public DownstreamKeyFillSourceCommand(DownstreamKeyer dsk)
-    {
-        _input = dsk.Sources.FillSource;
-        DownstreamKeyerId = dsk.Id;
-    }
+    private ushort _input = dsk.Sources.FillSource;
 }

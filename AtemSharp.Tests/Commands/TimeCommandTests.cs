@@ -16,7 +16,7 @@ public class TimeCommandTests : SerializedCommandTestBase<TimeCommand, TimeComma
 
     protected override TimeCommand CreateSut(TestCaseData testCase)
     {
-        return new TimeCommand(new AtemState()
+        return new TimeCommand(new AtemState
         {
             TimeCode =
             {

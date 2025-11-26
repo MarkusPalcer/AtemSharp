@@ -12,8 +12,7 @@ public partial class VersionCommand : IDeserializedCommand
     /// <summary>
     /// ATEM protocol version
     /// </summary>
-    [DeserializedField(0)]
-    private ProtocolVersion _version;
+    [DeserializedField(0)] private ProtocolVersion _version;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)

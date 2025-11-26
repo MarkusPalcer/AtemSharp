@@ -17,7 +17,7 @@ public class MixEffectKeyOnAirCommandTests : SerializedCommandTestBase<MixEffect
     protected override MixEffectKeyOnAirCommand CreateSut(TestCaseData testCase)
     {
         // Create state with the required mix effect and upstream keyer
-        var state = new UpstreamKeyer()
+        var state = new UpstreamKeyer
         {
             Id = testCase.Command.KeyerIndex,
             MixEffectId = testCase.Command.MixEffectIndex,

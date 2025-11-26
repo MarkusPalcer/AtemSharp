@@ -1,10 +1,10 @@
-namespace AtemSharp.Lib;
+namespace AtemSharp.Communication;
 
 /// <summary>
 /// Event arguments for connection state change events
 /// </summary>
 public class ConnectionStateChangedEventArgs : EventArgs
 {
-	public required ConnectionState State { get; init; }
-	public required ConnectionState PreviousState { get; init; }
+	public required AtemSharp.ConnectionState State { get; init; }
+	public required AtemSharp.ConnectionState PreviousState { get; init; }
 }

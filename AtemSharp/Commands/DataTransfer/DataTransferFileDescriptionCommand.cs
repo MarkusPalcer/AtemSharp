@@ -1,5 +1,3 @@
-using AtemSharp.Lib;
-
 namespace AtemSharp.Commands.DataTransfer;
 
 /// <summary>
@@ -17,20 +15,17 @@ public partial class DataTransferFileDescriptionCommand : SerializedCommand
     /// <summary>
     /// Name of the file (max 64 bytes when encoded as UTF-8)
     /// </summary>
-    [CustomSerialization]
-    private string? _name;
+    [CustomSerialization] private string? _name;
 
     /// <summary>
     /// Description of the file (max 128 bytes when encoded as UTF-8)
     /// </summary>
-    [CustomSerialization]
-    private string? _description;
+    [CustomSerialization] private string? _description;
 
     /// <summary>
     /// Base64-encoded hash of the file (16 bytes when decoded)
     /// </summary>
-    [CustomSerialization]
-    private string _fileHash = string.Empty;
+    [CustomSerialization] private string _fileHash = string.Empty;
 
     /// <summary>
     /// Create command with specified file description data

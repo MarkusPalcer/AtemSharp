@@ -1,10 +1,7 @@
-using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Media;
 
-// TODO: Figure out what this does in detail as the MediaPoolFrameDescriptionCommand
-//       handles both, Clips and Frames. Is one of these wrong, are these new information?
 [Command("MPCS")]
 public partial class MediaPoolClipDescriptionCommand : IDeserializedCommand
 {
@@ -18,6 +15,7 @@ public partial class MediaPoolClipDescriptionCommand : IDeserializedCommand
         _name = data.ReadString(2, 64);
     }
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         var clip = state.Media.Clips[_clipId];

@@ -1,5 +1,4 @@
-using AtemSharp.Commands.Audio;
-using AtemSharp.Tests.TestUtilities;
+using AudioMixerMonitorUpdateCommand = AtemSharp.Commands.Audio.ClassicAudio.AudioMixerMonitorUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Audio;
 
@@ -20,55 +19,12 @@ public class AudioMixerMonitorUpdateCommandTests : DeserializedCommandTestBase<A
 
 	protected override void CompareCommandProperties(AudioMixerMonitorUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
 	{
-		var failures = new List<string>();
-
-		// Compare Enabled
-		if (actualCommand.Enabled != expectedData.Enabled)
-		{
-			failures.Add($"Enabled: expected {expectedData.Enabled}, actual {actualCommand.Enabled}");
-		}
-
-		// Compare Gain
-		if (!Utilities.AreApproximatelyEqual(actualCommand.Gain, expectedData.Gain))
-		{
-			failures.Add($"Gain: expected {expectedData.Gain}, actual {actualCommand.Gain}");
-		}
-
-		// Compare Mute
-		if (actualCommand.Mute != expectedData.Mute)
-		{
-			failures.Add($"Mute: expected {expectedData.Mute}, actual {actualCommand.Mute}");
-		}
-
-		// Compare Solo
-		if (actualCommand.Solo != expectedData.Solo)
-		{
-			failures.Add($"Solo: expected {expectedData.Solo}, actual {actualCommand.Solo}");
-		}
-
-		// Compare SoloSource
-		if (actualCommand.SoloSource != expectedData.SoloSource)
-		{
-			failures.Add($"SoloSource: expected {expectedData.SoloSource}, actual {actualCommand.SoloSource}");
-		}
-
-		// Compare Dim
-		if (actualCommand.Dim != expectedData.Dim)
-		{
-			failures.Add($"Dim: expected {expectedData.Dim}, actual {actualCommand.Dim}");
-		}
-
-		// Compare DimLevel
-		if (!Utilities.AreApproximatelyEqual(actualCommand.DimLevel, expectedData.DimLevel))
-		{
-			failures.Add($"DimLevel: expected {expectedData.DimLevel}, actual {actualCommand.DimLevel}");
-		}
-
-		// Assert
-		if (failures.Count > 0)
-		{
-			Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
-			            string.Join("\n", failures));
-		}
+        Assert.That(actualCommand.Enabled, Is.EqualTo(expectedData.Enabled));
+        Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));
+        Assert.That(actualCommand.Mute, Is.EqualTo(expectedData.Mute));
+        Assert.That(actualCommand.Solo, Is.EqualTo(expectedData.Solo));
+        Assert.That(actualCommand.SoloSource, Is.EqualTo(expectedData.SoloSource));
+        Assert.That(actualCommand.Dim, Is.EqualTo(expectedData.Dim));
+        Assert.That(actualCommand.DimLevel, Is.EqualTo(expectedData.DimLevel).Within(0.01));
 	}
 }

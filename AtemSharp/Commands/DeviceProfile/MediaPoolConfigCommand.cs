@@ -1,5 +1,4 @@
 using AtemSharp.State;
-using AtemSharp.State.Info;
 using AtemSharp.State.Media;
 
 namespace AtemSharp.Commands.DeviceProfile;
@@ -20,19 +19,12 @@ public partial class MediaPoolConfigCommand : IDeserializedCommand
     /// </summary>
     [DeserializedField(1)] private byte _clipCount;
 
-    /// <summary>
-    /// Apply the command's values to the ATEM state
-    /// </summary>
-    /// <param name="state">Current ATEM state to update</param>
-    /// <returns>Paths indicating what was changed in the state</returns>
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         // Update device info media pool configuration
-        state.Info.MediaPool = new MediaPoolInfo
-        {
-            StillCount = StillCount,
-            ClipCount = ClipCount
-        };
+        state.Info.MediaPool.StillCount = StillCount;
+        state.Info.MediaPool.ClipCount = ClipCount;
 
         state.Media.Frames = AtemStateUtil.CreateArray<MediaPoolEntry>(StillCount);
         state.Media.Clips = AtemStateUtil.CreateArray<MediaPoolEntry>(ClipCount);

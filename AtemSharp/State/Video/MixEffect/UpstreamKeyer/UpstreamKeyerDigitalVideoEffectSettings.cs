@@ -107,7 +107,6 @@ public class UpstreamKeyerDigitalVideoEffectSettings
     /// </summary>
     public double LightSourceAltitude { get; internal set; }
 
-    // TODO: Use MaskProperties
     /// <summary>
     /// Whether masking is enabled
     /// </summary>

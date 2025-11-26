@@ -1,6 +1,6 @@
 using AtemSharp.Commands.Settings;
-using AtemSharp.Enums;
 using AtemSharp.State;
+using AtemSharp.State.Settings;
 
 namespace AtemSharp.Tests.Commands.Settings;
 

@@ -1,6 +1,4 @@
-using AtemSharp.Enums;
-
-namespace AtemSharp.State;
+namespace AtemSharp.State.Settings.MultiViewer;
 
 /// <summary>
 /// Properties for MultiViewer configuration

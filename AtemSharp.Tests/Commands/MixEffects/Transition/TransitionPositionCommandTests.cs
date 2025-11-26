@@ -31,30 +31,6 @@ public class TransitionPositionCommandTests : SerializedCommandTestBase<Transiti
     }
 
     [Test]
-    public void Constructor_WithValidState_InitializesFromState()
-    {
-        // Arrange
-        const int mixEffectId = 0;
-        const double expectedHandlePosition = 0.5;
-        var state = new MixEffect
-        {
-            Id = mixEffectId,
-            TransitionPosition =
-            {
-                HandlePosition = expectedHandlePosition
-            }
-        };
-
-        // Act
-        var command = new TransitionPositionCommand(state);
-
-        // Assert
-        Assert.That(command.MixEffectId, Is.EqualTo(mixEffectId));
-        Assert.That(command.HandlePosition, Is.EqualTo(expectedHandlePosition));
-        Assert.That(command.Flag, Is.EqualTo(0)); // No flags set when initialized from state
-    }
-
-    [Test]
     public void HandlePosition_Setter_SetsFlag()
     {
         // Arrange

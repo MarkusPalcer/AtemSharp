@@ -1,10 +1,8 @@
-using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.MixEffects.Transition;
 
-// TODO: Switch to generated code
 /// <summary>
 /// Command received from ATEM device containing wipe transition settings update
 /// </summary>

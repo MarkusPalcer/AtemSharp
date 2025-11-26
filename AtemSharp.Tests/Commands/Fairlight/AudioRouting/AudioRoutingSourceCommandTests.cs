@@ -1,5 +1,5 @@
-using AtemSharp.Commands.Fairlight.AudioRouting;
 using AtemSharp.State.Audio.Fairlight;
+using AudioRoutingSourceCommand = AtemSharp.Commands.Audio.Fairlight.AudioRouting.AudioRoutingSourceCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.AudioRouting;
 
@@ -13,7 +13,7 @@ public class AudioRoutingSourceCommandTests : SerializedCommandTestBase<AudioRou
 
     protected override AudioRoutingSourceCommand CreateSut(TestCaseData testCase)
     {
-        return new AudioRoutingSourceCommand(new AudioRoutingEntry()
+        return new AudioRoutingSourceCommand(new AudioRoutingEntry
         {
             Id = testCase.Command.Id,
             Name = testCase.Command.Name

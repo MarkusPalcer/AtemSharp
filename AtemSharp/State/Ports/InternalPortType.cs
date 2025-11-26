@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Ports;
 
 /// <summary>
 /// Internal port types
 /// </summary>
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 public enum InternalPortType : byte
 {
     External = 0,

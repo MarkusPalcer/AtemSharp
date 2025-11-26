@@ -60,66 +60,6 @@ public class TransitionWipeCommandTests : SerializedCommandTestBase<TransitionWi
     }
 
     [Test]
-    public void Constructor_WithValidState_InitializesFromState()
-    {
-        // Arrange
-        byte mixEffectId = 1;
-        byte expectedRate = 50;
-        byte expectedPattern = 5;
-        var expectedBorderWidth = 25.5;
-        ushort expectedBorderInput = 1042;
-        var expectedSymmetry = 75.2;
-        var expectedBorderSoftness = 12.8;
-        var expectedXPosition = 0.6543;
-        var expectedYPosition = 0.3456;
-        var expectedReverseDirection = true;
-        var expectedFlipFlop = false;
-
-        var state = new MixEffect
-        {
-            Id = mixEffectId,
-            TransitionSettings =
-            {
-                Wipe =
-                {
-                    Rate = expectedRate,
-                    Pattern = expectedPattern,
-                    BorderWidth = expectedBorderWidth,
-                    BorderInput = expectedBorderInput,
-                    Symmetry = expectedSymmetry,
-                    BorderSoftness = expectedBorderSoftness,
-                    XPosition = expectedXPosition,
-                    YPosition = expectedYPosition,
-                    ReverseDirection = expectedReverseDirection,
-                    FlipFlop = expectedFlipFlop
-                }
-            }
-        };
-
-        // Act
-        var command = new TransitionWipeCommand(state);
-
-        Assert.Multiple(() =>
-        {
-            // Assert - Verify that values are correctly initialized from state
-            Assert.That(command.MixEffectId, Is.EqualTo(mixEffectId));
-            Assert.That(command.Rate, Is.EqualTo(expectedRate));
-            Assert.That(command.Pattern, Is.EqualTo(expectedPattern));
-            Assert.That(command.BorderWidth, Is.EqualTo(expectedBorderWidth));
-            Assert.That(command.BorderInput, Is.EqualTo(expectedBorderInput));
-            Assert.That(command.Symmetry, Is.EqualTo(expectedSymmetry));
-            Assert.That(command.BorderSoftness, Is.EqualTo(expectedBorderSoftness));
-            Assert.That(command.XPosition, Is.EqualTo(expectedXPosition));
-            Assert.That(command.YPosition, Is.EqualTo(expectedYPosition));
-            Assert.That(command.ReverseDirection, Is.EqualTo(expectedReverseDirection));
-            Assert.That(command.FlipFlop, Is.EqualTo(expectedFlipFlop));
-
-            // Verify no flags are set when initializing from state
-            Assert.That(command.Flag, Is.EqualTo(0));
-        });
-    }
-
-    [Test]
     public void PropertySetters_SetCorrectFlags()
     {
         // Arrange

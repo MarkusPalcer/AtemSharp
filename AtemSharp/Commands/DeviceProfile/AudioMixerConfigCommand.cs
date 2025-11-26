@@ -25,11 +25,7 @@ public partial class AudioMixerConfigCommand : IDeserializedCommand
     /// </summary>
     [DeserializedField(2)] private byte _headphones;
 
-    /// <summary>
-    /// Apply the command's values to the ATEM state
-    /// </summary>
-    /// <param name="state">Current ATEM state to update</param>
-    /// <returns>Paths indicating what was changed in the state</returns>
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         // Update device info audio mixer configuration
@@ -41,6 +37,6 @@ public partial class AudioMixerConfigCommand : IDeserializedCommand
         };
 
         // Initialize audio state
-        state.Audio = new ClassicAudioState();
+        state.Audio ??= new ClassicAudioState();
     }
 }

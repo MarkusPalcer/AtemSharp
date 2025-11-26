@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace AtemSharp.Lib;
+namespace AtemSharp.Communication;
 
 /// <summary>
 /// Interface for UDP client operations, allowing for testability and mocking

@@ -7,7 +7,6 @@ namespace AtemSharp.Commands.MixEffects.Transition;
 /// Command received from ATEM device containing DVE transition settings update
 /// </summary>
 [Command("TDvP")]
-// ReSharper disable once InconsistentNaming Domain Specific Acronym
 public partial class TransitionDigitalVideoEffectsUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _mixEffectId;

@@ -7,6 +7,8 @@ namespace AtemSharp.State.Audio.ClassicAudio;
 /// </summary>
 public class ClassicAudioChannel
 {
+    public ushort Id { get; init; }
+
     /// <summary>
     /// Audio source type (readonly)
     /// </summary>
@@ -41,6 +43,4 @@ public class ClassicAudioChannel
     /// RCA to XLR enabled
     /// </summary>
     public bool RcaToXlrEnabled { get; internal set; }
-
-    public ushort Id { get; init; }
 }

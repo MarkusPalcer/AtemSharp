@@ -1,6 +1,6 @@
-using AtemSharp.Enums;
+using AtemSharp.Commands;
 
-namespace AtemSharp.Lib;
+namespace AtemSharp.Communication;
 
 /// <summary>
 /// Represents an ATEM network packet with header and payload
@@ -108,7 +108,7 @@ public class AtemPacket
         // Extract flags and length following TypeScript implementation
         // Flags are in the upper 5 bits of the first byte
         // Length is in the lower 11 bits of the first two bytes
-        ushort flagsAndLength = headerSpan.ReadUInt16BigEndian(0);
+        var flagsAndLength = headerSpan.ReadUInt16BigEndian(0);
         packet.Flags = (PacketFlag)(headerSpan.ReadUInt8(0) >> 3); // Upper 5 bits of first byte
         packet.Length = (ushort)(flagsAndLength & LengthMask);
         packet.SessionId = headerSpan.ReadUInt16BigEndian(2);
@@ -235,8 +235,8 @@ public class AtemPacket
     public static AtemPacket CreateHello()
     {
         // Use the standard hello packet payload from constants
-        var helloPayload = new byte[Constants.AtemConstants.HELLO_PACKET.Length - PacketHeaderSize];
-        Constants.AtemConstants.HELLO_PACKET.AsSpan(PacketHeaderSize).CopyTo(helloPayload);
+        var helloPayload = new byte[Constants.AtemConstants.HelloPacket.Length - PacketHeaderSize];
+        Constants.AtemConstants.HelloPacket.AsSpan(PacketHeaderSize).CopyTo(helloPayload);
 
         return new AtemPacket(helloPayload)
         {

@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Info;
 
@@ -20,7 +19,6 @@ public class SuperSourceConfigCommand : IDeserializedCommand
     /// </summary>
     public byte BoxCount { get; init; }
 
-    // TODO: Split by version
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
@@ -44,11 +42,7 @@ public class SuperSourceConfigCommand : IDeserializedCommand
         }
     }
 
-    /// <summary>
-    /// Apply the command's values to the ATEM state
-    /// </summary>
-    /// <param name="state">Current ATEM state to update</param>
-    /// <returns>Paths indicating what was changed in the state</returns>
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         // Update device info SuperSource configuration

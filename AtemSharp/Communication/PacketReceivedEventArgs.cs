@@ -1,4 +1,4 @@
-namespace AtemSharp.Lib;
+namespace AtemSharp.Communication;
 
 /// <summary>
 /// Event arguments for packet received events

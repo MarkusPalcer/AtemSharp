@@ -1,5 +1,5 @@
 using AtemSharp.State.Audio.Fairlight;
-using FairlightMixerMasterLimiterCommand = AtemSharp.Commands.Fairlight.Master.FairlightMixerMasterLimiterCommand;
+using FairlightMixerMasterLimiterCommand = AtemSharp.Commands.Audio.Fairlight.Master.FairlightMixerMasterLimiterCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Master;
 
@@ -13,9 +13,20 @@ public class FairlightMixerMasterLimiterCommandTests : SerializedCommandTestBase
         16..20  // Release
     ];
 
+    public class CommandData : CommandDataBase
+    {
+        public ushort Index { get; set; }
+        public long SourceId { get; set; }
+        public bool LimiterEnabled { get; set; }
+        public double Threshold { get; set; }
+        public double Attack { get; set; }
+        public double Hold { get; set; }
+        public double Release { get; set; }
+    }
+
     protected override FairlightMixerMasterLimiterCommand CreateSut(TestCaseData testCase)
     {
-        var master = new MasterProperties()
+        return new  FairlightMixerMasterLimiterCommand(new MasterProperties
         {
             Dynamics =
             {
@@ -28,19 +39,6 @@ public class FairlightMixerMasterLimiterCommandTests : SerializedCommandTestBase
                     Enabled = testCase.Command.LimiterEnabled
                 }
             }
-        };
-
-        return new  FairlightMixerMasterLimiterCommand(master);
-    }
-
-    public class CommandData : CommandDataBase
-    {
-        public ushort Index { get; set; }
-        public long SourceId { get; set; }
-        public bool LimiterEnabled { get; set; }
-        public double Threshold { get; set; }
-        public double Attack { get; set; }
-        public double Hold { get; set; }
-        public double Release { get; set; }
+        });
     }
 }

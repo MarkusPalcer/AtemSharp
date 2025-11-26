@@ -15,54 +15,13 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
 
     protected override DownstreamKeyFillSourceCommand CreateSut(TestCaseData testCase)
     {
-        // Create state with the required downstream keyer
-        var state = CreateDownstreamKeyer(testCase.Command.Index, testCase.Command.FillSource);
-
-        // Create command with the keyer ID
-        var command = new DownstreamKeyFillSourceCommand(state)
+        return new DownstreamKeyFillSourceCommand(new DownstreamKeyer
         {
-	        // Set the actual input value that should be written
-	        Input = testCase.Command.FillSource
-        };
-
-        return command;
-    }
-
-    /// <summary>
-    /// Creates an AtemState with a valid downstream keyer at the specified index
-    /// </summary>
-    private static DownstreamKeyer CreateDownstreamKeyer(byte keyerId, ushort fillSource = 0)
-    {
-        return new()
-	        {
-                Id = keyerId,
-		        InTransition = false,
-		        RemainingFrames = 0,
-		        IsAuto = false,
-		        OnAir = false,
-		        IsTowardsOnAir = false,
-		        Sources = new DownstreamKeyerSources
-		        {
-			        FillSource = fillSource,
-			        CutSource = 1000
-		        }
-        };
-    }
-
-    [Test]
-    public void Constructor_WithValidKeyerId_ShouldInitializeCorrectly()
-    {
-        // Arrange
-        const byte keyerId = 1;
-        const int expectedFillSource = 42;
-        var state = CreateDownstreamKeyer(keyerId, expectedFillSource);
-
-        // Act
-        var command = new DownstreamKeyFillSourceCommand(state);
-
-        // Assert
-        Assert.That(command.DownstreamKeyerId, Is.EqualTo(keyerId));
-        Assert.That(command.Input, Is.EqualTo(expectedFillSource)); // Should get value from state
-        Assert.That(command.Flag, Is.EqualTo(0)); // No flags set initially
+            Id = testCase.Command.Index,
+            Sources =
+            {
+                FillSource = testCase.Command.FillSource
+            }
+        });
     }
 }

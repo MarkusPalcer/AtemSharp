@@ -4,7 +4,6 @@ using System.Net;
 using System.Threading.Tasks.Dataflow;
 using AtemSharp.Commands;
 using AtemSharp.Constants;
-using AtemSharp.Enums;
 using AtemSharp.Lib;
 
 namespace AtemSharp.Communication;
@@ -90,7 +89,7 @@ public class AtemClient : IAtemClient
             var offset = 0;
 
             // Parse all commands in the packet payload
-            while (offset + AtemConstants.COMMAND_HEADER_SIZE <= payload.Length)
+            while (offset + AtemConstants.CommandHeaderSize <= payload.Length)
             {
                 // Extract command header (8 bytes: length, reserved, rawName)
                 var commandLength = (payload[offset] << 8) | payload[offset + 1]; // Big-endian 16-bit
@@ -98,7 +97,7 @@ public class AtemClient : IAtemClient
                 var rawName = System.Text.Encoding.ASCII.GetString(payload, offset + 4, 4);
 
                 // Validate command length
-                if (commandLength < AtemConstants.COMMAND_HEADER_SIZE)
+                if (commandLength < AtemConstants.CommandHeaderSize)
                 {
                     // Commands are never less than 8 bytes (header size)
                     break;
@@ -111,8 +110,8 @@ public class AtemClient : IAtemClient
                 }
 
                 // Extract command data (excluding the 8-byte header)
-                var commandDataStart = offset + AtemConstants.COMMAND_HEADER_SIZE;
-                var commandDataLength = commandLength - AtemConstants.COMMAND_HEADER_SIZE;
+                var commandDataStart = offset + AtemConstants.CommandHeaderSize;
+                var commandDataLength = commandLength - AtemConstants.CommandHeaderSize;
                 var commandData = new Span<byte>(payload, commandDataStart, commandDataLength);
 
                 try
@@ -178,7 +177,7 @@ public class AtemClient : IAtemClient
         await Task.WhenAll(ackTcs.Select(t => t.Task));
     }
 
-    public async Task ConnectAsync(string address, int port = AtemConstants.DEFAULT_PORT, CancellationToken cancellationToken = default)
+    public async Task ConnectAsync(string address, int port = AtemConstants.DefaultPort, CancellationToken cancellationToken = default)
     {
         await Connect(address, port);
     }

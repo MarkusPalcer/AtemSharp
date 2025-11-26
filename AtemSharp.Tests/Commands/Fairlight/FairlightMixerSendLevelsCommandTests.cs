@@ -1,4 +1,4 @@
-using AtemSharp.Commands.Fairlight;
+using FairlightMixerSendLevelsCommand = AtemSharp.Commands.Audio.Fairlight.FairlightMixerSendLevelsCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight;
 

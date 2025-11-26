@@ -13,8 +13,8 @@ public class UpstreamKeyerFlyKeyframe
     public SizeF Size { get; internal set; }
     public PointF Location { get; internal set; }
     public double Rotation { get; internal set; }
-    public BorderProperties Border { get; internal set; } = new();
+    public BorderProperties Border { get; } = new();
     public double LightSourceDirection { get; internal set; }
     public byte LightSourceAltitude { get; internal set; }
-    public MaskProperties Mask { get; internal set; } = new();
+    public MaskProperties Mask { get; } = new();
 }

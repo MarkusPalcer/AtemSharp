@@ -13,6 +13,7 @@ public partial class FadeToBlackStateCommand : IDeserializedCommand
 
     [DeserializedField(3)] private byte _remainingFrames;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         var mixEffect = state.Video.MixEffects[MixEffectId];

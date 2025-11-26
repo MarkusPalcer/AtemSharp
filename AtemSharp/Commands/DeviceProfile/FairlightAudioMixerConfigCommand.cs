@@ -13,20 +13,14 @@ public partial class FairlightAudioMixerConfigCommand : IDeserializedCommand
     /// <summary>
     /// Number of Fairlight audio inputs available
     /// </summary>
-    [DeserializedField(0)]
-    private byte _inputs;
+    [DeserializedField(0)] private byte _inputs;
 
     /// <summary>
     /// Number of Fairlight monitor channels available
     /// </summary>
-    [DeserializedField(1)]
-    private byte _monitors;
+    [DeserializedField(1)] private byte _monitors;
 
-    /// <summary>
-    /// Apply the command's values to the ATEM state
-    /// </summary>
-    /// <param name="state">Current ATEM state to update</param>
-    /// <returns>Paths indicating what was changed in the state</returns>
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         // Update device info fairlight mixer configuration
@@ -37,6 +31,6 @@ public partial class FairlightAudioMixerConfigCommand : IDeserializedCommand
         };
 
         // Initialize fairlight state with the received configuration
-        state.Audio = new FairlightAudioState();
+        state.Audio ??= new FairlightAudioState();
     }
 }

@@ -1,7 +1,7 @@
-using AtemSharp.Commands.Fairlight;
 using AtemSharp.State.Audio.Fairlight;
 using AtemSharp.State.Info;
 using AtemSharp.Tests.TestUtilities;
+using FairlightMixerInputCommand = AtemSharp.Commands.Audio.Fairlight.FairlightMixerInputCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight;
 
@@ -18,13 +18,11 @@ public class FairlightMixerInputCommandTests : SerializedCommandTestBase<Fairlig
 
     protected override FairlightMixerInputCommand CreateSut(TestCaseData testCase)
     {
-        var input = new FairlightAudioInput
+        return new FairlightMixerInputCommand(new FairlightAudioInput
         {
             Id = testCase.Command.Index,
             ActiveConfiguration = testCase.Command.ActiveConfiguration,
             RcaToXlrEnabled = testCase.Command.RcaToXlrEnabled
-        };
-
-        return new FairlightMixerInputCommand(input);
+        });
     }
 }

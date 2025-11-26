@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State.Info;
 using AtemSharp.State.Video.SuperSource;
 

@@ -25,7 +25,7 @@ public class SuperSourcePropertiesV8CommandTests : SerializedCommandTestBase<Sup
 
     protected override SuperSourcePropertiesV8Command CreateSut(TestCaseData testCase)
     {
-        return new SuperSourcePropertiesV8Command(new AtemSharp.State.Video.SuperSource.SuperSource()
+        return new SuperSourcePropertiesV8Command(new AtemSharp.State.Video.SuperSource.SuperSource
         {
             Id = testCase.Command.SSrcId,
             FillSource = testCase.Command.ArtFillSource,

@@ -8,6 +8,5 @@ namespace AtemSharp.Commands.Streaming;
 [BufferSize(4)]
 public partial class StreamingStatusCommand(AtemState state) : SerializedCommand
 {
-    [SerializedField(0)]
-    private bool _isStreaming = state.Streaming.Status != StreamingStatus.Idle;
+    [SerializedField(0)] private bool _isStreaming = state.Streaming.Status != StreamingStatus.Idle;
 }

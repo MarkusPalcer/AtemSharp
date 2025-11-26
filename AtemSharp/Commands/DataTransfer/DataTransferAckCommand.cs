@@ -28,16 +28,4 @@ public partial class DataTransferAckCommand : SerializedCommand
         TransferId = transferId;
         TransferIndex = transferIndex;
     }
-
-    // public override byte[] Serialize(ProtocolVersion version)
-    // {
-    //     using var memoryStream = new MemoryStream(4);
-    //     using var writer = new BinaryWriter(memoryStream);
-    //
-    //     writer.WriteUInt16BigEndian(TransferId);
-    //     writer.Write(TransferIndex);
-    //     writer.Pad(1); // Pad to match 4-byte buffer from TypeScript
-    //
-    //     return memoryStream.ToArray();
-    // }
 }

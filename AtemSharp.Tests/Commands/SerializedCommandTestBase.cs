@@ -58,9 +58,9 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
     {
         if (actual.Length != expected.Length) return false;
 
-        for (int i = 0; i < actual.Length; i++)
+        for (var i = 0; i < actual.Length; i++)
         {
-            int tolerance = IsFloatingPointByte(i, actual.Length) ? 2 : 0;
+            var tolerance = IsFloatingPointByte(i, actual.Length) ? 2 : 0;
             if (Math.Abs(actual[i] - expected[i]) > tolerance)
             {
                 // Check if its within the tolerance with carry

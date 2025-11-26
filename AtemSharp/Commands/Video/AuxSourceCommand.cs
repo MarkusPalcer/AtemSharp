@@ -7,21 +7,12 @@ namespace AtemSharp.Commands.Video;
 /// </summary>
 [Command("CAuS")]
 [BufferSize(4)]
-public partial class AuxSourceCommand : SerializedCommand
+public partial class AuxSourceCommand(AuxiliaryOutput auxiliaryOutput) : SerializedCommand
 {
-    [SerializedField(1)] [NoProperty] private readonly byte _auxId;
+    [SerializedField(1)] [NoProperty] private readonly byte _auxId = auxiliaryOutput.Id;
 
     /// <summary>
     /// Source input number for the auxiliary output
     /// </summary>
-    [SerializedField(2, 0)] private ushort _source;
-
-    /// <summary>
-    /// Create command initialized with current state values
-    /// </summary>
-    public AuxSourceCommand(AuxiliaryOutput auxiliaryOutput)
-    {
-        _auxId = auxiliaryOutput.Id;
-        _source = auxiliaryOutput.Source;
-    }
+    [SerializedField(2, 0)] private ushort _source = auxiliaryOutput.Source;
 }

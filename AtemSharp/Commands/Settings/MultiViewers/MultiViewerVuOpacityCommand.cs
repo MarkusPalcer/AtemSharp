@@ -1,8 +1,7 @@
-using AtemSharp.State;
+using AtemSharp.State.Settings.MultiViewer;
 
 namespace AtemSharp.Commands.Settings.MultiViewers;
 
-// TODO: Split into two commands to be consistent with other commands
 /// <summary>
 /// Command to set MultiViewer VU opacity level
 /// </summary>

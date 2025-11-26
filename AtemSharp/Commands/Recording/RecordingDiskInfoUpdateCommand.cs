@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Info;
 using AtemSharp.State.Recording;
@@ -8,20 +7,15 @@ namespace AtemSharp.Commands.Recording;
 [Command("RTMD", ProtocolVersion.V8_1_1)]
 public partial class RecordingDiskInfoUpdateCommand : IDeserializedCommand
 {
-    [DeserializedField(0)]
-    private uint _diskId;
+    [DeserializedField(0)] private uint _diskId;
 
-    [CustomDeserialization]
-    private bool _isDelete;
+    [CustomDeserialization] private bool _isDelete;
 
-    [DeserializedField(8)]
-    private RecordingDiskStatus _status;
+    [DeserializedField(8)] private RecordingDiskStatus _status;
 
-    [DeserializedField(4)]
-    private uint _recordingTimeAvailable;
+    [DeserializedField(4)] private uint _recordingTimeAvailable;
 
-    [CustomDeserialization]
-    private string _name = string.Empty;
+    [CustomDeserialization] private string _name = string.Empty;
 
     private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {

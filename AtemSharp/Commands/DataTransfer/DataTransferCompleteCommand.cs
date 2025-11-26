@@ -18,6 +18,5 @@ public partial class DataTransferCompleteCommand : IDeserializedCommand
     public void ApplyToState(AtemState state)
     {
         // Nothing to do - this is just a notification that a transfer completed
-        // The TypeScript implementation also returns an empty array
     }
 }

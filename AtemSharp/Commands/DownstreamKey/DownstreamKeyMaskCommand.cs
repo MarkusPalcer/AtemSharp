@@ -7,60 +7,36 @@ namespace AtemSharp.Commands.DownstreamKey;
 /// </summary>
 [Command("CDsM")]
 [BufferSize(12)]
-public partial class DownstreamKeyMaskCommand : SerializedCommand
+public partial class DownstreamKeyMaskCommand(DownstreamKeyer dsk) : SerializedCommand
 {
-    [SerializedField(1)]
-    [NoProperty]
-    internal readonly byte DownstreamKeyerId;
+    [SerializedField(1)] [NoProperty] private readonly byte _downstreamKeyerId = dsk.Id;
 
     /// <summary>
     /// Whether the mask is enabled
     /// </summary>
-    [SerializedField(2,0)]
-    private bool _enabled;
+    [SerializedField(2, 0)] private bool _enabled = dsk.Properties.Mask.Enabled;
 
     /// <summary>
     /// Top edge of the mask
     /// </summary>
-    [SerializedField(4,1)]
-    [SerializedType(typeof(short))]
-    [ScalingFactor(1000.0)]
-    private double _top;
+    [SerializedField(4, 1)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
+    private double _top = dsk.Properties.Mask.Top;
 
     /// <summary>
     /// Bottom edge of the mask
     /// </summary>
-    [SerializedField(6,2)]
-    [SerializedType(typeof(short))]
-    [ScalingFactor(1000.0)]
-    private double _bottom;
+    [SerializedField(6, 2)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
+    private double _bottom = dsk.Properties.Mask.Bottom;
 
     /// <summary>
     /// Left edge of the mask
     /// </summary>
-    [SerializedField(8,3)]
-    [SerializedType(typeof(short))]
-    [ScalingFactor(1000.0)]
-    private double _left;
+    [SerializedField(8, 3)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
+    private double _left = dsk.Properties.Mask.Left;
 
     /// <summary>
     /// Right edge of the mask
     /// </summary>
-    [SerializedField(10,4)]
-    [SerializedType(typeof(short))]
-    [ScalingFactor(1000.0)]
-    private double _right;
-
-    public DownstreamKeyMaskCommand(DownstreamKeyer dsk)
-    {
-        DownstreamKeyerId = dsk.Id;
-        var maskProps = dsk.Properties.Mask;
-
-        // Initialize from current state (direct field access = no flags set)
-        _enabled = maskProps.Enabled;
-        _top = maskProps.Top;
-        _bottom = maskProps.Bottom;
-        _left = maskProps.Left;
-        _right = maskProps.Right;
-    }
+    [SerializedField(10, 4)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
+    private double _right = dsk.Properties.Mask.Right;
 }

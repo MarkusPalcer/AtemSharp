@@ -1,6 +1,5 @@
-using AtemSharp.Lib;
-using AtemSharp.State;
 using AtemSharp.State.Info;
+using AtemSharp.State.Video.DownstreamKeyer;
 
 namespace AtemSharp.Commands.DownstreamKey;
 
@@ -8,35 +7,14 @@ namespace AtemSharp.Commands.DownstreamKey;
 /// Command to trigger an auto transition on a downstream keyer
 /// </summary>
 [Command("DDsA")]
-public class DownstreamKeyAutoCommand : SerializedCommand
+public class DownstreamKeyAutoCommand(DownstreamKeyer dsk) : SerializedCommand
 {
-    private bool _isTowardsOnAir;
+    private bool _isTowardsOnAir = dsk.IsTowardsOnAir;
 
     /// <summary>
     /// Downstream keyer index (0-based)
     /// </summary>
-    public int DownstreamKeyerId { get; }
-
-    /// <summary>
-    /// Create command initialized with current state values
-    /// </summary>
-    /// <param name="downstreamKeyerId">Downstream keyer index (0-based)</param>
-    /// <param name="currentState">Current ATEM state</param>
-    /// <exception cref="InvalidIdError">Thrown if downstream keyer not available</exception>
-    public DownstreamKeyAutoCommand(int downstreamKeyerId, AtemState currentState)
-    {
-        DownstreamKeyerId = downstreamKeyerId;
-
-        if (downstreamKeyerId >= currentState.Video.DownstreamKeyers.Length)
-        {
-            throw new IndexOutOfRangeException("DownstreamKeyerId is out of range");
-        }
-
-        var dsk = currentState.Video.DownstreamKeyers[downstreamKeyerId];
-
-        // Initialize from current state (direct field access = no flags set)
-        _isTowardsOnAir = dsk.IsTowardsOnAir;
-    }
+    public int DownstreamKeyerId { get; } = dsk.Id;
 
     /// <summary>
     /// Direction of the auto transition (true = towards on air, false = towards off air)
@@ -47,11 +25,10 @@ public class DownstreamKeyAutoCommand : SerializedCommand
         set
         {
             _isTowardsOnAir = value;
-            Flag |= 1 << 0;  // MaskFlags.isTowardsOnAir = 1
+            Flag |= 1 << 0; // MaskFlags.isTowardsOnAir = 1
         }
     }
 
-    // TODO: Split by version
     /// <summary>
     /// Serialize command to binary stream for transmission to ATEM
     /// </summary>

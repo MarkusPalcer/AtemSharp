@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Info;
 using AtemSharp.State.Media;
@@ -95,7 +94,6 @@ public class TopologyCommand : IDeserializedCommand
     /// </summary>
     public bool OnlyConfigurableOutputs { get; set; }
 
-    // TODO: Split by Version
     /// <summary>
     /// Deserialize the command from binary stream
     /// </summary>
@@ -133,18 +131,14 @@ public class TopologyCommand : IDeserializedCommand
         return command;
     }
 
-    /// <summary>
-    /// Apply the command's values to the ATEM state
-    /// </summary>
-    /// <param name="state">Current ATEM state to update</param>
-    /// <returns>Paths indicating what was changed in the state</returns>
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         // Create capabilities object with all the topology data
         state.Info.Capabilities.MixEffects = MixEffects;
         state.Info.Capabilities.Sources = Sources;
         state.Info.Capabilities.Auxiliaries = Auxiliaries;
-        state.Info.Capabilities.MixMinusOutputs = MixMinusOutputs; // TODO: What are those?
+        state.Info.Capabilities.MixMinusOutputs = MixMinusOutputs;
         state.Info.Capabilities.MediaPlayers = MediaPlayers;
         state.Info.Capabilities.MultiViewers = Multiviewers;
         state.Info.Capabilities.SerialPorts = SerialPorts;
@@ -172,11 +166,6 @@ public class TopologyCommand : IDeserializedCommand
         state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(DownstreamKeyers);
 
         state.Info.MultiViewer.Count = Multiviewers;
-        state.Info.MultiViewer.WindowCount = Multiviewers switch
-        {
-            > 0 => 10,
-            < 0 => -1,
-            _ => 0
-        };
+        state.Info.MultiViewer.WindowCount = Multiviewers > 0 ? 10 : 0;
     }
 }

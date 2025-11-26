@@ -13,12 +13,11 @@ public class MacroPropertiesCommandTests : SerializedCommandTestBase<MacroProper
 
     protected override MacroPropertiesCommand CreateSut(TestCaseData testCase)
     {
-        var macro = new AtemSharp.State.Macro.Macro
+        return new MacroPropertiesCommand(new AtemSharp.State.Macro.Macro
         {
             Id = testCase.Command.Index,
             Name = testCase.Command.Name,
             Description = testCase.Command.Description
-        };
-        return new MacroPropertiesCommand(macro);
+        });
     }
 }

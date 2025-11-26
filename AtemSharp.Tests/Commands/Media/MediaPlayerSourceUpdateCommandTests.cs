@@ -16,6 +16,7 @@ public class MediaPlayerSourceUpdateCommandTests : DeserializedCommandTestBase<M
     {
         Assert.That(actualCommand.SourceType, Is.EqualTo(expectedData.SourceType));
         Assert.That(actualCommand.MediaPlayerId, Is.EqualTo(expectedData.Index));
+
         if (expectedData.SourceType == MediaSourceType.Still)
         {
             Assert.That(actualCommand.StillIndex, Is.EqualTo(expectedData.SourceIndex));

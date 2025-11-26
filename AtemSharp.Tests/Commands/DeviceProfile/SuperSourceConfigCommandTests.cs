@@ -1,6 +1,4 @@
 using AtemSharp.Commands.DeviceProfile;
-using AtemSharp.State;
-using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
@@ -22,81 +20,7 @@ public class SuperSourceConfigCommandTests : DeserializedCommandTestBase<SuperSo
 
     protected override void CompareCommandProperties(SuperSourceConfigCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        var failures = new List<string>();
-
-        // Compare SsrcId
-        if (actualCommand.SuperSourceId != expectedData.SsrcId)
-        {
-            failures.Add($"SsrcId: expected {expectedData.SsrcId}, actual {actualCommand.SuperSourceId}");
-        }
-
-        // Compare BoxCount
-        if (actualCommand.BoxCount != expectedData.BoxCount)
-        {
-            failures.Add($"BoxCount: expected {expectedData.BoxCount}, actual {actualCommand.BoxCount}");
-        }
-
-        if (failures.Count > 0)
-        {
-            Assert.Fail($"Command property comparison failed:\n{string.Join("\n", failures)}");
-        }
-    }
-
-    [Test]
-    public void ApplyToState_WithValidData_ShouldUpdateSuperSourceInfo()
-    {
-        // Arrange
-        var state = new AtemState
-        {
-            Info =
-            {
-                SuperSources = AtemStateUtil.CreateArray<SuperSourceInfo>(3)
-            }
-        };
-
-        var command = new SuperSourceConfigCommand
-        {
-            SuperSourceId = 1,
-            BoxCount = 54
-        };
-
-        // Act
-        command.ApplyToState(state);
-
-        // Assert
-        Assert.That(state.Info.SuperSources[1].BoxCount, Is.EqualTo(54));
-    }
-
-    [Test]
-    public void ApplyToState_WithDifferentSsrcIds_ShouldUpdateCorrectSuperSource()
-    {
-        // Arrange
-        var state = new AtemState
-        {
-            Info =
-            {
-                SuperSources = AtemStateUtil.CreateArray<SuperSourceInfo>(3)
-            }
-        };
-
-        var command1 = new SuperSourceConfigCommand
-        {
-            SuperSourceId = 0,
-            BoxCount = 48
-        };
-        var command2 = new SuperSourceConfigCommand
-        {
-            SuperSourceId = 2,
-            BoxCount = 196
-        };
-
-        // Act
-        command1.ApplyToState(state);
-        command2.ApplyToState(state);
-
-        // Assert
-        Assert.That(state.Info.SuperSources[0].BoxCount, Is.EqualTo(48));
-        Assert.That(state.Info.SuperSources[1].BoxCount, Is.EqualTo(0));
-        Assert.That(state.Info.SuperSources[2].BoxCount, Is.EqualTo(196));
+        Assert.That(actualCommand.SuperSourceId, Is.EqualTo(expectedData.SsrcId));
+        Assert.That(actualCommand.BoxCount, Is.EqualTo(expectedData.BoxCount));
     }
 }

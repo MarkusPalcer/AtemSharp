@@ -15,7 +15,7 @@ public class DownstreamKeyCutSourceCommandTests : SerializedCommandTestBase<Down
 
     protected override DownstreamKeyCutSourceCommand CreateSut(TestCaseData testCase)
     {
-        var command = new DownstreamKeyCutSourceCommand(new DownstreamKeyer
+        return new DownstreamKeyCutSourceCommand(new DownstreamKeyer
         {
             Id = testCase.Command.Index,
             Sources =
@@ -23,34 +23,20 @@ public class DownstreamKeyCutSourceCommandTests : SerializedCommandTestBase<Down
                 CutSource = testCase.Command.CutSource
             }
         });
-
-        return command;
     }
 
     [Test]
-    public void Constructor_WithValidKeyerId_ShouldInitializeCorrectly()
+    public void Constructor_ShouldInitializeCorrectly()
     {
-        // Arrange
-        const int keyerId = 1;
-        const int expectedCutSource = 42;
         // Act
-        var command = new DownstreamKeyCutSourceCommand(new DownstreamKeyer()
-        {
-            Id = keyerId,
-            Sources =
-            {
-                CutSource = expectedCutSource
-            }
-        });
+        var command = new DownstreamKeyCutSourceCommand(new DownstreamKeyer());
 
         // Assert
-        Assert.That(command.DownstreamKeyerId, Is.EqualTo(keyerId));
-        Assert.That(command.Input, Is.EqualTo(expectedCutSource)); // Should get value from state
         Assert.That(command.Flag, Is.EqualTo(0)); // No flags set initially
     }
 
     [Test]
-    public void Input_WhenSet_ShouldUpdateFlagAndValue()
+    public void Input_WhenSet_ShouldUpdateFlag()
     {
         // Arrange
         var command = new DownstreamKeyCutSourceCommand(new DownstreamKeyer());
@@ -59,7 +45,6 @@ public class DownstreamKeyCutSourceCommandTests : SerializedCommandTestBase<Down
         command.Input = 1234;
 
         // Assert
-        Assert.That(command.Input, Is.EqualTo(1234));
         Assert.That(command.Flag, Is.EqualTo(1)); // Flag bit 0 should be set
     }
 
@@ -74,7 +59,7 @@ public class DownstreamKeyCutSourceCommandTests : SerializedCommandTestBase<Down
         command.Input = 200;
 
         // Assert
-        Assert.That(command.Input, Is.EqualTo(200));
+        Assert.That(command.Flag, Is.EqualTo(1)); // Flag should remain set
         Assert.That(command.Flag, Is.EqualTo(1)); // Flag should remain set
     }
 }

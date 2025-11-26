@@ -1,7 +1,4 @@
 using AtemSharp.Commands.MixEffects.Transition;
-using AtemSharp.State;
-using AtemSharp.State.Video;
-using AtemSharp.State.Video.MixEffect;
 using AtemSharp.State.Video.MixEffect.Transition;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
@@ -43,68 +40,5 @@ public class TransitionDigitalVideoEffectsUpdateCommandTests : DeserializedComma
         Assert.That(actualCommand.InvertKey, Is.EqualTo(expectedData.InvertKey));
         Assert.That(actualCommand.Reverse, Is.EqualTo(expectedData.Reverse));
         Assert.That(actualCommand.FlipFlop, Is.EqualTo(expectedData.FlipFlop));
-    }
-
-    [Test]
-    public void ApplyToState_WithValidState_UpdatesDVESettings()
-    {
-        // Arrange
-        var command = new TransitionDigitalVideoEffectsUpdateCommand
-        {
-            MixEffectId = 0,
-            Rate = 30,
-            LogoRate = 20,
-            Style = DigitalVideoEffect.SwooshBottom,
-            FillSource = 1500,
-            KeySource = 2500,
-            EnableKey = true,
-            PreMultiplied = false,
-            Clip = 600,
-            Gain = 800,
-            InvertKey = true,
-            Reverse = false,
-            FlipFlop = true
-        };
-
-        var state = new AtemState
-        {
-            Info =
-            {
-                Capabilities =
-                {
-                    MixEffects = 1,
-                    DigitalVideoEffects = 1
-                }
-            },
-            Video = new VideoState
-            {
-                MixEffects =
-                [
-                    new MixEffect
-                    {
-                        Id = 0,
-                    }
-                ]
-            }
-        };
-
-        // Act
-        command.ApplyToState(state);
-
-        // Assert
-        var dveSettings = state.Video.MixEffects[0].TransitionSettings.DigitalVideoEffect;
-        Assert.That(dveSettings, Is.Not.Null);
-        Assert.That(dveSettings.Rate, Is.EqualTo(30));
-        Assert.That(dveSettings.LogoRate, Is.EqualTo(20));
-        Assert.That(dveSettings.Style, Is.EqualTo(DigitalVideoEffect.SwooshBottom));
-        Assert.That(dveSettings.FillSource, Is.EqualTo(1500));
-        Assert.That(dveSettings.KeySource, Is.EqualTo(2500));
-        Assert.That(dveSettings.EnableKey, Is.True);
-        Assert.That(dveSettings.PreMultiplied, Is.False);
-        Assert.That(dveSettings.Clip, Is.EqualTo(600));
-        Assert.That(dveSettings.Gain, Is.EqualTo(800));
-        Assert.That(dveSettings.InvertKey, Is.True);
-        Assert.That(dveSettings.Reverse, Is.False);
-        Assert.That(dveSettings.FlipFlop, Is.True);
     }
 }

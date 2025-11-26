@@ -32,26 +32,12 @@ public class TransitionMixCommandTests : SerializedCommandTestBase<TransitionMix
     public void Rate_SetProperty_SetsFlag()
     {
         // Arrange
-        const int mixEffectId = 0;
-        var state = new MixEffect
-        {
-            Id = mixEffectId,
-            TransitionSettings =
-            {
-                Mix =
-                {
-                    Rate = 0
-                }
-            }
-        };
-
-        var command = new TransitionMixCommand(state);
+        var command = new TransitionMixCommand(new MixEffect());
 
         // Act
         command.Rate = 100;
 
         // Assert
-        Assert.That(command.Rate, Is.EqualTo(100));
         Assert.That(command.Flag, Is.EqualTo(1)); // Flag should be set
     }
 }

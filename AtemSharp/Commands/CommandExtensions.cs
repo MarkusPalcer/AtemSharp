@@ -33,28 +33,6 @@ public static class CommandExtensions
 		return rawName;
 	}
 
-	/// <summary>
-	/// Returns the raw name of the command type (e.g. "CAMI" for AudioMixerInputCommand)
-	/// or null if the command does not have a CommandAttribute
-	/// </summary>
-	/// <remarks>
-	/// This recreates the rawName attribute in the typescript code and whenever that is used, use this method
-	/// to get the raw name instead of hardcoding it.
-	/// </remarks>
-	public static string? GetRawName<TCommand>() where TCommand : ICommand
-	{
-		return GetRawName(typeof(TCommand));
-	}
-
-	/// <summary>
-	/// Returns the minimum protocol version required for the command
-	/// or null if the command does not have a CommandAttribute or no minimum version is specified
-	/// </summary>
-	public static ProtocolVersion? GetMinimumVersion(this ICommand command)
-	{
-		return GetMinimumVersion(command.GetType());
-	}
-
 	private static ProtocolVersion? GetMinimumVersion(Type commandType)
 	{
 		if (CommandMinimumVersionCache.TryGetValue(commandType, out var result)) return result;

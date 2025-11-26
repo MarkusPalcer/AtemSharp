@@ -53,7 +53,7 @@ namespace AtemSharp.CodeGenerators.Analyzers
                         descriptor.Category,
                         descriptor.DefaultSeverity,
                         descriptor.IsEnabledByDefault,
-                        descriptor.Description?.ToString());
+                        descriptor.Description.ToString());
                     var diagnostic = Diagnostic.Create(customDescriptor, location);
                     context.ReportDiagnostic(diagnostic);
                 }

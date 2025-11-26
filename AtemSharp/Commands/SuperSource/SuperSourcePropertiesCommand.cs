@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State.Border;
 using AtemSharp.State.Video.SuperSource;
 
@@ -8,18 +7,18 @@ namespace AtemSharp.Commands.SuperSource;
 [BufferSize(36)]
 public partial class SuperSourcePropertiesCommand(State.Video.SuperSource.SuperSource superSource) : SerializedCommand
 {
-    [SerializedField(4,0)] private ushort _artFillSource = superSource.FillSource;
-    [SerializedField(6,1)] private ushort _artCutSource = superSource.CutSource;
-    [SerializedField(8,2)] private ArtOption _artOption = superSource.Option;
-    [SerializedField(9,3)] private bool _artPremultiplied = superSource.PreMultiplied;
+    [SerializedField(4, 0)] private ushort _artFillSource = superSource.FillSource;
+    [SerializedField(6, 1)] private ushort _artCutSource = superSource.CutSource;
+    [SerializedField(8, 2)] private ArtOption _artOption = superSource.Option;
+    [SerializedField(9, 3)] private bool _artPremultiplied = superSource.PreMultiplied;
 
-    [SerializedField(10,4)] [SerializedType(typeof(ushort))] [ScalingFactor(10)]
+    [SerializedField(10, 4)] [SerializedType(typeof(ushort))] [ScalingFactor(10)]
     private double _artClip = superSource.Clip;
 
-    [SerializedField(12,5)] [SerializedType(typeof(ushort))] [ScalingFactor(10)]
+    [SerializedField(12, 5)] [SerializedType(typeof(ushort))] [ScalingFactor(10)]
     private double _artGain = superSource.Gain;
 
-    [SerializedField(14,6)] private bool _artInvertKey = superSource.InvertKey;
+    [SerializedField(14, 6)] private bool _artInvertKey = superSource.InvertKey;
     [SerializedField(15, 7)] private bool _enabled = superSource.Border.Enabled;
     [SerializedField(16, 8)] private BorderBevel _bevel = superSource.Border.Bevel;
 

@@ -7,7 +7,6 @@ namespace AtemSharp.Tests.Commands.SuperSource;
 public class SuperSourceBoxParametersCommandTests : SerializedCommandTestBase<SuperSourceBoxParametersCommand, SuperSourceBoxParametersCommandTests.CommandData>
 {
     // Mark all as floating point as it's version dependent where the floating points are
-    // TODO: Make this mechanism version dependent
     protected override Range[] GetFloatingPointByteRanges() => [
         (..)
     ];

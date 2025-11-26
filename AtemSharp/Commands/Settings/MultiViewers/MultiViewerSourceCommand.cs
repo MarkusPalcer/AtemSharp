@@ -1,4 +1,4 @@
-using AtemSharp.State;
+using AtemSharp.State.Settings.MultiViewer;
 
 namespace AtemSharp.Commands.Settings.MultiViewers;
 
@@ -9,17 +9,12 @@ namespace AtemSharp.Commands.Settings.MultiViewers;
 [BufferSize(4)]
 public partial class MultiViewerSourceCommand(MultiViewerWindowState window) : SerializedCommand
 {
-    [SerializedField(0)]
-    [NoProperty]
-    internal readonly byte MultiViewerId = window.MultiViewerId;
+    [SerializedField(0)] [NoProperty] internal readonly byte MultiViewerId = window.MultiViewerId;
 
-    [SerializedField(1)]
-    [NoProperty]
-    internal readonly byte WindowIndex = window.WindowIndex;
+    [SerializedField(1)] [NoProperty] internal readonly byte WindowIndex = window.WindowIndex;
 
     /// <summary>
     /// The video source number to assign to this window
     /// </summary>
-    [SerializedField(2)]
-    private ushort _source = window.Source;
+    [SerializedField(2)] private ushort _source = window.Source;
 }

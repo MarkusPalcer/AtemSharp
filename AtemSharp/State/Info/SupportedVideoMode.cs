@@ -1,4 +1,4 @@
-using AtemSharp.Enums;
+using AtemSharp.State.Settings;
 
 namespace AtemSharp.State.Info;
 

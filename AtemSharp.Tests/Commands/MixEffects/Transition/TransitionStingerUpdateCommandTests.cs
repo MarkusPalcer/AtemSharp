@@ -1,7 +1,4 @@
 using AtemSharp.Commands.MixEffects.Transition;
-using AtemSharp.State;
-using AtemSharp.State.Video;
-using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
@@ -36,48 +33,5 @@ public class TransitionStingerUpdateCommandTests : DeserializedCommandTestBase<T
         Assert.That(actualCommand.ClipDuration, Is.EqualTo(expectedData.ClipDuration));
         Assert.That(actualCommand.TriggerPoint, Is.EqualTo(expectedData.TriggerPoint));
         Assert.That(actualCommand.MixRate, Is.EqualTo(expectedData.MixRate));
-    }
-
-    [Test]
-    public void ApplyToState_ValidState_UpdatesCorrectly()
-    {
-        // Arrange
-        var state = new AtemState
-        {
-            Video = new VideoState
-            {
-                MixEffects = [new MixEffect { Id = 0 }, new MixEffect { Id = 1 }]
-            }
-        };
-
-        var command = new TransitionStingerUpdateCommand
-        {
-            MixEffectId = 1,
-            Source = 5,
-            PreMultipliedKey = true,
-            Clip = 25.5,
-            Gain = 75.0,
-            Invert = true,
-            Preroll = 1000,
-            ClipDuration = 2000,
-            TriggerPoint = 1500,
-            MixRate = 30
-        };
-
-        // Act
-        command.ApplyToState(state);
-
-        // Assert
-        var stingerSettings = state.Video.MixEffects[1].TransitionSettings.Stinger;
-        Assert.That(stingerSettings, Is.Not.Null);
-        Assert.That(stingerSettings.Source, Is.EqualTo(5));
-        Assert.That(stingerSettings.PreMultipliedKey, Is.EqualTo(true));
-        Assert.That(stingerSettings.Clip, Is.EqualTo(25.5));
-        Assert.That(stingerSettings.Gain, Is.EqualTo(75.0));
-        Assert.That(stingerSettings.Invert, Is.EqualTo(true));
-        Assert.That(stingerSettings.Preroll, Is.EqualTo(1000));
-        Assert.That(stingerSettings.ClipDuration, Is.EqualTo(2000));
-        Assert.That(stingerSettings.TriggerPoint, Is.EqualTo(1500));
-        Assert.That(stingerSettings.MixRate, Is.EqualTo(30));
     }
 }

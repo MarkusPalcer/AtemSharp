@@ -1,5 +1,5 @@
 using AtemSharp.State.Audio.Fairlight;
-using FairlightMixerSourceEqualizerBandCommand = AtemSharp.Commands.Fairlight.Source.FairlightMixerSourceEqualizerBandCommand;
+using FairlightMixerSourceEqualizerBandCommand = AtemSharp.Commands.Audio.Fairlight.Source.FairlightMixerSourceEqualizerBandCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
@@ -27,7 +27,7 @@ public class FairlightMixerSourceEqualizerBandCommandTests : SerializedCommandTe
 
     protected override FairlightMixerSourceEqualizerBandCommand CreateSut(TestCaseData testCase)
     {
-        var band = new SourceEqualizerBand
+        return new FairlightMixerSourceEqualizerBandCommand(new SourceEqualizerBand
         {
             Id = testCase.Command.Band,
             InputId = (ushort)testCase.Command.Index,
@@ -38,7 +38,6 @@ public class FairlightMixerSourceEqualizerBandCommandTests : SerializedCommandTe
             Frequency = testCase.Command.Frequency,
             Gain = testCase.Command.Gain,
             QFactor = testCase.Command.QFactor
-        };
-        return new FairlightMixerSourceEqualizerBandCommand(band);
+        });
     }
 }

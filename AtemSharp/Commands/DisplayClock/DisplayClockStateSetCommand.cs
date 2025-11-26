@@ -7,25 +7,13 @@ namespace AtemSharp.Commands.DisplayClock;
 /// </summary>
 [Command("DCSC")]
 [BufferSize(4)]
-public partial class DisplayClockStateSetCommand : SerializedCommand
+public partial class DisplayClockStateSetCommand(State.DisplayClock.DisplayClock state) : SerializedCommand
 {
     // Field will exist in the future according to TS implementation
-    [SerializedField(0)]
-    [NoProperty]
-    private readonly byte _id = 0;
+    [SerializedField(0)] [NoProperty] private readonly byte _id = 0;
 
     /// <summary>
-    /// Clock state to set (stopped, running, reset)
+    /// Clock state to set
     /// </summary>
-    [SerializedField(1,0)]
-    private DisplayClockClockState _state;
-
-    /// <summary>
-    /// Create command with specified clock state
-    /// </summary>
-    /// <param name="state">Clock state to set</param>
-    public DisplayClockStateSetCommand(State.DisplayClock.DisplayClock state)
-    {
-        _state = state.ClockState;
-    }
+    [SerializedField(1, 0)] private DisplayClockClockState _state = state.ClockState;
 }

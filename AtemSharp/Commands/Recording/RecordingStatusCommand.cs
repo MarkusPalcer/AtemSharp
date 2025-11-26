@@ -8,6 +8,5 @@ namespace AtemSharp.Commands.Recording;
 [BufferSize(4)]
 public partial class RecordingStatusCommand(AtemState state) : SerializedCommand
 {
-    [SerializedField(0)]
-    private bool _isRecording = state.Recording.Status == RecordingStatus.Recording;
+    [SerializedField(0)] private bool _isRecording = state.Recording.Status == RecordingStatus.Recording;
 }

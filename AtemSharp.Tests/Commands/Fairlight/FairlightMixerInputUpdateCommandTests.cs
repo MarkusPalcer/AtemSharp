@@ -1,4 +1,4 @@
-using AtemSharp.Commands.Fairlight;
+using AtemSharp.Commands.Audio.Fairlight;
 using AtemSharp.State.Audio.Fairlight;
 using AtemSharp.State.Info;
 using AtemSharp.State.Ports;
@@ -31,7 +31,6 @@ public class FairlightMixerInputUpdateCommandTests : DeserializedCommandTestBase
         Assert.That(CommandTestUtilities.CombineComponents(actualCommand.SupportedConfigurations), Is.EqualTo(expectedData.SupportedConfigurations));
         Assert.That(actualCommand.ActiveConfiguration, Is.EqualTo(expectedData.ActiveConfiguration));
 
-        // TODO: Split command into two
         if (testCase.FirstVersion >= ProtocolVersion.V8_1_1)
         {
             Assert.That(CommandTestUtilities.CombineComponents(actualCommand.SupportedInputLevels), Is.EqualTo(expectedData.SupportedInputLevels));

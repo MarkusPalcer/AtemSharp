@@ -53,7 +53,7 @@ public class AtemSwitcher : IAtemSwitcher
     /// </summary>
     /// <param name="remoteHost">IP address of the ATEM device</param>
     /// <param name="remotePort">Port number (default: 9910)</param>
-    public AtemSwitcher(string remoteHost, int remotePort = Constants.AtemConstants.DEFAULT_PORT) : this(
+    public AtemSwitcher(string remoteHost, int remotePort = Constants.AtemConstants.DefaultPort) : this(
         remoteHost, remotePort, new AtemClient())
     {
     }

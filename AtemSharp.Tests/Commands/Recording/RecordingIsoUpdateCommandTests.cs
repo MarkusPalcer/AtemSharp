@@ -6,11 +6,11 @@ public class RecordingIsoUpdateCommandTests : DeserializedCommandTestBase<Record
 {
     public class CommandData : CommandDataBase
     {
-        public bool ISORecordAllInputs { get; set; }
+        public bool IsoRecordAllInputs { get; set; }
     }
 
     protected override void CompareCommandProperties(RecordingIsoUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        Assert.That(actualCommand.RecordAllInputs, Is.EqualTo(expectedData.ISORecordAllInputs));
+        Assert.That(actualCommand.RecordAllInputs, Is.EqualTo(expectedData.IsoRecordAllInputs));
     }
 }

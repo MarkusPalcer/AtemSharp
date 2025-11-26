@@ -1,4 +1,4 @@
-using AtemSharp.Lib;
+using AtemSharp.Commands;
 
 namespace AtemSharp.Tests.Lib;
 

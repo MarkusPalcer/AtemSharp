@@ -1,4 +1,4 @@
-namespace AtemSharp.State;
+namespace AtemSharp.State.Video.InputChannel;
 
 /// <summary>
 /// Source availability flags

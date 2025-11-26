@@ -1,4 +1,4 @@
-using AtemSharp.Lib;
+using AtemSharp.Communication;
 using AtemSharp.State.Info;
 using AtemSharp.Tests.Lib.TestCommands;
 

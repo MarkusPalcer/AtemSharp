@@ -1,6 +1,5 @@
-using AtemSharp.Lib;
-using AtemSharp.State;
 using AtemSharp.State.Info;
+using AtemSharp.State.Settings;
 
 namespace AtemSharp.Commands.Media;
 

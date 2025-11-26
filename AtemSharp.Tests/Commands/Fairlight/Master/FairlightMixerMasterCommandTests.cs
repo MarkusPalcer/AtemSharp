@@ -1,5 +1,5 @@
 using AtemSharp.State.Audio.Fairlight;
-using FairlightMixerMasterCommand = AtemSharp.Commands.Fairlight.Master.FairlightMixerMasterCommand;
+using FairlightMixerMasterCommand = AtemSharp.Commands.Audio.Fairlight.Master.FairlightMixerMasterCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Master;
 
@@ -23,7 +23,7 @@ public class FairlightMixerMasterCommandTests : SerializedCommandTestBase<Fairli
 
     protected override FairlightMixerMasterCommand CreateSut(TestCaseData testCase)
     {
-        var master = new MasterProperties
+        return new FairlightMixerMasterCommand(new MasterProperties
         {
             Equalizer =
             {
@@ -36,8 +36,6 @@ public class FairlightMixerMasterCommandTests : SerializedCommandTestBase<Fairli
             },
             FollowFadeToBlack = testCase.Command.FollowFadeToBlack,
             FaderGain = testCase.Command.Gain
-        };
-
-        return new FairlightMixerMasterCommand(master);
+        });
     }
 }

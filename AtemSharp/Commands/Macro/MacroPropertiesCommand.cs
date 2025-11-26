@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.Macro;
@@ -34,8 +33,8 @@ public class MacroPropertiesCommand(State.Macro.Macro macro) : SerializedCommand
 
     public override byte[] Serialize(ProtocolVersion version)
     {
-        var buffer = new byte[SerializationExtensions.PadToMultiple(8+ _name.Length + _description.Length, 4)];
-        buffer.WriteUInt8((byte)Flag,0);
+        var buffer = new byte[SerializationExtensions.PadToMultiple(8 + _name.Length + _description.Length, 4)];
+        buffer.WriteUInt8((byte)Flag, 0);
         buffer.WriteUInt16BigEndian(_id, 2);
         buffer.WriteUInt16BigEndian((ushort)_name.Length, 4);
         buffer.WriteUInt16BigEndian((ushort)_description.Length, 6);

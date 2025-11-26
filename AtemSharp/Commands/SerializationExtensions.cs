@@ -1,6 +1,6 @@
 using System.Buffers.Binary;
 
-namespace AtemSharp.Lib;
+namespace AtemSharp.Commands;
 
 public static class SerializationExtensions
 {

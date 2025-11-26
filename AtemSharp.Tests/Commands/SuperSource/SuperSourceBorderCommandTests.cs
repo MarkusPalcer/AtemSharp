@@ -35,7 +35,7 @@ public class SuperSourceBorderCommandTests : SerializedCommandTestBase<SuperSour
 
     protected override SuperSourceBorderCommand CreateSut(TestCaseData testCase)
     {
-        return new SuperSourceBorderCommand(new AtemSharp.State.Video.SuperSource.SuperSource()
+        return new SuperSourceBorderCommand(new AtemSharp.State.Video.SuperSource.SuperSource
         {
             Id = testCase.Command.SSrcId,
             Border =

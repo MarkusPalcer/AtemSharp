@@ -1,5 +1,5 @@
-using AtemSharp.Lib;
-using FairlightMixerMasterEqualizerBandUpdateCommand = AtemSharp.Commands.Fairlight.Master.FairlightMixerMasterEqualizerBandUpdateCommand;
+using AtemSharp.Commands;
+using FairlightMixerMasterEqualizerBandUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Master.FairlightMixerMasterEqualizerBandUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Master;
 

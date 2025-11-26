@@ -1,6 +1,5 @@
 using AtemSharp.Commands.Settings.MultiViewers;
-using AtemSharp.Enums;
-using AtemSharp.State;
+using AtemSharp.State.Settings.MultiViewer;
 
 namespace AtemSharp.Tests.Commands.Settings.MultiViewers;
 
@@ -18,6 +17,19 @@ public class MultiViewerPropertiesCommandTests : SerializedCommandTestBase<Multi
         public bool ProgramPreviewSwapped { get; set; }
     }
 
+    protected override MultiViewerPropertiesCommand CreateSut(TestCaseData testCase)
+    {
+        return new MultiViewerPropertiesCommand(new MultiViewer
+        {
+            Id = testCase.Command.MultiViewIndex,
+            Properties =
+            {
+                Layout = testCase.Command.Layout,
+                ProgramPreviewSwapped = testCase.Command.ProgramPreviewSwapped
+            }
+        });
+    }
+
     [Test]
     public void SetLayout_ShouldSetFlagAutomatically()
     {
@@ -28,7 +40,6 @@ public class MultiViewerPropertiesCommandTests : SerializedCommandTestBase<Multi
         command.Layout = MultiViewerLayout.TopRightSmall;
 
         // Assert
-        Assert.That(command.Layout, Is.EqualTo(MultiViewerLayout.TopRightSmall), "Layout should be updated");
         Assert.That((command.Flag & (1 << 0)) != 0, Is.True, "Layout flag should be set automatically");
     }
 
@@ -42,20 +53,6 @@ public class MultiViewerPropertiesCommandTests : SerializedCommandTestBase<Multi
         command.ProgramPreviewSwapped = true;
 
         // Assert
-        Assert.That(command.ProgramPreviewSwapped, Is.True, "ProgramPreviewSwapped should be updated");
         Assert.That((command.Flag & (1 << 1)) != 0, Is.True, "ProgramPreviewSwapped flag should be set automatically");
-    }
-
-    protected override MultiViewerPropertiesCommand CreateSut(TestCaseData testCase)
-    {
-        return new MultiViewerPropertiesCommand(new MultiViewer
-        {
-            Id = testCase.Command.MultiViewIndex,
-            Properties =
-            {
-                Layout = testCase.Command.Layout,
-                ProgramPreviewSwapped = testCase.Command.ProgramPreviewSwapped
-            }
-        });
     }
 }

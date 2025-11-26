@@ -6,15 +6,14 @@ namespace AtemSharp.Commands.Streaming;
 [Command("STAB", ProtocolVersion.V8_1_1)]
 public partial class StreamingAudioBitratesUpdateCommand : IDeserializedCommand
 {
-    [DeserializedField(0)]
-    private uint lowBitrate;
+    [DeserializedField(0)] private uint _lowBitrate;
 
-    [DeserializedField(4)]
-    private uint highBitrate;
+    [DeserializedField(4)] private uint _highBitrate;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        state.Streaming.AudioBitrates.Low = lowBitrate;
-        state.Streaming.AudioBitrates.High = highBitrate;
+        state.Streaming.AudioBitrates.Low = _lowBitrate;
+        state.Streaming.AudioBitrates.High = _highBitrate;
     }
 }

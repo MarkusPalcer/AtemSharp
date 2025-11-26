@@ -29,7 +29,7 @@ public class MixEffectKeyPatternCommandTests : SerializedCommandTestBase<MixEffe
 
     protected override MixEffectKeyPatternCommand CreateSut(TestCaseData testCase)
     {
-        return new MixEffectKeyPatternCommand(new UpstreamKeyer()
+        return new MixEffectKeyPatternCommand(new UpstreamKeyer
         {
             MixEffectId = testCase.Command.MixEffectIndex,
             Id = testCase.Command.KeyerIndex,

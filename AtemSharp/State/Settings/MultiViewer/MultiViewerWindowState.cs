@@ -1,4 +1,4 @@
-namespace AtemSharp.State;
+namespace AtemSharp.State.Settings.MultiViewer;
 
 /// <summary>
 /// Represents the full state of a MultiViewer window, extending the source configuration with display options
@@ -15,7 +15,6 @@ public class MultiViewerWindowState
     /// <summary>
     /// Whether audio meter overlay is enabled for this window (optional)
     /// </summary>
-    // TODO: Unify names - Vu vs AudioMeter
     public bool AudioMeter { get; internal set; }
 
     /// <summary>

@@ -7,18 +7,17 @@ public class RecordingIsoCommandTests : SerializedCommandTestBase<RecordingIsoCo
 {
     public class CommandData : CommandDataBase
     {
-        public bool ISORecordAllInputs { get; set; }
+        public bool IsoRecordAllInputs { get; set; }
     }
 
     protected override RecordingIsoCommand CreateSut(TestCaseData testCase)
     {
-        var state = new AtemState
+        return new RecordingIsoCommand(new AtemState
         {
             Recording =
             {
-                RecordAllInputs = testCase.Command.ISORecordAllInputs
+                RecordAllInputs = testCase.Command.IsoRecordAllInputs
             }
-        };
-        return new RecordingIsoCommand(state);
+        });
     }
 }

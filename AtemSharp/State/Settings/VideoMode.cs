@@ -1,8 +1,11 @@
-namespace AtemSharp.Enums;
+using System.Diagnostics.CodeAnalysis;
+
+namespace AtemSharp.State.Settings;
 
 /// <summary>
 /// Video modes supported by ATEM devices
 /// </summary>
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 public enum VideoMode : byte
 {
     /// <summary>

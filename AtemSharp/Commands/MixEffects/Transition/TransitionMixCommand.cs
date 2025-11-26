@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State.Info;
 using AtemSharp.State.Video.MixEffect;
 
@@ -11,7 +10,7 @@ namespace AtemSharp.Commands.MixEffects.Transition;
 [BufferSize(4)]
 public class TransitionMixCommand(MixEffect mixEffect) : SerializedCommand
 {
-    internal readonly int MixEffectId = mixEffect.Id;
+    private readonly int _mixEffectId = mixEffect.Id;
 
     private int _rate = mixEffect.TransitionSettings.Mix.Rate;
 
@@ -39,7 +38,7 @@ public class TransitionMixCommand(MixEffect mixEffect) : SerializedCommand
         using var memoryStream = new MemoryStream(4);
         using var writer = new BinaryWriter(memoryStream);
 
-        writer.Write((byte)MixEffectId);
+        writer.Write((byte)_mixEffectId);
         writer.Write((byte)Rate);
         writer.Pad(2); // Skip 2 bytes padding
 

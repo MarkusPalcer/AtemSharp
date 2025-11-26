@@ -7,10 +7,10 @@ namespace AtemSharp.Commands;
 /// </summary>
 public abstract class SerializedCommand : ICommand
 {
-	/// <summary>
-	/// Property change flags
-	/// </summary>
-	public uint Flag { get; internal set; }
+    /// <summary>
+    /// Property change flags
+    /// </summary>
+    public uint Flag { get; internal set; }
 
     /// <summary>
     /// Serialize command to binary stream

@@ -1,6 +1,6 @@
-using AtemSharp.Enums;
 using AtemSharp.State;
 using AtemSharp.State.Info;
+using AtemSharp.State.Settings;
 
 namespace AtemSharp.Commands.Settings;
 
@@ -9,20 +9,10 @@ namespace AtemSharp.Commands.Settings;
 /// </summary>
 [Command("CTCC", ProtocolVersion.V8_1_1)]
 [BufferSize(4)]
-public partial class TimeConfigCommand : SerializedCommand
+public partial class TimeConfigCommand(AtemState currentState) : SerializedCommand
 {
     /// <summary>
     /// Time mode for the ATEM device
     /// </summary>
-    [SerializedField(0)]
-    private TimeMode _mode;
-
-    /// <summary>
-    /// Create command initialized with current state values
-    /// </summary>
-    /// <param name="currentState">Current ATEM state</param>
-    public TimeConfigCommand(AtemState currentState)
-    {
-        _mode = currentState.Settings.TimeMode;
-    }
+    [SerializedField(0)] private TimeMode _mode = currentState.Settings.TimeMode;
 }

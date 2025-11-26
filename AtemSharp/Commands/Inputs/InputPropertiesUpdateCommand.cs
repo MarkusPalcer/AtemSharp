@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Ports;
 using AtemSharp.State.Video.InputChannel;
@@ -34,14 +33,9 @@ public partial class InputPropertiesUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Available external port types for this input
     /// </summary>
-    /// <remarks>
-    /// TODO: Investigate relationship between this property and test data field "AvailableExternalPorts"
-    /// - Test data contains "AvailableExternalPorts" as ushort (raw flag value)
-    /// - This property contains parsed ExternalPortType[] array
-    /// - Need to determine if this should be derived from the raw value or if both serve different purposes
-    /// - TypeScript original uses Util.getComponents() to convert raw value to array
-    /// </remarks>
-    [DeserializedField(28)] [SerializedType(typeof(ExternalPortType))] [CustomScaling("DeserializationExtensions.GetComponents")]
+    [DeserializedField(28)]
+    [SerializedType(typeof(ExternalPortType))]
+    [CustomScaling($"{nameof(DeserializationExtensions)}.{nameof(DeserializationExtensions.GetComponents)}")]
     private ExternalPortType[]? _externalPorts;
 
     /// <summary>
@@ -73,7 +67,6 @@ public partial class InputPropertiesUpdateCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        // Update the input channel state
         state.Video.Inputs[InputId] = new InputChannel
         {
             InputId = InputId,

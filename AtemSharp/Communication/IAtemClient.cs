@@ -2,7 +2,7 @@ using System.Threading.Tasks.Dataflow;
 using AtemSharp.Commands;
 using AtemSharp.Constants;
 
-namespace AtemSharp.Lib;
+namespace AtemSharp.Communication;
 
 public interface IAtemClient : IAsyncDisposable
 {
@@ -14,7 +14,7 @@ public interface IAtemClient : IAsyncDisposable
 	/// <param name="address">IP address of the ATEM device</param>
 	/// <param name="port">Port number (default: 9910)</param>
 	/// <param name="cancellationToken">Cancellation token</param>
-	Task ConnectAsync(string address, int port = AtemConstants.DEFAULT_PORT, CancellationToken cancellationToken = default);
+	Task ConnectAsync(string address, int port = AtemConstants.DefaultPort, CancellationToken cancellationToken = default);
 
 	/// <summary>
 	/// Disconnects from the ATEM device

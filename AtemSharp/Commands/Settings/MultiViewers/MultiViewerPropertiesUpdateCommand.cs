@@ -1,6 +1,6 @@
-using AtemSharp.Enums;
 using AtemSharp.State;
 using AtemSharp.State.Info;
+using AtemSharp.State.Settings.MultiViewer;
 
 namespace AtemSharp.Commands.Settings.MultiViewers;
 

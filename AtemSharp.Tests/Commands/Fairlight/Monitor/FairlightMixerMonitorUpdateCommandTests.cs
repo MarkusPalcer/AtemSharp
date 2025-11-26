@@ -1,4 +1,4 @@
-using FairlightMixerMonitorUpdateCommand = AtemSharp.Commands.Fairlight.Monitor.FairlightMixerMonitorUpdateCommand;
+using FairlightMixerMonitorUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Monitor.FairlightMixerMonitorUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Monitor;
 

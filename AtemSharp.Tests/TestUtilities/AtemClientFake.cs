@@ -1,8 +1,8 @@
 using System.Net;
 using System.Threading.Tasks.Dataflow;
 using AtemSharp.Commands;
+using AtemSharp.Communication;
 using AtemSharp.Constants;
-using AtemSharp.Lib;
 using JetBrains.Annotations;
 
 
@@ -68,7 +68,7 @@ public class AtemClientFake : IAtemClient
     /// <summary>
     /// Simulates connecting to an ATEM device
     /// </summary>
-    public async Task ConnectAsync(string address, int port = AtemConstants.DEFAULT_PORT, CancellationToken cancellationToken = default)
+    public async Task ConnectAsync(string address, int port = AtemConstants.DefaultPort, CancellationToken cancellationToken = default)
     {
         if (_disposed)
         {

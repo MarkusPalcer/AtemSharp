@@ -1,4 +1,4 @@
-namespace AtemSharp.Enums;
+namespace AtemSharp.State.Settings;
 
 /// <summary>
 /// Time mode for the ATEM device
@@ -9,7 +9,7 @@ public enum TimeMode : byte
     /// Free running time mode
     /// </summary>
     FreeRun = 0,
-    
+
     /// <summary>
     /// Time of day mode
     /// </summary>

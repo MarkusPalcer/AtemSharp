@@ -1,6 +1,5 @@
 using System.Net;
 using System.Threading.Tasks.Dataflow;
-using AtemSharp.Lib;
 
 namespace AtemSharp.Communication;
 

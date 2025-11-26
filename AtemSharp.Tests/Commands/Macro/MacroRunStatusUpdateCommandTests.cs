@@ -14,9 +14,9 @@ public class MacroRunStatusUpdateCommandTests : DeserializedCommandTestBase<Macr
 
     protected override void CompareCommandProperties(MacroRunStatusUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        Assert.That(actualCommand.IsRunning, Is.EqualTo(expectedData.IsRunning), $"{testCase.Name} - IsRunning");
-        Assert.That(actualCommand.Loop, Is.EqualTo(expectedData.Loop), $"{testCase.Name} - Loop");
-        Assert.That(actualCommand.IsWaiting, Is.EqualTo(expectedData.IsWaiting), $"{testCase.Name} - IsWaiting");
-        Assert.That(actualCommand.MacroIndex, Is.EqualTo(expectedData.Index), $"{testCase.Name} - MacroIndex");
+        Assert.That(actualCommand.IsRunning, Is.EqualTo(expectedData.IsRunning));
+        Assert.That(actualCommand.Loop, Is.EqualTo(expectedData.Loop));
+        Assert.That(actualCommand.IsWaiting, Is.EqualTo(expectedData.IsWaiting));
+        Assert.That(actualCommand.MacroIndex, Is.EqualTo(expectedData.Index));
     }
 }

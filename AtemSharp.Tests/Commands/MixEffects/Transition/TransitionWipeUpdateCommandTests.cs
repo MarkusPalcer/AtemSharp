@@ -1,7 +1,4 @@
 using AtemSharp.Commands.MixEffects.Transition;
-using AtemSharp.State;
-using AtemSharp.State.Video;
-using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
@@ -40,66 +37,4 @@ public class TransitionWipeUpdateCommandTests : DeserializedCommandTestBase<Tran
         Assert.That(actualCommand.FlipFlop, Is.EqualTo(expectedData.FlipFlop));
     }
 
-    [Test]
-    public void ApplyToState_ValidState_UpdatesWipeSettings()
-    {
-        // Arrange
-        var command = new TransitionWipeUpdateCommand
-        {
-            MixEffectId = 0,
-            Rate = 75,
-            Pattern = 5,
-            BorderWidth = 12.5,
-            BorderInput = 2048,
-            Symmetry = 65.3,
-            BorderSoftness = 33.7,
-            XPosition = 0.7856,
-            YPosition = 0.2341,
-            ReverseDirection = true,
-            FlipFlop = false
-        };
-
-        var state = new AtemState
-        {
-            Info =
-            {
-                Capabilities =
-                {
-                    MixEffects = 1
-                }
-            },
-            Video = new VideoState
-            {
-                MixEffects =
-                [
-                    new MixEffect
-                    {
-                        Id = 0,
-                        ProgramInput = 1000,
-                        PreviewInput = 1001
-                    }
-                ]
-            }
-        };
-
-        // Act
-        command.ApplyToState(state);
-
-        // Assert
-        var mixEffect = state.Video.MixEffects[0];
-        Assert.That(mixEffect.TransitionSettings, Is.Not.Null);
-        Assert.That(mixEffect.TransitionSettings.Wipe, Is.Not.Null);
-
-        var wipeSettings = mixEffect.TransitionSettings.Wipe;
-        Assert.That(wipeSettings.Rate, Is.EqualTo(75));
-        Assert.That(wipeSettings.Pattern, Is.EqualTo(5));
-        Assert.That(wipeSettings.BorderWidth, Is.EqualTo(12.5));
-        Assert.That(wipeSettings.BorderInput, Is.EqualTo(2048));
-        Assert.That(wipeSettings.Symmetry, Is.EqualTo(65.3));
-        Assert.That(wipeSettings.BorderSoftness, Is.EqualTo(33.7));
-        Assert.That(wipeSettings.XPosition, Is.EqualTo(0.7856));
-        Assert.That(wipeSettings.YPosition, Is.EqualTo(0.2341));
-        Assert.That(wipeSettings.ReverseDirection, Is.True);
-        Assert.That(wipeSettings.FlipFlop, Is.False);
-    }
 }

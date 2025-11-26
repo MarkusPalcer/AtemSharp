@@ -14,9 +14,9 @@ public class FadeToBlackStateCommandTests : DeserializedCommandTestBase<FadeToBl
 
     protected override void CompareCommandProperties(FadeToBlackStateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index), "Index mismatch");
-        Assert.That(actualCommand.IsFullyBlack, Is.EqualTo(expectedData.IsFullyBlack), "IsFullyBlack mismatch");
-        Assert.That(actualCommand.InTransition, Is.EqualTo(expectedData.InTransition), "InTransition mismatch");
-        Assert.That(actualCommand.RemainingFrames, Is.EqualTo(expectedData.RemainingFrames), "RemainingFrames mismatch");
+        Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.IsFullyBlack, Is.EqualTo(expectedData.IsFullyBlack));
+        Assert.That(actualCommand.InTransition, Is.EqualTo(expectedData.InTransition));
+        Assert.That(actualCommand.RemainingFrames, Is.EqualTo(expectedData.RemainingFrames));
     }
 }

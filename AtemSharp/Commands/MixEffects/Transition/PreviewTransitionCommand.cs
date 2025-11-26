@@ -9,7 +9,7 @@ namespace AtemSharp.Commands.MixEffects.Transition;
 [BufferSize(4)]
 public partial class PreviewTransitionCommand(MixEffect mixEffect) : SerializedCommand
 {
-    [SerializedField(0)] [NoProperty] internal readonly byte MixEffectId = mixEffect.Id;
+    [SerializedField(0)] [NoProperty] private readonly byte _mixEffectId = mixEffect.Id;
 
     /// <summary>
     /// Whether transition preview is enabled

@@ -1,5 +1,4 @@
 using AtemSharp.Commands.MixEffects.Key;
-using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
@@ -19,49 +18,11 @@ public class MixEffectKeyLumaUpdateCommandTests : DeserializedCommandTestBase<Mi
 
     protected override void CompareCommandProperties(MixEffectKeyLumaUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        var failures = new List<string>();
-
-        // Compare MixEffectId
-        if (!actualCommand.MixEffectId.Equals(expectedData.MixEffectIndex))
-        {
-            failures.Add($"MixEffectId: expected {expectedData.MixEffectIndex}, actual {actualCommand.MixEffectId}");
-        }
-
-        // Compare KeyerId
-        if (!actualCommand.KeyerId.Equals(expectedData.KeyerIndex))
-        {
-            failures.Add($"KeyerId: expected {expectedData.KeyerIndex}, actual {actualCommand.KeyerId}");
-        }
-
-        // Compare PreMultiplied
-        if (!actualCommand.PreMultiplied.Equals(expectedData.PreMultiplied))
-        {
-            failures.Add($"PreMultiplied: expected {expectedData.PreMultiplied}, actual {actualCommand.PreMultiplied}");
-        }
-
-        // Compare Clip - it is a floating point value so we approximate (1 decimal place for scaled values)
-        if (!Utilities.AreApproximatelyEqual(actualCommand.Clip, expectedData.Clip, 1))
-        {
-            failures.Add($"Clip: expected {expectedData.Clip}, actual {actualCommand.Clip}");
-        }
-
-        // Compare Gain - it is a floating point value so we approximate (1 decimal place for scaled values)
-        if (!Utilities.AreApproximatelyEqual(actualCommand.Gain, expectedData.Gain, 1))
-        {
-            failures.Add($"Gain: expected {expectedData.Gain}, actual {actualCommand.Gain}");
-        }
-
-        // Compare Invert
-        if (!actualCommand.Invert.Equals(expectedData.Invert))
-        {
-            failures.Add($"Invert: expected {expectedData.Invert}, actual {actualCommand.Invert}");
-        }
-
-        // Assert results
-        if (failures.Count > 0)
-        {
-            Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
-                       string.Join("\n", failures));
-        }
+        Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.MixEffectIndex));
+        Assert.That(actualCommand.KeyerId, Is.EqualTo(expectedData.KeyerIndex));
+        Assert.That(actualCommand.PreMultiplied, Is.EqualTo(expectedData.PreMultiplied));
+        Assert.That(actualCommand.Clip, Is.EqualTo(expectedData.Clip).Within(0.10));
+        Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.10));
+        Assert.That(actualCommand.Invert, Is.EqualTo(expectedData.Invert));
     }
 }

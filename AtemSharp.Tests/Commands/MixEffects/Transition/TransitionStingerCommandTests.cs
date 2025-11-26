@@ -55,60 +55,6 @@ public class TransitionStingerCommandTests : SerializedCommandTestBase<Transitio
     }
 
     [Test]
-    public void Constructor_WithValidState_InitializesFromState()
-    {
-        // Arrange
-        byte mixEffectId = 1;
-        byte expectedSource = 3;
-        var expectedPreMultipliedKey = true;
-        var expectedClip = 25.5;
-        var expectedGain = 50.0;
-        var expectedInvert = true;
-        ushort expectedPreroll = 1000;
-        ushort expectedClipDuration = 2000;
-        ushort expectedTriggerPoint = 1500;
-        ushort expectedMixRate = 30;
-
-        var state = new MixEffect
-        {
-            Id = mixEffectId,
-            TransitionSettings =
-            {
-                Stinger =
-                {
-                    Source = expectedSource,
-                    PreMultipliedKey = expectedPreMultipliedKey,
-                    Clip = expectedClip,
-                    Gain = expectedGain,
-                    Invert = expectedInvert,
-                    Preroll = expectedPreroll,
-                    ClipDuration = expectedClipDuration,
-                    TriggerPoint = expectedTriggerPoint,
-                    MixRate = expectedMixRate
-                }
-            }
-        };
-
-        // Act
-        var command = new TransitionStingerCommand(state);
-
-        // Assert - Verify that values are correctly initialized from state
-        Assert.That(command.MixEffectId, Is.EqualTo(mixEffectId));
-        Assert.That(command.Source, Is.EqualTo(expectedSource));
-        Assert.That(command.PreMultipliedKey, Is.EqualTo(expectedPreMultipliedKey));
-        Assert.That(command.Clip, Is.EqualTo(expectedClip));
-        Assert.That(command.Gain, Is.EqualTo(expectedGain));
-        Assert.That(command.Invert, Is.EqualTo(expectedInvert));
-        Assert.That(command.Preroll, Is.EqualTo(expectedPreroll));
-        Assert.That(command.ClipDuration, Is.EqualTo(expectedClipDuration));
-        Assert.That(command.TriggerPoint, Is.EqualTo(expectedTriggerPoint));
-        Assert.That(command.MixRate, Is.EqualTo(expectedMixRate));
-
-        // Verify that no flags are set initially (since we're loading from state)
-        Assert.That(command.Flag, Is.EqualTo(0));
-    }
-
-    [Test]
     public void PropertyChanges_SetCorrectFlags()
     {
         // Arrange

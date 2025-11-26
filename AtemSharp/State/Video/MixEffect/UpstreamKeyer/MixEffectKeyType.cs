@@ -23,5 +23,5 @@ public enum MixEffectKeyType : byte
     /// <summary>
     /// DVE (Digital Video Effect) key type
     /// </summary>
-    DVE = 3
+    DigitalVideoEffect = 3
 }

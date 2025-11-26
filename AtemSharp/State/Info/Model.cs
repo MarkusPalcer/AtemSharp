@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Info;
 
 /// <summary>
 /// ATEM device models
 /// </summary>
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 public enum Model : byte
 {
     Unknown = 0x00,

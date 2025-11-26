@@ -38,5 +38,5 @@ public class DownstreamKeyerProperties
 	/// <summary>
 	/// Mask configuration
 	/// </summary>
-	public MaskProperties Mask { get; internal set; } = new();
+	public MaskProperties Mask { get; } = new();
 }

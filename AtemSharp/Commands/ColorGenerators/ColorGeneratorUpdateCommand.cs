@@ -5,19 +5,15 @@ namespace AtemSharp.Commands.ColorGenerators;
 [Command("ColV")]
 public partial class ColorGeneratorUpdateCommand : IDeserializedCommand
 {
-    [DeserializedField(0)]
-    private byte _id;
+    [DeserializedField(0)] private byte _id;
 
-    [DeserializedField(2)]
-    [ScalingFactor(10.0)]
+    [DeserializedField(2)] [ScalingFactor(10.0)]
     private double _hue;
 
-    [DeserializedField(4)]
-    [ScalingFactor(10.0)]
+    [DeserializedField(4)] [ScalingFactor(10.0)]
     private double _saturation;
 
-    [DeserializedField(6)]
-    [ScalingFactor(10.0)]
+    [DeserializedField(6)] [ScalingFactor(10.0)]
     private double _luma;
 
     public void ApplyToState(AtemState state)

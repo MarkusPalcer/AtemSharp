@@ -7,23 +7,12 @@ namespace AtemSharp.Commands.DownstreamKey;
 /// </summary>
 [Command("CDsL")]
 [BufferSize(4)]
-public partial class DownstreamKeyOnAirCommand : SerializedCommand
+public partial class DownstreamKeyOnAirCommand(DownstreamKeyer dsk) : SerializedCommand
 {
-
-    [SerializedField(0)]
-    [NoProperty]
-    internal readonly byte DownstreamKeyerId;
+    [SerializedField(0)] [NoProperty] private readonly byte _downstreamKeyerId = dsk.Id;
 
     /// <summary>
     /// Whether the downstream keyer is on air
     /// </summary>
-    [SerializedField(1)]
-    private bool _onAir;
-
-
-    public DownstreamKeyOnAirCommand(DownstreamKeyer dsk)
-    {
-        DownstreamKeyerId = dsk.Id;
-        _onAir = dsk.OnAir;
-    }
+    [SerializedField(1)] private bool _onAir = dsk.OnAir;
 }

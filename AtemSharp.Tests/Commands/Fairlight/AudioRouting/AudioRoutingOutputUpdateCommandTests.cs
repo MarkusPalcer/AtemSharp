@@ -1,5 +1,5 @@
-using AtemSharp.Commands.Fairlight.AudioRouting;
 using AtemSharp.State.Audio.Fairlight;
+using AudioRoutingOutputUpdateCommand = AtemSharp.Commands.Audio.Fairlight.AudioRouting.AudioRoutingOutputUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.AudioRouting;
 

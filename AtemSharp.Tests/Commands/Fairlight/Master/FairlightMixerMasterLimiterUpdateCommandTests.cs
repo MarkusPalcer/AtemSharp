@@ -1,4 +1,4 @@
-using FairlightMixerMasterLimiterUpdateCommand = AtemSharp.Commands.Fairlight.Master.FairlightMixerMasterLimiterUpdateCommand;
+using FairlightMixerMasterLimiterUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Master.FairlightMixerMasterLimiterUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Master;
 

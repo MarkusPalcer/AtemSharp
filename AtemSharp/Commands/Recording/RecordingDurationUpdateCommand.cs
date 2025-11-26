@@ -3,22 +3,17 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Recording;
 
 [Command("RTMR")]
-public partial class RecordingDurationUpdateCommand :IDeserializedCommand
+public partial class RecordingDurationUpdateCommand : IDeserializedCommand
 {
-    [DeserializedField(0)]
-    private byte _hours;
+    [DeserializedField(0)] private byte _hours;
 
-    [DeserializedField(1)]
-    private byte _minutes;
+    [DeserializedField(1)] private byte _minutes;
 
-    [DeserializedField(2)]
-    private byte _seconds;
+    [DeserializedField(2)] private byte _seconds;
 
-    [DeserializedField(3)]
-    private byte _frames;
+    [DeserializedField(3)] private byte _frames;
 
-    [DeserializedField(4)]
-    private bool _isDropFrame;
+    [DeserializedField(4)] private bool _isDropFrame;
 
     public void ApplyToState(AtemState state)
     {

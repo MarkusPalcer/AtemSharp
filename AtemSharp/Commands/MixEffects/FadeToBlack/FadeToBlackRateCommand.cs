@@ -1,30 +1,18 @@
-using AtemSharp.Lib;
 using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Commands.MixEffects.FadeToBlack;
 
 [Command("FtbC")]
 [BufferSize(4)]
-public partial class FadeToBlackRateCommand : SerializedCommand
+public partial class FadeToBlackRateCommand(MixEffect mixEffect) : SerializedCommand
 {
-    [SerializedField(1)] [NoProperty] private readonly byte _mixEffectId;
+    [SerializedField(1)] [NoProperty] private readonly byte _mixEffectId = mixEffect.Id;
 
-    [SerializedField(2)] private byte _rate;
+    [SerializedField(2)] private byte _rate = mixEffect.FadeToBlack.Rate;
 
     private void SerializeInternal(byte[] buffer)
     {
         // Flag is always 1
         buffer.WriteUInt8(1, 0);
-    }
-
-    public FadeToBlackRateCommand(MixEffect mixEffect)
-    {
-        if (mixEffect.FadeToBlack is null)
-        {
-            throw new InvalidOperationException("Can't set fade to black rate before fade to black properties are initialized");
-        }
-
-        _mixEffectId = mixEffect.Id;
-        Rate = mixEffect.FadeToBlack.Rate;
     }
 }

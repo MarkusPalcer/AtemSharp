@@ -1,7 +1,7 @@
 using System.Buffers.Binary;
 using System.Text;
 
-namespace AtemSharp.Lib;
+namespace AtemSharp.Commands;
 
 /// <summary>
 /// Extension methods for working with spans and memory streams for ATEM protocol parsing
@@ -156,7 +156,7 @@ public static class DeserializationExtensions
             subSpan = subSpan[..nullIndex];
         }
 
-        return System.Text.Encoding.UTF8.GetString(subSpan);
+        return Encoding.UTF8.GetString(subSpan);
     }
 
     public static void WriteString(this Span<byte> buffer, string value, int offset, int maxLength)
@@ -177,7 +177,7 @@ public static class DeserializationExtensions
         var result = new List<T>();
         var intValue = Convert.ToInt32(value);
 
-        for (int next = 1; next <= intValue; next <<= 1)
+        for (var next = 1; next <= intValue; next <<= 1)
         {
             if ((intValue & next) > 0)
             {

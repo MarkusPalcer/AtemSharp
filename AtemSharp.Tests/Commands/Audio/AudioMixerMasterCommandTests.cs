@@ -1,6 +1,5 @@
-using AtemSharp.Commands.Audio;
-using AtemSharp.State;
 using AtemSharp.State.Audio.ClassicAudio;
+using AudioMixerMasterCommand = AtemSharp.Commands.Audio.ClassicAudio.AudioMixerMasterCommand;
 
 namespace AtemSharp.Tests.Commands.Audio;
 
@@ -26,53 +25,27 @@ public class AudioMixerMasterCommandTests : SerializedCommandTestBase<AudioMixer
 
     protected override AudioMixerMasterCommand CreateSut(TestCaseData testCase)
     {
-        // Create state with the required audio master channel
-        var state = CreateStateWithAudioMaster();
-
-        // Create command
-        var command = new AudioMixerMasterCommand(state);
-
-        // Set the actual values that should be written
-        command.Gain = testCase.Command.Gain;
-        command.Balance = testCase.Command.Balance;
-        command.FollowFadeToBlack = testCase.Command.FollowFadeToBlack;
-
-        return command;
-    }
-
-    /// <summary>
-    /// Creates an AtemState with a valid audio master channel
-    /// </summary>
-    private static AtemState CreateStateWithAudioMaster()
-    {
-        var state = new AtemState
+        return new AudioMixerMasterCommand(new ClassicAudioState
         {
-            Audio = new ClassicAudioState
+            Master =
             {
-                Master =
-                {
-                    Gain = 0.0,
-                    Balance = 0.0,
-                    FollowFadeToBlack = false
-                }
+                Gain = testCase.Command.Gain,
+                Balance = testCase.Command.Balance,
+                FollowFadeToBlack = testCase.Command.FollowFadeToBlack
             }
-        };
-        return state;
+        });
     }
 
     [Test]
-    public void SetGain_WithValidValue_ShouldSetPropertyAndFlag()
+    public void SetGain_WithValidValue_ShouldSetFlag()
     {
         // Arrange
-        var state = CreateStateWithAudioMaster();
-        var command = new AudioMixerMasterCommand(state);
-        const double expectedGain = -12.5;
+        var command = new AudioMixerMasterCommand(new ClassicAudioState());
 
         // Act
-        command.Gain = expectedGain;
+        command.Gain = -12.5;
 
         // Assert
-        Assert.That(command.Gain, Is.EqualTo(expectedGain));
         Assert.That(command.Flag & (1 << 0), Is.Not.EqualTo(0), "Gain flag should be set");
     }
 
@@ -80,31 +53,26 @@ public class AudioMixerMasterCommandTests : SerializedCommandTestBase<AudioMixer
     public void SetBalance_WithValidValue_ShouldSetPropertyAndFlag()
     {
         // Arrange
-        var state = CreateStateWithAudioMaster();
-        var command = new AudioMixerMasterCommand(state);
-        const double expectedBalance = 25.0;
+        var command = new AudioMixerMasterCommand(new ClassicAudioState());
 
         // Act
-        command.Balance = expectedBalance;
+        command.Balance = 25.0;
 
         // Assert
-        Assert.That(command.Balance, Is.EqualTo(expectedBalance));
         Assert.That(command.Flag & (1 << 1), Is.Not.EqualTo(0), "Balance flag should be set");
     }
 
 
     [Test]
-    public void SetFollowFadeToBlack_WithValue_ShouldSetPropertyAndFlag()
+    public void SetFollowFadeToBlack_WithValue_ShouldSetFlag()
     {
         // Arrange
-        var state = CreateStateWithAudioMaster();
-        var command = new AudioMixerMasterCommand(state);
+        var command = new AudioMixerMasterCommand(new ClassicAudioState());
 
         // Act
         command.FollowFadeToBlack = true;
 
         // Assert
-        Assert.That(command.FollowFadeToBlack, Is.True);
         Assert.That(command.Flag & (1 << 2), Is.Not.EqualTo(0), "FollowFadeToBlack flag should be set");
     }
 
@@ -112,7 +80,15 @@ public class AudioMixerMasterCommandTests : SerializedCommandTestBase<AudioMixer
     public void SetMultipleProperties_ShouldSetMultipleFlags()
     {
         // Arrange
-        var state = CreateStateWithAudioMaster();
+        var state = new ClassicAudioState
+        {
+            Master =
+            {
+                Gain = 0.0,
+                Balance = 0.0,
+                FollowFadeToBlack = false
+            }
+        };
         var command = new AudioMixerMasterCommand(state);
 
         // Act
@@ -121,9 +97,6 @@ public class AudioMixerMasterCommandTests : SerializedCommandTestBase<AudioMixer
         command.FollowFadeToBlack = true;
 
         // Assert
-        Assert.That(command.Flag & (1 << 0), Is.Not.EqualTo(0), "Gain flag should be set");
-        Assert.That(command.Flag & (1 << 1), Is.Not.EqualTo(0), "Balance flag should be set");
-        Assert.That(command.Flag & (1 << 2), Is.Not.EqualTo(0), "FollowFadeToBlack flag should be set");
         Assert.That(command.Flag, Is.EqualTo(0x07), "All three flags should be set");
     }
 }

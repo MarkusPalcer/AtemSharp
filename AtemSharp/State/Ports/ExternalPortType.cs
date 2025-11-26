@@ -1,9 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Ports;
 
 /// <summary>
 /// External port types
 /// </summary>
 [Flags]
+[SuppressMessage("ReSharper", "InconsistentNaming")]
 public enum ExternalPortType : ushort
 {
     Unknown = 0,

@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Info;
 
@@ -8,17 +7,13 @@ namespace AtemSharp.Commands.Recording;
 [BufferSize(144)]
 public partial class RecordingSettingsCommand(AtemState state) : SerializedCommand
 {
-    [CustomSerialization(0)]
-    private string _fileName = state.Recording.FileName;
+    [CustomSerialization(0)] private string _fileName = state.Recording.FileName;
 
-    [SerializedField(132, 1)]
-    private uint _workingSet1DiskId = state.Recording.WorkingSet1DiskId;
+    [SerializedField(132, 1)] private uint _workingSet1DiskId = state.Recording.WorkingSet1DiskId;
 
-    [SerializedField(136,2)]
-    private uint _workingSet2DiskId = state.Recording.WorkingSet2DiskId;
+    [SerializedField(136, 2)] private uint _workingSet2DiskId = state.Recording.WorkingSet2DiskId;
 
-    [SerializedField(140,3)]
-    private bool _recordInAllCameras = state.Recording.RecordInAllCameras;
+    [SerializedField(140, 3)] private bool _recordInAllCameras = state.Recording.RecordInAllCameras;
 
     private void SerializeInternal(byte[] rawCommand)
     {

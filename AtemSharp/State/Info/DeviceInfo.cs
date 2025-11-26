@@ -30,12 +30,12 @@ public class DeviceInfo
     /// <summary>
     /// Macro pool configuration and capabilities
     /// </summary>
-    public MacroPoolInfo MacroPool { get; internal set; } = new();
+    public MacroPoolInfo MacroPool { get; } = new();
 
     /// <summary>
     /// Media pool configuration and capabilities
     /// </summary>
-    public MediaPoolInfo MediaPool { get; internal set; } = new();
+    public MediaPoolInfo MediaPool { get; } = new();
 
     /// <summary>
     /// SuperSource configurations and capabilities

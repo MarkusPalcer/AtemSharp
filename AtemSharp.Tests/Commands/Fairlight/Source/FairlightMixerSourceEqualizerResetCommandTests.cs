@@ -1,4 +1,4 @@
-using FairlightMixerSourceEqualizerResetCommand = AtemSharp.Commands.Fairlight.Source.FairlightMixerSourceEqualizerResetCommand;
+using FairlightMixerSourceEqualizerResetCommand = AtemSharp.Commands.Audio.Fairlight.Source.FairlightMixerSourceEqualizerResetCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
@@ -17,7 +17,7 @@ public class FairlightMixerSourceEqualizerResetCommandTests : SerializedCommandT
         return new FairlightMixerSourceEqualizerResetCommand(new AtemSharp.State.Audio.Fairlight.Source
         {
             Id = testCase.Command.SourceId,
-            InputId = testCase.Command.Index
+            InputId = testCase.Command.Index,
         })
         {
             Equalizer = testCase.Command.Equalizer,

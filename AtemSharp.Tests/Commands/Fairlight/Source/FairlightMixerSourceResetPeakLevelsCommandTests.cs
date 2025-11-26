@@ -1,4 +1,4 @@
-using AtemSharp.Commands.Fairlight.Source;
+using FairlightMixerSourceResetPeakLevelsCommand = AtemSharp.Commands.Audio.Fairlight.Source.FairlightMixerSourceResetPeakLevelsCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 

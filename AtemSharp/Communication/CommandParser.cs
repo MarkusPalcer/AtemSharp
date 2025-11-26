@@ -3,7 +3,7 @@ using AtemSharp.Commands;
 using AtemSharp.Commands.DeviceProfile;
 using AtemSharp.State.Info;
 
-namespace AtemSharp.Lib;
+namespace AtemSharp.Communication;
 
 /// <summary>
 /// Parses ATEM commands from raw packet data using reflection-based command registry

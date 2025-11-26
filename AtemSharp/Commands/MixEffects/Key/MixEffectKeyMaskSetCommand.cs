@@ -6,13 +6,9 @@ namespace AtemSharp.Commands.MixEffects.Key;
 [BufferSize(12)]
 public partial class MixEffectKeyMaskSetCommand(UpstreamKeyer keyer) : SerializedCommand
 {
-    [SerializedField(1)]
-    [NoProperty]
-    private readonly byte _mixEffectId = keyer.MixEffectId;
+    [SerializedField(1)] [NoProperty] private readonly byte _mixEffectId = keyer.MixEffectId;
 
-    [SerializedField(2)]
-    [NoProperty]
-    private readonly byte _keyerId = keyer.Id;
+    [SerializedField(2)] [NoProperty] private readonly byte _keyerId = keyer.Id;
 
     [SerializedField(3, 0)] private bool _enabled = keyer.Mask.Enabled;
 

@@ -7,6 +7,5 @@ namespace AtemSharp.Commands.Recording;
 [BufferSize(4)]
 public partial class RecordingIsoCommand(AtemState state) : SerializedCommand
 {
-    [SerializedField(0)]
-    private bool _recordAllInputs = state.Recording.RecordAllInputs;
+    [SerializedField(0)] private bool _recordAllInputs = state.Recording.RecordAllInputs;
 }

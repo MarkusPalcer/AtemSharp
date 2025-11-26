@@ -22,8 +22,8 @@ public class ColorGeneratorCommandTests : SerializedCommandTestBase<ColorGenerat
 
     protected override ColorGeneratorCommand CreateSut(TestCaseData testCase)
     {
-        return new ColorGeneratorCommand(new ColorGeneratorState()
-            {
+        return new ColorGeneratorCommand(new ColorGeneratorState
+        {
                 Id = testCase.Command.Index,
                 Hue = testCase.Command.Hue,
                 Saturation = testCase.Command.Saturation,

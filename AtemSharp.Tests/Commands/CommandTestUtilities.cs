@@ -9,11 +9,7 @@ public static class CommandTestUtilities
     /// <returns>Combined flag value</returns>
     public static T CombineComponents<T>(T[] values) where T : Enum
     {
-        int result = 0;
-        foreach (var value in values)
-        {
-            result |= Convert.ToInt32(value);
-        }
+        var result = values.Aggregate(0, (current, value) => current | Convert.ToInt32(value));
         return (T)Enum.ToObject(typeof(T), result);
     }
 }

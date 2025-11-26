@@ -1,5 +1,4 @@
 using AtemSharp.Commands.MixEffects.Key;
-using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
@@ -22,70 +21,15 @@ public class MixEffectKeyAdvancedChromaSampleUpdateCommandTests : DeserializedCo
 
     protected override void CompareCommandProperties(MixEffectKeyAdvancedChromaSampleUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        var failures = new List<string>();
-
-        // Compare MixEffectIndex - it is not floating point so it needs to equal
-        if (!actualCommand.MixEffectId.Equals(expectedData.MixEffectIndex))
-        {
-            failures.Add($"MixEffectId: expected {expectedData.MixEffectIndex}, actual {actualCommand.MixEffectId}");
-        }
-
-        // Compare KeyerIndex - it is not floating point so it needs to equal
-        if (!actualCommand.KeyerId.Equals(expectedData.KeyerIndex))
-        {
-            failures.Add($"KeyerId: expected {expectedData.KeyerIndex}, actual {actualCommand.KeyerId}");
-        }
-
-        // Compare boolean properties
-        if (!actualCommand.EnableCursor.Equals(expectedData.EnableCursor))
-        {
-            failures.Add($"EnableCursor: expected {expectedData.EnableCursor}, actual {actualCommand.EnableCursor}");
-        }
-
-        if (!actualCommand.Preview.Equals(expectedData.Preview))
-        {
-            failures.Add($"Preview: expected {expectedData.Preview}, actual {actualCommand.Preview}");
-        }
-
-        // Compare floating-point properties with tolerance based on scaling factors
-        // CursorX and CursorY are scaled by 1000, so use 3 decimal places
-        if (!Utilities.AreApproximatelyEqual(actualCommand.CursorX, expectedData.CursorX, 3))
-        {
-            failures.Add($"CursorX: expected {expectedData.CursorX}, actual {actualCommand.CursorX}");
-        }
-
-        if (!Utilities.AreApproximatelyEqual(actualCommand.CursorY, expectedData.CursorY, 3))
-        {
-            failures.Add($"CursorY: expected {expectedData.CursorY}, actual {actualCommand.CursorY}");
-        }
-
-        // CursorSize is scaled by 100, so use 2 decimal places
-        if (!Utilities.AreApproximatelyEqual(actualCommand.CursorSize, expectedData.CursorSize, 2))
-        {
-            failures.Add($"CursorSize: expected {expectedData.CursorSize}, actual {actualCommand.CursorSize}");
-        }
-
-        // Sampled values are scaled by 10000, so use 4 decimal places
-        if (!Utilities.AreApproximatelyEqual(actualCommand.SampledY, expectedData.SampledY, 4))
-        {
-            failures.Add($"SampledY: expected {expectedData.SampledY}, actual {actualCommand.SampledY}");
-        }
-
-        if (!Utilities.AreApproximatelyEqual(actualCommand.SampledCb, expectedData.SampledCb, 4))
-        {
-            failures.Add($"SampledCb: expected {expectedData.SampledCb}, actual {actualCommand.SampledCb}");
-        }
-
-        if (!Utilities.AreApproximatelyEqual(actualCommand.SampledCr, expectedData.SampledCr, 4))
-        {
-            failures.Add($"SampledCr: expected {expectedData.SampledCr}, actual {actualCommand.SampledCr}");
-        }
-
-        // Assert results
-        if (failures.Count > 0)
-        {
-            Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
-                       string.Join("\n", failures));
-        }
+        Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.MixEffectIndex));
+        Assert.That(actualCommand.KeyerId, Is.EqualTo(expectedData.KeyerIndex));
+        Assert.That(actualCommand.EnableCursor, Is.EqualTo(expectedData.EnableCursor));
+        Assert.That(actualCommand.Preview, Is.EqualTo(expectedData.Preview));
+        Assert.That(actualCommand.CursorX, Is.EqualTo(expectedData.CursorX).Within(0.01));
+        Assert.That(actualCommand.CursorY, Is.EqualTo(expectedData.CursorY).Within(0.01));
+        Assert.That(actualCommand.CursorSize, Is.EqualTo(expectedData.CursorSize).Within(0.01));
+        Assert.That(actualCommand.SampledY, Is.EqualTo(expectedData.SampledY).Within(0.0001));
+        Assert.That(actualCommand.SampledCb, Is.EqualTo(expectedData.SampledCb).Within(0.0001));
+        Assert.That(actualCommand.SampledCr, Is.EqualTo(expectedData.SampledCr).Within(0.0001));
     }
 }

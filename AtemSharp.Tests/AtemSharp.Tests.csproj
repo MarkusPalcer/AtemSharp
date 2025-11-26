@@ -31,10 +31,5 @@
     <ItemGroup>
         <EmbeddedResource Include="TestData\libatem-data.json" />
         <None Remove="TestData\RunMacro.json" />
-        <EmbeddedResource Include="TestData\RunMacro.json" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="State\" />
     </ItemGroup>
 </Project>

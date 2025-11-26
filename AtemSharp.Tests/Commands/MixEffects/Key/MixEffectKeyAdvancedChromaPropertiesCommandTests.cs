@@ -1,7 +1,4 @@
 using AtemSharp.Commands.MixEffects.Key;
-using AtemSharp.State;
-using AtemSharp.State.Video;
-using AtemSharp.State.Video.MixEffect;
 using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
@@ -50,109 +47,30 @@ public class MixEffectKeyAdvancedChromaPropertiesCommandTests : SerializedComman
 
     protected override MixEffectKeyAdvancedChromaPropertiesCommand CreateSut(TestCaseData testCase)
     {
-        // Create state with the required mix effect and upstream keyer
-        var state = CreateStateWithUpstreamKeyerAdvancedChroma(
-            testCase.Command.MixEffectIndex,
-            testCase.Command.KeyerIndex,
-            testCase.Command.ForegroundLevel,
-            testCase.Command.BackgroundLevel,
-            testCase.Command.KeyEdge,
-            testCase.Command.SpillSuppression,
-            testCase.Command.FlareSuppression,
-            testCase.Command.Brightness,
-            testCase.Command.Contrast,
-            testCase.Command.Saturation,
-            testCase.Command.Red,
-            testCase.Command.Green,
-            testCase.Command.Blue);
-
-        // Create command with the mix effect and keyer IDs
-        var command = new MixEffectKeyAdvancedChromaPropertiesCommand(testCase.Command.MixEffectIndex, testCase.Command.KeyerIndex, state);
-
-        // Set the actual advanced chroma properties that should be written
-        command.ForegroundLevel = testCase.Command.ForegroundLevel;
-        command.BackgroundLevel = testCase.Command.BackgroundLevel;
-        command.KeyEdge = testCase.Command.KeyEdge;
-        command.SpillSuppression = testCase.Command.SpillSuppression;
-        command.FlareSuppression = testCase.Command.FlareSuppression;
-        command.Brightness = testCase.Command.Brightness;
-        command.Contrast = testCase.Command.Contrast;
-        command.Saturation = testCase.Command.Saturation;
-        command.Red = testCase.Command.Red;
-        command.Green = testCase.Command.Green;
-        command.Blue = testCase.Command.Blue;
-
-        return command;
-    }
-
-    // TODO: Simplify
-    /// <summary>
-    /// Creates an AtemState with a valid mix effect and upstream keyer with advanced chroma settings at the specified indices
-    /// </summary>
-    private static AtemState CreateStateWithUpstreamKeyerAdvancedChroma(byte mixEffectId, byte keyerId,
-                                                                        double foregroundLevel = 0.0, double backgroundLevel = 0.0,
-                                                                        double keyEdge = 0.0,
-                                                                        double spillSuppression = 0.0, double flareSuppression = 0.0,
-                                                                        double brightness = 0.0,
-                                                                        double contrast = 0.0, double saturation = 0.0, double red = 0.0,
-                                                                        double green = 0.0, double blue = 0.0)
-    {
-        var mixEffects = new MixEffect[mixEffectId + 1];
-
-        mixEffects[mixEffectId] = new MixEffect
+        return new MixEffectKeyAdvancedChromaPropertiesCommand(new UpstreamKeyer
         {
-            Id = mixEffectId,
-            ProgramInput = 1000,
-            PreviewInput = 2001,
-            TransitionPreview = false,
-            TransitionPosition =
+            MixEffectId = testCase.Command.MixEffectIndex,
+            Id = testCase.Command.KeyerIndex,
+            OnAir = false,
+            FillSource = 1000,
+            CutSource = 1001,
+            AdvancedChromaSettings =
             {
-                InTransition = false,
-                HandlePosition = 0,
-                RemainingFrames = 0
-            },
-            UpstreamKeyers =
-            {
-                [keyerId] = new UpstreamKeyer
+                Properties =
                 {
-                    Id = keyerId,
-                    OnAir = false,
-                    FillSource = 1000,
-                    CutSource = 1001,
-                    AdvancedChromaSettings =
-                    {
-                        Properties =
-                        {
-                            ForegroundLevel = foregroundLevel,
-                            BackgroundLevel = backgroundLevel,
-                            KeyEdge = keyEdge,
-                            SpillSuppression = spillSuppression,
-                            FlareSuppression = flareSuppression,
-                            Brightness = brightness,
-                            Contrast = contrast,
-                            Saturation = saturation,
-                            Red = red,
-                            Green = green,
-                            Blue = blue
-                        }
-                    }
+                    ForegroundLevel = testCase.Command.ForegroundLevel,
+                    BackgroundLevel = testCase.Command.BackgroundLevel,
+                    KeyEdge = testCase.Command.KeyEdge,
+                    SpillSuppression = testCase.Command.SpillSuppression,
+                    FlareSuppression = testCase.Command.FlareSuppression,
+                    Brightness = testCase.Command.Brightness,
+                    Contrast = testCase.Command.Contrast,
+                    Saturation = testCase.Command.Saturation,
+                    Red = testCase.Command.Red,
+                    Green = testCase.Command.Green,
+                    Blue = testCase.Command.Blue
                 }
             }
-        };
-
-        return new AtemState
-        {
-            Video = new VideoState
-            {
-                MixEffects = mixEffects
-            },
-            Info =
-            {
-                Capabilities =
-                {
-                    MixEffects = mixEffectId + 1
-                }
-            }
-        };
+        });
     }
 }

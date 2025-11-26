@@ -1,6 +1,6 @@
-using AtemSharp.Enums;
 using AtemSharp.State;
 using AtemSharp.State.Info;
+using AtemSharp.State.Settings;
 
 namespace AtemSharp.Commands.Settings;
 
@@ -13,8 +13,7 @@ public partial class TimeConfigUpdateCommand : IDeserializedCommand
     /// <summary>
     /// Time mode for the ATEM device
     /// </summary>
-    [DeserializedField(0)]
-    private TimeMode _mode;
+    [DeserializedField(0)] private TimeMode _mode;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)

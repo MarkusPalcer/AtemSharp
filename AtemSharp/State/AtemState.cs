@@ -3,6 +3,7 @@ using AtemSharp.State.Info;
 using AtemSharp.State.Macro;
 using AtemSharp.State.Media;
 using AtemSharp.State.Recording;
+using AtemSharp.State.Settings;
 using AtemSharp.State.Streaming;
 using AtemSharp.State.Video;
 
@@ -31,14 +32,14 @@ public class AtemState
     /// <summary>
     /// Video state including downstream keyers, mix effects, etc.
     /// </summary>
-    public VideoState Video { get; internal set; } = new();
+    public VideoState Video { get; } = new();
 
     /// <summary>
     /// Settings state including video mode and other device settings
     /// </summary>
-    public SettingsState Settings { get; internal set; } = new();
+    public SettingsState Settings { get; } = new();
 
-    public List<ColorGeneratorState> ColorGenerators { get; } = new();
+    public List<ColorGeneratorState> ColorGenerators { get; } = [];
 
     public MediaState Media { get; } = new();
 

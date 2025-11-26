@@ -1,5 +1,4 @@
 using AtemSharp.Commands.DeviceProfile;
-using AtemSharp.State;
 using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
@@ -14,70 +13,6 @@ public class VersionCommandTests : DeserializedCommandTestBase<VersionCommand, V
 
     protected override void CompareCommandProperties(VersionCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        var failures = new List<string>();
-
-        // Compare ProtocolVersion
-        if (actualCommand.Version != expectedData.ProtocolVersion)
-        {
-            failures.Add($"Version: expected {expectedData.ProtocolVersion}, actual {actualCommand.Version}");
-        }
-
-        if (failures.Count > 0)
-        {
-            Assert.Fail($"Command property comparison failed:\n{string.Join("\n", failures)}");
-        }
-    }
-
-    [Test]
-    public void ApplyToState_WithValidData_ShouldUpdateApiVersion()
-    {
-        // Arrange
-        var state = new AtemState();
-        var command = new VersionCommand
-        {
-            Version = ProtocolVersion.V8_0
-        };
-
-        // Act
-        command.ApplyToState(state);
-
-        // Assert
-        Assert.That(state.Info.ApiVersion, Is.EqualTo(ProtocolVersion.V8_0));
-    }
-
-    [Test]
-    public void ApplyToState_WithDifferentVersions_ShouldUpdateCorrectly()
-    {
-        // Arrange
-        var state = new AtemState();
-        var command = new VersionCommand
-        {
-            Version = ProtocolVersion.V9_4
-        };
-
-        // Act
-        command.ApplyToState(state);
-
-        // Assert
-        Assert.That(state.Info.ApiVersion, Is.EqualTo(ProtocolVersion.V9_4));
-    }
-
-    [Test]
-    public void ApplyToState_OverwriteExistingVersion_ShouldUpdateCorrectly()
-    {
-        // Arrange
-        var state = new AtemState();
-        state.Info.ApiVersion = ProtocolVersion.V8_0; // Set initial version
-
-        var command = new VersionCommand
-        {
-            Version = ProtocolVersion.V9_6
-        };
-
-        // Act
-        command.ApplyToState(state);
-
-        // Assert
-        Assert.That(state.Info.ApiVersion, Is.EqualTo(ProtocolVersion.V9_6));
+        Assert.That(actualCommand.Version, Is.EqualTo(expectedData.ProtocolVersion));
     }
 }

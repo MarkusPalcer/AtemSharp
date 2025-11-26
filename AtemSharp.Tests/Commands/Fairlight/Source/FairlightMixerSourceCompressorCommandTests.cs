@@ -1,4 +1,4 @@
-using FairlightMixerSourceCompressorCommand = AtemSharp.Commands.Fairlight.Source.FairlightMixerSourceCompressorCommand;
+using FairlightMixerSourceCompressorCommand = AtemSharp.Commands.Audio.Fairlight.Source.FairlightMixerSourceCompressorCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
@@ -28,7 +28,7 @@ public class FairlightMixerSourceCompressorCommandTests : SerializedCommandTestB
 
     protected override FairlightMixerSourceCompressorCommand CreateSut(TestCaseData testCase)
     {
-        var source = new AtemSharp.State.Audio.Fairlight.Source
+        return new FairlightMixerSourceCompressorCommand(new AtemSharp.State.Audio.Fairlight.Source
         {
             Id = testCase.Command.SourceId,
             InputId = testCase.Command.Index,
@@ -44,8 +44,6 @@ public class FairlightMixerSourceCompressorCommandTests : SerializedCommandTestB
                     Release = testCase.Command.Release,
                 }
             }
-        };
-
-        return new FairlightMixerSourceCompressorCommand(source);
+        });
     }
 }

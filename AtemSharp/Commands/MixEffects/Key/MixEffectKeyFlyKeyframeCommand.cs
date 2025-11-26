@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Commands.MixEffects.Key;

@@ -12,20 +12,14 @@ public partial class MixEffectBlockConfigCommand : IDeserializedCommand
     /// <summary>
     /// Mix effect index
     /// </summary>
-    [DeserializedField(0)]
-    private byte _index;
+    [DeserializedField(0)] private byte _index;
 
     /// <summary>
     /// Number of keyers available in this mix effect
     /// </summary>
-    [DeserializedField(1)]
-    private  byte _keyCount;
+    [DeserializedField(1)] private byte _keyCount;
 
-    /// <summary>
-    /// Apply the command's values to the ATEM state
-    /// </summary>
-    /// <param name="state">Current ATEM state to update</param>
-    /// <returns>Paths indicating what was changed in the state</returns>
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         // Update device info mix effect configuration

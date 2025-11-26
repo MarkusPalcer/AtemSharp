@@ -29,20 +29,12 @@ namespace AtemSharp.CodeGenerators.Analyzers
             var node = root.FindNode(diagnosticSpan);
 
             // Try to find the FieldDeclarationSyntax node
-            FieldDeclarationSyntax? fieldDecl = null;
-            if (node is FieldDeclarationSyntax fds)
+            var fieldDecl = node switch
             {
-                fieldDecl = fds;
-            }
-            else if (node is VariableDeclaratorSyntax vds && vds.Parent?.Parent is FieldDeclarationSyntax parentFds)
-            {
-                fieldDecl = parentFds;
-            }
-            else
-            {
-                // Traverse up the tree to find the FieldDeclarationSyntax
-                fieldDecl = node.AncestorsAndSelf().OfType<FieldDeclarationSyntax>().FirstOrDefault();
-            }
+                FieldDeclarationSyntax fds => fds,
+                VariableDeclaratorSyntax { Parent.Parent: FieldDeclarationSyntax parentFds } => parentFds,
+                _ => node.AncestorsAndSelf().OfType<FieldDeclarationSyntax>().FirstOrDefault()
+            };
 
             if (fieldDecl != null)
             {
@@ -67,7 +59,7 @@ namespace AtemSharp.CodeGenerators.Analyzers
         {
             var editor = await DocumentEditor.CreateAsync(document, cancellationToken).ConfigureAwait(false);
             var newAttributeLists = new SyntaxList<AttributeListSyntax>();
-            string attrNameNoSuffix = attributeName.EndsWith("Attribute") ? attributeName.Substring(0, attributeName.Length - 9) : attributeName;
+            var attrNameNoSuffix = attributeName.EndsWith("Attribute") ? attributeName.Substring(0, attributeName.Length - 9) : attributeName;
             foreach (var attrList in fieldDecl.AttributeLists)
             {
                 var newAttrs = attrList.Attributes.Where(a => {

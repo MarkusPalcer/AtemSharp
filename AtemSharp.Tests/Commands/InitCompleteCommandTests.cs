@@ -1,4 +1,5 @@
 using System.Reflection;
+using AtemSharp.Attributes;
 using AtemSharp.Commands;
 using AtemSharp.State.Info;
 

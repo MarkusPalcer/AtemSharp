@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State.Info;
 using AtemSharp.State.Video.MixEffect;
 using AtemSharp.State.Video.MixEffect.Transition;
@@ -202,7 +201,6 @@ public class TransitionDigitalVideoEffectCommand : SerializedCommand
         }
     }
 
-    // TODO: Serialize using code generation
     /// <summary>
     /// Serialize command to binary stream for transmission to ATEM
     /// </summary>

@@ -1,0 +1,60 @@
+using AtemSharp.State;
+
+namespace AtemSharp.Commands.Audio.ClassicAudio;
+
+/// <summary>
+/// Update command for audio mixer monitor properties
+/// </summary>
+[Command("AMmO")]
+public partial class AudioMixerMonitorUpdateCommand : IDeserializedCommand
+{
+    /// <summary>
+    /// Whether the monitor is enabled
+    /// </summary>
+    [DeserializedField(0)] private bool _enabled;
+
+    /// <summary>
+    /// Gain in decibel, -Infinity to +6dB
+    /// </summary>
+    [DeserializedField(2)] [CustomScaling($"{nameof(DeserializationExtensions)}.{nameof(DeserializationExtensions.UInt16ToDecibel)}")]
+    private double _gain;
+
+    /// <summary>
+    /// Whether the monitor is muted
+    /// </summary>
+    [DeserializedField(4)] private bool _mute;
+
+    /// <summary>
+    /// Whether solo is enabled
+    /// </summary>
+    [DeserializedField(5)] private bool _solo;
+
+    /// <summary>
+    /// Solo source identifier
+    /// </summary>
+    [DeserializedField(6)] private ushort _soloSource;
+
+    /// <summary>
+    /// Whether dim is enabled
+    /// </summary>
+    [DeserializedField(8)] private bool _dim;
+
+    /// <summary>
+    /// Dim level as percentage (0.0 to 1.0)
+    /// </summary>
+    [DeserializedField(10)] [ScalingFactor(100.0)]
+    private double _dimLevel;
+
+    /// <inheritdoc />
+    public void ApplyToState(AtemState state)
+    {
+        var audio = state.GetClassicAudio();
+        audio.Monitor.Enabled = Enabled;
+        audio.Monitor.Gain = Gain;
+        audio.Monitor.Mute = Mute;
+        audio.Monitor.Solo = Solo;
+        audio.Monitor.SoloSource = SoloSource;
+        audio.Monitor.Dim = Dim;
+        audio.Monitor.DimLevel = DimLevel;
+    }
+}

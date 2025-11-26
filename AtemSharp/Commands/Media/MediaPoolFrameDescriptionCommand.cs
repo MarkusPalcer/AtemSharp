@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Media;
@@ -6,20 +5,15 @@ namespace AtemSharp.Commands.Media;
 [Command("MPfe")]
 public partial class MediaPoolFrameDescriptionCommand : IDeserializedCommand
 {
-    [DeserializedField(0)]
-    private byte _mediaPoolId;
+    [DeserializedField(0)] private byte _mediaPoolId;
 
-    [DeserializedField(2)]
-    private ushort _frameIndex;
+    [DeserializedField(2)] private ushort _frameIndex;
 
-    [DeserializedField(4)]
-    private bool _isUsed;
+    [DeserializedField(4)] private bool _isUsed;
 
-    [CustomDeserialization]
-    private string _hash = string.Empty;
+    [CustomDeserialization] private string _hash = string.Empty;
 
-    [CustomDeserialization]
-    private string _fileName = string.Empty;
+    [CustomDeserialization] private string _fileName = string.Empty;
 
     private void DeserializeInternal(ReadOnlySpan<byte> data)
     {
@@ -27,6 +21,7 @@ public partial class MediaPoolFrameDescriptionCommand : IDeserializedCommand
         FileName = data.ReadString(24, data.ReadUInt8(23));
     }
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         var entry = MediaPoolId switch

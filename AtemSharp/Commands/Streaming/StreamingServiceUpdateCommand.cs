@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Info;
 
@@ -7,14 +6,11 @@ namespace AtemSharp.Commands.Streaming;
 [Command("SRSU", ProtocolVersion.V8_1_1)]
 public partial class StreamingServiceUpdateCommand : IDeserializedCommand
 {
-    [CustomDeserialization]
-    private string _serviceName = string.Empty;
+    [CustomDeserialization] private string _serviceName = string.Empty;
 
-    [CustomDeserialization]
-    private string _url = string.Empty;
+    [CustomDeserialization] private string _url = string.Empty;
 
-    [CustomDeserialization]
-    private string _key = string.Empty;
+    [CustomDeserialization] private string _key = string.Empty;
 
     [DeserializedField(1088)] private uint _bitrate1;
     [DeserializedField(1092)] private uint _bitrate2;
@@ -26,6 +22,7 @@ public partial class StreamingServiceUpdateCommand : IDeserializedCommand
         _key = rawCommand.ReadString(576, 512);
     }
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         state.Streaming.ServiceName = _serviceName;

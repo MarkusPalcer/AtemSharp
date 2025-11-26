@@ -16,7 +16,7 @@ public class StreamingServiceCommandTests : SerializedCommandTestBase<StreamingS
 
     protected override StreamingServiceCommand CreateSut(TestCaseData testCase)
     {
-        var state = new AtemState
+        return new StreamingServiceCommand(new AtemState
         {
             Streaming =
             {
@@ -29,8 +29,6 @@ public class StreamingServiceCommandTests : SerializedCommandTestBase<StreamingS
                     High = testCase.Command.Bitrates[1],
                 }
             }
-        };
-
-        return new StreamingServiceCommand(state);
+        });
     }
 }

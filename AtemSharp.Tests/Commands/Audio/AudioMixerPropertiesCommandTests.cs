@@ -1,5 +1,5 @@
-using AtemSharp.Commands.Audio;
 using AtemSharp.State.Audio.ClassicAudio;
+using AudioMixerPropertiesCommand = AtemSharp.Commands.Audio.ClassicAudio.AudioMixerPropertiesCommand;
 
 namespace AtemSharp.Tests.Commands.Audio;
 
@@ -14,7 +14,7 @@ public class AudioMixerPropertiesCommandTests : SerializedCommandTestBase<AudioM
 
     protected override AudioMixerPropertiesCommand CreateSut(TestCaseData testCase)
     {
-        return new AudioMixerPropertiesCommand(new ClassicAudioState()
+        return new AudioMixerPropertiesCommand(new ClassicAudioState
         {
             AudioFollowsVideo = testCase.Command.AudioFollowVideo
         });
@@ -31,6 +31,5 @@ public class AudioMixerPropertiesCommandTests : SerializedCommandTestBase<AudioM
 
         // Assert
         Assert.That(command.Flag & (1 << 0), Is.Not.EqualTo(0), "Flag bit 0 should be set");
-        Assert.That(command.AudioFollowVideo, Is.True);
     }
 }

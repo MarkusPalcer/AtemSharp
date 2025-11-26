@@ -1,5 +1,5 @@
 using AtemSharp.State.Audio.Fairlight;
-using FairlightMixerMasterCompressorCommand = AtemSharp.Commands.Fairlight.Master.FairlightMixerMasterCompressorCommand;
+using FairlightMixerMasterCompressorCommand = AtemSharp.Commands.Audio.Fairlight.Master.FairlightMixerMasterCompressorCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Master;
 
@@ -25,7 +25,7 @@ public class FairlightMixerMasterCompressorCommandTests : SerializedCommandTestB
 
     protected override FairlightMixerMasterCompressorCommand CreateSut(TestCaseData testCase)
     {
-        var state = new MasterProperties
+        return new FairlightMixerMasterCompressorCommand(new MasterProperties
         {
             Dynamics =
             {
@@ -39,8 +39,6 @@ public class FairlightMixerMasterCompressorCommandTests : SerializedCommandTestB
                     Release = testCase.Command.Release,
                 }
             }
-        };
-
-        return new FairlightMixerMasterCompressorCommand(state);
+        });
     }
 }

@@ -171,8 +171,7 @@ namespace AtemSharp.CodeGenerators.Serialization
                                         using System;
                                         using AtemSharp;
                                         using AtemSharp.State.Info;
-                                        using AtemSharp.Lib;
-                                        using static AtemSharp.Lib.SerializationExtensions;
+                                        using static AtemSharp.Commands.SerializationExtensions;
 
                                         namespace {{ns}};
 

@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Info;
 using AtemSharp.State.Streaming;
@@ -38,6 +37,7 @@ public class StreamingStatusUpdateCommand : IDeserializedCommand
         };
     }
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         state.Streaming.Error = Error;

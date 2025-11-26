@@ -13,13 +13,10 @@ public class LockStateCommandTests : SerializedCommandTestBase<LockStateCommand,
 
     protected override LockStateCommand CreateSut(TestCaseData testCase)
     {
-        // Create command with the test data values
-        var command = new LockStateCommand
+        return new LockStateCommand
         {
             Index =testCase.Command.Index,
             Locked =testCase.Command.Locked
         };
-
-        return command;
     }
 }

@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State;
 using AtemSharp.State.Info;
 
@@ -7,17 +6,13 @@ namespace AtemSharp.Commands.Recording;
 [Command("RMSu", ProtocolVersion.V8_1_1)]
 public partial class RecordingSettingsUpdateCommand : IDeserializedCommand
 {
-    [CustomDeserialization]
-    private string _fileName = string.Empty;
+    [CustomDeserialization] private string _fileName = string.Empty;
 
-    [DeserializedField(128)]
-    private uint _workingSet1DiskId;
+    [DeserializedField(128)] private uint _workingSet1DiskId;
 
-    [DeserializedField(132)]
-    private uint _workingSet2DiskId;
+    [DeserializedField(132)] private uint _workingSet2DiskId;
 
-    [DeserializedField(136)]
-    private bool _recordInAllCameras;
+    [DeserializedField(136)] private bool _recordInAllCameras;
 
     private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {

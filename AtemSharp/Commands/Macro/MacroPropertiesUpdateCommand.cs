@@ -1,4 +1,3 @@
-using AtemSharp.Lib;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Macro;
@@ -6,14 +5,15 @@ namespace AtemSharp.Commands.Macro;
 [Command("MPrp")]
 public partial class MacroPropertiesUpdateCommand : IDeserializedCommand
 {
-    [DeserializedField(0)]
-    private ushort _id;
+    [DeserializedField(0)] private ushort _id;
 
-    [DeserializedField(2)]
-    private bool _isUsed;
+    [DeserializedField(2)] private bool _isUsed;
 
-    [DeserializedField(3)]
-    private bool _hasUnsupportedOps;
+    [DeserializedField(3)] private bool _hasUnsupportedOps;
+
+    [CustomDeserialization] private string _description = string.Empty;
+
+    [CustomDeserialization] private string _name = string.Empty;
 
     private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {
@@ -24,15 +24,13 @@ public partial class MacroPropertiesUpdateCommand : IDeserializedCommand
         Description = descriptionLength > 0 ? rawCommand.ReadString(8 + nameLength, descriptionLength) : string.Empty;
     }
 
-    public string Description { get; private set; } = string.Empty;
-
-    public string Name { get; private set; } = string.Empty;
-
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         if (Id >= state.Macros.Macros.Length)
         {
-            throw new IndexOutOfRangeException($"Macro ID {Id} is out of range of the macro state array which has length {state.Macros.Macros.Length}");
+            throw new IndexOutOfRangeException(
+                $"Macro ID {Id} is out of range of the macro state array which has length {state.Macros.Macros.Length}");
         }
 
         var macro = state.Macros.Macros[Id];

@@ -9,6 +9,7 @@ public partial class FadeToBlackRateUpdateCommand : IDeserializedCommand
 
     [DeserializedField(1)] private byte _rate;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         var mixEffect = state.Video.MixEffects[MixEffectId];

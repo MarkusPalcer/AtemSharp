@@ -1,5 +1,5 @@
 using AtemSharp.Commands.Media;
-using AtemSharp.State;
+using AtemSharp.State.Settings;
 
 namespace AtemSharp.Tests.Commands.Media;
 
@@ -12,7 +12,7 @@ public class MediaPoolSettingsSetCommandTests : SerializedCommandTestBase<MediaP
 
     protected override MediaPoolSettingsSetCommand CreateSut(TestCaseData testCase)
     {
-        return new MediaPoolSettingsSetCommand(new MediaPoolSettings()
+        return new MediaPoolSettingsSetCommand(new MediaPoolSettings
         {
             MaxFrames = testCase.Command.MaxFrames
         });

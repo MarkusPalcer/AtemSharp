@@ -1,5 +1,5 @@
 using AtemSharp.State.Audio.Fairlight;
-using FairlightMixerSourceCommand = AtemSharp.Commands.Fairlight.Source.FairlightMixerSourceCommand;
+using FairlightMixerSourceCommand = AtemSharp.Commands.Audio.Fairlight.Source.FairlightMixerSourceCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
@@ -35,7 +35,7 @@ public class FairlightMixerSourceCommandTests : SerializedCommandTestBase<Fairli
 
     protected override FairlightMixerSourceCommand CreateSut(TestCaseData testCase)
     {
-        var input = new AtemSharp.State.Audio.Fairlight.Source
+        return new FairlightMixerSourceCommand(new AtemSharp.State.Audio.Fairlight.Source
         {
             InputId = testCase.Command.Index,
             Id = long.Parse(testCase.Command.SourceId),
@@ -54,7 +54,6 @@ public class FairlightMixerSourceCommandTests : SerializedCommandTestBase<Fairli
             Balance = testCase.Command.Balance,
             FaderGain = testCase.Command.FaderGain,
             MixOption = testCase.Command.MixOption
-        };
-        return new FairlightMixerSourceCommand(input);
+        });
     }
 }

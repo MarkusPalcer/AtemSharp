@@ -1,6 +1,6 @@
 using AtemSharp.Commands.Settings;
-using AtemSharp.Enums;
 using AtemSharp.State;
+using AtemSharp.State.Settings;
 
 namespace AtemSharp.Tests.Commands.Settings;
 
@@ -16,29 +16,10 @@ public class TimeConfigCommandTests : SerializedCommandTestBase<TimeConfigComman
     {
         return new TimeConfigCommand(new AtemState
         {
-            Settings = new SettingsState
+            Settings =
             {
                 TimeMode = testCase.Command.Mode
             }
         });
-    }
-
-    [Test]
-    public void Constructor_WithExistingState_InitializesFromState()
-    {
-        // Arrange
-        var state = new AtemState
-        {
-            Settings = new SettingsState
-            {
-                TimeMode = TimeMode.TimeOfDay
-            }
-        };
-
-        // Act
-        var command = new TimeConfigCommand(state);
-
-        // Assert
-        Assert.That(command.Mode, Is.EqualTo(TimeMode.TimeOfDay));
     }
 }

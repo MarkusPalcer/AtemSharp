@@ -1,5 +1,4 @@
 using AtemSharp.State;
-using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
@@ -14,19 +13,10 @@ public partial class MacroPoolConfigCommand : IDeserializedCommand
     /// </summary>
     [DeserializedField(0)] private byte _macroCount;
 
-    /// <summary>
-    /// Apply the command's values to the ATEM state
-    /// </summary>
-    /// <param name="state">Current ATEM state to update</param>
-    /// <returns>Paths indicating what was changed in the state</returns>
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        // Update device info macro pool configuration
-        state.Info.MacroPool = new MacroPoolInfo
-        {
-            MacroCount = MacroCount
-        };
-
+        state.Info.MacroPool.MacroCount = MacroCount;
         state.Macros.Macros = AtemStateUtil.CreateArray<State.Macro.Macro>(MacroCount);
     }
 }

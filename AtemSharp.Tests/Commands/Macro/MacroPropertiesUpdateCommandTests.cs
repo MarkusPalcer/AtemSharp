@@ -15,10 +15,10 @@ public class MacroPropertiesUpdateCommandTests : DeserializedCommandTestBase<Mac
 
     protected override void CompareCommandProperties(MacroPropertiesUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Index), $"{testCase}: Id");
-        Assert.That(actualCommand.IsUsed, Is.EqualTo(expectedData.IsUsed), $"{testCase}: IsUsed");
-        Assert.That(actualCommand.HasUnsupportedOps, Is.EqualTo(expectedData.HasUnsupportedOps), $"{testCase}: HasUnsupportedOps");
-        Assert.That(actualCommand.Name, Is.EqualTo(expectedData.Name), $"{testCase}: Name");
-        Assert.That(actualCommand.Description, Is.EqualTo(expectedData.Description), $"{testCase}: Description");
+        Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.IsUsed, Is.EqualTo(expectedData.IsUsed));
+        Assert.That(actualCommand.HasUnsupportedOps, Is.EqualTo(expectedData.HasUnsupportedOps));
+        Assert.That(actualCommand.Name, Is.EqualTo(expectedData.Name));
+        Assert.That(actualCommand.Description, Is.EqualTo(expectedData.Description));
     }
 }

@@ -1,6 +1,6 @@
 using AtemSharp.Commands;
 using AtemSharp.Commands.DeviceProfile;
-using AtemSharp.Lib;
+using AtemSharp.Communication;
 using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Lib;

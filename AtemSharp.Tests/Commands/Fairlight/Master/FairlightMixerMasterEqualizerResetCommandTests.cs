@@ -1,4 +1,4 @@
-using FairlightMixerMasterEqualizerResetCommand = AtemSharp.Commands.Fairlight.Master.FairlightMixerMasterEqualizerResetCommand;
+using FairlightMixerMasterEqualizerResetCommand = AtemSharp.Commands.Audio.Fairlight.Master.FairlightMixerMasterEqualizerResetCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Master;
 
@@ -12,7 +12,7 @@ public class FairlightMixerMasterEqualizerResetCommandTests : SerializedCommandT
 
     protected override FairlightMixerMasterEqualizerResetCommand CreateSut(TestCaseData testCase)
     {
-        return new FairlightMixerMasterEqualizerResetCommand()
+        return new FairlightMixerMasterEqualizerResetCommand
         {
             Band = testCase.Command.Band,
             Equalizer = testCase.Command.Equalizer,

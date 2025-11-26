@@ -1,5 +1,5 @@
 using AtemSharp.State.Audio.Fairlight;
-using FairlightMixerSourceUpdateCommand = AtemSharp.Commands.Fairlight.Source.FairlightMixerSourceUpdateCommand;
+using FairlightMixerSourceUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Source.FairlightMixerSourceUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 

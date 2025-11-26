@@ -3,17 +3,29 @@ using System.Diagnostics.CodeAnalysis;
 namespace AtemSharp.Attributes;
 
 /// <summary>
-/// Marks that a field won't be included in the generated serialization logic but will have a generated property
+/// Tells code generation to create a Property for this field but no serialization code <br />
+/// The serialization code should be in <code>SerializeInternal</code>
 /// </summary>
 /// <remarks>
-/// Mutually exclusive with <see cref="NoPropertyAttribute"/>, as it would mean no code is generated
+/// Mutually exclusive with <see cref="NoPropertyAttribute"/>
 /// </remarks>
 [AttributeUsage(AttributeTargets.Field)]
 [SuppressMessage("ReSharper", "UnusedParameter.Local")]
 public class CustomSerializationAttribute : Attribute
 {
-    public CustomSerializationAttribute() {}
+    /// <summary>
+    /// Marks the field to be serialized with a custom logic, but does not change the Flag property when the value of
+    /// the generated property is changed
+    /// </summary>
+    public CustomSerializationAttribute()
+    {
+    }
 
-    public CustomSerializationAttribute(byte flag) {}
-
+    /// <summary>
+    /// Marks the field to be serialized with a custom logic and sets the specified bit of the Flag property when the
+    /// value of the generated property is changed
+    /// </summary>
+    public CustomSerializationAttribute(byte flag)
+    {
+    }
 }

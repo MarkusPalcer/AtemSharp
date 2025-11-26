@@ -1,53 +1,25 @@
-using AtemSharp.Commands.Audio;
-using AtemSharp.Tests.TestUtilities;
+using AudioMixerHeadphonesUpdateCommand = AtemSharp.Commands.Audio.ClassicAudio.AudioMixerHeadphonesUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Audio;
 
 [TestFixture]
 public class AudioMixerHeadphonesUpdateCommandTests : DeserializedCommandTestBase<AudioMixerHeadphonesUpdateCommand,
-	AudioMixerHeadphonesUpdateCommandTests.CommandData>
+    AudioMixerHeadphonesUpdateCommandTests.CommandData>
 {
-	public class CommandData : CommandDataBase
-	{
-		public double Gain { get; set; }
-		public double ProgramOutGain { get; set; }
-		public double TalkbackGain { get; set; }
-		public double SidetoneGain { get; set; }
-	}
+    public class CommandData : CommandDataBase
+    {
+        public double Gain { get; set; }
+        public double ProgramOutGain { get; set; }
+        public double TalkbackGain { get; set; }
+        public double SidetoneGain { get; set; }
+    }
 
-	protected override void CompareCommandProperties(AudioMixerHeadphonesUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
-	{
-		var failures = new List<string>();
-
-		// Compare Gain
-		if (!Utilities.AreApproximatelyEqual(actualCommand.Gain, expectedData.Gain))
-		{
-			failures.Add($"Gain: expected {expectedData.Gain}, actual {actualCommand.Gain}");
-		}
-
-		// Compare ProgramOutGain
-		if (!Utilities.AreApproximatelyEqual(actualCommand.ProgramOutGain, expectedData.ProgramOutGain))
-		{
-			failures.Add($"ProgramOutGain: expected {expectedData.ProgramOutGain}, actual {actualCommand.ProgramOutGain}");
-		}
-
-		// Compare TalkbackGain
-		if (!Utilities.AreApproximatelyEqual(actualCommand.TalkbackGain, expectedData.TalkbackGain))
-		{
-			failures.Add($"TalkbackGain: expected {expectedData.TalkbackGain}, actual {actualCommand.TalkbackGain}");
-		}
-
-		// Compare SidetoneGain
-		if (!Utilities.AreApproximatelyEqual(actualCommand.SidetoneGain, expectedData.SidetoneGain))
-		{
-			failures.Add($"SidetoneGain: expected {expectedData.SidetoneGain}, actual {actualCommand.SidetoneGain}");
-		}
-
-		// Assert
-		if (failures.Count > 0)
-		{
-			Assert.Fail($"Command deserialization property mismatch for version {testCase.FirstVersion}:\n" +
-			            string.Join("\n", failures));
-		}
-	}
+    protected override void CompareCommandProperties(AudioMixerHeadphonesUpdateCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
+    {
+        Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));
+        Assert.That(actualCommand.ProgramOutGain, Is.EqualTo(expectedData.ProgramOutGain).Within(0.01));
+        Assert.That(actualCommand.TalkbackGain, Is.EqualTo(expectedData.TalkbackGain).Within(0.01));
+        Assert.That(actualCommand.SidetoneGain, Is.EqualTo(expectedData.SidetoneGain).Within(0.01));
+    }
 }

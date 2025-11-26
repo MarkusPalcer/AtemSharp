@@ -15,16 +15,12 @@ public class MediaPlayerSourceCommandTests : SerializedCommandTestBase<MediaPlay
 
     protected override MediaPlayerSourceCommand CreateSut(TestCaseData testCase)
     {
-        var player = new MediaPlayer
+        return new MediaPlayerSourceCommand(new MediaPlayer
         {
-            Id = testCase.Command.Index
-        };
-
-        return new MediaPlayerSourceCommand(player)
-        {
+            Id = testCase.Command.Index,
             SourceType = testCase.Command.SourceType,
             StillIndex = testCase.Command.StillIndex,
             ClipIndex = testCase.Command.ClipIndex
-        };
+        });
     }
 }

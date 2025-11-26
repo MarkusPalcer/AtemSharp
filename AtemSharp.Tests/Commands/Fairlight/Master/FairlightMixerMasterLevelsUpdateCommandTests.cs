@@ -1,4 +1,4 @@
-using FairlightMixerMasterLevelsUpdateCommand = AtemSharp.Commands.Fairlight.Master.FairlightMixerMasterLevelsUpdateCommand;
+using FairlightMixerMasterLevelsUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Master.FairlightMixerMasterLevelsUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Master;
 

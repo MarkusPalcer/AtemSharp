@@ -15,7 +15,7 @@ public class RecordingSettingsCommandTests : SerializedCommandTestBase<Recording
 
     protected override RecordingSettingsCommand CreateSut(TestCaseData testCase)
     {
-        var state = new AtemState
+        return new RecordingSettingsCommand(new AtemState
         {
             Recording =
             {
@@ -24,8 +24,6 @@ public class RecordingSettingsCommandTests : SerializedCommandTestBase<Recording
                 WorkingSet2DiskId = testCase.Command.WorkingSet2DiskId,
                 RecordInAllCameras = testCase.Command.RecordInAllCameras
             }
-        };
-
-        return new RecordingSettingsCommand(state);
+        });
     }
 }

@@ -1,4 +1,4 @@
-namespace AtemSharp.Enums;
+namespace AtemSharp.Communication;
 
 /// <summary>
 /// ATEM packet flags for UDP protocol

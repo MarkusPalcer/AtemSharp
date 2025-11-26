@@ -55,8 +55,7 @@ public class TransitionDigitalVideoEffectCommandTests : SerializedCommandTestBas
     public void PropertySetters_SetCorrectFlags()
     {
         // Arrange
-        var state = new MixEffect();
-        var command = new TransitionDigitalVideoEffectCommand(state);
+        var command = new TransitionDigitalVideoEffectCommand(new MixEffect());
 
         // Act & Assert individual flag setting
         command.Rate = 25;

@@ -1,4 +1,4 @@
-namespace AtemSharp.Enums;
+namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 public enum FlyKeyDirection : byte {
     CentreOfKey = 0,

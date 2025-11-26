@@ -1,6 +1,4 @@
-using AtemSharp.Enums;
-
-namespace AtemSharp.State;
+namespace AtemSharp.State.Settings;
 
 /// <summary>
 /// Settings state container for ATEM devices
@@ -20,7 +18,7 @@ public class SettingsState
     /// <summary>
     /// MultiViewer settings indexed by MultiViewer ID using sparse Dictionary for efficient memory usage
     /// </summary>
-    public List<MultiViewer> MultiViewers { get; } = [];
+    public List<MultiViewer.MultiViewer> MultiViewers { get; } = [];
 
     public MediaPoolSettings MediaPool { get; } = new();
 }

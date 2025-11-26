@@ -1,5 +1,3 @@
-using AtemSharp.Lib;
-
 namespace AtemSharp.Commands.DataTransfer;
 
 /// <summary>
@@ -10,28 +8,24 @@ namespace AtemSharp.Commands.DataTransfer;
 public partial class DataTransferDownloadRequestCommand : SerializedCommand
 {
     /// <summary>
-        /// Transfer ID
-        /// </summary>
-    [SerializedField(0)]
-    private ushort _transferId;
+    /// Transfer ID
+    /// </summary>
+    [SerializedField(0)] private ushort _transferId;
 
     /// <summary>
     /// Transfer store ID
     /// </summary>
-    [SerializedField(2)]
-    private ushort _transferStoreId;
+    [SerializedField(2)] private ushort _transferStoreId;
 
     /// <summary>
     /// Transfer index
     /// </summary>
-    [SerializedField(6)]
-    private ushort _transferIndex;
+    [SerializedField(6)] private ushort _transferIndex;
 
     /// <summary>
     /// Transfer type
     /// </summary>
-    [SerializedField(8)]
-    private ushort _transferType;
+    [SerializedField(8)] private ushort _transferType;
 
 
     /// <summary>

@@ -30,8 +30,7 @@ public class MixEffectKeyLumaCommandTests : SerializedCommandTestBase<MixEffectK
 
     protected override MixEffectKeyLumaCommand CreateSut(TestCaseData testCase)
     {
-        // Create state with the required mix effect and upstream keyer
-        var state = new UpstreamKeyer()
+        return new MixEffectKeyLumaCommand(new UpstreamKeyer
         {
             Id = testCase.Command.KeyerIndex,
             MixEffectId = testCase.Command.MixEffectIndex,
@@ -42,11 +41,6 @@ public class MixEffectKeyLumaCommandTests : SerializedCommandTestBase<MixEffectK
                 Gain = testCase.Command.Gain,
                 Invert = testCase.Command.Invert
             }
-        };
-
-        // Create command with the mix effect and keyer IDs
-        var command = new MixEffectKeyLumaCommand(state);
-
-        return command;
+        });
     }
 }

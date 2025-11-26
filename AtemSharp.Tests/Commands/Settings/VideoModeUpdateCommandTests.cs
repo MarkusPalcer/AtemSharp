@@ -1,6 +1,5 @@
 using AtemSharp.Commands.Settings;
-using AtemSharp.Enums;
-using AtemSharp.State;
+using AtemSharp.State.Settings;
 
 namespace AtemSharp.Tests.Commands.Settings;
 
@@ -16,31 +15,6 @@ public class VideoModeUpdateCommandTests : DeserializedCommandTestBase<VideoMode
     public class CommandData : CommandDataBase
     {
         public VideoMode VideoMode { get; set; }
-    }
-
-    [Test]
-    public void ApplyToState_ShouldUpdateVideoMode()
-    {
-        // Arrange
-        var state = new AtemState
-        {
-            Settings = new SettingsState
-            {
-                VideoMode = VideoMode.N525i5994NTSC
-            }
-        };
-
-        var command = new VideoModeUpdateCommand
-        {
-            Mode = VideoMode.N1080p5994
-        };
-
-        // Act
-        command.ApplyToState(state);
-
-        // Assert
-        Assert.That(state.Settings.VideoMode, Is.EqualTo(VideoMode.N1080p5994),
-                   "State should be updated with new video mode");
     }
 
     protected override void CompareCommandProperties(VideoModeUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)

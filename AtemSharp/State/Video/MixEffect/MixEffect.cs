@@ -34,8 +34,6 @@ public class MixEffect : ArrayItem
     /// </summary>
     public FadeToBlackProperties FadeToBlack { get; } = new();
 
-    // TODO: Unify transition properties into one property
-
     /// <summary>
     /// Current transition position
     /// </summary>
@@ -54,6 +52,5 @@ public class MixEffect : ArrayItem
     /// <summary>
     /// Upstream keyers for this mix effect
     /// </summary>
-    // TODO: Convert to Array and create once number of UpstreamKeyers is sent
     public Dictionary<int, UpstreamKeyer.UpstreamKeyer> UpstreamKeyers { get; } = new();
 }

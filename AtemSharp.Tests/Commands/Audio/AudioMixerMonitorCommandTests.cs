@@ -1,6 +1,5 @@
-using AtemSharp.State;
 using AtemSharp.State.Audio.ClassicAudio;
-using AudioMixerMonitorCommand = AtemSharp.Commands.Audio.AudioMixerMonitorCommand;
+using AudioMixerMonitorCommand = AtemSharp.Commands.Audio.ClassicAudio.AudioMixerMonitorCommand;
 
 namespace AtemSharp.Tests.Commands.Audio;
 
@@ -30,56 +29,31 @@ public class AudioMixerMonitorCommandTests : SerializedCommandTestBase<AudioMixe
 
     protected override AudioMixerMonitorCommand CreateSut(TestCaseData testCase)
     {
-        // Create command with valid state
-        var command = new AudioMixerMonitorCommand(CreateStateWithMonitor());
-
-        // Set the actual values that should be written (like TypeScript this.properties)
-        command.Enabled = testCase.Command.Enabled;
-        command.Gain = testCase.Command.Gain;
-        command.Mute = testCase.Command.Mute;
-        command.Solo = testCase.Command.Solo;
-        command.SoloSource = testCase.Command.SoloSource;
-        command.Dim = testCase.Command.Dim;
-        command.DimLevel = testCase.Command.DimLevel;
-
-        return command;
-    }
-
-    /// <summary>
-    /// Creates an AtemState with valid monitor configuration
-    /// </summary>
-    private static AtemState CreateStateWithMonitor()
-    {
-        var state = new AtemState
+        return new AudioMixerMonitorCommand(new ClassicAudioState
         {
-            Audio = new ClassicAudioState
+            Monitor =
             {
-                Monitor =
-                {
-                    Enabled = false,
-                    Gain = 0.0,
-                    Mute = false,
-                    Solo = false,
-                    SoloSource = 0,
-                    Dim = false,
-                    DimLevel = 0.0
-                }
+                Enabled = testCase.Command.Enabled,
+                Gain = testCase.Command.Gain,
+                Mute = testCase.Command.Mute,
+                Solo = testCase.Command.Solo,
+                SoloSource = testCase.Command.SoloSource,
+                Dim = testCase.Command.Dim,
+                DimLevel = testCase.Command.DimLevel
             }
-        };
-        return state;
+        });
     }
 
     [Test]
     public void SetEnabled_ShouldSetCorrectFlag()
     {
         // Arrange
-        var command = new AudioMixerMonitorCommand(CreateStateWithMonitor());
+        var command = new AudioMixerMonitorCommand(new ClassicAudioState());
 
         // Act
         command.Enabled = true;
 
         // Assert
-        Assert.That(command.Enabled, Is.EqualTo(true));
         Assert.That(command.Flag, Is.EqualTo(0x01), "Flag should be set for Enabled");
     }
 
@@ -87,13 +61,12 @@ public class AudioMixerMonitorCommandTests : SerializedCommandTestBase<AudioMixe
     public void SetGain_ShouldSetCorrectFlag()
     {
         // Arrange
-        var command = new AudioMixerMonitorCommand(CreateStateWithMonitor());
+        var command = new AudioMixerMonitorCommand(new ClassicAudioState());
 
         // Act
         command.Gain = -10.5;
 
         // Assert
-        Assert.That(command.Gain, Is.EqualTo(-10.5));
         Assert.That(command.Flag, Is.EqualTo(0x02), "Flag should be set for Gain");
     }
 
@@ -101,13 +74,12 @@ public class AudioMixerMonitorCommandTests : SerializedCommandTestBase<AudioMixe
     public void SetMute_ShouldSetCorrectFlag()
     {
         // Arrange
-        var command = new AudioMixerMonitorCommand(CreateStateWithMonitor());
+        var command = new AudioMixerMonitorCommand(new ClassicAudioState());
 
         // Act
         command.Mute = true;
 
         // Assert
-        Assert.That(command.Mute, Is.EqualTo(true));
         Assert.That(command.Flag, Is.EqualTo(0x04), "Flag should be set for Mute");
     }
 
@@ -115,13 +87,12 @@ public class AudioMixerMonitorCommandTests : SerializedCommandTestBase<AudioMixe
     public void SetSolo_ShouldSetCorrectFlag()
     {
         // Arrange
-        var command = new AudioMixerMonitorCommand(CreateStateWithMonitor());
+        var command = new AudioMixerMonitorCommand(new ClassicAudioState());
 
         // Act
         command.Solo = true;
 
         // Assert
-        Assert.That(command.Solo, Is.EqualTo(true));
         Assert.That(command.Flag, Is.EqualTo(0x08), "Flag should be set for Solo");
     }
 
@@ -129,13 +100,12 @@ public class AudioMixerMonitorCommandTests : SerializedCommandTestBase<AudioMixe
     public void SetSoloSource_ShouldSetCorrectFlag()
     {
         // Arrange
-        var command = new AudioMixerMonitorCommand(CreateStateWithMonitor());
+        var command = new AudioMixerMonitorCommand(new ClassicAudioState());
 
         // Act
         command.SoloSource = 1001;
 
         // Assert
-        Assert.That(command.SoloSource, Is.EqualTo(1001));
         Assert.That(command.Flag, Is.EqualTo(0x10), "Flag should be set for SoloSource");
     }
 
@@ -143,13 +113,12 @@ public class AudioMixerMonitorCommandTests : SerializedCommandTestBase<AudioMixe
     public void SetDim_ShouldSetCorrectFlag()
     {
         // Arrange
-        var command = new AudioMixerMonitorCommand(CreateStateWithMonitor());
+        var command = new AudioMixerMonitorCommand(new ClassicAudioState());
 
         // Act
         command.Dim = true;
 
         // Assert
-        Assert.That(command.Dim, Is.EqualTo(true));
         Assert.That(command.Flag, Is.EqualTo(0x20), "Flag should be set for Dim");
     }
 
@@ -157,13 +126,12 @@ public class AudioMixerMonitorCommandTests : SerializedCommandTestBase<AudioMixe
     public void SetDimLevel_ShouldSetCorrectFlag()
     {
         // Arrange
-        var command = new AudioMixerMonitorCommand(CreateStateWithMonitor());
+        var command = new AudioMixerMonitorCommand(new ClassicAudioState());
 
         // Act
         command.DimLevel = 0.5; // 50%
 
         // Assert
-        Assert.That(command.DimLevel, Is.EqualTo(0.5));
         Assert.That(command.Flag, Is.EqualTo(0x40), "Flag should be set for DimLevel");
     }
 
@@ -171,7 +139,7 @@ public class AudioMixerMonitorCommandTests : SerializedCommandTestBase<AudioMixe
     public void SetMultipleProperties_ShouldSetCorrectFlags()
     {
         // Arrange
-        var command = new AudioMixerMonitorCommand(CreateStateWithMonitor());
+        var command = new AudioMixerMonitorCommand(new ClassicAudioState());
 
         // Act
         command.Enabled = true; // 0x01

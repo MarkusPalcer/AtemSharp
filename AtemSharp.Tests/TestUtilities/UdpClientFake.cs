@@ -1,7 +1,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks.Dataflow;
-using AtemSharp.Lib;
+using AtemSharp.Communication;
 
 namespace AtemSharp.Tests.TestUtilities;
 

@@ -1,5 +1,3 @@
-using AtemSharp.Enums;
-
 namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 /// <summary>

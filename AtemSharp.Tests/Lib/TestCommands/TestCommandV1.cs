@@ -1,3 +1,4 @@
+using AtemSharp.Attributes;
 using AtemSharp.Commands;
 using AtemSharp.State;
 using AtemSharp.State.Info;

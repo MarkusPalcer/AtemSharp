@@ -1,5 +1,5 @@
 using AtemSharp.State.Audio.Fairlight;
-using FairlightMixerMonitorCommand = AtemSharp.Commands.Fairlight.Monitor.FairlightMixerMonitorCommand;
+using FairlightMixerMonitorCommand = AtemSharp.Commands.Audio.Fairlight.Monitor.FairlightMixerMonitorCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Monitor;
 

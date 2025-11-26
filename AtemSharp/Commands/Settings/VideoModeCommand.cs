@@ -1,5 +1,5 @@
-using AtemSharp.Enums;
 using AtemSharp.State;
+using AtemSharp.State.Settings;
 
 namespace AtemSharp.Commands.Settings;
 
@@ -8,21 +8,10 @@ namespace AtemSharp.Commands.Settings;
 /// </summary>
 [Command("CVdM")]
 [BufferSize(4)]
-public partial class VideoModeCommand : SerializedCommand
+public partial class VideoModeCommand(AtemState currentState) : SerializedCommand
 {
     /// <summary>
     /// Video mode to set
     /// </summary>
-    [SerializedField(0)]
-    private VideoMode _mode;
-
-    /// <summary>
-    /// Create command initialized with current state values
-    /// </summary>
-    /// <param name="currentState">Current ATEM state</param>
-    public VideoModeCommand(AtemState currentState)
-    {
-        // Initialize from current state (direct field access = no flags set)
-        _mode = currentState.Settings.VideoMode;
-    }
+    [SerializedField(0)] private VideoMode _mode = currentState.Settings.VideoMode;
 }

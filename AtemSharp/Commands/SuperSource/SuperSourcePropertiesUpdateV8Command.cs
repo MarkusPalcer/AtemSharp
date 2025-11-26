@@ -21,6 +21,7 @@ public partial class SuperSourcePropertiesUpdateV8Command : IDeserializedCommand
 
     [DeserializedField(12)] private bool _artInvertKey;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         var superSource = state.Video.SuperSources[SuperSourceId];

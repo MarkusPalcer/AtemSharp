@@ -1,4 +1,4 @@
-namespace AtemSharp.State;
+namespace AtemSharp.State.Settings.MultiViewer;
 
 /// <summary>
 /// MultiViewer configuration and state

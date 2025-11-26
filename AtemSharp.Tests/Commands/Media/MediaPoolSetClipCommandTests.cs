@@ -15,7 +15,7 @@ public class MediaPoolSetClipCommandTests : SerializedCommandTestBase<MediaPoolS
 
     protected override MediaPoolSetClipCommand CreateSut(TestCaseData testCase)
     {
-        return new MediaPoolSetClipCommand(new MediaPoolEntry()
+        return new MediaPoolSetClipCommand(new MediaPoolEntry
         {
             Id = testCase.Command.Index,
             Name = testCase.Command.Name,

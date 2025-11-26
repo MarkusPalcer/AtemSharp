@@ -1,5 +1,4 @@
-using AtemSharp.Lib;
-using AtemSharp.State;
+using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 
@@ -8,128 +7,80 @@ namespace AtemSharp.Commands.MixEffects.Key;
 /// </summary>
 [Command("CACK")]
 [BufferSize(28)]
-public partial class MixEffectKeyAdvancedChromaPropertiesCommand : SerializedCommand
+public partial class MixEffectKeyAdvancedChromaPropertiesCommand(UpstreamKeyer keyer) : SerializedCommand
 {
-    [SerializedField(2)] [NoProperty] private readonly byte _mixEffectId;
+    [SerializedField(2)] [NoProperty] private readonly byte _mixEffectId = keyer.MixEffectId;
 
-    [SerializedField(3)] [NoProperty] private readonly byte _keyerId;
-
+    [SerializedField(3)] [NoProperty] private readonly byte _keyerId = keyer.Id;
 
     /// <summary>
     /// Foreground level value
     /// </summary>
     [SerializedField(4, 0)] [ScalingFactor(10)]
-    private double _foregroundLevel;
+    private double _foregroundLevel = keyer.AdvancedChromaSettings.Properties.ForegroundLevel;
 
     /// <summary>
     /// Background level value
     /// </summary>
     [SerializedField(6, 1)] [ScalingFactor(10)]
-    private double _backgroundLevel;
+    private double _backgroundLevel = keyer.AdvancedChromaSettings.Properties.BackgroundLevel;
 
     /// <summary>
     /// Key edge value
     /// </summary>
     [SerializedField(8, 2)] [ScalingFactor(10)]
-    private double _keyEdge;
+    private double _keyEdge = keyer.AdvancedChromaSettings.Properties.KeyEdge;
 
     /// <summary>
     /// Spill suppression value
     /// </summary>
     [SerializedField(10, 3)] [ScalingFactor(10)]
-    private double _spillSuppression;
+    private double _spillSuppression = keyer.AdvancedChromaSettings.Properties.SpillSuppression;
 
     /// <summary>
     /// Flare suppression value
     /// </summary>
     [SerializedField(12, 4)] [ScalingFactor(10)]
-    private double _flareSuppression;
+    private double _flareSuppression = keyer.AdvancedChromaSettings.Properties.FlareSuppression;
 
     /// <summary>
     /// Brightness adjustment value
     /// </summary>
     [SerializedField(14, 5)] [ScalingFactor(10)] [SerializedType(typeof(short))]
-    private double _brightness;
+    private double _brightness = keyer.AdvancedChromaSettings.Properties.Brightness;
 
 
     /// <summary>
     /// Contrast adjustment value
     /// </summary>
     [SerializedField(16, 6)] [ScalingFactor(10)] [SerializedType(typeof(short))]
-    private double _contrast;
+    private double _contrast = keyer.AdvancedChromaSettings.Properties.Contrast;
 
 
     /// <summary>
     /// Saturation adjustment value
     /// </summary>
     [SerializedField(18, 7)] [ScalingFactor(10)]
-    private double _saturation;
+    private double _saturation = keyer.AdvancedChromaSettings.Properties.Saturation;
 
     /// <summary>
     /// Red color adjustment value
     /// </summary>
     [SerializedField(20, 8)] [ScalingFactor(10)] [SerializedType(typeof(short))]
-    private double _red;
+    private double _red = keyer.AdvancedChromaSettings.Properties.Red;
 
     /// <summary>
     /// Green color adjustment value
     /// </summary>
     [SerializedField(22, 9)] [ScalingFactor(10)] [SerializedType(typeof(short))]
-    private double _green;
+    private double _green = keyer.AdvancedChromaSettings.Properties.Green;
 
     /// <summary>
     /// Blue color adjustment value
     /// </summary>
     [SerializedField(24, 10)] [ScalingFactor(10)] [SerializedType(typeof(short))]
-    private double _blue;
+    private double _blue = keyer.AdvancedChromaSettings.Properties.Blue;
 
-
-    /// <summary>
-    /// Create command initialized with current state values
-    /// </summary>
-    /// <param name="mixEffectId">Mix effect index (0-based)</param>
-    /// <param name="keyerId">Upstream keyer index (0-based)</param>
-    /// <param name="currentState">Current ATEM state</param>
-    /// <exception cref="InvalidIdError">Thrown if mix effect or keyer not available</exception>
-    public MixEffectKeyAdvancedChromaPropertiesCommand(byte mixEffectId, byte keyerId, AtemState currentState)
-    {
-        _mixEffectId = mixEffectId;
-        _keyerId = keyerId;
-        var mixEffect = currentState.Video.MixEffects[mixEffectId];
-
-        // If no video state or mix effect doesn't exist, initialize with defaults
-        if (!mixEffect.UpstreamKeyers.TryGetValue(keyerId, out var keyer))
-        {
-            // Set default values and flags (like TypeScript pattern)
-            ForegroundLevel = 0.0;
-            BackgroundLevel = 0.0;
-            KeyEdge = 0.0;
-            SpillSuppression = 0.0;
-            FlareSuppression = 0.0;
-            Brightness = 0.0;
-            Contrast = 0.0;
-            Saturation = 0.0;
-            Red = 0.0;
-            Green = 0.0;
-            Blue = 0.0;
-            return;
-        }
-
-        var properties = keyer.AdvancedChromaSettings.Properties;
-
-        // Initialize from current state (direct field access = no flags set)
-        _foregroundLevel = properties.ForegroundLevel;
-        _backgroundLevel = properties.BackgroundLevel;
-        _keyEdge = properties.KeyEdge;
-        _spillSuppression = properties.SpillSuppression;
-        _flareSuppression = properties.FlareSuppression;
-        _brightness = properties.Brightness;
-        _contrast = properties.Contrast;
-        _saturation = properties.Saturation;
-        _red = properties.Red;
-        _green = properties.Green;
-        _blue = properties.Blue;
-    }
 
     private void SerializeInternal(byte[] buffer)
     {
