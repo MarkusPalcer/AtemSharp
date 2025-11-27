@@ -7,18 +7,20 @@ namespace AtemSharp.Commands.DeviceProfile;
 /// SuperSource configuration command received from ATEM
 /// </summary>
 /// <remarks>
-/// Use for protocol versions before 8.0
+/// Used for protocol versions 8.0 and higher
 /// </remarks>
-[Command("_SSC")]
-public partial class SuperSourceConfigCommand : IDeserializedCommand
+[Command("_SSC", ProtocolVersion.V8_0)]
+public partial class SuperSourceConfigCommandV8 : IDeserializedCommand
 {
-    [DeserializedField(0)] private byte _boxCount;
+    [DeserializedField(0)] private byte _superSourceId;
+    [DeserializedField(2)] private byte _boxCount;
+
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         // Update device info SuperSource configuration
-        state.Info.SuperSources[0] = new SuperSourceInfo
+        state.Info.SuperSources[SuperSourceId] = new SuperSourceInfo
         {
             BoxCount = BoxCount
         };
