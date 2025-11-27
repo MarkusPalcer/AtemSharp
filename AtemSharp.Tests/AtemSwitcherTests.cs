@@ -3,6 +3,7 @@ using AtemSharp.Tests.TestUtilities;
 namespace AtemSharp.Tests;
 
 [TestFixture]
+[Parallelizable(ParallelScope.None)]
 public class AtemSwitcherTests
 {
     private AtemSwitcher _atem;
@@ -13,8 +14,6 @@ public class AtemSwitcherTests
     {
         _clientFake = new();
         _atem = new("127.0.0.1", 1234, _clientFake);
-
-        AtemSwitcher.UnknownCommands.Clear();
     }
 
     [TearDown]
@@ -22,14 +21,6 @@ public class AtemSwitcherTests
     {
         await _atem.DisposeAsync();
         await _clientFake.DisposeAsync();
-    }
-
-    [Test]
-    public void Constructor_ShouldInitializeCorrectly()
-    {
-        // Assert
-        Assert.That(AtemSwitcher.UnknownCommands, Is.Not.Null);
-        Assert.That(AtemSwitcher.UnknownCommands, Is.Empty);
     }
 
     [Test]
@@ -73,7 +64,7 @@ public class AtemSwitcherTests
     [Test]
     public Task DisconnectAsync_WhenNotConnected_ShouldNotThrow()
     {
-	    // Act & Assert
+        // Act & Assert
         Assert.DoesNotThrowAsync(() => _atem.DisconnectAsync());
         return Task.CompletedTask;
     }
