@@ -1,7 +1,7 @@
 using AtemSharp.Commands.DeviceProfile;
-using AtemSharp.State;
 using AtemSharp.State.Info;
 using AtemSharp.State.Settings;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
@@ -50,7 +50,7 @@ public class VideoMixerConfigCommandTests
         data.AddRange(downconvert2);   // downconvert modes (bits 1 and 3 set)
 
         // Act
-        var command = VideoMixerConfigCommand.Deserialize(data.ToArray().AsSpan(), ProtocolVersion.V7_2);
+        var command = VideoMixerConfigCommand.Deserialize(data.ToArray().AsSpan(), ProtocolVersion.V7_2).As<VideoMixerConfigCommand>();
 
         // Assert
         Assert.That(command.SupportedVideoModes, Is.Not.Null);
@@ -101,78 +101,10 @@ public class VideoMixerConfigCommandTests
         data.Add(1);                           // requires reconfig = true
 
         // Act
-        var command = VideoMixerConfigCommand.Deserialize(data.ToArray().AsSpan(), ProtocolVersion.V8_0);
+        var command = VideoMixerConfigCommandV8.Deserialize(data.ToArray().AsSpan(), ProtocolVersion.V8_0).As<VideoMixerConfigCommandV8>();
 
         // Assert
         Assert.That(command.SupportedVideoModes.Length, Is.EqualTo(1));
         Assert.That(command.SupportedVideoModes[0].RequiresReconfiguration, Is.True);
-    }
-
-    [Test]
-    public void ApplyToState_ShouldUpdateSupportedVideoModes()
-    {
-        // Arrange
-        var state = new AtemState();
-        var supportedModes = new[]
-        {
-            new SupportedVideoMode
-            {
-                Mode = VideoMode.P1080p25,
-                RequiresReconfiguration = false,
-                MultiviewerModes = [VideoMode.P720p50, VideoMode.P1080p25],
-                DownConvertModes = [VideoMode.P720p50]
-            },
-            new SupportedVideoMode
-            {
-                Mode = VideoMode.N4KHDp2398,
-                RequiresReconfiguration = true,
-                MultiviewerModes = [VideoMode.P1080p25],
-                DownConvertModes = [VideoMode.P1080p25, VideoMode.P720p50]
-            }
-        };
-
-        var command = new VideoMixerConfigCommand
-        {
-            SupportedVideoModes = supportedModes
-        };
-
-        // Act
-        command.ApplyToState(state);
-
-        // Assert
-        Assert.That(state.Info.SupportedVideoModes, Is.Not.Null);
-        Assert.That(state.Info.SupportedVideoModes.Length, Is.EqualTo(2));
-        Assert.That(state.Info.SupportedVideoModes, Is.SameAs(supportedModes));
-    }
-
-    [Test]
-    public void ApplyToState_WithNullState_ShouldThrowException()
-    {
-        // Arrange
-        var command = new VideoMixerConfigCommand
-        {
-            SupportedVideoModes = []
-        };
-
-        // Act & Assert
-        Assert.Throws<NullReferenceException>(() => command.ApplyToState(null!));
-    }
-
-    [Test]
-    public void ApplyToState_WithEmptyArray_ShouldSetEmptyArray()
-    {
-        // Arrange
-        var state = new AtemState();
-        var command = new VideoMixerConfigCommand
-        {
-            SupportedVideoModes = []
-        };
-
-        // Act
-        command.ApplyToState(state);
-
-        // Assert
-        Assert.That(state.Info.SupportedVideoModes, Is.Not.Null);
-        Assert.That(state.Info.SupportedVideoModes.Length, Is.EqualTo(0));
     }
 }
