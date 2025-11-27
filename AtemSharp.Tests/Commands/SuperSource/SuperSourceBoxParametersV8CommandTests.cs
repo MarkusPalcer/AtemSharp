@@ -1,19 +1,22 @@
 using System.Drawing;
 using AtemSharp.Commands.SuperSource;
-using AtemSharp.State.Info;
 using AtemSharp.State.Video.SuperSource;
-using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
-public class SuperSourceBoxParametersCommandTests : SerializedCommandTestBase<SuperSourceBoxParametersCommand, SuperSourceBoxParametersCommandTests.CommandData>
+public class SuperSourceBoxParametersV8CommandTests : SerializedCommandTestBase<SuperSourceBoxParametersV8Command, SuperSourceBoxParametersV8CommandTests.CommandData>
 {
     // Mark all as floating point as it's version dependent where the floating points are
     protected override Range[] GetFloatingPointByteRanges() => [
-        (..)
+        (8..10), // X
+        (10..12), // Y
+        (12..14), // Size
+        (16..18), // CropTop
+        (18..20), // CropBottom
+        (20..22), // CropLeft
+        (22..24), // CropRight
     ];
 
-    [MaxProtocolVersion(ProtocolVersion.V7_5_2)]
     public class CommandData : CommandDataBase
     {
         public byte SSrcId { get; set; }
@@ -30,9 +33,9 @@ public class SuperSourceBoxParametersCommandTests : SerializedCommandTestBase<Su
         public double CropRight { get; set; }
     }
 
-    protected override SuperSourceBoxParametersCommand CreateSut(TestCaseData testCase)
+    protected override SuperSourceBoxParametersV8Command CreateSut(TestCaseData testCase)
     {
-        return new SuperSourceBoxParametersCommand(new SuperSourceBox
+        return new SuperSourceBoxParametersV8Command(new SuperSourceBox
         {
             Id = testCase.Command.BoxIndex,
             SuperSourceId = testCase.Command.SSrcId,
