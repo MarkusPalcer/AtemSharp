@@ -1,24 +1,21 @@
 using AtemSharp.Commands.DownstreamKey;
-using AtemSharp.State.Info;
 using AtemSharp.State.Video.DownstreamKeyer;
-using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DownstreamKey;
 
 [TestFixture]
-public class DownstreamKeyAutoCommandTests : SerializedCommandTestBase<DownstreamKeyAutoCommand,
-    DownstreamKeyAutoCommandTests.CommandData>
+public class DownstreamKeyAutoCommandV801Tests : SerializedCommandTestBase<DownstreamKeyAutoCommandV801,
+    DownstreamKeyAutoCommandV801Tests.CommandData>
 {
-    [MaxProtocolVersion(ProtocolVersion.V8_0)]
     public class CommandData : CommandDataBase
     {
         public byte Index { get; set; }
         public bool IsTowardsOnAir { get; set; }
     }
 
-    protected override DownstreamKeyAutoCommand CreateSut(TestCaseData testCase)
+    protected override DownstreamKeyAutoCommandV801 CreateSut(TestCaseData testCase)
     {
-        return new DownstreamKeyAutoCommand(new DownstreamKeyer
+        return new DownstreamKeyAutoCommandV801(new DownstreamKeyer
         {
             Id = testCase.Command.Index,
             IsTowardsOnAir = testCase.Command.IsTowardsOnAir
