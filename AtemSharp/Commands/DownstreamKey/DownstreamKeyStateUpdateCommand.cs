@@ -1,28 +1,15 @@
 using AtemSharp.State;
-using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.DownstreamKey;
 
 [Command("DskS")]
-public class DownstreamKeyStateUpdateCommand : IDeserializedCommand
+public partial class DownstreamKeyStateUpdateCommand : IDeserializedCommand
 {
-    public byte Index { get; init; }
-    public bool InTransition { get; init; }
-    public bool OnAir { get; init; }
-    public bool IsAuto { get; init; }
-    public byte RemainingFrames { get; init; }
-
-    public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> data, ProtocolVersion version)
-    {
-        return new DownstreamKeyStateUpdateCommand
-        {
-            Index = data.ReadUInt8(0),
-            OnAir = data.ReadBoolean(1),
-            InTransition = data.ReadBoolean(2),
-            IsAuto = data.ReadBoolean(3),
-            RemainingFrames = data.ReadUInt8(4)
-        };
-    }
+    [DeserializedField(0)] private byte _index;
+    [DeserializedField(1)] private bool _onAir;
+    [DeserializedField(2)] private bool _inTransition;
+    [DeserializedField(3)] private bool _isAuto;
+    [DeserializedField(4)] private byte _remainingFrames;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)

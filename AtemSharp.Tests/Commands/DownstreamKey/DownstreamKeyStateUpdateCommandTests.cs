@@ -20,10 +20,10 @@ public class DownstreamKeyStateUpdateCommandTests : DeserializedCommandTestBase<
     protected override void CompareCommandProperties(DownstreamKeyStateUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
-        Assert.That(actualCommand.Index, Is.EqualTo(expectedData.Index), $"{testCase.Name} - Index");
-        Assert.That(actualCommand.OnAir, Is.EqualTo(expectedData.OnAir), $"{testCase.Name} - OnAir");
-        Assert.That(actualCommand.InTransition, Is.EqualTo(expectedData.InTransition), $"{testCase.Name} - InTransition");
-        Assert.That(actualCommand.IsAuto, Is.EqualTo(expectedData.IsAuto), $"{testCase.Name} - IsAuto");
-        Assert.That(actualCommand.RemainingFrames, Is.EqualTo(expectedData.RemainingFrames), $"{testCase.Name} - RemainingFrames");
+        Assert.That(actualCommand.Index, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.OnAir, Is.EqualTo(expectedData.OnAir));
+        Assert.That(actualCommand.InTransition, Is.EqualTo(expectedData.InTransition));
+        Assert.That(actualCommand.IsAuto, Is.EqualTo(expectedData.IsAuto));
+        Assert.That(actualCommand.RemainingFrames, Is.EqualTo(expectedData.RemainingFrames));
     }
 }
