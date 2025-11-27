@@ -1,34 +1,30 @@
 using AtemSharp.State;
 using AtemSharp.State.Audio.Fairlight;
+using AtemSharp.State.Info;
 using AtemSharp.State.Ports;
 
 namespace AtemSharp.Commands.Audio.Fairlight;
 
-[Command("FAIP")]
-public partial class FairlightMixerInputUpdateCommand : IDeserializedCommand
+[Command("FAIP", ProtocolVersion.V8_1_1)]
+public partial class FairlightMixerInputUpdateV8Command : IDeserializedCommand
 {
     [DeserializedField(0)] private ushort _id;
     [DeserializedField(2)] private FairlightInputType _inputType;
     [DeserializedField(6)] private ExternalPortType _externalPortType;
 
-    [DeserializedField(11)]
+    [DeserializedField(9)]
     [CustomScaling($"{nameof(DeserializationExtensions)}.{nameof(DeserializationExtensions.GetComponents)}")]
     [SerializedType(typeof(FairlightInputConfiguration))]
     private FairlightInputConfiguration[] _supportedConfigurations = [];
 
-    [DeserializedField(12)] private FairlightInputConfiguration _activeConfiguration;
-    [CustomDeserialization] private FairlightAnalogInputLevel[] _supportedInputLevels = [];
-    [CustomDeserialization] private FairlightAnalogInputLevel _activeInputLevel;
+    [DeserializedField(10)] private FairlightInputConfiguration _activeConfiguration;
 
-    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
-    {
-        SupportedInputLevels = rawCommand.ReadBoolean(9)
-                                   ? [FairlightAnalogInputLevel.ProLine, FairlightAnalogInputLevel.Microphone]
-                                   : [];
-        ActiveInputLevel = rawCommand.ReadUInt8(9) > 0
-                               ? FairlightAnalogInputLevel.ProLine
-                               : FairlightAnalogInputLevel.Microphone;
-    }
+    [DeserializedField(11)]
+    [CustomScaling($"{nameof(DeserializationExtensions)}.{nameof(DeserializationExtensions.GetComponents)}")]
+    [SerializedType(typeof(FairlightAnalogInputLevel))]
+    private FairlightAnalogInputLevel[] _supportedInputLevels = [];
+
+    [DeserializedField(12)] private FairlightAnalogInputLevel _activeInputLevel;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)

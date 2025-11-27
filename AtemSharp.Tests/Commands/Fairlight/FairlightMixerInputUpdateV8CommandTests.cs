@@ -1,14 +1,11 @@
 using AtemSharp.Commands.Audio.Fairlight;
 using AtemSharp.State.Audio.Fairlight;
-using AtemSharp.State.Info;
 using AtemSharp.State.Ports;
-using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.Fairlight;
 
-public class FairlightMixerInputUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerInputUpdateCommand, FairlightMixerInputUpdateCommandTests.CommandData>
+public class FairlightMixerInputUpdateV8CommandTests : DeserializedCommandTestBase<FairlightMixerInputUpdateV8Command, FairlightMixerInputUpdateV8CommandTests.CommandData>
 {
-    [MaxProtocolVersion(ProtocolVersion.V8_0_1)]
     public class CommandData : CommandDataBase
     {
         public int Index { get; set; }
@@ -25,12 +22,14 @@ public class FairlightMixerInputUpdateCommandTests : DeserializedCommandTestBase
         public FairlightAnalogInputLevel ActiveInputLevel { get; set; }
     }
 
-    protected override void CompareCommandProperties(FairlightMixerInputUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(FairlightMixerInputUpdateV8Command actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.InputType, Is.EqualTo(expectedData.InputType));
         Assert.That(actualCommand.ExternalPortType, Is.EqualTo(expectedData.ExternalPortType));
         Assert.That(CommandTestUtilities.CombineComponents(actualCommand.SupportedConfigurations), Is.EqualTo(expectedData.SupportedConfigurations));
         Assert.That(actualCommand.ActiveConfiguration, Is.EqualTo(expectedData.ActiveConfiguration));
+        Assert.That(CommandTestUtilities.CombineComponents(actualCommand.SupportedInputLevels), Is.EqualTo(expectedData.SupportedInputLevels));
+        Assert.That(actualCommand.ActiveInputLevel, Is.EqualTo(expectedData.ActiveInputLevel));
     }
 }
