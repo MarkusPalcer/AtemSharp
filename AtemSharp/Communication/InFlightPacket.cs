@@ -1,18 +1,14 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.Communication;
 
-public struct InFlightPacket
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
+public struct InFlightPacket(ushort packetId, int trackingId, byte[] payload)
 {
-    public readonly ushort PacketId;
-    public readonly int TrackingId;
-    public readonly byte[] Payload;
+    public readonly ushort PacketId = packetId;
+    public readonly int TrackingId = trackingId;
+    public readonly byte[] Payload = payload;
     public DateTime LastSent;
     public uint Resent;
     public readonly bool NonDefault = true;
-
-    public InFlightPacket(ushort packetId, int trackingId, byte[] payload)
-    {
-        PacketId = packetId;
-        TrackingId = trackingId;
-        Payload = payload;
-    }
 }

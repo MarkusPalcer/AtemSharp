@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Video;
 
 /// <summary>
 /// Video state container for ATEM devices
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class VideoState
 {
     /// <summary>

@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Video.MixEffect.Transition;
 
 /// <summary>
 /// Current transition position information
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class TransitionPosition
 {
 	/// <summary>

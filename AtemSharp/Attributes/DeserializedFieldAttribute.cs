@@ -7,6 +7,7 @@ namespace AtemSharp.Attributes;
 /// </summary>
 [AttributeUsage(AttributeTargets.Field)]
 [SuppressMessage("ReSharper", "UnusedParameter.Local")]
+[ExcludeFromCodeCoverage]
 public class DeserializedFieldAttribute : Attribute
 {
     /// <param name="offset">The index of the field in the byte buffer</param>

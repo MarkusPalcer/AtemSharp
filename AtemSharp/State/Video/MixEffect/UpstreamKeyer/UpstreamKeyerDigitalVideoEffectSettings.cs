@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State.Border;
 
 namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
@@ -5,6 +6,7 @@ namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 /// <summary>
 /// DVE (Digital Video Effects) settings for upstream keyer
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class UpstreamKeyerDigitalVideoEffectSettings
 {
     /// <summary>

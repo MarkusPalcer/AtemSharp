@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.DisplayClock;
 
 /// <summary>
 /// Display clock time representation
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class DisplayClockTime
 {
     /// <summary>

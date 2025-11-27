@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Recording;
 
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class RecordingDisk
 {
     public uint DiskId { get; internal set; }

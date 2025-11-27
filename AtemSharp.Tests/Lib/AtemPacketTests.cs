@@ -20,7 +20,6 @@ public class AtemPacketTests
         };
 
         // Assert
-        Assert.That(packet.IsValid(), Is.True);
         Assert.That(packet.Flags, Is.EqualTo(PacketFlag.AckRequest));
         Assert.That(packet.SessionId, Is.EqualTo(0x1234));
         Assert.That(packet.PacketId, Is.EqualTo(0x5678));
@@ -106,7 +105,6 @@ public class AtemPacketTests
         var parsedPacket = AtemPacket.FromBytes(rawData);
 
         // Assert
-        Assert.That(parsedPacket.IsValid(), Is.True);
         Assert.That(parsedPacket.Flags, Is.EqualTo(PacketFlag.AckRequest));
         Assert.That(parsedPacket.Length, Is.EqualTo(16));
         Assert.That(parsedPacket.SessionId, Is.EqualTo(0x1234));
@@ -133,25 +131,6 @@ public class AtemPacketTests
         // The packet should be valid after calling ToBytes() which sets the length
         var bytes = ackPacket.ToBytes();
         Assert.That(bytes.Length, Is.EqualTo(12)); // Header only
-        Assert.That(ackPacket.IsValid(), Is.True);
-    }
-
-    [Test]
-    public void CreateHello_ShouldCreateValidHelloPacket()
-    {
-        // Act
-        var helloPacket = AtemPacket.CreateHello();
-
-        // Assert
-        Assert.That(helloPacket.IsValid(), Is.True);
-        Assert.That(helloPacket.HasFlag(PacketFlag.NewSessionId), Is.True);
-        Assert.That(helloPacket.HasFlag(PacketFlag.AckRequest), Is.True);
-        Assert.That(helloPacket.SessionId, Is.EqualTo(0x0000)); // Hello packets start with session ID 0
-        Assert.That(helloPacket.Payload.Length, Is.EqualTo(8)); // Hello payload is 8 bytes
-
-        // Check hello payload matches expected pattern
-        var expectedHelloPayload = new byte[] { 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-        Assert.That(helloPacket.Payload, Is.EqualTo(expectedHelloPayload));
     }
 
     [Test]
@@ -196,16 +175,6 @@ public class AtemPacketTests
         Assert.That(parsedBack.RetransmitFromPacketId, Is.EqualTo(originalPacket.RetransmitFromPacketId));
         Assert.That(parsedBack.PacketId, Is.EqualTo(originalPacket.PacketId));
         Assert.That(parsedBack.Payload, Is.EqualTo(originalPacket.Payload));
-    }
-
-    [Test]
-    public void IsValid_ShouldReturnTrueForValidPackets()
-    {
-        // Arrange
-        var validPacket = new AtemPacket([0x01, 0x02]);
-
-        // Act & Assert
-        Assert.That(validPacket.IsValid(), Is.True);
     }
 
     [Test]

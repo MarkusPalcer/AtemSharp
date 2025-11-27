@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State.Video.MixEffect.Transition;
 
 namespace AtemSharp.State.Video.MixEffect;
@@ -5,6 +6,7 @@ namespace AtemSharp.State.Video.MixEffect;
 /// <summary>
 /// Mix effect block state containing program/preview inputs, transitions, and upstream keyers
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class MixEffect : ArrayItem
 {
     internal override void SetId(int id) => Id = (byte)id;

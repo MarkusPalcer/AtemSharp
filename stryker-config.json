@@ -9,7 +9,7 @@
             "!**/*.g.cs"
         ],
         "ignore-methods": [
-            "Debug.*"
+            "Debug.*", "Log*"
         ],
         "configuration": "Release",
         "reporters": [

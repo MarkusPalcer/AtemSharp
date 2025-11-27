@@ -127,29 +127,23 @@ public class CommandParser
             return null;
         }
 
-        try
+        // Call static Deserialize method (matches TypeScript cmdConstructor.deserialize pattern)
+        var deserializeMethod = commandType.GetMethod("Deserialize",
+                                                      BindingFlags.Static | BindingFlags.Public);
+
+        // TODO #66: Resolve logger and log here
+        if (deserializeMethod == null)
+            throw new InvalidOperationException($"Command {commandType.Name} missing static Deserialize method");
+
+        var command = deserializeMethod.CreateDelegate<DeserializeCommand>()(data, Version);
+
+        // Update parser version if this is a VersionCommand (matches TypeScript behavior)
+        if (command is VersionCommand versionCmd)
         {
-            // Call static Deserialize method (matches TypeScript cmdConstructor.deserialize pattern)
-            var deserializeMethod = commandType.GetMethod("Deserialize",
-                                                          BindingFlags.Static | BindingFlags.Public);
-
-            if (deserializeMethod == null)
-                throw new InvalidOperationException($"Command {commandType.Name} missing static Deserialize method");
-
-            var command = deserializeMethod.CreateDelegate<DeserializeCommand>()(data, Version);
-
-            // Update parser version if this is a VersionCommand (matches TypeScript behavior)
-            if (command is VersionCommand versionCmd)
-            {
-                Version = versionCmd.Version;
-            }
-
-            return command;
+            Version = versionCmd.Version;
         }
-        catch (Exception ex)
-        {
-            throw new InvalidOperationException($"Failed to deserialize command {rawName}: {ex.Message}", ex);
-        }
+
+        return command;
     }
 
     /// <summary>

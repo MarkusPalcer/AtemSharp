@@ -1,8 +1,10 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Logging;
 
 namespace AtemSharp.Logging;
 
+[ExcludeFromCodeCoverage]
 public class DebugLoggerFactory : ILoggerFactory
 {
     public ILogger<T> CreateLogger<T>() => new DebugLogger<T>();
@@ -13,18 +15,13 @@ public class DebugLoggerFactory : ILoggerFactory
     public void AddProvider(ILoggerProvider provider) {}
     public void Dispose() {}
 
-    private class DebugLogger<T> : ILogger<T>
+    private class DebugLogger<T>(string categoryName) : ILogger<T>
     {
-        private readonly string _categoryName;
+        private readonly string _categoryName = categoryName;
 
         public DebugLogger() : this(typeof(T).FullName!) {}
 
-        public DebugLogger(string categoryName)
-        {
-            _categoryName = categoryName;
-        }
-
-        public IDisposable BeginScope<TState>(TState state) where TState: notnull => NullScope.Instance;
+        public IDisposable BeginScope<TState>(TState state) where TState : notnull => new NullScope();
 
         public bool IsEnabled(LogLevel logLevel) => true;
 
@@ -40,7 +37,6 @@ public class DebugLoggerFactory : ILoggerFactory
 
         private class NullScope : IDisposable
         {
-            public static readonly NullScope Instance = new NullScope();
             public void Dispose() {}
         }
     }

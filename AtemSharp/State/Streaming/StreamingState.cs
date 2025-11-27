@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Streaming;
 
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class StreamingState
 {
     public string ServiceName { get; internal set; } = string.Empty;

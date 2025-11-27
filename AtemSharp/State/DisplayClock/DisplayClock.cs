@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.DisplayClock;
 
 /// <summary>
@@ -7,6 +9,7 @@ namespace AtemSharp.State.DisplayClock;
 /// Other than in the TypeScript original, the properties are directly on this class,
 /// not in a nested Properties object
 /// </remarks>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class DisplayClock
 {
     /// <summary>

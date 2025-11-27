@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Audio.ClassicAudio;
 
 /// <summary>
 /// Audio state for classic ATEM devices
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class ClassicAudioState : AudioState
 {
     /// <summary>

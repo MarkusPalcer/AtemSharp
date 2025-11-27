@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Media;
 
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class MediaState
 {
     public MediaPoolEntry[] Frames { get; internal set; } = [];

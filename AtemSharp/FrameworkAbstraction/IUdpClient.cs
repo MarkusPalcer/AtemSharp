@@ -1,17 +1,14 @@
 using System.Net;
 using System.Net.Sockets;
 
-namespace AtemSharp.Communication;
+namespace AtemSharp.FrameworkAbstraction;
 
 /// <summary>
 /// Interface for UDP client operations, allowing for testability and mocking
 /// </summary>
 public interface IUdpClient : IDisposable
 {
-    /// <summary>
-    /// Gets the underlying Socket for configuration
-    /// </summary>
-    Socket Client { get; }
+    void Bind(IPEndPoint remoteEndpoint);
 
     /// <summary>
     /// Connects the UDP client to a remote endpoint
@@ -25,12 +22,12 @@ public interface IUdpClient : IDisposable
     /// <param name="data">The data to send</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Task representing the async operation</returns>
-    Task SendAsync(byte[] data, CancellationToken cancellationToken = default);
+    ValueTask<int> SendAsync(byte[] data, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Asynchronously receives data from any remote endpoint
     /// </summary>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>Task containing the received data and remote endpoint</returns>
-    Task<UdpReceiveResult> ReceiveAsync(CancellationToken cancellationToken = default);
+    ValueTask<UdpReceiveResult> ReceiveAsync(CancellationToken cancellationToken = default);
 }

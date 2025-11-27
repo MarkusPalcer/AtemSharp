@@ -6,15 +6,14 @@ namespace AtemSharp.Communication;
 
 internal interface IAtemClient : IAsyncDisposable
 {
-    public IReceivableSourceBlock<IDeserializedCommand> ReceivedCommands { get; }
+    IReceivableSourceBlock<IDeserializedCommand> ReceivedCommands { get; }
 
 	/// <summary>
 	/// Connects to the specified ATEM device
 	/// </summary>
 	/// <param name="address">IP address of the ATEM device</param>
 	/// <param name="port">Port number (default: 9910)</param>
-	/// <param name="cancellationToken">Cancellation token</param>
-	Task ConnectAsync(string address, int port = AtemConstants.DefaultPort, CancellationToken cancellationToken = default);
+	Task ConnectAsync(string address, int port = AtemConstants.DefaultPort);
 
 	/// <summary>
 	/// Disconnects from the ATEM device

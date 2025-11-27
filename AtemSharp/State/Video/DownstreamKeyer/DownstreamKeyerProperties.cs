@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Video.DownstreamKeyer;
 
 /// <summary>
 /// Complete downstream keyer properties including mask
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class DownstreamKeyerProperties
 {
     /// <summary>

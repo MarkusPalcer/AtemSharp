@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 /// <summary>
 /// Fly properties for upstream keyer
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class UpstreamKeyerFlyProperties
 {
     /// <summary>

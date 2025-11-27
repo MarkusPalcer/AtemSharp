@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Video.SuperSource;
 
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class SuperSource : ArrayItem
 {
     internal override void SetId(int id) => Id = (byte)id;

@@ -7,6 +7,7 @@ namespace AtemSharp.Attributes;
 /// </summary>
 [AttributeUsage(AttributeTargets.Field)]
 [SuppressMessage("ReSharper", "UnusedParameter.Local")]
+[ExcludeFromCodeCoverage]
 public class CustomScalingAttribute : Attribute
 {
     public CustomScalingAttribute(string customScalingMethod) {}

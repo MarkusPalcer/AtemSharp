@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Audio.Fairlight;
 
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class AudioRoutingEntry
 {
     public uint Id { get; internal set; }

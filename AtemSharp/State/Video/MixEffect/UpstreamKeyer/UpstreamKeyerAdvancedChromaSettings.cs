@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 /// <summary>
 /// Advanced chroma key settings for upstream keyer
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class UpstreamKeyerAdvancedChromaSettings
 {
     /// <summary>

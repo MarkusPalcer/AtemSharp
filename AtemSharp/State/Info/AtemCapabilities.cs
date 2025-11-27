@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Info;
 
 /// <summary>
 /// ATEM device capabilities and hardware configuration
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class AtemCapabilities
 {
     /// <summary>

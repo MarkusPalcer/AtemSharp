@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.Attributes;
 
 /// <summary>
@@ -7,6 +9,7 @@ namespace AtemSharp.Attributes;
 /// Mutually exclusive with <see cref="CustomSerializationAttribute"/>
 /// </remarks>
 [AttributeUsage(AttributeTargets.Field)]
+[ExcludeFromCodeCoverage]
 public class NoPropertyAttribute : Attribute
 {
 

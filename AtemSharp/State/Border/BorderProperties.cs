@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Border;
 
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class BorderProperties
 {
     public double OuterWidth { get; internal set; }

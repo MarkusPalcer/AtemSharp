@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Video.MixEffect;
 
 /// <summary>
 /// Fade to black properties for a mix effect
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class FadeToBlackProperties
 {
 	/// <summary>

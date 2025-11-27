@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Video.MixEffect.Transition;
 
 /// <summary>
 /// Settings for dip transitions
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class DipTransitionSettings
 {
     /// <summary>

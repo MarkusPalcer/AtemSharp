@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Video.DownstreamKeyer;
 
 /// <summary>
 /// Downstream keyer state
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class DownstreamKeyer : ArrayItem
 {
     internal override void SetId(int id) => Id = (byte)id;

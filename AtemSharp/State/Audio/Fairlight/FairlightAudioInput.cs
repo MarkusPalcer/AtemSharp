@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State.Ports;
 
 namespace AtemSharp.State.Audio.Fairlight;
@@ -5,6 +6,7 @@ namespace AtemSharp.State.Audio.Fairlight;
 /// <summary>
 /// Fairlight audio input state
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class FairlightAudioInput
 {
     public ushort Id { get; internal set; }

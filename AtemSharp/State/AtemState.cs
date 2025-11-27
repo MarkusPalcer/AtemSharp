@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State.Audio;
 using AtemSharp.State.Info;
 using AtemSharp.State.Macro;
@@ -12,6 +13,7 @@ namespace AtemSharp.State;
 /// <summary>
 /// Main ATEM state container
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class AtemState
 {
     /// <summary>

@@ -69,27 +69,6 @@ public class AtemPacket
     }
 
     /// <summary>
-    /// Tries to parse raw packet data into an ATEM packet
-    /// </summary>
-    /// <param name="packetData">Raw packet bytes</param>
-    /// <param name="packet">Output packet if parsing succeeds</param>
-    /// <returns>True if parsing succeeded, false otherwise</returns>
-    public static bool TryParse(ReadOnlySpan<byte> packetData, out AtemPacket? packet)
-    {
-        packet = null;
-
-        try
-        {
-            packet = FromBytes(packetData);
-            return packet.IsValid();
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    /// <summary>
     /// Creates a new ATEM packet from raw packet data
     /// </summary>
     /// <param name="packetData">Raw packet bytes</param>
@@ -98,7 +77,9 @@ public class AtemPacket
     public static AtemPacket FromBytes(ReadOnlySpan<byte> packetData)
     {
         if (packetData.Length < PacketHeaderSize)
+        {
             throw new ArgumentException($"Packet too short. Expected at least {PacketHeaderSize} bytes, got {packetData.Length}");
+        }
 
         var packet = new AtemPacket();
 
@@ -119,7 +100,9 @@ public class AtemPacket
 
         // Validate length
         if (packet.Length != packetData.Length)
+        {
             throw new ArgumentException($"Packet length mismatch. Header indicates {packet.Length} bytes, but received {packetData.Length} bytes");
+        }
 
         // Extract payload
         if (packet.Length > PacketHeaderSize)
@@ -167,31 +150,6 @@ public class AtemPacket
     }
 
     /// <summary>
-    /// Validates the packet structure and content
-    /// </summary>
-    /// <returns>True if packet is valid, false otherwise</returns>
-    public bool IsValid()
-    {
-        try
-        {
-            // Check length consistency
-            if (Length != PacketHeaderSize + Payload.Length)
-                return false;
-
-            // Check minimum length
-            if (Length < PacketHeaderSize)
-                return false;
-
-            // Packet structure is valid
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    /// <summary>
     /// Checks if this packet has the specified flag set
     /// </summary>
     /// <param name="flag">Flag to check</param>
@@ -216,33 +174,6 @@ public class AtemPacket
             AckPacketId = packetIdToAck,
             PacketId = 0, // ACK packets don't need their own packet ID
             Payload = []
-        };
-    }
-
-    internal static AtemPacket CreateAckRequest()
-    {
-        return new AtemPacket
-        {
-            Flags = PacketFlag.AckRequest,
-            Payload = [],
-        };
-    }
-
-    /// <summary>
-    /// Creates a hello packet for initiating connection
-    /// </summary>
-    /// <returns>Hello packet</returns>
-    public static AtemPacket CreateHello()
-    {
-        // Use the standard hello packet payload from constants
-        var helloPayload = new byte[Constants.AtemConstants.HelloPacket.Length - PacketHeaderSize];
-        Constants.AtemConstants.HelloPacket.AsSpan(PacketHeaderSize).CopyTo(helloPayload);
-
-        return new AtemPacket(helloPayload)
-        {
-            Flags = PacketFlag.NewSessionId | PacketFlag.AckRequest,
-            SessionId = 0,
-            PacketId = 1
         };
     }
 

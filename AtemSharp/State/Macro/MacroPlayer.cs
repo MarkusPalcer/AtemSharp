@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Macro;
 
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class MacroPlayer
 {
     public ushort MacroIndex { get; internal set; }

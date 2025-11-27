@@ -1,5 +1,6 @@
 using System.Net;
 using System.Threading.Tasks.Dataflow;
+using AtemSharp.FrameworkAbstraction;
 using AtemSharp.Lib;
 using Microsoft.Extensions.Logging;
 
@@ -8,7 +9,7 @@ namespace AtemSharp.Communication;
 /// <summary>
 /// Handles the communication protocol for the ATEM mixers
 /// </summary>
-internal class AtemProtocol(ILogger<AtemProtocol> logger) : IAtemProtocol
+internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpClientFactory, ITimeProvider timeProvider, IActionLoopFactory actionLoopFactory) : IAtemProtocol
 {
     private ConnectionState _connectionState = ConnectionState.Closed;
     private ushort _nextSendPacketId = 1;
@@ -16,9 +17,9 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger) : IAtemProtocol
     private ushort _sessionId;
 
     private IPEndPoint _remoteEndpoint = new(IPAddress.None, Constants.AtemConstants.DefaultPort);
-    private IUdpClient? _socket;
+    private IUdpClient? _udpClient;
 
-    private DateTime _lastReceivedAt = DateTime.Now;
+    private DateTime _lastReceivedAt = timeProvider.Now;
     private ushort _lastReceivedPacketId;
     private List<InFlightPacket> _inflight = [];
     private CancellationTokenSource? _ackTimerCancellation;
@@ -37,20 +38,20 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger) : IAtemProtocol
 
     private void StartTimers()
     {
-        _reconnectTimer ??= ActionLoop.Start(ReconnectTimerLoop, logger);
-        _retransmitTimer ??= ActionLoop.Start(RetransmitTimerLoop, logger);
+        _reconnectTimer ??= actionLoopFactory.Start(ReconnectTimerLoop, logger);
+        _retransmitTimer ??= actionLoopFactory.Start(RetransmitTimerLoop, logger);
     }
 
     private async Task ReconnectTimerLoop(CancellationToken token)
     {
-        await Task.Delay(ConnectionRetryInterval, token);
+        await timeProvider.Delay(ConnectionRetryInterval, token);
 
-        if (_lastReceivedAt + ConnectionTimeout > DateTime.Now)
+        if (_lastReceivedAt + ConnectionTimeout > timeProvider.Now)
         {
             return;
         }
 
-        RestartConnection().FireAndForget(logger);
+        StartConnection().FireAndForget(logger);
     }
 
     private async Task ClearTimers()
@@ -63,24 +64,32 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger) : IAtemProtocol
 
     private async Task RetransmitTimerLoop(CancellationToken token)
     {
-        await Task.Delay(RetransmitInterval, token);
+        await timeProvider.Delay(RetransmitInterval, token);
 
         CheckForRetransmit().FireAndForget(logger);
     }
 
     public async Task ConnectAsync(IPEndPoint endPoint)
     {
+        if (_connectionState != ConnectionState.Closed)
+        {
+            throw new InvalidOperationException("Can only connect while not connected");
+        }
+
         _remoteEndpoint = endPoint;
 
-        await CreateSocket();
-
         _connectionSource = new();
-        await RestartConnection();
+        await StartConnection();
         await _connectionSource.Task;
     }
 
     public async Task DisconnectAsync()
     {
+        if (_connectionState == ConnectionState.Closed)
+        {
+            return;
+        }
+
         await ClearTimers();
         await (_ackTimerCancellation?.CancelAsync() ?? Task.CompletedTask);
         await CloseSocket();
@@ -88,24 +97,20 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger) : IAtemProtocol
         _receivedPackets = new();
         _ackedTrackingIds = new();
 
-        logger.LogDebug("Disconnected");
-        _connectionState = ConnectionState.Disconnected;
+        logger.LogDebug("Connection closed");
+        _connectionState = ConnectionState.Closed;
     }
 
-    private async Task RestartConnection()
+    private async Task StartConnection()
     {
         await ClearTimers();
 
-        switch (_connectionState)
+        if (_udpClient is not null)
         {
-            // This includes a 'disconnect'
-            case ConnectionState.Established:
-                await RecreateSocket();
-                break;
-            case ConnectionState.Disconnected:
-                await CreateSocket();
-                break;
+            await CloseSocket();
         }
+
+        CreateSocket();
 
         // Reset connection
         _nextSendPacketId = 1;
@@ -136,41 +141,33 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger) : IAtemProtocol
         packet.SessionId = _sessionId;
 
         await SendPacket(packet.ToBytes());
-        _inflight.Add(new(packet.PacketId, packet.TrackingId, packet.Payload)
+        _inflight.Add(new(packet.PacketId, packet.TrackingId, packet.ToBytes())
         {
-            LastSent = DateTime.Now,
+            LastSent = timeProvider.Now,
             Resent = 0
         });
-    }
-
-    private async Task RecreateSocket()
-    {
-        await CloseSocket();
-        await CreateSocket();
     }
 
     private async Task CloseSocket()
     {
         await (_receiveLoop?.Cancel() ?? Task.CompletedTask);
         _receiveLoop = null;
-        _socket?.Dispose();
+        _udpClient?.Dispose();
     }
 
-    private async Task CreateSocket()
+    private void CreateSocket()
     {
-        if (_socket is not null) await CloseSocket();
-
-        _socket = new UdpClientWrapper();
-        _socket.Client.Bind(new IPEndPoint(IPAddress.Any, 0));
-        _socket.Connect(_remoteEndpoint);
-        _receiveLoop = ActionLoop.Start(ReceiveLoopAsync, logger);
+        _udpClient = udpClientFactory();
+        _udpClient.Bind(new IPEndPoint(IPAddress.Any, 0));
+        _udpClient.Connect(_remoteEndpoint);
+        _receiveLoop = actionLoopFactory.Start(ReceiveLoopAsync, logger);
     }
 
     private async Task ReceiveLoopAsync(CancellationToken cancellationToken)
     {
         try
         {
-            var result = await _socket!.ReceiveAsync(cancellationToken);
+            var result = await _udpClient!.ReceiveAsync(cancellationToken);
             await ReceivePacket(result.Buffer);
         }
         catch (TaskCanceledException)
@@ -179,7 +176,7 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger) : IAtemProtocol
         }
     }
 
-    private bool IsPacketCoveredByAck(ushort ackId, ushort packetId)
+    private static bool IsPacketCoveredByAck(ushort ackId, ushort packetId)
     {
         var tolerance = MaxPacketId / 2;
         var pktIsShortlyBefore = packetId < ackId && packetId + tolerance > ackId;
@@ -190,7 +187,7 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger) : IAtemProtocol
 
     private async Task ReceivePacket(byte[] buffer)
     {
-        _lastReceivedAt = DateTime.Now;
+        _lastReceivedAt = timeProvider.Now;
         var packet = AtemPacket.FromBytes(buffer);
 
         if (packet.HasFlag(PacketFlag.NewSessionId))
@@ -257,7 +254,11 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger) : IAtemProtocol
     {
         try
         {
-            await (_socket?.SendAsync(buffer) ?? Task.CompletedTask);
+            var sendTask = _udpClient?.SendAsync(buffer);
+            if (sendTask != null)
+            {
+                await sendTask.Value;
+            }
         }
         catch (ObjectDisposedException)
         {
@@ -286,7 +287,7 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger) : IAtemProtocol
         _ackTimerCancellation = cts;
         try
         {
-            await Task.Delay(TimeSpan.FromMilliseconds(5), cts.Token);
+            await timeProvider.Delay(AckDelay, cts.Token);
         }
         catch (OperationCanceledException)
         {
@@ -315,14 +316,14 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger) : IAtemProtocol
         fromId = (ushort)(fromId % MaxPacketId);
 
         var fromIndex = _inflight.FindIndex(0, pkt => pkt.PacketId == fromId);
-        if (fromIndex != -1)
+        if (fromIndex == -1)
         {
             logger.LogError("Unable to resend from #{Id}: unknown packet ID", fromId);
-            await RestartConnection();
+            await StartConnection();
         }
         else
         {
-            var now = DateTime.Now;
+            var now = timeProvider.Now;
             for (var currentIndex = fromIndex; currentIndex < _inflight.Count; currentIndex++)
             {
                 var sentPacket =  _inflight[currentIndex];
@@ -338,12 +339,18 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger) : IAtemProtocol
 
     private async Task CheckForRetransmit()
     {
-        if (_inflight.Count == 0) return;
+        if (_inflight.Count == 0)
+        {
+            return;
+        }
 
-        var now = DateTime.Now;
+        var now = timeProvider.Now;
 
         var foundPacket = _inflight.FirstOrDefault(sentPacket => sentPacket.LastSent + InFlightTimeout < now);
-        if (!foundPacket.NonDefault) return;
+        if (!foundPacket.NonDefault)
+        {
+            return;
+        }
 
         if (foundPacket.Resent <= MaxPacketRetries && IsPacketCoveredByAck(_nextSendPacketId, foundPacket.PacketId))
         {
@@ -351,24 +358,26 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger) : IAtemProtocol
             await RetransmitFrom(foundPacket.PacketId);
         } else {
             logger.LogInformation("Packet #{Id} timed out", foundPacket.PacketId);
-            await RestartConnection();
+            await StartConnection();
         }
     }
 
-    private static readonly TimeSpan ConnectionRetryInterval = TimeSpan.FromSeconds(1);
-    private static readonly TimeSpan ConnectionTimeout = TimeSpan.FromSeconds(5);
+    internal static readonly TimeSpan ConnectionRetryInterval = TimeSpan.FromSeconds(1);
+    internal static readonly TimeSpan ConnectionTimeout = TimeSpan.FromSeconds(5);
     private static readonly TimeSpan RetransmitInterval = TimeSpan.FromMilliseconds(10);
-    private static readonly byte[] CommandConnectHello =
+
+    internal static readonly byte[] CommandConnectHello =
     [
         0x10, 0x14, 0x53, 0xab, 0x00, 0x00, 0x00, 0x00, 0x00, 0x3a, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00
     ];
 
-    private static readonly ushort MaxPacketId = 1 << 15;
+    public static readonly ushort MaxPacketId = 1 << 15;
     private static readonly uint MaxPacketRetries = 10;
-    private static readonly uint MaxPacketPerAck = 16;
+    internal static readonly uint MaxPacketPerAck = 16;
 
     private static readonly TimeSpan InFlightTimeout = TimeSpan.FromMilliseconds(60);
+    internal static readonly TimeSpan AckDelay = TimeSpan.FromMilliseconds(5);
 
     public async ValueTask DisposeAsync()
     {

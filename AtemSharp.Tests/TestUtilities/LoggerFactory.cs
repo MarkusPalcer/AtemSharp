@@ -29,7 +29,7 @@ public class LoggerFactory : ILoggerFactory
             _categoryName = categoryName;
         }
 
-        public IDisposable BeginScope<TState>(TState state) where TState: notnull => NullScope.Instance;
+        public IDisposable BeginScope<TState>(TState state) where TState: notnull => new NullScope();
 
         public bool IsEnabled(LogLevel logLevel) => true;
 
@@ -59,7 +59,6 @@ public class LoggerFactory : ILoggerFactory
 
         private class NullScope : IDisposable
         {
-            public static readonly NullScope Instance = new NullScope();
             public void Dispose() { }
         }
     }

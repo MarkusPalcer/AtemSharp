@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Audio.ClassicAudio;
 
 /// <summary>
 /// Classic audio headphone output channel properties
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class ClassicAudioHeadphoneOutputChannel
 {
     /// <summary>

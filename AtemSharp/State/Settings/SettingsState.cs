@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Settings;
 
 /// <summary>
 /// Settings state container for ATEM devices
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class SettingsState
 {
     /// <summary>

@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State;
 
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class ColorGeneratorState : ArrayItem
 {
     public byte Id { get; internal set; }
