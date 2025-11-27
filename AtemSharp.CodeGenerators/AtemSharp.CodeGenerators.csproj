@@ -8,6 +8,7 @@
         <NoWarn>RS2008</NoWarn>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <LangVersion>11</LangVersion>
+        <IsPackable>false</IsPackable>
     </PropertyGroup>
 
 

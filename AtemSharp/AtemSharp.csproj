@@ -6,7 +6,6 @@
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>AtemSharp</PackageId>
-        <PackageVersion>1.0.0</PackageVersion>
         <Authors>Sofie Automation</Authors>
         <Description>C# library for connecting with ATEM switchers</Description>
         <Copyright>MIT</Copyright>
@@ -23,6 +22,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="GitVersion.MsBuild" Version="6.5.1">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
         <PackageReference Include="System.Reactive" Version="6.0.1" />
     </ItemGroup>
