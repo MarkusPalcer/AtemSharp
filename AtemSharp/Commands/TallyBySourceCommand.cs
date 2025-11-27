@@ -1,17 +1,12 @@
 using AtemSharp.State;
-using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands;
 
 [Command("TlSr")]
-public class TallyBySourceCommand : IDeserializedCommand
+public partial class TallyBySourceCommand : IDeserializedCommand
 {
-    // Command is manually deserialized because it contains a variable length array
-
-    internal TallyBySourceCommand(Tally[] tallyBySource)
-    {
-        TallyBySource = tallyBySource;
-    }
+    [DeserializedField(0)] private ushort _sourceCount;
+    [CustomDeserialization] private Tally[] _tallyBySource = [];
 
     public class Tally
     {
@@ -20,26 +15,20 @@ public class TallyBySourceCommand : IDeserializedCommand
         public ushort Source { get; internal set; }
     }
 
-    public Tally[] TallyBySource { get; }
-
-    public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion version)
+    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {
-        var sourceCount = rawCommand.ReadUInt16BigEndian(0);
-        var tallyBySource = new Tally[sourceCount];
-
-        for (var i = 0; i < sourceCount; i++)
+        _tallyBySource = new Tally[_sourceCount];
+        for (var i = 0; i < _sourceCount; i++)
         {
             var source = rawCommand.ReadUInt16BigEndian(2 + i * 3);
             var value = rawCommand.ReadUInt8(4 + i * 3);
-            tallyBySource[i] = new Tally
+            _tallyBySource[i] = new Tally
             {
                 Source = source,
                 IsInProgram = (value & 0x01) > 0,
                 IsInPreview = (value & 0x02) > 0,
             };
         }
-
-        return new TallyBySourceCommand(tallyBySource);
     }
 
     public void ApplyToState(AtemState state)
