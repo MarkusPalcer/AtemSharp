@@ -172,6 +172,7 @@ namespace AtemSharp.CodeGenerators.Serialization
                                         using AtemSharp;
                                         using AtemSharp.State.Info;
                                         using static AtemSharp.Commands.SerializationExtensions;
+                                        using System.Reflection;
 
                                         namespace {{ns}};
 
@@ -183,6 +184,11 @@ namespace AtemSharp.CodeGenerators.Serialization
 
                                             /// <inheritdoc />
                                             public override byte[] Serialize(ProtocolVersion version) {
+                                                var commandVersion = typeof({{className}}).GetCustomAttribute<CommandAttribute>()?.MinimumVersion;
+                                                if (commandVersion is not null && commandVersion < version) {
+                                                    throw new InvalidOperationException($"The command {{className}} only works for protocol version minimum {commandVersion}, but you are using protocol version {version}");
+                                                }
+
                                                 var buffer = new byte[{{bufferSize.Value}}];
                                                 buffer.WriteUInt8((byte)this.Flag, 0);
 
