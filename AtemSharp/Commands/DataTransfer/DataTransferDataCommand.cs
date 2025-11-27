@@ -23,11 +23,7 @@ public class DataTransferDataCommand : SerializedCommand, IDeserializedCommand
     /// </summary>
     public required byte[] Body { get; init; } = [];
 
-    /// <summary>
-    /// Serialize command to binary stream for transmission to ATEM
-    /// </summary>
-    /// <param name="version">Protocol version</param>
-    /// <returns>Serialized command data as byte array</returns>
+    /// <inheritdoc />
     public override byte[] Serialize(ProtocolVersion version)
     {
         using var memoryStream = new MemoryStream(4 + Body.Length);
@@ -40,9 +36,6 @@ public class DataTransferDataCommand : SerializedCommand, IDeserializedCommand
         return memoryStream.ToArray();
     }
 
-    /// <summary>
-    /// Deserialize binary data into command
-    /// </summary>
     public static DataTransferDataCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {
         return new DataTransferDataCommand

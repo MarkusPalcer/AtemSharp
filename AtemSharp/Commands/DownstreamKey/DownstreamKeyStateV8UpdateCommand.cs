@@ -19,7 +19,7 @@ public partial class DownstreamKeyStateV8UpdateCommand : IDeserializedCommand
     [DeserializedField(5)] private byte _remainingFrames;
 
     /// <inheritdoc />
-    public virtual void ApplyToState(AtemState state)
+    public void ApplyToState(AtemState state)
     {
         var dsk = state.Video.DownstreamKeyers[Index];
         dsk.OnAir = OnAir;

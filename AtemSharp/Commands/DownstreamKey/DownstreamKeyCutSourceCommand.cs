@@ -12,7 +12,7 @@ public partial class DownstreamKeyCutSourceCommand(DownstreamKeyer dsk) : Serial
     /// <summary>
     /// Downstream keyer index (0-based)
     /// </summary>
-    [SerializedField(0)] [NoProperty] internal readonly byte DownstreamKeyerId = dsk.Id;
+    [SerializedField(0)] [NoProperty] private readonly byte _downstreamKeyerId = dsk.Id;
 
     /// <summary>
     /// Cut source input number

@@ -27,6 +27,7 @@ public partial class RecordingDiskInfoUpdateCommand : IDeserializedCommand
         _name = rawCommand.ReadString(10, 64);
     }
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         if (IsDelete)

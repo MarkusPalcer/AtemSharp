@@ -8,6 +8,7 @@ public class FairlightMixerResetPeakLevelsCommand : SerializedCommand
     public bool All { get; set; }
     public bool Master { get; set; }
 
+    /// <inheritdoc />
     public override byte[] Serialize(ProtocolVersion version)
     {
         var buffer = new byte[4];

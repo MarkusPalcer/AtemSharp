@@ -11,6 +11,7 @@ public partial class MediaPlayerStatusUpdateCommand : IDeserializedCommand
     [DeserializedField(3)] private bool _isAtBeginning;
     [DeserializedField(4)] private ushort _clipFrame;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         var player = state.Media.Players[_mediaPlayerId];

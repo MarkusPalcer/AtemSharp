@@ -23,6 +23,7 @@ public partial class FairlightMixerMasterLevelsUpdateCommand : IDeserializedComm
     [DeserializedField(24)] [ScalingFactor(100)] [SerializedType(typeof(short))] private double _leftPeak;
     [DeserializedField(26)] [ScalingFactor(100)] [SerializedType(typeof(short))] private double _rightPeak;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         // Not represented in state

@@ -9,7 +9,7 @@ namespace AtemSharp.Commands.MixEffects.Transition;
 [BufferSize(20)]
 public partial class TransitionWipeCommand(MixEffect mixEffect) : SerializedCommand
 {
-    [SerializedField(2)] [NoProperty] internal readonly byte MixEffectId = mixEffect.Id;
+    [SerializedField(2)] [NoProperty] private readonly byte _mixEffectId = mixEffect.Id;
 
     /// <summary>
     /// Rate of the wipe transition in frames

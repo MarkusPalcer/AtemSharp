@@ -10,6 +10,7 @@ public class FairlightMixerMasterDynamicsResetCommand : SerializedCommand
     public bool ResetCompressor { get; set; }
     public bool ResetLimiter { get; set; }
 
+    /// <inheritdoc />
     public override byte[] Serialize(ProtocolVersion version)
     {
         var buffer = new byte[4];

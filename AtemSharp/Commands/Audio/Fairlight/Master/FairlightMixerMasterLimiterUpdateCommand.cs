@@ -20,7 +20,7 @@ public partial class FairlightMixerMasterLimiterUpdateCommand : IDeserializedCom
     [DeserializedField(16)][SerializedType(typeof(int))] [ScalingFactor(100.0)]
     private double _release;
 
-
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         var limiter = state.GetFairlight().Master.Dynamics.Limiter;

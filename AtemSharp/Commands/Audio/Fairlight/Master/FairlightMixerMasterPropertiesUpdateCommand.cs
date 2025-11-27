@@ -8,6 +8,7 @@ public partial class FairlightMixerMasterPropertiesUpdateCommand : IDeserialized
     [DeserializedField(0)]
     private bool _audioFollowsVideo;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         state.GetFairlight().Master.AudioFollowsVideo = AudioFollowsVideo;

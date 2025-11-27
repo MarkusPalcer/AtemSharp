@@ -12,6 +12,7 @@ public partial class StreamingDurationUpdateCommand : IDeserializedCommand
     [DeserializedField(3)] private byte _frames;
     [DeserializedField(4)] private bool _isDropFrame;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         state.Streaming.Duration.Hours = _hours;

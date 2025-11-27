@@ -8,6 +8,7 @@ namespace AtemSharp.Commands.DisplayClock;
 [Command("DSTR")]
 public class DisplayClockRequestTimeCommand : SerializedCommand
 {
+    /// <inheritdoc />
     public override byte[] Serialize(ProtocolVersion version)
     {
         return new byte[4];

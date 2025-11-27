@@ -28,11 +28,7 @@ public class TransitionMixCommand(MixEffect mixEffect) : SerializedCommand
         }
     }
 
-    /// <summary>
-    /// Serialize command to binary stream for transmission to ATEM
-    /// </summary>
-    /// <param name="version">Protocol version</param>
-    /// <returns>Serialized command data</returns>
+    /// <inheritdoc />
     public override byte[] Serialize(ProtocolVersion version)
     {
         using var memoryStream = new MemoryStream(4);

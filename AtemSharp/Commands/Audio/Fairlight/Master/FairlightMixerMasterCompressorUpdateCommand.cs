@@ -33,6 +33,7 @@ public partial class FairlightMixerMasterCompressorUpdateCommand : IDeserialized
     [SerializedType(typeof(int))]
     private double _release;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         var compressor = state.GetFairlight().Master.Dynamics.Compressor;

@@ -66,6 +66,7 @@ public partial class MixEffectKeyFlyKeyframeUpdateCommand : IDeserializedCommand
     [DeserializedField(50)] [ScalingFactor(1000)] [SerializedType(typeof(short))]
     private double _maskRight;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         var keyframe = state.Video.MixEffects[_mixEffectId].UpstreamKeyers[_upstreamKeyerId].Keyframes[_keyframeId - 1];

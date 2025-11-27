@@ -8,7 +8,6 @@ namespace AtemSharp.Commands.DataTransfer;
 [Command("FTDE")]
 public partial class DataTransferErrorCommand : IDeserializedCommand
 {
-
     /// <summary>
     /// Error codes that can be returned by data transfer operations
     /// </summary>

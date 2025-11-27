@@ -8,42 +8,22 @@ namespace AtemSharp.Commands.MixEffects.Transition;
 /// Command to set DVE transition settings for a mix effect
 /// </summary>
 [Command("CTDv")]
-public class TransitionDigitalVideoEffectCommand : SerializedCommand
+public class TransitionDigitalVideoEffectCommand(MixEffect mixEffect) : SerializedCommand
 {
-    private int _rate;
-    private int _logoRate;
-    private DigitalVideoEffect _style;
-    private int _fillSource;
-    private int _keySource;
-    private bool _enableKey;
-    private bool _preMultiplied;
-    private double _clip;
-    private double _gain;
-    private bool _invertKey;
-    private bool _reverse;
-    private bool _flipFlop;
+    private readonly int _mixEffectId = mixEffect.Id;
+    private int _rate = mixEffect.TransitionSettings.DigitalVideoEffect.Rate;
+    private int _logoRate = mixEffect.TransitionSettings.DigitalVideoEffect.LogoRate;
+    private DigitalVideoEffect _style = mixEffect.TransitionSettings.DigitalVideoEffect.Style;
+    private int _fillSource = mixEffect.TransitionSettings.DigitalVideoEffect.FillSource;
+    private int _keySource = mixEffect.TransitionSettings.DigitalVideoEffect.KeySource;
+    private bool _enableKey = mixEffect.TransitionSettings.DigitalVideoEffect.EnableKey;
+    private bool _preMultiplied = mixEffect.TransitionSettings.DigitalVideoEffect.PreMultiplied;
+    private double _clip = mixEffect.TransitionSettings.DigitalVideoEffect.Clip;
+    private double _gain = mixEffect.TransitionSettings.DigitalVideoEffect.Gain;
+    private bool _invertKey = mixEffect.TransitionSettings.DigitalVideoEffect.InvertKey;
+    private bool _reverse = mixEffect.TransitionSettings.DigitalVideoEffect.Reverse;
+    private bool _flipFlop = mixEffect.TransitionSettings.DigitalVideoEffect.FlipFlop;
 
-    public int MixEffectId { get; }
-
-    public TransitionDigitalVideoEffectCommand(MixEffect mixEffect)
-    {
-        MixEffectId = mixEffect.Id;
-
-        // Initialize from current state (direct field access = no flags set)
-        var dveSettings = mixEffect.TransitionSettings.DigitalVideoEffect;
-        _rate = dveSettings.Rate;
-        _logoRate = dveSettings.LogoRate;
-        _style = dveSettings.Style;
-        _fillSource = dveSettings.FillSource;
-        _keySource = dveSettings.KeySource;
-        _enableKey = dveSettings.EnableKey;
-        _preMultiplied = dveSettings.PreMultiplied;
-        _clip = dveSettings.Clip;
-        _gain = dveSettings.Gain;
-        _invertKey = dveSettings.InvertKey;
-        _reverse = dveSettings.Reverse;
-        _flipFlop = dveSettings.FlipFlop;
-    }
 
     /// <summary>
     /// Transition rate in frames
@@ -201,18 +181,14 @@ public class TransitionDigitalVideoEffectCommand : SerializedCommand
         }
     }
 
-    /// <summary>
-    /// Serialize command to binary stream for transmission to ATEM
-    /// </summary>
-    /// <param name="version">Protocol version</param>
-    /// <returns>Serialized command data</returns>
+    /// <inheritdoc />
     public override byte[] Serialize(ProtocolVersion version)
     {
         using var memoryStream = new MemoryStream(20);
         using var writer = new BinaryWriter(memoryStream);
 
         writer.WriteUInt16BigEndian((ushort)Flag); // Flag as 16-bit big endian (matches TypeScript)
-        writer.Write((byte)MixEffectId); // Mix effect index
+        writer.Write((byte)_mixEffectId); // Mix effect index
         writer.Write((byte)Rate); // Rate
         writer.Write((byte)LogoRate); // Logo rate
         writer.Write((byte)Style); // Style

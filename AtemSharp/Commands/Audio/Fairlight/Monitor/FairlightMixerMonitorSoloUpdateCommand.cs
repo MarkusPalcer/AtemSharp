@@ -9,6 +9,7 @@ public partial class FairlightMixerMonitorSoloUpdateCommand : IDeserializedComma
     [DeserializedField(8)] private ushort _index;
     [DeserializedField(16)] private long _source;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         var solo = state.GetFairlight().Solo;

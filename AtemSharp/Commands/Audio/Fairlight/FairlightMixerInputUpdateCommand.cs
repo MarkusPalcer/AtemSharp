@@ -41,6 +41,7 @@ public class FairlightMixerInputUpdateCommand : IDeserializedCommand
         };
     }
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         var fairlightAudioInput = state.GetFairlight().Inputs.GetOrCreate(Id);

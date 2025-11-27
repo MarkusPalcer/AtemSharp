@@ -9,7 +9,7 @@ namespace AtemSharp.Commands.MixEffects.Transition;
 [BufferSize(8)]
 public partial class TransitionDipCommand(MixEffect mixEffect) : SerializedCommand
 {
-    [SerializedField(1)] [NoProperty] internal readonly byte MixEffectId = mixEffect.Id;
+    [SerializedField(1)] [NoProperty] private readonly byte _mixEffectId = mixEffect.Id;
 
     /// <summary>
     /// Rate of the dip transition in frames

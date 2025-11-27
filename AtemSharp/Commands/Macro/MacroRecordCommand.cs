@@ -6,11 +6,12 @@ namespace AtemSharp.Commands.Macro;
 [Command("MSRc")]
 public class MacroRecordCommand(AtemSharp.State.Macro.Macro targetSlot) : SerializedCommand
 {
-    private ushort _index = targetSlot.Id;
+    private readonly ushort _index = targetSlot.Id;
 
     public string Name { get; set; } = targetSlot.Name;
     public string Description { get; set; } = targetSlot.Description;
 
+    /// <inheritdoc />
     public override byte[] Serialize(ProtocolVersion version)
     {
         var buffer = new byte[SerializationExtensions.PadToMultiple(8 + Name.Length + Description.Length, 4)];

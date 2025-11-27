@@ -10,7 +10,7 @@ namespace AtemSharp.Commands.MixEffects.Transition;
 [BufferSize(4)]
 public partial class TransitionPropertiesCommand(MixEffect mixEffect) : SerializedCommand
 {
-    [SerializedField(1)] [NoProperty] internal readonly byte MixEffectId = mixEffect.Id;
+    [SerializedField(1)] [NoProperty] private readonly byte _mixEffectId = mixEffect.Id;
 
     [SerializedField(2, 0)] private TransitionStyle _nextStyle = mixEffect.TransitionProperties.NextStyle;
 

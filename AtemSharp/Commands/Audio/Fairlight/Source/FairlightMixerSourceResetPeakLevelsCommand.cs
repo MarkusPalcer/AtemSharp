@@ -4,9 +4,7 @@ namespace AtemSharp.Commands.Audio.Fairlight.Source;
 [BufferSize(20)]
 public partial class FairlightMixerSourceResetPeakLevelsCommand(State.Audio.Fairlight.Source source) : SerializedCommand
 {
-    [SerializedField(0)]
-    [NoProperty]
-    private readonly ushort _inputId = source.InputId;
+    [SerializedField(0)] [NoProperty] private readonly ushort _inputId = source.InputId;
 
     [SerializedField(8)] [NoProperty] private readonly long _sourceId = source.Id;
 

@@ -15,6 +15,7 @@ public partial class RecordingDurationUpdateCommand : IDeserializedCommand
 
     [DeserializedField(4)] private bool _isDropFrame;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         state.Recording.Duration.Hours = _hours;

@@ -40,6 +40,7 @@ public partial class FairlightMixerMasterEqualizerBandUpdateCommand : IDeseriali
     [SerializedType(typeof(short))]
     private double _qFactor;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         var equalizer = state.GetFairlight().Master.Equalizer;

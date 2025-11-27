@@ -16,6 +16,7 @@ public partial class ColorGeneratorUpdateCommand : IDeserializedCommand
     [DeserializedField(6)] [ScalingFactor(10.0)]
     private double _luma;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         state.ColorGenerators.ExpandToFit(Id);

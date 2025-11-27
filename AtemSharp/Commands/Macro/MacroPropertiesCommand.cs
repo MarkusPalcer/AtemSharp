@@ -31,6 +31,7 @@ public class MacroPropertiesCommand(State.Macro.Macro macro) : SerializedCommand
         }
     }
 
+    /// <inheritdoc />
     public override byte[] Serialize(ProtocolVersion version)
     {
         var buffer = new byte[SerializationExtensions.PadToMultiple(8 + _name.Length + _description.Length, 4)];

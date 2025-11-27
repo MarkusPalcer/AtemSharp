@@ -12,6 +12,7 @@ public partial class FairlightMixerMonitorUpdateCommand : IDeserializedCommand
     [DeserializedField(16)] private bool _inputTalkbackMuted;
     [DeserializedField(28)] [SerializedType(typeof(int))] [ScalingFactor(100)] private double _inputSidetoneGain;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         state.GetFairlight().Monitor.Gain = _gain;

@@ -30,6 +30,7 @@ public partial class MixEffectKeyPatternUpdateCommand : IDeserializedCommand
 
     [DeserializedField(14)] private bool _invert;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         var properties = state.Video.MixEffects[_mixEffectId].UpstreamKeyers[_keyerId].Pattern;

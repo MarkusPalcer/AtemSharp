@@ -5,35 +5,25 @@ namespace AtemSharp.Commands.Audio.Fairlight.Source;
 [Command("AILP")]
 public partial class FairlightMixerSourceLimiterUpdateCommand : IDeserializedCommand
 {
-    [DeserializedField(0)]
-    private ushort _inputId;
+    [DeserializedField(0)] private ushort _inputId;
 
-    [DeserializedField(8)]
-    private long _sourceId;
+    [DeserializedField(8)] private long _sourceId;
 
-    [DeserializedField(16)]
-    private bool _limiterEnabled;
+    [DeserializedField(16)] private bool _limiterEnabled;
 
-    [DeserializedField(20)]
-    [ScalingFactor(100)]
-    [SerializedType(typeof(int))]
+    [DeserializedField(20)] [ScalingFactor(100)] [SerializedType(typeof(int))]
     private double _threshold;
 
-    [DeserializedField(24)]
-    [ScalingFactor(100)]
-    [SerializedType(typeof(int))]
+    [DeserializedField(24)] [ScalingFactor(100)] [SerializedType(typeof(int))]
     private double _attack;
 
-    [DeserializedField(28)]
-    [ScalingFactor(100)]
-    [SerializedType(typeof(int))]
+    [DeserializedField(28)] [ScalingFactor(100)] [SerializedType(typeof(int))]
     private double _hold;
 
-    [DeserializedField(32)]
-    [ScalingFactor(100)]
-    [SerializedType(typeof(int))]
+    [DeserializedField(32)] [ScalingFactor(100)] [SerializedType(typeof(int))]
     private double _release;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         var audio = state.GetFairlight();

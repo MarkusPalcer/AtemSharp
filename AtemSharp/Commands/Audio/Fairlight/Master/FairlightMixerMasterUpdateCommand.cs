@@ -21,6 +21,7 @@ public partial class FairlightMixerMasterUpdateCommand : IDeserializedCommand
 
     [DeserializedField(16)] private bool _followFadeToBlack;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         var fairlight = state.GetFairlight();

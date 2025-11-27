@@ -8,6 +8,7 @@ public partial class RecordingIsoUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private bool _recordAllInputs;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         state.Recording.RecordAllInputs = _recordAllInputs;

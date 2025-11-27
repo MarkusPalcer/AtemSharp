@@ -37,6 +37,7 @@ public class RecordingStatusUpdateCommand : IDeserializedCommand
         };
     }
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         state.Recording.Status = Status;

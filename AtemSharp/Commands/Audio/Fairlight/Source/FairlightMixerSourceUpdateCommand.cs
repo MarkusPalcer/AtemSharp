@@ -45,6 +45,7 @@ public partial class FairlightMixerSourceUpdateCommand : IDeserializedCommand
     [DeserializedField(20)] [SerializedType(typeof(int))] [ScalingFactor(100)]
     private double _gain;
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         var audio = state.GetFairlight();

@@ -19,6 +19,7 @@ public partial class RecordingSettingsUpdateCommand : IDeserializedCommand
         _fileName = rawCommand.ReadString(0, 128);
     }
 
+    /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
         state.Recording.FileName = _fileName;

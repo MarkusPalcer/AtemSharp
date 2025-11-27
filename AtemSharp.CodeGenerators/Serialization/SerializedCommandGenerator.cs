@@ -181,6 +181,7 @@ namespace AtemSharp.CodeGenerators.Serialization
                                         {
                                             {{string.Join("\n", fields.Select(x => x!.PropertyCode))}}
 
+                                            /// <inheritdoc />
                                             public override byte[] Serialize(ProtocolVersion version) {
                                                 var buffer = new byte[{{bufferSize.Value}}];
                                                 buffer.WriteUInt8((byte)this.Flag, 0);
