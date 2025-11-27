@@ -1,5 +1,4 @@
 using AtemSharp.State;
-using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands;
 
@@ -10,44 +9,33 @@ namespace AtemSharp.Commands;
 /// Broadcast Studio have 2 power supplies. All other models have 1.
 /// </summary>
 [Command("Powr")]
-public class PowerStatusCommand : IDeserializedCommand
+public partial class PowerStatusCommand : IDeserializedCommand
 {
-    // Command is manually deserialized because the only field it has needs to be manually deserialized
+    [DeserializedField(0)] [NoProperty] private byte _powerStatus;
 
     /// <summary>
     /// Power supply status array. Each element represents the status of a power supply.
     /// true = power supply is working, false = power supply has failed or is not present.
     /// </summary>
-    public bool[] PowerSupplies { get; init; } = [];
+    [CustomDeserialization] private bool[] _powerSupplies = [];
 
-    /// <summary>
-    /// Deserialize the command from binary stream
-    /// </summary>
-    public static PowerStatusCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
+    private void DeserializeInternal(ReadOnlySpan<byte> _)
     {
-        // Read the power status byte
-        var powerStatusByte = rawCommand.ReadUInt8(0);
-
-        return new PowerStatusCommand
-        {
-            PowerSupplies =
-            [
-                // Extract individual power supply status bits
-                // Bit 0 = first power supply, Bit 1 = second power supply
-                (powerStatusByte & (1 << 0)) != 0,  // First power supply
-                (powerStatusByte & (1 << 1)) != 0   // Second power supply
-            ]
-        };
+        _powerSupplies =
+        [
+            // Extract individual power supply status bits
+            // Bit 0 = first power supply, Bit 1 = second power supply
+            (_powerStatus & (1 << 0)) != 0, // First power supply
+            (_powerStatus & (1 << 1)) != 0 // Second power supply
+        ];
     }
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        // Only update the number of power supplies that are configured for this device
-        var configuredSupplyCount = state.Info.Power.Length;
-
-        // Take only the configured number of power supplies from our data
-        // This prevents overwriting with more power supplies than the device actually has
-        state.Info.Power = PowerSupplies.Take(configuredSupplyCount).ToArray();
+        for (var i = 0; i < state.Info.Power.Length; i++)
+        {
+            state.Info.Power[i] = _powerSupplies[i];
+        }
     }
 }
