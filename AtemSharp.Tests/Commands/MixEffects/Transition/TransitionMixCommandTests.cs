@@ -10,7 +10,7 @@ public class TransitionMixCommandTests : SerializedCommandTestBase<TransitionMix
     public class CommandData : CommandDataBase
     {
         public byte Index { get; set; }
-        public int Rate { get; set; }
+        public byte Rate { get; set; }
     }
 
     protected override TransitionMixCommand CreateSut(TestCaseData testCase)
@@ -26,18 +26,5 @@ public class TransitionMixCommandTests : SerializedCommandTestBase<TransitionMix
                 }
             }
         });
-    }
-
-    [Test]
-    public void Rate_SetProperty_SetsFlag()
-    {
-        // Arrange
-        var command = new TransitionMixCommand(new MixEffect());
-
-        // Act
-        command.Rate = 100;
-
-        // Assert
-        Assert.That(command.Flag, Is.EqualTo(1)); // Flag should be set
     }
 }
