@@ -1,13 +1,10 @@
 using AtemSharp.Commands.DeviceProfile;
-using AtemSharp.State.Info;
-using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
-public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<MultiviewerConfigCommand,
-    MultiviewerConfigCommandTests.CommandData>
+public class MultiviewerConfigCommandV811Tests : DeserializedCommandTestBase<MultiviewerConfigCommandV811,
+    MultiviewerConfigCommandV811Tests.CommandData>
 {
-    [MaxProtocolVersion(ProtocolVersion.V8_0_1)]
     public class CommandData : CommandDataBase
     {
         public int Count { get; set; }
@@ -26,10 +23,10 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
         public bool CanChangeLayout { get; set; }
     }
 
-    protected override void CompareCommandProperties(MultiviewerConfigCommand actualCommand, CommandData expectedData,
+    protected override void CompareCommandProperties(MultiviewerConfigCommandV811 actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
-        Assert.That(actualCommand.Count, Is.EqualTo(expectedData.Count));
         Assert.That(actualCommand.WindowCount, Is.EqualTo(expectedData.WindowCount));
     }
+
 }
