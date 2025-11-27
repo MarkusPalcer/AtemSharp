@@ -3,8 +3,8 @@ using AtemSharp.Commands.DataTransfer;
 namespace AtemSharp.Tests.Commands.DataTransfer;
 
 [TestFixture]
-public class DataTransferDataCommandSerializationTests : SerializedCommandTestBase<DataTransferDataCommand,
-    DataTransferDataCommandSerializationTests.CommandData>
+public class DataTransferDataSendCommandTests : SerializedCommandTestBase<DataTransferDataSendCommand,
+    DataTransferDataSendCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -12,9 +12,9 @@ public class DataTransferDataCommandSerializationTests : SerializedCommandTestBa
         public string Body { get; set; } = "";
     }
 
-    protected override DataTransferDataCommand CreateSut(TestCaseData testCase)
+    protected override DataTransferDataSendCommand CreateSut(TestCaseData testCase)
     {
-        return new DataTransferDataCommand
+        return new DataTransferDataSendCommand
         {
             TransferId = testCase.Command.TransferId,
             Body = Convert.FromBase64String(testCase.Command.Body)

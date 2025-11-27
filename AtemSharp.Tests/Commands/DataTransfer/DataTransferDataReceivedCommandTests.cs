@@ -6,8 +6,8 @@ namespace AtemSharp.Tests.Commands.DataTransfer;
 /// Test deserialization functionality of DataTransferDataCommand using data-driven tests
 /// </summary>
 [TestFixture]
-public class DataTransferDataCommandDeserializationTests : DeserializedCommandTestBase<DataTransferDataCommand,
-    DataTransferDataCommandDeserializationTests.CommandData>
+public class DataTransferDataReceivedCommandTests : DeserializedCommandTestBase<DataTransferDataReceivedCommand,
+    DataTransferDataReceivedCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -15,7 +15,7 @@ public class DataTransferDataCommandDeserializationTests : DeserializedCommandTe
         public string Body { get; set; } = "";
     }
 
-    protected override void CompareCommandProperties(DataTransferDataCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(DataTransferDataReceivedCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.TransferId, Is.EqualTo(expectedData.TransferId));
         Assert.That(actualCommand.Body, Is.EqualTo(Convert.FromBase64String(expectedData.Body)));
