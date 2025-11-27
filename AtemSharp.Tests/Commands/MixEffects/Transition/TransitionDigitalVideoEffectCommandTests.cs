@@ -8,14 +8,20 @@ namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 public class TransitionDigitalVideoEffectCommandTests : SerializedCommandTestBase<TransitionDigitalVideoEffectCommand,
     TransitionDigitalVideoEffectCommandTests.CommandData>
 {
+    protected override Range[] GetFloatingPointByteRanges() =>
+    [
+        (12..14),
+        (14..16)
+    ];
+
     public class CommandData : CommandDataBase
     {
         public byte Index { get; set; }
-        public int Rate { get; set; }
-        public int LogoRate { get; set; }
+        public byte Rate { get; set; }
+        public byte LogoRate { get; set; }
         public DigitalVideoEffect Style { get; set; }
-        public int FillSource { get; set; }
-        public int KeySource { get; set; }
+        public ushort FillSource { get; set; }
+        public ushort KeySource { get; set; }
         public bool EnableKey { get; set; }
         public bool PreMultiplied { get; set; }
         public double Clip { get; set; } // Use double for fractional values

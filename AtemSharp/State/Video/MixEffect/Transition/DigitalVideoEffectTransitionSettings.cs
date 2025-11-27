@@ -8,12 +8,12 @@ public class DigitalVideoEffectTransitionSettings
     /// <summary>
     /// Transition rate in frames
     /// </summary>
-    public int Rate { get; internal set; }
+    public byte Rate { get; internal set; }
 
     /// <summary>
     /// Logo/key transition rate in frames
     /// </summary>
-    public int LogoRate { get; internal set; }
+    public byte LogoRate { get; internal set; }
 
     /// <summary>
     /// DVE effect style
@@ -23,12 +23,12 @@ public class DigitalVideoEffectTransitionSettings
     /// <summary>
     /// Fill source input number
     /// </summary>
-    public int FillSource { get; internal set; }
+    public ushort FillSource { get; internal set; }
 
     /// <summary>
     /// Key source input number
     /// </summary>
-    public int KeySource { get; internal set; }
+    public ushort KeySource { get; internal set; }
 
     /// <summary>
     /// Whether the key is enabled
