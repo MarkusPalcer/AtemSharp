@@ -4,9 +4,9 @@ using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
-public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand, TopologyCommandTests.CommandData>
+public class TopologyCommandV8Tests : DeserializedCommandTestBase<TopologyCommandV8, TopologyCommandV8Tests.CommandData>
 {
-    [MaxProtocolVersion(ProtocolVersion.V7_5_2)]
+    [MaxProtocolVersion(ProtocolVersion.V8_0_1)]
     public class CommandData : CommandDataBase
     {
         public int MixEffectBlocks { get; set; }
@@ -29,7 +29,7 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
         public bool OnlyConfigurableOutputs { get; set; }
     }
 
-    protected override void CompareCommandProperties(TopologyCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(TopologyCommandV8 actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffects, Is.EqualTo(expectedData.MixEffectBlocks));
         Assert.That(actualCommand.Sources, Is.EqualTo(expectedData.VideoSources));
@@ -44,5 +44,7 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
         Assert.That(actualCommand.SuperSources, Is.EqualTo(expectedData.SuperSource));
         Assert.That(actualCommand.TalkbackChannels, Is.EqualTo(expectedData.TalkbackChannels));
         Assert.That(actualCommand.CameraControl, Is.EqualTo(expectedData.CameraControl));
+        Assert.That(actualCommand.AdvancedChromaKeyers, Is.EqualTo(expectedData.AdvancedChromaKeyers));
+        Assert.That(actualCommand.OnlyConfigurableOutputs, Is.EqualTo(expectedData.OnlyConfigurableOutputs));
     }
 }

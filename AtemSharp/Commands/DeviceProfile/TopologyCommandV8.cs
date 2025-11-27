@@ -10,8 +10,8 @@ namespace AtemSharp.Commands.DeviceProfile;
 /// <summary>
 /// Device topology command received from ATEM containing device capabilities and configuration
 /// </summary>
-[Command("_top")]
-public partial class TopologyCommand : IDeserializedCommand
+[Command("_top", ProtocolVersion.V8_0)]
+public partial class TopologyCommandV8 : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _mixEffects;
     [DeserializedField(1)] private byte _sources;
@@ -26,6 +26,8 @@ public partial class TopologyCommand : IDeserializedCommand
     [DeserializedField(10)] private byte _superSources;
     [DeserializedField(12)] private byte _talkbackChannels;
     [DeserializedField(17)] private bool _cameraControl;
+    [DeserializedField(21)] private bool _advancedChromaKeyers;
+    [DeserializedField(22)] private bool _onlyConfigurableOutputs;
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
@@ -45,8 +47,8 @@ public partial class TopologyCommand : IDeserializedCommand
         state.Info.Capabilities.TalkbackChannels = TalkbackChannels;
         state.Info.Capabilities.DownstreamKeyers = DownstreamKeyers;
         state.Info.Capabilities.CameraControl = CameraControl;
-        state.Info.Capabilities.AdvancedChromaKeyers = false;
-        state.Info.Capabilities.OnlyConfigurableOutputs = false;
+        state.Info.Capabilities.AdvancedChromaKeyers = AdvancedChromaKeyers;
+        state.Info.Capabilities.OnlyConfigurableOutputs = OnlyConfigurableOutputs;
 
         // Create arrays now that their sizes are known
         state.Info.MixEffects = AtemStateUtil.CreateArray<MixEffectInfo>(MixEffects);

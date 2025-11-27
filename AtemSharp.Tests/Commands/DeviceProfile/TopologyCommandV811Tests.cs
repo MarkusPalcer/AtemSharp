@@ -1,12 +1,9 @@
 using AtemSharp.Commands.DeviceProfile;
-using AtemSharp.State.Info;
-using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
-public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand, TopologyCommandTests.CommandData>
+public class TopologyCommandV811Tests : DeserializedCommandTestBase<TopologyCommandV811, TopologyCommandV811Tests.CommandData>
 {
-    [MaxProtocolVersion(ProtocolVersion.V7_5_2)]
     public class CommandData : CommandDataBase
     {
         public int MixEffectBlocks { get; set; }
@@ -29,7 +26,7 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
         public bool OnlyConfigurableOutputs { get; set; }
     }
 
-    protected override void CompareCommandProperties(TopologyCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(TopologyCommandV811 actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffects, Is.EqualTo(expectedData.MixEffectBlocks));
         Assert.That(actualCommand.Sources, Is.EqualTo(expectedData.VideoSources));
@@ -42,7 +39,10 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
         Assert.That(actualCommand.DigitalVideoEffects, Is.EqualTo(expectedData.DVE));
         Assert.That(actualCommand.Stingers, Is.EqualTo(expectedData.Stingers));
         Assert.That(actualCommand.SuperSources, Is.EqualTo(expectedData.SuperSource));
+        Assert.That(actualCommand.MultiViewers, Is.EqualTo(expectedData.Multiviewers));
         Assert.That(actualCommand.TalkbackChannels, Is.EqualTo(expectedData.TalkbackChannels));
         Assert.That(actualCommand.CameraControl, Is.EqualTo(expectedData.CameraControl));
+        Assert.That(actualCommand.AdvancedChromaKeyers, Is.EqualTo(expectedData.AdvancedChromaKeyers));
+        Assert.That(actualCommand.OnlyConfigurableOutputs, Is.EqualTo(expectedData.OnlyConfigurableOutputs));
     }
 }
