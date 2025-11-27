@@ -18,7 +18,7 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="AtemSharp.Tests" />
-        <ProjectReference Include="..\AtemSharp.CodeGenerators\AtemSharp.CodeGenerators.csproj"
+        <ProjectReference Include="$(ProjectDir)..\AtemSharp.CodeGenerators\AtemSharp.CodeGenerators.csproj"
                           Pack="false"
                           ReferenceOutputAssembly="false"
                           OutputItemType="Analyzer" />
