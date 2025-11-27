@@ -6,11 +6,11 @@
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>AtemSharp</PackageId>
-        <Authors>Sofie Automation</Authors>
+        <Authors>Markus Palcer</Authors>
         <Description>C# library for connecting with ATEM switchers</Description>
         <Copyright>MIT</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <RepositoryUrl>https://github.com/Sofie-Automation/sofie-atem-connection</RepositoryUrl>
+        <RepositoryUrl>https://github.com/MarkusPalcer/AtemSharp</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageTags>atem;blackmagic;switcher;video</PackageTags>
         <ImplicitUsings>true</ImplicitUsings>
