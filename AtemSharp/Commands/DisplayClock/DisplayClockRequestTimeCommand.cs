@@ -9,8 +9,5 @@ namespace AtemSharp.Commands.DisplayClock;
 public class DisplayClockRequestTimeCommand : SerializedCommand
 {
     /// <inheritdoc />
-    public override byte[] Serialize(ProtocolVersion version)
-    {
-        return new byte[4];
-    }
+    public override byte[] Serialize(ProtocolVersion version) => new byte[4];
 }
