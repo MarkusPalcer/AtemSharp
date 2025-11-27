@@ -7,18 +7,12 @@ namespace AtemSharp.Tests.Lib;
 [TestFixture]
 public class CommandParserVersionSelectionTests
 {
-    [SetUp]
-    public void Setup()
-    {
-        // Reinitialize the registry to pick up test commands
-        CommandParser.ReinitializeForTesting();
-    }
-
     [Test]
     public void ParseCommand_WithV7_2_ShouldSelectBaseline()
     {
         // Arrange
         var parser = new CommandParser { Version = ProtocolVersion.V7_2 };
+        parser.AddCommandsFromAssemblyOf<TestCommandV1>();
 
         // Act
         var command = parser.ParseCommand("TEST", Span<byte>.Empty);
@@ -34,6 +28,7 @@ public class CommandParserVersionSelectionTests
     {
         // Arrange
         var parser = new CommandParser { Version = ProtocolVersion.V8_0 };
+        parser.AddCommandsFromAssemblyOf<TestCommandV1>();
 
         // Act
         var command = parser.ParseCommand("TEST", Span<byte>.Empty);
@@ -49,6 +44,7 @@ public class CommandParserVersionSelectionTests
     {
         // Arrange
         var parser = new CommandParser { Version = ProtocolVersion.V8_1_1 };
+        parser.AddCommandsFromAssemblyOf<TestCommandV1>();
 
         // Act
         var command = parser.ParseCommand("TEST", Span<byte>.Empty);
@@ -64,15 +60,13 @@ public class CommandParserVersionSelectionTests
     {
         // Arrange
         var parser = new CommandParser();
+        parser.AddCommandsFromAssemblyOf<TestCommandV1>();
 
         // Act
         var versions = parser.GetAllCommandVersions("TEST");
 
         // Assert
-        Assert.That(versions, Has.Count.EqualTo(3));
-        Assert.That(versions, Contains.Item(typeof(TestCommandV1)));
-        Assert.That(versions, Contains.Item(typeof(TestCommandV2)));
-        Assert.That(versions, Contains.Item(typeof(TestCommandV3)));
+        Assert.That(versions, Is.EquivalentTo((Type[])[typeof(TestCommandV1), typeof(TestCommandV2), typeof(TestCommandV3)]));
     }
 
     [Test]
@@ -80,6 +74,7 @@ public class CommandParserVersionSelectionTests
     {
         // Arrange
         var parser = new CommandParser();
+        parser.AddCommandsFromAssemblyOf<TestCommandV1>();
 
         // Start with high version and work backwards to test dynamic selection
         parser.Version = ProtocolVersion.V8_1_1;
