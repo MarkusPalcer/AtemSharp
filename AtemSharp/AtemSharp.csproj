@@ -18,7 +18,10 @@
 
     <ItemGroup>
         <InternalsVisibleTo Include="AtemSharp.Tests" />
-        <ProjectReference Include="..\AtemSharp.CodeGenerators\AtemSharp.CodeGenerators.csproj" />
+        <ProjectReference Include="..\AtemSharp.CodeGenerators\AtemSharp.CodeGenerators.csproj"
+                          Pack="false"
+                          ReferenceOutputAssembly="false"
+                          OutputItemType="Analyzer" />
     </ItemGroup>
 
     <ItemGroup>
@@ -28,9 +31,5 @@
         </PackageReference>
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
         <PackageReference Include="System.Reactive" Version="6.0.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Analyzer Include="..\AtemSharp.CodeGenerators\bin\$(Configuration)\netstandard2.0\AtemSharp.CodeGenerators.dll" />
     </ItemGroup>
 </Project>
