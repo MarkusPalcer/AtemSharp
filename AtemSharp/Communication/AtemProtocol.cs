@@ -1,14 +1,14 @@
-using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks.Dataflow;
 using AtemSharp.Lib;
+using Microsoft.Extensions.Logging;
 
 namespace AtemSharp.Communication;
 
 /// <summary>
 /// Handles the communication protocol for the ATEM mixers
 /// </summary>
-public class AtemProtocol : IAtemProtocol
+internal class AtemProtocol(ILogger<AtemProtocol> logger) : IAtemProtocol
 {
     private ConnectionState _connectionState = ConnectionState.Closed;
     private ushort _nextSendPacketId = 1;
@@ -25,7 +25,6 @@ public class AtemProtocol : IAtemProtocol
     private int _receivedWithoutAck;
     private TaskCompletionSource? _connectionSource;
 
-
     private ActionLoop? _receiveLoop;
     private BufferBlock<AtemPacket> _receivedPackets = new();
     private BufferBlock<int> _ackedTrackingIds = new();
@@ -38,8 +37,8 @@ public class AtemProtocol : IAtemProtocol
 
     private void StartTimers()
     {
-        _reconnectTimer ??= ActionLoop.Start(ReconnectTimerLoop);
-        _retransmitTimer ??= ActionLoop.Start(RetransmitTimerLoop);
+        _reconnectTimer ??= ActionLoop.Start(ReconnectTimerLoop, logger);
+        _retransmitTimer ??= ActionLoop.Start(RetransmitTimerLoop, logger);
     }
 
     private async Task ReconnectTimerLoop(CancellationToken token)
@@ -51,7 +50,7 @@ public class AtemProtocol : IAtemProtocol
             return;
         }
 
-        RestartConnection().FireAndForget();
+        RestartConnection().FireAndForget(logger);
     }
 
     private async Task ClearTimers()
@@ -66,7 +65,7 @@ public class AtemProtocol : IAtemProtocol
     {
         await Task.Delay(RetransmitInterval, token);
 
-        CheckForRetransmit().FireAndForget();
+        CheckForRetransmit().FireAndForget(logger);
     }
 
     public async Task ConnectAsync(IPEndPoint endPoint)
@@ -89,7 +88,7 @@ public class AtemProtocol : IAtemProtocol
         _receivedPackets = new();
         _ackedTrackingIds = new();
 
-        Debug.Print("Disconnected");
+        logger.LogDebug("Disconnected");
         _connectionState = ConnectionState.Disconnected;
     }
 
@@ -164,7 +163,7 @@ public class AtemProtocol : IAtemProtocol
         _socket = new UdpClientWrapper();
         _socket.Client.Bind(new IPEndPoint(IPAddress.Any, 0));
         _socket.Connect(_remoteEndpoint);
-        _receiveLoop = ActionLoop.Start(ReceiveLoopAsync);
+        _receiveLoop = ActionLoop.Start(ReceiveLoopAsync, logger);
     }
 
     private async Task ReceiveLoopAsync(CancellationToken cancellationToken)
@@ -196,7 +195,7 @@ public class AtemProtocol : IAtemProtocol
 
         if (packet.HasFlag(PacketFlag.NewSessionId))
         {
-            Debug.Print("Connected");
+            logger.LogDebug("Connected");
             _connectionState = ConnectionState.Established;
             _lastReceivedPacketId = packet.PacketId;
             _sessionId = packet.SessionId;
@@ -210,8 +209,8 @@ public class AtemProtocol : IAtemProtocol
             // Device asked for retransmit
             if (packet.HasFlag(PacketFlag.RetransmitRequest))
             {
-                Debug.Print($"Retransmit request: {packet.RetransmitFromPacketId}");
-                RetransmitFrom(packet.RetransmitFromPacketId).FireAndForget();
+                logger.LogInformation("Retransmit request from #{FromPacketId}", packet.RetransmitFromPacketId);
+                RetransmitFrom(packet.RetransmitFromPacketId).FireAndForget(logger);
             }
 
             // Got a packet that needs an ack
@@ -318,7 +317,7 @@ public class AtemProtocol : IAtemProtocol
         var fromIndex = _inflight.FindIndex(0, pkt => pkt.PacketId == fromId);
         if (fromIndex != -1)
         {
-            Debug.Print($"Unable to resend: {fromId}: unknown packet ID");
+            logger.LogError("Unable to resend from #{Id}: unknown packet ID", fromId);
             await RestartConnection();
         }
         else
@@ -348,10 +347,10 @@ public class AtemProtocol : IAtemProtocol
 
         if (foundPacket.Resent <= MaxPacketRetries && IsPacketCoveredByAck(_nextSendPacketId, foundPacket.PacketId))
         {
-            Debug.Print($"Retransmit from timeout: {foundPacket.PacketId}");
+            logger.LogInformation("Retransmit from #{Id} timed out", foundPacket.PacketId);
             await RetransmitFrom(foundPacket.PacketId);
         } else {
-            Debug.Print($"Packet timed out {foundPacket.PacketId}");
+            logger.LogInformation("Packet #{Id} timed out", foundPacket.PacketId);
             await RestartConnection();
         }
     }

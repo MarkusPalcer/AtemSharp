@@ -11,7 +11,7 @@ Console.WriteLine("=== AtemSharp Demo ===\n");
 
 // Create a console logger factory and logger
 using var loggerFactory = LoggerFactory.Create(builder =>
-    builder.AddConsole().SetMinimumLevel(LogLevel.Information));
+    builder.AddConsole().SetMinimumLevel(LogLevel.Debug));
 
 
 var emergencyCts = new CancellationTokenSource();
@@ -22,7 +22,7 @@ if (!Debugger.IsAttached)
 
 Console.CancelKeyPress += (_, _) => emergencyCts.Cancel();
 
-var atem = new AtemSwitcher("192.168.178.69");
+var atem = new AtemSwitcher("192.168.178.69", loggerFactory: loggerFactory);
 atem.ConnectionStateChanged += (_, args) => Console.WriteLine($"Connection state changed from {args.OldState} to {args.NewState}");
 
 Console.WriteLine("Connecting...");

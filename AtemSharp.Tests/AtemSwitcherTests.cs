@@ -13,7 +13,7 @@ public class AtemSwitcherTests
     public void SetUp()
     {
         _clientFake = new();
-        _atem = new("127.0.0.1", 1234, _clientFake);
+        _atem = new("127.0.0.1", 1234, _clientFake, new LoggerFactory());
     }
 
     [TearDown]
@@ -47,7 +47,7 @@ public class AtemSwitcherTests
         var customPort = 8888;
 
         // Act
-        _atem = new("127.0.0.1", customPort, _clientFake);
+        _atem = new("127.0.0.1", customPort, _clientFake, new LoggerFactory());
         var connectTask = _atem.ConnectAsync();
         _clientFake.SuccessfullyConnect();
         await connectTask.WithTimeout();

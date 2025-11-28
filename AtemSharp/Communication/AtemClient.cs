@@ -1,17 +1,17 @@
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks.Dataflow;
 using AtemSharp.Commands;
 using AtemSharp.Constants;
 using AtemSharp.Lib;
+using Microsoft.Extensions.Logging;
 
 namespace AtemSharp.Communication;
 
 /// <summary>
 /// Sends and receives commands to a ATEM Mixer
 /// </summary>
-public class AtemClient : IAtemClient
+internal class AtemClient(ILoggerFactory loggerFactory) : IAtemClient
 {
     private readonly CommandParser _commandParser = new();
 
@@ -23,6 +23,7 @@ public class AtemClient : IAtemClient
     private ActionLoop? _ackLoop;
     private readonly ConcurrentDictionary<int, TaskCompletionSource> _commandAckSources = new();
     private BufferBlock<IDeserializedCommand> _receivedCommands = new();
+    private readonly ILogger<AtemClient> _logger = loggerFactory.CreateLogger<AtemClient>();
 
     public IReceivableSourceBlock<IDeserializedCommand> ReceivedCommands => _receivedCommands;
 
@@ -34,7 +35,7 @@ public class AtemClient : IAtemClient
 
         if (_protocol is null)
         {
-            _protocol = new AtemProtocol();
+            _protocol = new AtemProtocol(loggerFactory.CreateLogger<AtemProtocol>());
 
             if (_isDisconnecting || _protocol is null)
             {
@@ -44,8 +45,8 @@ public class AtemClient : IAtemClient
 
         _commandAckSources.Clear();
         _receivedCommands = new();
-        _receiveLoop = ActionLoop.Start(DoReceivePacketLoop);
-        _ackLoop = ActionLoop.Start(DoAckLoop);
+        _receiveLoop = ActionLoop.Start(DoReceivePacketLoop, _logger);
+        _ackLoop = ActionLoop.Start(DoAckLoop, _logger);
         await _protocol.ConnectAsync(_remoteEndpoint);
     }
 
@@ -120,12 +121,12 @@ public class AtemClient : IAtemClient
                     var command = _commandParser.ParseCommand(rawName, commandData);
                     if (command != null)
                     {
-                        _receivedCommands.SendAsync(command, token).FireAndForget();
+                        _receivedCommands.SendAsync(command, token).FireAndForget(_logger);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Debug.Print($"Error while processing command: {ex.Message}\n{ex.StackTrace}");
+                    _logger.LogError(ex, "Error while processing command");
                 }
 
                 // Move to next command
@@ -134,8 +135,7 @@ public class AtemClient : IAtemClient
         }
         catch (Exception ex)
         {
-            // Handle any unexpected errors during packet processing
-            Debug.Print($"Error processing packet: {BitConverter.ToString(packet.Payload)}\n{ex.Message}\n{ex.StackTrace}");
+            _logger.LogError(ex, "Error processing packet {Data}", BitConverter.ToString(packet.Payload));
         }
     }
 

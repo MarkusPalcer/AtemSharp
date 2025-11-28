@@ -2,7 +2,9 @@ using System.Threading.Tasks.Dataflow;
 using AtemSharp.Commands;
 using AtemSharp.Communication;
 using AtemSharp.Lib;
+using AtemSharp.Logging;
 using AtemSharp.State;
+using Microsoft.Extensions.Logging;
 
 namespace AtemSharp;
 
@@ -18,6 +20,7 @@ public class AtemSwitcher : IAtemSwitcher
     private TaskCompletionSource<bool>? _connectionCompletionSource;
     private ActionLoop? _receiveLoop;
     private ConnectionState _connectionState = ConnectionState.Disconnected;
+    private ILogger<AtemSwitcher> _logger;
 
     /// <summary>
     /// Fires, when the value of <see cref="ConnectionState"/> has changed
@@ -53,17 +56,20 @@ public class AtemSwitcher : IAtemSwitcher
     /// </summary>
     /// <param name="remoteHost">IP address of the ATEM device</param>
     /// <param name="remotePort">Port number (default: 9910)</param>
-    public AtemSwitcher(string remoteHost, int remotePort = Constants.AtemConstants.DefaultPort) : this(
-        remoteHost, remotePort, new AtemClient())
+    /// <param name="loggerFactory">A logger factory to support logging. If omitted, logging happens via Debug.WriteLine</param>
+    public AtemSwitcher(string remoteHost, int remotePort = Constants.AtemConstants.DefaultPort, ILoggerFactory? loggerFactory = null)
+        : this(remoteHost, remotePort, null, loggerFactory)
     {
     }
 
     // internal constructor for passing in mocked AtemClient during tests
-    internal AtemSwitcher(string remoteHost, int remotePort, IAtemClient transport)
+    internal AtemSwitcher(string remoteHost, int remotePort, IAtemClient? transport, ILoggerFactory? loggerFactory)
     {
         _remoteHost = remoteHost;
         _remotePort = remotePort;
-        _client = transport ?? throw new ArgumentNullException(nameof(transport));
+        loggerFactory ??= new DebugLoggerFactory();
+        _client = transport ?? new AtemClient(loggerFactory);
+        _logger =  loggerFactory.CreateLogger<AtemSwitcher>();
     }
 
     /// <summary>
@@ -87,7 +93,7 @@ public class AtemSwitcher : IAtemSwitcher
         try
         {
             await _client.ConnectAsync(_remoteHost, _remotePort, cancellationToken);
-            _receiveLoop = ActionLoop.Start(ReceiveCommandLoop);
+            _receiveLoop = ActionLoop.Start(ReceiveCommandLoop, _logger);
 
             // Wait for InitCompleteCommand to be received, indicating the connection is fully established
             await _connectionCompletionSource.Task.WaitAsync(cancellationToken);
