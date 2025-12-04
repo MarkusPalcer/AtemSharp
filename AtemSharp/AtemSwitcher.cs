@@ -19,7 +19,7 @@ public class AtemSwitcher : IAtemSwitcher
     private readonly string _remoteHost;
     private readonly int _remotePort;
     private readonly IAtemClient _client;
-    private TaskCompletionSource<bool>? _connectionCompletionSource;
+    private TaskCompletionSource? _connectionCompletionSource;
     private ActionLoop? _receiveLoop;
     private ConnectionState _connectionState = ConnectionState.Disconnected;
     private readonly ILogger<AtemSwitcher> _logger;
@@ -94,23 +94,40 @@ public class AtemSwitcher : IAtemSwitcher
         ConnectionState = ConnectionState.Connecting;
 
         State = new AtemState();
-        _connectionCompletionSource = new TaskCompletionSource<bool>();
+        _connectionCompletionSource = new TaskCompletionSource();
 
         try
         {
             await _client.ConnectAsync(_remoteHost, _remotePort);
-            _receiveLoop = _actionLoopFactory.Start(ReceiveCommandLoop, _logger);
-
-            // Wait for InitCompleteCommand to be received, indicating the connection is fully established
-            await _connectionCompletionSource.Task.WaitAsync(cancellationToken);
-            ConnectionState = ConnectionState.Connected;
         }
         catch (Exception)
         {
             ConnectionState = ConnectionState.Disconnected;
-            _receiveLoop?.Cancel();
-            _receiveLoop = null;
             throw;
+        }
+
+        _receiveLoop = _actionLoopFactory.Start(ReceiveCommandLoop, _logger);
+
+        try {
+            // Wait for InitCompleteCommand to be received, indicating the connection is fully established
+           await _connectionCompletionSource.Task.WaitAsync(cancellationToken);
+        }
+        catch (Exception)
+        {
+            ConnectionState = ConnectionState.Disconnected;
+            await StopReceiveLoop();
+            throw;
+        }
+
+        ConnectionState = ConnectionState.Connected;
+    }
+
+    private async Task StopReceiveLoop()
+    {
+        if (_receiveLoop != null)
+        {
+            await _receiveLoop.Cancel();
+            _receiveLoop = null;
         }
     }
 
@@ -125,7 +142,7 @@ public class AtemSwitcher : IAtemSwitcher
         if (command is InitCompleteCommand)
         {
             // Signal that the connection is fully established (only once)
-            _connectionCompletionSource?.TrySetResult(true);
+            _connectionCompletionSource?.TrySetResult();
         }
     }
 
@@ -144,6 +161,8 @@ public class AtemSwitcher : IAtemSwitcher
                 try
                 {
                     await _client.DisconnectAsync();
+                    await StopReceiveLoop();
+
                     ConnectionState = ConnectionState.Disconnected;
                 }
                 catch (Exception)
@@ -181,22 +200,10 @@ public class AtemSwitcher : IAtemSwitcher
     /// <inheritdoc />
     public async ValueTask DisposeAsync()
     {
-        if (_disposed)
-        {
-            return;
-        }
-
         _disposed = true;
-
-        if (_receiveLoop != null)
-        {
-            await _receiveLoop.Cancel();
-        }
-
-        await _client.DisposeAsync();
-
-        // Clean up any pending connection completion
         _connectionCompletionSource?.TrySetCanceled();
+        await _client.DisposeAsync();
+        await StopReceiveLoop();
     }
 
     private void OnConnectionStateChanged(ConnectionState oldState, ConnectionState newState)

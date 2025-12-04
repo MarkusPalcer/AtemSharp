@@ -90,7 +90,10 @@ public class AtemPacket
         // Flags are in the upper 5 bits of the first byte
         // Length is in the lower 11 bits of the first two bytes
         var flagsAndLength = headerSpan.ReadUInt16BigEndian(0);
-        packet.Flags = (PacketFlag)(headerSpan.ReadUInt8(0) >> 3); // Upper 5 bits of first byte
+
+        // Stryker disable once bitwise: >> and >>> do the same for unsigned types
+        packet.Flags = (PacketFlag)(headerSpan.ReadUInt8(0) >> 3);
+
         packet.Length = (ushort)(flagsAndLength & LengthMask);
         packet.SessionId = headerSpan.ReadUInt16BigEndian(2);
         packet.AckPacketId = headerSpan.ReadUInt16BigEndian(4);
@@ -104,16 +107,7 @@ public class AtemPacket
             throw new ArgumentException($"Packet length mismatch. Header indicates {packet.Length} bytes, but received {packetData.Length} bytes");
         }
 
-        // Extract payload
-        if (packet.Length > PacketHeaderSize)
-        {
-            var payloadSpan = packetData.Slice(PacketHeaderSize);
-            packet.Payload = payloadSpan.ToArray();
-        }
-        else
-        {
-            packet.Payload = [];
-        }
+        packet.Payload = packetData[PacketHeaderSize..].ToArray();
 
         return packet;
     }
@@ -132,6 +126,7 @@ public class AtemPacket
 
         // Write header using BinaryPrimitives for big-endian writing
         // Encode flags in upper 5 bits of first byte, length in lower 11 bits
+        // Stryker disable once bitwise: >> and >>> do the same for unsigned types
         bufferSpan[0] = (byte)(((int)Flags << 3) | ((Length >> 8) & 0x07)); // First byte: upper 5 bits flags + upper 3 bits of length
         bufferSpan[1] = (byte)(Length & 0xFF); // Second byte: lower 8 bits of length
         bufferSpan.WriteUInt16BigEndian(2, SessionId);
@@ -140,11 +135,7 @@ public class AtemPacket
         // Bytes 8-9 remain zero (reserved)
         bufferSpan.WriteUInt16BigEndian(10, PacketId);
 
-        // Write payload
-        if (Payload.Length > 0)
-        {
-            Payload.AsSpan().CopyTo(bufferSpan.Slice(PacketHeaderSize));
-        }
+        Payload.CopyTo(buffer, PacketHeaderSize);
 
         return buffer;
     }

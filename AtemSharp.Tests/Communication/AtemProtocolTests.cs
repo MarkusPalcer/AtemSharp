@@ -11,12 +11,6 @@ public class AtemProtocolTests
 {
     private const ushort SessionId = 1234;
 
-    [SetUp]
-    public void Setup()
-    {
-
-    }
-
     [Test]
     public async Task Connect()
     {
@@ -72,7 +66,8 @@ public class AtemProtocolTests
 
         await time.AdvanceBy(TimeSpan.FromMilliseconds(1));
 
-        Assert.ThrowsAsync<InvalidOperationException>(() => sut.ConnectAsync(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9110)).WithTimeout());
+        var ex = Assert.ThrowsAsync<InvalidOperationException>(() => sut.ConnectAsync(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9110)).WithTimeout());
+        Assert.That(ex.Message, Contains.Substring("Can only connect while not connected"));
     }
 
     [Test]

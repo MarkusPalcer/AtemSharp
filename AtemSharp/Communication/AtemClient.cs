@@ -45,7 +45,6 @@ internal class AtemClient(ILoggerFactory loggerFactory, Func<IAtemProtocol> prot
 
         _remoteEndpoint = new IPEndPoint(IPAddress.Parse(address), port);
 
-        _commandAckSources.Clear();
         _receivedCommands = new();
 
         _protocol = protocolFactory();
@@ -87,6 +86,11 @@ internal class AtemClient(ILoggerFactory loggerFactory, Func<IAtemProtocol> prot
 
         _protocol = null;
 
+        foreach (var (_, tcs) in _commandAckSources)
+        {
+            tcs.TrySetCanceled();
+        }
+
         State = AtemSharp.ConnectionState.Disconnected;
     }
 
@@ -99,8 +103,10 @@ internal class AtemClient(ILoggerFactory loggerFactory, Func<IAtemProtocol> prot
     {
         if (State != AtemSharp.ConnectionState.Connected)
         {
-            throw new InvalidOperationException("Not connected");
+            throw new InvalidOperationException("Cannot send data while not connected");
         }
+
+        commands = commands.ToArray();
 
         var packetBuilder = new PacketBuilder(_commandParser.Version);
         foreach (var command in commands)
@@ -123,10 +129,7 @@ internal class AtemClient(ILoggerFactory loggerFactory, Func<IAtemProtocol> prot
             ackTcs.Add(taskCompletionSource);
         }
 
-        if (packets.Length > 0)
-        {
-            await _protocol!.SendPacketsAsync(packets);
-        }
+        await _protocol!.SendPacketsAsync(packets);
 
         await Task.WhenAll(ackTcs.Select(t => t.Task));
     }
@@ -199,9 +202,13 @@ internal class AtemClient(ILoggerFactory loggerFactory, Func<IAtemProtocol> prot
 
     public async ValueTask DisposeAsync()
     {
-        if (State == AtemSharp.ConnectionState.Connected)
+        try
         {
             await DisconnectAsync();
+        }
+        catch (InvalidOperationException)
+        {
+            // NOP
         }
     }
 }

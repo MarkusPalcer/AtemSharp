@@ -1,6 +1,6 @@
 using AtemSharp.Communication;
 
-namespace AtemSharp.Tests.Lib;
+namespace AtemSharp.Tests.Communication;
 
 [TestFixture]
 public class AtemPacketTests
@@ -65,6 +65,42 @@ public class AtemPacketTests
     }
 
     [Test]
+    public void ToBytes_BigPacket_ShouldSerializeCorrectly()
+    {
+        // Arrange
+        var payload = Enumerable.Repeat((byte)0, 300).ToArray();
+        var packet = new AtemPacket(payload)
+        {
+            Flags = PacketFlag.AckRequest,
+            SessionId = 0x1234,
+            PacketId = 0x5678,
+        };
+
+        // Act
+        var serialized = packet.ToBytes();
+
+        // Assert
+        Assert.That(serialized.Length, Is.EqualTo(312)); // 12 byte header + 300 byte payload
+
+        // Check flags and length in first two bytes
+        var flagsAndLength = (ushort)((serialized[0] << 8) | serialized[1]);
+        const ushort expectedFlagsAndLength = ((int)PacketFlag.AckRequest << 11) | 312;
+        Assert.That(flagsAndLength, Is.EqualTo(expectedFlagsAndLength));
+
+        // Check session ID
+        var sessionId = (ushort)((serialized[2] << 8) | serialized[3]);
+        Assert.That(sessionId, Is.EqualTo(0x1234));
+
+        // Check packet ID
+        var packetId = (ushort)((serialized[10] << 8) | serialized[11]);
+        Assert.That(packetId, Is.EqualTo(0x5678));
+
+        // Check payload
+        Assert.That(serialized[12..], Is.EqualTo(payload));
+    }
+
+
+    [Test]
     public void FromBytes_ShouldParseCorrectly()
     {
         // Arrange
@@ -114,6 +150,100 @@ public class AtemPacketTests
 
         var expectedPayload = new byte[] { 0xAA, 0xBB, 0xCC, 0xDD };
         Assert.That(parsedPacket.Payload, Is.EqualTo(expectedPayload));
+    }
+
+    [Test]
+    public void FromBytes_EmptyPayload_ShouldParseCorrectly()
+    {
+        // Arrange
+        var rawData = new byte[12];
+
+        // Flags (AckRequest = 0x01) shifted left 11 positions + Length (16)
+        ushort flagsAndLength = ((int)PacketFlag.AckRequest << 11) | 12;
+        rawData[0] = (byte)(flagsAndLength >> 8);
+        rawData[1] = (byte)(flagsAndLength & 0xFF);
+
+        // Session ID (0x1234)
+        rawData[2] = 0x12;
+        rawData[3] = 0x34;
+
+        // Ack Packet ID (0x5678)
+        rawData[4] = 0x56;
+        rawData[5] = 0x78;
+
+        // Reserved (0x9ABC)
+        rawData[6] = 0x9A;
+        rawData[7] = 0xBC;
+
+        // Reserved (0x0000)
+        rawData[8] = 0x00;
+        rawData[9] = 0x00;
+
+        // Packet ID (0xDEF0)
+        rawData[10] = 0xDE;
+        rawData[11] = 0xF0;
+
+        // Act
+        var parsedPacket = AtemPacket.FromBytes(rawData);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(parsedPacket.Flags, Is.EqualTo(PacketFlag.AckRequest));
+            Assert.That(parsedPacket.Length, Is.EqualTo(12));
+            Assert.That(parsedPacket.SessionId, Is.EqualTo(0x1234));
+            Assert.That(parsedPacket.AckPacketId, Is.EqualTo(0x5678));
+            Assert.That(parsedPacket.RetransmitFromPacketId, Is.EqualTo(0x9ABC));
+            Assert.That(parsedPacket.PacketId, Is.EqualTo(0xDEF0));
+            Assert.That(parsedPacket.Payload, Is.Empty);
+        });
+    }
+
+    [Test]
+    public void FromBytes_BigPacket_ShouldParseCorrectly()
+    {
+        // Arrange
+        var rawData = new byte[312];
+
+        // Flags (AckRequest = 0x01) shifted left 11 positions + Length (16)
+        ushort flagsAndLength = ((int)PacketFlag.AckRequest << 11) | 312;
+        rawData[0] = (byte)(flagsAndLength >> 8);
+        rawData[1] = (byte)(flagsAndLength & 0xFF);
+
+        // Session ID (0x1234)
+        rawData[2] = 0x12;
+        rawData[3] = 0x34;
+
+        // Ack Packet ID (0x5678)
+        rawData[4] = 0x56;
+        rawData[5] = 0x78;
+
+        // Reserved (0x9ABC)
+        rawData[6] = 0x9A;
+        rawData[7] = 0xBC;
+
+        // Reserved (0x0000)
+        rawData[8] = 0x00;
+        rawData[9] = 0x00;
+
+        // Packet ID (0xDEF0)
+        rawData[10] = 0xDE;
+        rawData[11] = 0xF0;
+
+        // Act
+        var parsedPacket = AtemPacket.FromBytes(rawData);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(parsedPacket.Flags, Is.EqualTo(PacketFlag.AckRequest));
+            Assert.That(parsedPacket.Length, Is.EqualTo(312));
+            Assert.That(parsedPacket.SessionId, Is.EqualTo(0x1234));
+            Assert.That(parsedPacket.AckPacketId, Is.EqualTo(0x5678));
+            Assert.That(parsedPacket.RetransmitFromPacketId, Is.EqualTo(0x9ABC));
+            Assert.That(parsedPacket.PacketId, Is.EqualTo(0xDEF0));
+            Assert.That(parsedPacket.Payload, Is.EquivalentTo(Enumerable.Repeat(0, 300)));
+        });
     }
 
     [Test]
@@ -184,7 +314,8 @@ public class AtemPacketTests
         var tooShortData = new byte[10]; // Less than 12 bytes header
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => AtemPacket.FromBytes(tooShortData));
+        var ex = Assert.Throws<ArgumentException>(() => AtemPacket.FromBytes(tooShortData));
+        Assert.That(ex.Message, Contains.Substring("Packet too short"));
     }
 
     [Test]
@@ -197,7 +328,8 @@ public class AtemPacketTests
         data[1] = 0x14; // Length = 20
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => AtemPacket.FromBytes(data));
+        var ex = Assert.Throws<ArgumentException>(() => AtemPacket.FromBytes(data));
+        Assert.That(ex.Message, Contains.Substring("Packet length mismatch"));
     }
 
     [Test]

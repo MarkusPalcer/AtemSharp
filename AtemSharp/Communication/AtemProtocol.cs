@@ -60,6 +60,9 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpCl
             _reconnectTimer?.Cancel() ?? Task.CompletedTask,
             _retransmitTimer?.Cancel() ?? Task.CompletedTask
         );
+
+        _reconnectTimer = null;
+        _retransmitTimer = null;
     }
 
     private async Task RetransmitTimerLoop(CancellationToken token)
@@ -85,11 +88,6 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpCl
 
     public async Task DisconnectAsync()
     {
-        if (_connectionState == ConnectionState.Closed)
-        {
-            return;
-        }
-
         await ClearTimers();
         await (_ackTimerCancellation?.CancelAsync() ?? Task.CompletedTask);
         await CloseSocket();
@@ -97,7 +95,7 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpCl
         _receivedPackets = new();
         _ackedTrackingIds = new();
 
-        logger.LogDebug("Connection closed");
+        logger.LogDebug("Disconnect");
         _connectionState = ConnectionState.Closed;
     }
 
@@ -125,7 +123,7 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpCl
 
     public async Task SendPacketsAsync(AtemPacket[] packets)
     {
-        await Task.WhenAll(packets.Select(SendPacket).ToList());
+       await Task.WhenAll(packets.Select(SendPacket).ToList());
     }
 
     private async Task SendPacket(AtemPacket packet)

@@ -1,4 +1,6 @@
+using AtemSharp.Commands;
 using AtemSharp.Commands.Macro;
+using AtemSharp.Lib;
 using AtemSharp.State.Macro;
 using AtemSharp.Tests.TestUtilities;
 
@@ -38,16 +40,16 @@ public class AtemSwitcherTests
     [Test]
     public async Task ConnectAsync()
     {
-        // Act
         var connectTask = _atem.ConnectAsync();
         Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Connecting));
 
         _clientFake.SuccessfullyConnect();
+        await connectTask.TimesOut().WithTimeout();
+
+        _clientFake.SimulateReceivedCommand(new InitCompleteCommand());
         await connectTask.WithTimeout();
 
         Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Connected));
-
-        // Assert
         Assert.That(_atem.State, Is.Not.Null);
     }
 
@@ -60,6 +62,7 @@ public class AtemSwitcherTests
         // Act
         _atem = new("127.0.0.1", customPort, _clientFake, new LoggerFactory(), _actionLoopFactory);
         _clientFake.SuccessfullyConnect();
+        _clientFake.SimulateReceivedCommand(new InitCompleteCommand());
         await _atem.ConnectAsync().WithTimeout();
 
         // Assert
@@ -70,6 +73,7 @@ public class AtemSwitcherTests
     public async Task ConnectAsync_WhileConnected_ShouldThrow()
     {
         _clientFake.SuccessfullyConnect();
+        _clientFake.SimulateReceivedCommand(new InitCompleteCommand());
         await _atem.ConnectAsync().WithTimeout();
 
         var ex = Assert.ThrowsAsync<InvalidOperationException>(() => _atem.ConnectAsync());
@@ -96,26 +100,51 @@ public class AtemSwitcherTests
         {
             Assert.That(ex, Is.SameAs(exception));
             Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Disconnected));
+            Assert.That(_actionLoopFactory.RunningLoops, Is.All.Matches<ActionLoop>(x => !x.IsRunning));
         });
+    }
+
+    [Test]
+    public async Task ConnectAsync_DisposeWhileWaitingForInitCommand()
+    {
+        var connectTask = _atem.ConnectAsync();
+        Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Connecting));
+
+        _clientFake.SuccessfullyConnect();
+        await connectTask.TimesOut().WithTimeout();
+
+        await _atem.DisposeAsync().AsTask().WithTimeout();
+
+        Assert.ThrowsAsync<TaskCanceledException>(async () => await connectTask.WithTimeout());
+
+        Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Disconnected));
+        Assert.That(_actionLoopFactory.RunningLoops, Is.All.Matches<ActionLoop>(x => !x.IsRunning));
     }
 
     [Test]
     public async Task DisconnectAsync()
     {
         _clientFake.SuccessfullyConnect();
+        _clientFake.SimulateReceivedCommand(new InitCompleteCommand());
         await _atem.ConnectAsync().WithTimeout();
 
         var disconnectTask = _atem.DisconnectAsync();
         Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Disconnecting));
         _clientFake.SuccessfullyDisconnect();
         await disconnectTask.WithTimeout();
-        Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Disconnected));
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Disconnected));
+            Assert.That(_actionLoopFactory.RunningLoops, Is.All.Matches<ActionLoop>(x => !x.IsRunning));
+        });
     }
 
     [Test]
     public async Task DisconnectAsync_WithFailureFromClient_ShouldThrow()
     {
         _clientFake.SuccessfullyConnect();
+        _clientFake.SimulateReceivedCommand(new InitCompleteCommand());
         await _atem.ConnectAsync().WithTimeout();
 
         var exception = new Exception("Test");
@@ -129,7 +158,7 @@ public class AtemSwitcherTests
     public void DisconnectAsync_WhenNotConnected_ShouldNotChangeAnything()
     {
         Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Disconnected));
-        Assert.DoesNotThrowAsync(() => _atem.DisconnectAsync());
+        Assert.DoesNotThrowAsync(() => _atem.DisconnectAsync().WithTimeout());
         Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Disconnected));
     }
 
@@ -137,7 +166,8 @@ public class AtemSwitcherTests
     public void DisconnectAsync_WhileConnecting_ShouldThrow()
     {
         _ = _atem.ConnectAsync();
-        Assert.ThrowsAsync<InvalidOperationException>(() => _atem.DisconnectAsync());
+        var ex = Assert.ThrowsAsync<InvalidOperationException>(() => _atem.DisconnectAsync().WithTimeout());
+        Assert.That(ex.Message, Contains.Substring("while transitioning connection states"));
         Assert.That(_atem.ConnectionState, Is.EqualTo(ConnectionState.Connecting));
     }
 
@@ -145,19 +175,21 @@ public class AtemSwitcherTests
     public async Task DisconnectAsync_WhileDisconnecting_ShouldThrow()
     {
         _clientFake.SuccessfullyConnect();
+        _clientFake.SimulateReceivedCommand(new InitCompleteCommand());
         await _atem.ConnectAsync().WithTimeout();
 
         var disconnectTask = _atem.DisconnectAsync();
         Assert.That(disconnectTask.IsCompleted, Is.False);
 
-        Assert.ThrowsAsync<InvalidOperationException>(() => _atem.DisconnectAsync());
+        var ex = Assert.ThrowsAsync<InvalidOperationException>(() => _atem.DisconnectAsync().WithTimeout());
+        Assert.That(ex.Message, Contains.Substring("while transitioning connection states"));
     }
 
     [Test]
     public async Task ConnectAsync_AfterDispose_ShouldThrowObjectDisposedException()
     {
         await _atem.DisposeAsync().AsTask();
-        Assert.ThrowsAsync<ObjectDisposedException>(() => _atem.ConnectAsync());
+        Assert.ThrowsAsync<ObjectDisposedException>(() => _atem.ConnectAsync().WithTimeout());
     }
 
     [Test]
@@ -168,6 +200,7 @@ public class AtemSwitcherTests
 
         // Act
         _clientFake.SuccessfullyConnect();
+        _clientFake.SimulateReceivedCommand(new InitCompleteCommand());
         await _atem.ConnectAsync().WithTimeout();
 
         // Assert
@@ -179,25 +212,28 @@ public class AtemSwitcherTests
     public async Task SendCommandAsync()
     {
         _clientFake.SuccessfullyConnect();
+        _clientFake.SimulateReceivedCommand(new InitCompleteCommand());
         await _atem.ConnectAsync().WithTimeout();
 
         var command = new MacroActionCommand(new Macro(), MacroAction.Run);
         await _atem.SendCommandAsync(command).WithTimeout();
 
-        Assert.That(_clientFake.SentCommands, Is.EquivalentTo(new []{command}));
+        Assert.That(_clientFake.SentCommands, Is.EquivalentTo(new[] { command }));
     }
 
     [Test]
     public void SendCommandAsync_WhileNotConnected_ShouldThrow()
     {
         var sendTask = _atem.SendCommandAsync(new MacroActionCommand(new Macro(), MacroAction.Run));
-        Assert.ThrowsAsync<InvalidOperationException>(async () => await sendTask.WithTimeout());
+        var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => await sendTask.WithTimeout());
+        Assert.That(ex.Message, Contains.Substring("while not connected"));
     }
 
     [Test]
     public async Task SendCommandsAsync()
     {
         _clientFake.SuccessfullyConnect();
+        _clientFake.SimulateReceivedCommand(new InitCompleteCommand());
         await _atem.ConnectAsync().WithTimeout();
 
         MacroActionCommand[] commands = [new(new Macro(), MacroAction.Run), new(new Macro(), MacroAction.Stop)];
@@ -211,6 +247,7 @@ public class AtemSwitcherTests
     {
         MacroActionCommand[] commands = [new(new Macro(), MacroAction.Run), new(new Macro(), MacroAction.Stop)];
         var sendTask = _atem.SendCommandsAsync(commands);
-        Assert.ThrowsAsync<InvalidOperationException>(async () => await sendTask.WithTimeout());
+        var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => await sendTask.WithTimeout());
+        Assert.That(ex.Message, Contains.Substring("while not connected"));
     }
 }

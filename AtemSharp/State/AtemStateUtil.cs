@@ -10,8 +10,6 @@ public static class AtemStateUtil
 {
     private static IEnumerable<T> CreateEnumerable<T>(int length) where T : ArrayItem, new()
     {
-        if (length <= 0) yield break;
-
         for (var i = 0; i < length; i++)
         {
             var value = new T();
@@ -44,7 +42,11 @@ public static class AtemStateUtil
     {
         ArgumentNullException.ThrowIfNull(dict);
 
-        if (dict.TryGetValue(index, out var value)) return value;
+        if (dict.TryGetValue(index, out var value))
+        {
+            return value;
+        }
+
         value = new TValue();
         dict[index] = value;
         return value;

@@ -4,6 +4,8 @@ namespace AtemSharp.Tests.TestUtilities;
 
 public static class Utilities
 {
+    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(1);
+
 	/// <summary>
 	/// Wraps a Task&lt;T&gt; with a timeout to ensure test operations don't hang indefinitely.
 	/// This extension method provides a safety mechanism for async test operations that might
@@ -17,7 +19,7 @@ public static class Utilities
 	/// </example>
 	public static async Task<T> WithTimeout<T>(this Task<T> task, TimeSpan? timeout = null, [CallerArgumentExpression(nameof(task))] string? argumentName = null)
 	{
-		var timeoutTask = Task.Delay(timeout ?? TimeSpan.FromSeconds(5));
+		var timeoutTask = Task.Delay(timeout ?? DefaultTimeout);
 		var result = await Task.WhenAny(task, timeoutTask);
 		Assert.That(result, Is.Not.SameAs(timeoutTask), $"{argumentName} timed out");
 		return await task;
@@ -38,7 +40,7 @@ public static class Utilities
 	/// </example>
 	public static async Task WithTimeout(this Task task, TimeSpan? timeout = null, [CallerArgumentExpression(nameof(task))] string? argumentName = null)
 	{
-		var timeoutTask = Task.Delay(timeout ?? TimeSpan.FromSeconds(5));
+		var timeoutTask = Task.Delay(timeout ?? DefaultTimeout);
 		var result = await Task.WhenAny(task, timeoutTask);
 		Assert.That(result, Is.Not.SameAs(timeoutTask), $"{argumentName} timed out");
 

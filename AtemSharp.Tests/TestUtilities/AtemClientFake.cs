@@ -20,10 +20,6 @@ public class AtemClientFake : IAtemClient
     public void SuccessfullyConnect()
     {
         _connectTcs.TrySetResult();
-
-        // After successful connection, simulate the ATEM device sending an InitCompleteCommand
-        // This is required for the new networking implementation to complete the connection
-        SimulateReceivedCommand(new InitCompleteCommand());
         _disconnectTcs = new();
     }
 

@@ -10,7 +10,7 @@ namespace AtemSharp.Communication;
 /// </summary>
 public class CommandParser
 {
-    private readonly Dictionary<string, List<Type>> _commandRegistry = new();
+    private readonly Dictionary<string, SortedList<ProtocolVersion,Type>> _commandRegistry = new();
 
     /// <summary>
     /// Current protocol version for parsing commands
@@ -29,8 +29,7 @@ public class CommandParser
 
     private void AddCommandsFromAssembly(Assembly assembly)
     {
-        var commandTypes = assembly.GetTypes().Where(t => t is { IsClass: true, IsAbstract: false } &&
-                                                          typeof(IDeserializedCommand).IsAssignableFrom(t) &&
+        var commandTypes = assembly.GetTypes().Where(t => typeof(IDeserializedCommand).IsAssignableFrom(t) &&
                                                           t.GetCustomAttribute<CommandAttribute>() != null);
 
         foreach (var type in commandTypes)
@@ -43,7 +42,7 @@ public class CommandParser
                 _commandRegistry[attr.RawName] = [];
             }
 
-            _commandRegistry[attr.RawName].Add(type);
+            _commandRegistry[attr.RawName].Add(attr.MinimumVersion ?? ProtocolVersion.Unknown, type);
         }
     }
 
@@ -63,50 +62,8 @@ public class CommandParser
     /// <returns>Best matching command type or null if not found/supported</returns>
     private Type? GetCommandTypeForVersion(string rawName)
     {
-        if (!_commandRegistry.TryGetValue(rawName, out var commandTypes))
-        {
-            return null;
-        }
-
-        // Edge case for the version command itself (matches TypeScript line 29-31)
-        if (Version == ProtocolVersion.V7_2) // Default/initial version
-        {
-            return commandTypes[0];
-        }
-
-        // Find baseline command (no minimum version requirement)
-        var baseline = commandTypes.FirstOrDefault(type =>
-        {
-            var attr = type.GetCustomAttribute<CommandAttribute>()!;
-            return !attr.MinimumVersion.HasValue;
-        });
-
-        // Find all overrides that are compatible with current version
-        var overrides = commandTypes.Where(type =>
-        {
-            var attr = type.GetCustomAttribute<CommandAttribute>()!;
-            return attr.MinimumVersion.HasValue && attr.MinimumVersion <= Version;
-        }).ToList();
-
-        // If no overrides, return baseline (matches TypeScript line 36)
-        if (overrides.Count == 0) return baseline;
-
-        // Find the highest version override (matches TypeScript lines 38-48)
-        var highestProtoCommand = overrides[0];
-        foreach (var candidate in overrides)
-        {
-            var highestAttr = highestProtoCommand.GetCustomAttribute<CommandAttribute>()!;
-            var candidateAttr = candidate.GetCustomAttribute<CommandAttribute>()!;
-
-            if (highestAttr.MinimumVersion.HasValue &&
-                candidateAttr.MinimumVersion.HasValue &&
-                candidateAttr.MinimumVersion > highestAttr.MinimumVersion)
-            {
-                highestProtoCommand = candidate;
-            }
-        }
-
-        return highestProtoCommand;
+        // Find the highest version number that is lower or equal to the current version
+        return _commandRegistry.GetValueOrDefault(rawName)?.Last(x => x.Key <= Version).Value;
     }
 
     internal delegate IDeserializedCommand DeserializeCommand(ReadOnlySpan<byte> data, ProtocolVersion version);
@@ -133,7 +90,9 @@ public class CommandParser
 
         // TODO #66: Resolve logger and log here
         if (deserializeMethod == null)
+        {
             throw new InvalidOperationException($"Command {commandType.Name} missing static Deserialize method");
+        }
 
         var command = deserializeMethod.CreateDelegate<DeserializeCommand>()(data, Version);
 
@@ -164,7 +123,7 @@ public class CommandParser
     public IReadOnlyList<Type> GetAllCommandVersions(string rawName)
     {
         return _commandRegistry.TryGetValue(rawName, out var commandTypes)
-                   ? commandTypes.AsReadOnly()
+                   ? commandTypes.Values.AsReadOnly()
                    : new List<Type>().AsReadOnly();
     }
 

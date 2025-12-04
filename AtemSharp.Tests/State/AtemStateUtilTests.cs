@@ -160,7 +160,9 @@ public class AtemStateUtilTests
     {
         var state = new AtemState();
 
-        Assert.Throws<InvalidOperationException>(() => state.GetFairlight());
+        var ex = Assert.Throws<InvalidOperationException>(() => state.GetFairlight());
+        Assert.That(ex.Message, Contains.Substring("is not available"));
+        Assert.That(ex.Message, Contains.Substring("Fairlight"));
     }
 
     [Test]
@@ -171,7 +173,9 @@ public class AtemStateUtilTests
             Audio = new ClassicAudioState()
         };
 
-        Assert.Throws<InvalidOperationException>(() => state.GetFairlight());
+        var ex = Assert.Throws<InvalidOperationException>(() => state.GetFairlight());
+        Assert.That(ex.Message, Contains.Substring("is not available"));
+        Assert.That(ex.Message, Contains.Substring("Fairlight"));
     }
 
     [Test]
@@ -191,7 +195,9 @@ public class AtemStateUtilTests
     public void GetClassicAudio_IfNoAudioPresent_Throws()
     {
         var state = new AtemState();
-        Assert.Throws<InvalidOperationException>(() => state.GetClassicAudio());
+        var ex= Assert.Throws<InvalidOperationException>(() => state.GetClassicAudio());
+        Assert.That(ex.Message, Contains.Substring("is not available"));
+        Assert.That(ex.Message, Contains.Substring("Classic"));
     }
 
     [Test]
@@ -201,6 +207,9 @@ public class AtemStateUtilTests
         {
             Audio = new FairlightAudioState()
         };
-        Assert.Throws<InvalidOperationException>(() => state.GetClassicAudio());
+
+        var ex = Assert.Throws<InvalidOperationException>(() => state.GetClassicAudio());
+        Assert.That(ex.Message, Contains.Substring("is not available"));
+        Assert.That(ex.Message, Contains.Substring("Classic"));
     }
 }

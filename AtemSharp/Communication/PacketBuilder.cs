@@ -20,8 +20,6 @@ public class PacketBuilder(ProtocolVersion protocolVersion)
 
     public void AddCommand(SerializedCommand cmd)
     {
-        ArgumentNullException.ThrowIfNull(cmd);
-
         var rawName = cmd.GetRawName();
         if (string.IsNullOrEmpty(rawName) || rawName.Length != 4)
         {
@@ -39,8 +37,7 @@ public class PacketBuilder(ProtocolVersion protocolVersion)
         }
 
         // Write command length (big-endian 16-bit)
-        _currentPacketBuffer[_currentPacketFilled + 0] = (byte)((totalLength >> 8) & 0xFF);
-        _currentPacketBuffer[_currentPacketFilled + 1] = (byte)(totalLength & 0xFF);
+        _currentPacketBuffer.WriteUInt16BigEndian((ushort)totalLength, _currentPacketFilled);
 
         // bytes 2-3 reserved (leave as zero)
 
@@ -49,10 +46,7 @@ public class PacketBuilder(ProtocolVersion protocolVersion)
         Buffer.BlockCopy(rawNameBytes, 0, _currentPacketBuffer, _currentPacketFilled + 4, 4);
 
         // Copy payload after the 8-byte header
-        if (payload.Length > 0)
-        {
-            Buffer.BlockCopy(payload, 0, _currentPacketBuffer, _currentPacketFilled + Constants.AtemConstants.CommandHeaderSize, payload.Length);
-        }
+        Buffer.BlockCopy(payload, 0, _currentPacketBuffer, _currentPacketFilled + Constants.AtemConstants.CommandHeaderSize, payload.Length);
 
         _currentPacketFilled += totalLength;
     }
