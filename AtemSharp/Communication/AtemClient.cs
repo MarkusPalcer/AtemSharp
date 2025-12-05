@@ -16,7 +16,7 @@ namespace AtemSharp.Communication;
 internal class AtemClient(IServices services)
     : IAtemClient
 {
-    private readonly CommandParser _commandParser = new();
+    private readonly ICommandParser _commandParser = services.CreateCommandParser();
     private readonly PacketBuilder _packetBuilder = new();
     private readonly ConcurrentDictionary<int, TaskCompletionSource> _commandAckSources = new();
     private readonly SemaphoreSlim _sendLock = new(1);

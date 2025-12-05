@@ -12,4 +12,5 @@ public interface IServices
     IAtemProtocol CreateAtemProtocol();
     IUdpClient CreateUdpClient();
     ITimeProvider TimeProvider { get; }
+    ICommandParser CreateCommandParser();
 }

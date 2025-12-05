@@ -30,4 +30,6 @@ public class ContainerBridge(IServiceProvider serviceProvider) : IServices
     }
 
     public ITimeProvider TimeProvider { get; } = serviceProvider.GetRequiredService<ITimeProvider>();
+
+    public ICommandParser CreateCommandParser() => serviceProvider.GetRequiredService<ICommandParser>();
 }

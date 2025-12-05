@@ -9,12 +9,13 @@ public sealed class TestServices : IServices, IAsyncDisposable
 {
     internal readonly List<ActionLoop> RunningLoops = new();
 
-
     public VirtualTime VirtualTime { get; } = new(DateTime.Now);
     public UdpClientFake UdpFake { get; } = new();
     public AtemClientFake ClientFake { get; } = new();
 
     public AtemProtocolFake ProtocolFake { get; } = new();
+
+    public CommandParserFake CommandParserFake { get; } = new CommandParserFake();
 
     public IAtemClient CreateAtemClient() => ClientFake;
 
@@ -32,6 +33,7 @@ public sealed class TestServices : IServices, IAsyncDisposable
     public IUdpClient CreateUdpClient() => UdpFake;
 
     public ITimeProvider TimeProvider => VirtualTime;
+    public ICommandParser CreateCommandParser() => CommandParserFake;
 
     public async ValueTask DisposeAsync()
     {

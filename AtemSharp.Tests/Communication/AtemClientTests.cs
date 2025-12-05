@@ -313,7 +313,7 @@ public class AtemClientTests
     }
 
     [Test]
-    public async Task ReceiveCommand()
+    public async Task ReceiveCommand_SingleCommand()
     {
         await using var data = new TestInstances();
 
@@ -330,12 +330,16 @@ public class AtemClientTests
             Flags = PacketFlag.AckRequest,
         };
 
+        data.Services.CommandParserFake.CommandsToReturn.Enqueue(new InitCompleteCommand());
+
         var receiveTask = data.Services.ProtocolFake.ReceivePacketAsync(packet);
         var receivedCommand = await data.Sut.ReceivedCommands.ReceiveAsync().WithTimeout();
 
         Assert.That(receivedCommand, Is.InstanceOf<InitCompleteCommand>());
 
         await receiveTask.WithTimeout();
+
+        Assert.That(data.Services.CommandParserFake.ParsedData[0].Item1, Is.EqualTo("InCm"));
 
         // Ack-ing is not handled in the AtemClient but in the AtemProtocol
     }
@@ -404,29 +408,6 @@ public class AtemClientTests
     }
 
     [Test]
-    public async Task ReceiveCommand_InitCompleteCommand()
-    {
-        var payload = new byte[8];
-        payload.WriteUInt16BigEndian(8, 0);
-        payload[4] = (byte)'I';
-        payload[5] = (byte)'n';
-        payload[6] = (byte)'C';
-        payload[7] = (byte)'m';
-
-        var packet = new AtemPacket(payload);
-
-        await using var data = new TestInstances();
-
-        data.Services.ProtocolFake.SucceedConnection();
-        await data.Sut.ConnectAsync("127.0.0.1", 12345).WithTimeout();
-        var receiveTask = data.Services.ProtocolFake.ReceivePacketAsync(packet);
-        var receivedCommand = await data.Sut.ReceivedCommands.ReceiveAsync().WithTimeout();
-        await receiveTask.WithTimeout();
-        Assert.That(receivedCommand, Is.InstanceOf<InitCompleteCommand>());
-        await data.Sut.ReceivedCommands.ReceiveAsync().TimesOut().WithTimeout();
-    }
-
-    [Test]
     public async Task ReceiveCommand_IgnoresCommandsAfterCommandThatIsShorterThanHeader()
     {
         var payload = new byte[12];
@@ -480,9 +461,12 @@ public class AtemClientTests
         payload[6] = (byte)'C';
         payload[7] = (byte)'m';
 
+
         var packet = new AtemPacket(payload.Concat(payload).ToArray());
 
         await using var data = new TestInstances();
+        data.Services.CommandParserFake.CommandsToReturn.Enqueue(new InitCompleteCommand());
+        data.Services.CommandParserFake.CommandsToReturn.Enqueue(new InitCompleteCommand());
 
         data.Services.ProtocolFake.SucceedConnection();
         await data.Sut.ConnectAsync("127.0.0.1", 12345).WithTimeout();
@@ -493,6 +477,8 @@ public class AtemClientTests
         Assert.That(receivedCommand, Is.InstanceOf<InitCompleteCommand>());
         await data.Sut.ReceivedCommands.ReceiveAsync().TimesOut().WithTimeout();
         await receiveTask.WithTimeout();
+
+        Assert.That(data.Services.CommandParserFake.ParsedData.Count, Is.EqualTo(2));
     }
 
     public static void VerifySentPacket(AtemPacket packet, SerializedCommand expectedCommand)
@@ -503,6 +489,7 @@ public class AtemClientTests
 
             var sentData = (ReadOnlySpan<byte>)packet.Payload.AsSpan();
             var expectedBytes = expectedCommand.Serialize(ProtocolVersion.Unknown);
+
 
             // Bytes 1+2: Length
             Assert.That(sentData.ReadUInt16BigEndian(0), Is.EqualTo(expectedBytes.Length + Constants.AtemConstants.CommandHeaderSize));

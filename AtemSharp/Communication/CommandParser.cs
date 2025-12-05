@@ -7,9 +7,9 @@ namespace AtemSharp.Communication;
 /// <summary>
 /// Parses ATEM commands from raw packet data using reflection-based command registry
 /// </summary>
-public class CommandParser
+internal class CommandParser : ICommandParser
 {
-    private readonly Dictionary<string, SortedList<ProtocolVersion,Type>> _commandRegistry = new();
+    internal readonly Dictionary<string, SortedList<ProtocolVersion,Type>> CommandRegistry = new();
 
     /// <summary>
     /// Current protocol version for parsing commands
@@ -36,12 +36,12 @@ public class CommandParser
             var attr = type.GetCustomAttribute<CommandAttribute>()!;
 
             // Store all versions of commands (matches TypeScript Array<CommandConstructor> approach)
-            if (!_commandRegistry.ContainsKey(attr.RawName))
+            if (!CommandRegistry.ContainsKey(attr.RawName))
             {
-                _commandRegistry[attr.RawName] = [];
+                CommandRegistry[attr.RawName] = [];
             }
 
-            _commandRegistry[attr.RawName].Add(attr.MinimumVersion ?? ProtocolVersion.Unknown, type);
+            CommandRegistry[attr.RawName].Add(attr.MinimumVersion ?? ProtocolVersion.Unknown, type);
         }
     }
 
@@ -59,10 +59,10 @@ public class CommandParser
     /// </summary>
     /// <param name="rawName">4-character command name</param>
     /// <returns>Best matching command type or null if not found/supported</returns>
-    private Type? GetCommandTypeForVersion(string rawName)
+    internal Type? GetCommandTypeForVersion(string rawName)
     {
         // Find the highest version number that is lower or equal to the current version
-        return _commandRegistry.GetValueOrDefault(rawName)?.Last(x => x.Key <= Version).Value;
+        return CommandRegistry.GetValueOrDefault(rawName)?.Last(x => x.Key <= Version).Value;
     }
 
     internal delegate IDeserializedCommand DeserializeCommand(ReadOnlySpan<byte> data, ProtocolVersion version);
@@ -96,36 +96,5 @@ public class CommandParser
         var command = deserializeMethod.CreateDelegate<DeserializeCommand>()(data, Version);
 
         return command;
-    }
-
-    /// <summary>
-    /// Get a command type by its raw name (for testing/debugging)
-    /// </summary>
-    /// <param name="rawName">Raw command name</param>
-    /// <returns>Command type if found, null otherwise</returns>
-    public Type? GetCommandType(string rawName)
-    {
-        return GetCommandTypeForVersion(rawName);
-    }
-
-    /// <summary>
-    /// Get all versions of a command type by its raw name (for testing/debugging)
-    /// </summary>
-    /// <param name="rawName">Raw command name</param>
-    /// <returns>All registered command type versions</returns>
-    public IReadOnlyList<Type> GetAllCommandVersions(string rawName)
-    {
-        return _commandRegistry.TryGetValue(rawName, out var commandTypes)
-                   ? commandTypes.Values.AsReadOnly()
-                   : new List<Type>().AsReadOnly();
-    }
-
-    /// <summary>
-    /// Get all registered command names (for testing/debugging)
-    /// </summary>
-    /// <returns>Collection of all registered raw command names</returns>
-    public IReadOnlyCollection<string> GetRegisteredCommands()
-    {
-        return _commandRegistry.Keys;
     }
 }

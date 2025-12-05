@@ -8,10 +8,7 @@ namespace AtemSharp.DependencyInjection;
 [ExcludeFromCodeCoverage]
 internal class InternalServices : IServices
 {
-    public IAtemClient CreateAtemClient()
-    {
-        return new AtemClient(this);
-    }
+    public IAtemClient CreateAtemClient() => new AtemClient(this);
 
     public IActionLoop StartActionLoop(Func<CancellationToken, Task> loopedAction, string name = "")
     {
@@ -20,15 +17,11 @@ internal class InternalServices : IServices
         return result;
     }
 
-    public IAtemProtocol CreateAtemProtocol()
-    {
-        return new AtemProtocol(this);
-    }
+    public IAtemProtocol CreateAtemProtocol() => new AtemProtocol(this);
 
-    public IUdpClient CreateUdpClient()
-    {
-        return new UdpClientWrapper();
-    }
+    public IUdpClient CreateUdpClient() => new UdpClientWrapper();
 
     public ITimeProvider TimeProvider { get; } = new SystemTimeProvider();
+
+    public ICommandParser CreateCommandParser() => new CommandParser();
 }
