@@ -77,7 +77,6 @@ public class DeserializationExtensionsTests
     {
         // Arrange
         var buffer = new byte[12];
-        var writeSpan = buffer.AsSpan();
 
         const ushort testUShort = 0x1234;
         const uint testUInt = 0xABCDEF00;

@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using AtemSharp.Lib;
 using Microsoft.Extensions.Logging;
 
@@ -9,7 +10,7 @@ internal class TestActionLoopFactory : IActionLoopFactory, IDisposable
 
     internal readonly List<ActionLoop> RunningLoops = new();
 
-    public ActionLoop Start(Func<CancellationToken, Task> loopedAction, ILogger logger, string name = null)
+    public ActionLoop Start(Func<CancellationToken, Task> loopedAction, ILogger logger, [CallerArgumentExpression(nameof(loopedAction))] string name = "")
     {
         var actionLoop = _actionLoopFactory.Start(loopedAction, logger, name);
         RunningLoops.Add(actionLoop);

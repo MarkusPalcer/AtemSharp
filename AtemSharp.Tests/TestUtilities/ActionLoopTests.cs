@@ -56,7 +56,7 @@ public class ActionLoopTests
         var logger = new CapturingLogger();
 
         // ReSharper disable once MethodSupportsCancellation
-        async Task LoopedAction(CancellationToken token)
+        Task LoopedAction(CancellationToken token)
         {
             throw new ArgumentException();
         }

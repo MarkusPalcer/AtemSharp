@@ -3,6 +3,7 @@ using System.Threading.Tasks.Dataflow;
 using AtemSharp.Communication;
 using AtemSharp.Tests.TestUtilities;
 using Microsoft.Extensions.Logging;
+// ReSharper disable AccessToDisposedClosure to be reworked when switching to IServiceProvider
 
 namespace AtemSharp.Tests.Communication;
 

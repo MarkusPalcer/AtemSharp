@@ -65,11 +65,11 @@ public class AtemProtocolFake : IAtemProtocol
 
     public bool IsConnected() => RemoteEndpoint != null;
 
-    public void SucceedConnection() => _connectTcs?.TrySetResult();
-    public void FailConnection(Exception ex) => _connectTcs?.TrySetException(ex);
+    public void SucceedConnection() => _connectTcs.TrySetResult();
+    public void FailConnection(Exception ex) => _connectTcs.TrySetException(ex);
 
-    public void SucceedDisconnection() => _disconnectTcs?.TrySetResult();
-    public void FailDisconnection(Exception ex) => _disconnectTcs?.TrySetException(ex);
+    public void SucceedDisconnection() => _disconnectTcs.TrySetResult();
+    public void FailDisconnection(Exception ex) => _disconnectTcs.TrySetException(ex);
 
     public async Task ReceivePacketAsync(AtemPacket packet) => await _receivedPackets.SendAsync(packet);
     public async Task AckPacket(AtemPacket packet) => await _ackedTrackingIds.SendAsync(packet.TrackingId);

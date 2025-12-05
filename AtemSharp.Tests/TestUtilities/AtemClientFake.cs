@@ -2,7 +2,6 @@ using System.Net;
 using System.Threading.Tasks.Dataflow;
 using AtemSharp.Commands;
 using AtemSharp.Communication;
-using AtemSharp.Constants;
 
 namespace AtemSharp.Tests.TestUtilities;
 
@@ -35,7 +34,7 @@ public class AtemClientFake : IAtemClient
 
     IReceivableSourceBlock<IDeserializedCommand> IAtemClient.ReceivedCommands { get; } = new BufferBlock<IDeserializedCommand>();
 
-    async Task IAtemClient.ConnectAsync(string address, int port = AtemConstants.DefaultPort)
+    async Task IAtemClient.ConnectAsync(string address, int port)
     {
         await _connectTcs.Task;
 

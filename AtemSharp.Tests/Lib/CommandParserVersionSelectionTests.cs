@@ -1,6 +1,6 @@
 using AtemSharp.Communication;
 using AtemSharp.State.Info;
-using AtemSharp.Tests.Lib.TestCommands;
+using AtemSharp.Tests.TestUtilities.TestCommands;
 
 namespace AtemSharp.Tests.Lib;
 

@@ -28,7 +28,7 @@ public class CapturingLogger : ILogger
 
     public bool IsEnabled(LogLevel logLevel) => true;
 
-    public IDisposable? BeginScope<TState>(TState state) where TState : notnull => new NullScope();
+    public IDisposable BeginScope<TState>(TState state) where TState : notnull => new NullScope();
 
     private class NullScope : IDisposable
     {

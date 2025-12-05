@@ -5,7 +5,7 @@ namespace AtemSharp.Tests.TestUtilities.TestCommands;
 
 public class NoRawNameCommand : SerializedCommand
 {
-    public bool SerializeCalled = false;
+    public bool SerializeCalled;
 
     public override byte[] Serialize(ProtocolVersion version)
     {

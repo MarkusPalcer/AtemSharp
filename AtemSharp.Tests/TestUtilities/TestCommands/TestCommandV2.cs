@@ -3,7 +3,7 @@ using AtemSharp.Commands;
 using AtemSharp.State;
 using AtemSharp.State.Info;
 
-namespace AtemSharp.Tests.Lib.TestCommands;
+namespace AtemSharp.Tests.TestUtilities.TestCommands;
 
 /// <summary>
 /// Demo/test command with V8_0 minimum version
