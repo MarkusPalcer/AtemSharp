@@ -18,11 +18,19 @@ public class VideoMixerConfigCommandTests
 
         // Write count (2 modes) - Big Endian
         var count = BitConverter.GetBytes((ushort)2);
-        if (BitConverter.IsLittleEndian) Array.Reverse(count);
+        if (BitConverter.IsLittleEndian)
+        {
+            Array.Reverse(count);
+        }
+
         data.AddRange(count);
 
         var padding = BitConverter.GetBytes((ushort)0);
-        if (BitConverter.IsLittleEndian) Array.Reverse(padding);
+        if (BitConverter.IsLittleEndian)
+        {
+            Array.Reverse(padding);
+        }
+
         data.AddRange(padding);
 
         // Mode 1: 1080p25 with multiviewer modes and no reconfig
@@ -30,11 +38,19 @@ public class VideoMixerConfigCommandTests
         data.AddRange(new byte[3]);            // padding
 
         var multiviewer1 = BitConverter.GetBytes(0b00010100u);
-        if (BitConverter.IsLittleEndian) Array.Reverse(multiviewer1);
+        if (BitConverter.IsLittleEndian)
+        {
+            Array.Reverse(multiviewer1);
+        }
+
         data.AddRange(multiviewer1);   // multiviewer modes (bits 2 and 4 set)
 
         var downconvert1 = BitConverter.GetBytes(0b00000100u);
-        if (BitConverter.IsLittleEndian) Array.Reverse(downconvert1);
+        if (BitConverter.IsLittleEndian)
+        {
+            Array.Reverse(downconvert1);
+        }
+
         data.AddRange(downconvert1);   // downconvert modes (bit 2 set)
 
         // Mode 2: 4K with different settings and no reconfig (protocol < V8_0)
@@ -42,11 +58,19 @@ public class VideoMixerConfigCommandTests
         data.AddRange(new byte[3]);            // padding
 
         var multiviewer2 = BitConverter.GetBytes(0b00000001u);
-        if (BitConverter.IsLittleEndian) Array.Reverse(multiviewer2);
+        if (BitConverter.IsLittleEndian)
+        {
+            Array.Reverse(multiviewer2);
+        }
+
         data.AddRange(multiviewer2);   // multiviewer modes (bit 0 set)
 
         var downconvert2 = BitConverter.GetBytes(0b00001010u);
-        if (BitConverter.IsLittleEndian) Array.Reverse(downconvert2);
+        if (BitConverter.IsLittleEndian)
+        {
+            Array.Reverse(downconvert2);
+        }
+
         data.AddRange(downconvert2);   // downconvert modes (bits 1 and 3 set)
 
         // Act
@@ -79,11 +103,19 @@ public class VideoMixerConfigCommandTests
 
         // Write count (1 mode) - Big Endian
         var count = BitConverter.GetBytes((ushort)1);
-        if (BitConverter.IsLittleEndian) Array.Reverse(count);
+        if (BitConverter.IsLittleEndian)
+        {
+            Array.Reverse(count);
+        }
+
         data.AddRange(count);
 
         var padding = BitConverter.GetBytes((ushort)0);
-        if (BitConverter.IsLittleEndian) Array.Reverse(padding);
+        if (BitConverter.IsLittleEndian)
+        {
+            Array.Reverse(padding);
+        }
+
         data.AddRange(padding);
 
         // Mode 1: with requires reconfig flag
@@ -91,11 +123,19 @@ public class VideoMixerConfigCommandTests
         data.AddRange(new byte[3]);            // padding
 
         var multiviewer = BitConverter.GetBytes(0u);
-        if (BitConverter.IsLittleEndian) Array.Reverse(multiviewer);
+        if (BitConverter.IsLittleEndian)
+        {
+            Array.Reverse(multiviewer);
+        }
+
         data.AddRange(multiviewer);       // multiviewer modes
 
         var downconvert = BitConverter.GetBytes(0u);
-        if (BitConverter.IsLittleEndian) Array.Reverse(downconvert);
+        if (BitConverter.IsLittleEndian)
+        {
+            Array.Reverse(downconvert);
+        }
+
         data.AddRange(downconvert);       // downconvert modes
 
         data.Add(1);                           // requires reconfig = true
