@@ -41,7 +41,9 @@ public class LoggerFactory : ILoggerFactory
             Func<TState, Exception?, string> formatter)
         {
             if (!IsEnabled(logLevel))
+            {
                 return;
+            }
 
             var message = formatter(state, exception);
 
