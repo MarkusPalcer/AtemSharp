@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using AtemSharp.Commands;
 using AtemSharp.State.Info;
@@ -8,10 +9,29 @@ namespace AtemSharp.Communication;
 /// Helper to build ATEM packet payloads from multiple serialized commands.
 /// Mirrors the behavior of the TypeScript PacketBuilder in src/lib/packetBuilder.ts
 /// </summary>
-public class PacketBuilder(ProtocolVersion protocolVersion)
+public class PacketBuilder : IPacketBuilder
 {
+    private static readonly System.Collections.ObjectModel.ReadOnlyDictionary<Type, string> CommandRawNames;
+
+    static PacketBuilder()
+    {
+        var dict = new Dictionary<Type, string>();
+        foreach (var type in typeof(PacketBuilder).Assembly.GetTypes())
+        {
+            var attr = type.GetCustomAttribute<CommandAttribute>();
+            if (attr is null)
+            {
+                continue;
+            }
+
+            dict[type] = attr.RawName;
+        }
+
+        CommandRawNames = dict.AsReadOnly();
+    }
+
     internal const int MaxPacketSize = Constants.AtemConstants.DefaultMaxPacketSize - Constants.AtemConstants.PacketHeaderSize;
-    private readonly ProtocolVersion _protocolVersion = protocolVersion;
+    public ProtocolVersion ProtocolVersion { get; set; } = ProtocolVersion.Unknown;
 
     private readonly List<byte[]> _completedBuffers = [];
 
@@ -20,13 +40,20 @@ public class PacketBuilder(ProtocolVersion protocolVersion)
 
     public void AddCommand(SerializedCommand cmd)
     {
-        var rawName = cmd.GetRawName();
+        CommandRawNames.TryGetValue(cmd.GetType(), out var rawName);
+
+        // For test commands that won't be inside the collection we don't use the cache, but we also don't have hard time constraints in tests
+        if (string.IsNullOrEmpty(rawName))
+        {
+            rawName = cmd.GetType().GetCustomAttribute<CommandAttribute>()?.RawName;
+        }
+
         if (string.IsNullOrEmpty(rawName) || rawName.Length != 4)
         {
             throw new InvalidOperationException($"Command {cmd.GetType().Name} does not have a valid raw name");
         }
 
-        var payload = cmd.Serialize(_protocolVersion);
+        var payload = cmd.Serialize(ProtocolVersion);
 
         var totalLength = payload.Length + Constants.AtemConstants.CommandHeaderSize;
 

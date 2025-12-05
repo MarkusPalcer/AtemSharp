@@ -16,6 +16,8 @@ public class AtemClientFake : IAtemClient
 
     public List<SerializedCommand> SentCommands { get; } = new();
 
+    public int DisposeCounter { get; set; }
+
     public void SuccessfullyConnect()
     {
         _connectTcs.TrySetResult();
@@ -77,6 +79,7 @@ public class AtemClientFake : IAtemClient
 
     ValueTask IAsyncDisposable.DisposeAsync()
     {
+        DisposeCounter++;
         SentCommands.Clear();
         return ValueTask.CompletedTask;
     }

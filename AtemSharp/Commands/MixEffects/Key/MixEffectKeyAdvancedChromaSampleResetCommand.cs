@@ -15,9 +15,21 @@ public partial class MixEffectKeyAdvancedChromaSampleResetCommand(UpstreamKeyer 
     private void SerializeInternal(byte[] buffer)
     {
         byte val = 0;
-        if (_resetKeyAdjustments) val |= 1 << 0;
-        if (_resetChromaCorrection) val |= 1 << 1;
-        if (_resetColorAdjustments) val |= 1 << 2;
+        if (_resetKeyAdjustments)
+        {
+            val |= 1 << 0;
+        }
+
+        if (_resetChromaCorrection)
+        {
+            val |= 1 << 1;
+        }
+
+        if (_resetColorAdjustments)
+        {
+            val |= 1 << 2;
+        }
+
         buffer.WriteUInt8(val, 3);
     }
 }

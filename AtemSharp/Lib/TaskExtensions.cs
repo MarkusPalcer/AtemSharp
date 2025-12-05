@@ -1,11 +1,13 @@
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Logging;
 
 namespace AtemSharp.Lib;
 
 public static class TaskExtensions
 {
-    public static async void FireAndForget(this Task task, ILogger logger, [CallerArgumentExpression(nameof(task))] string? name = null)
+    [ExcludeFromCodeCoverage(Justification="Untestable")]
+    public static async void FireAndForget(this Task task, [CallerArgumentExpression(nameof(task))] string? name = null)
     {
         try
         {
@@ -13,7 +15,7 @@ public static class TaskExtensions
         }
         catch (Exception e)
         {
-            logger.LogError(e, "{TaskExpression} threw exception", name);
+            Debug.WriteLine($"{name} threw exception\n{e.Message}\n{e.StackTrace}");
         }
     }
 }

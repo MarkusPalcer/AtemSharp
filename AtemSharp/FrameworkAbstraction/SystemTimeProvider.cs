@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace AtemSharp.FrameworkAbstraction;
 
 [ExcludeFromCodeCoverage(Justification="Testing this means testing the .NET framework")]
-public class SystemTimeProvider : ITimeProvider
+internal class SystemTimeProvider : ITimeProvider
 {
     public DateTime Now => DateTime.Now;
 

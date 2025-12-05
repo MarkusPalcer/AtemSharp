@@ -3,10 +3,10 @@
 using System.Diagnostics;
 using AtemSharp;
 using AtemSharp.Commands.Macro;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using Microsoft.Extensions.DependencyInjection;
 
-var lib = new Library();
+var serviceProvider = new ServiceCollection().AddAtemSharp().BuildServiceProvider();
+var lib = serviceProvider.GetRequiredService<IAtemSharpLibrary>();
 
 
 Console.WriteLine("=== AtemSharp Demo ===\n");
@@ -30,20 +30,6 @@ await Task.Delay(TimeSpan.FromSeconds(2), emergencyCts.Token);
 
 Console.WriteLine($"Executing Macro {atem.State.Macros.Macros[0].Name} ...");
 await atem.SendCommandAsync(new MacroActionCommand(atem.State.Macros.Macros[0], MacroAction.Run));
-
-var state = atem.State;
-
-// Serialize state to JSON
-var stateJson = JsonConvert.SerializeObject(state, Formatting.Indented, new JsonSerializerSettings { Converters = [new StringEnumConverter()], TypeNameHandling = TypeNameHandling.Auto});
-
-// Write state to file
-await File.WriteAllTextAsync("state.json", stateJson);
-Console.WriteLine($"State written to: {Path.GetFullPath("state.json")}");
-
-// Write unknown commands to file
-var unknownCommandsText = string.Join(Environment.NewLine, AtemSwitcher.UnknownCommands.Select(cmd => $"- {cmd}"));
-await File.WriteAllTextAsync("unknown_commands.txt", unknownCommandsText);
-Console.WriteLine($"Unknown commands written to: {Path.GetFullPath("unknown_commands.txt")}");
 
 Console.WriteLine("Disconnecting...");
 await atem.DisconnectAsync();

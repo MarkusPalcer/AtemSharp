@@ -5,8 +5,6 @@ namespace AtemSharp;
 
 public interface IAtemSwitcher : IAsyncDisposable
 {
-    event EventHandler<ConnectionStateChangedEventArgs>? ConnectionStateChanged;
-
     /// <summary>
     /// The state of the connection to the ATEM switcher
     /// </summary>

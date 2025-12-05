@@ -4,7 +4,7 @@ namespace AtemSharp.Tests.TestUtilities;
 
 public static class Utilities
 {
-    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(1);
+    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromMilliseconds(500);
 
 	/// <summary>
 	/// Wraps a Task&lt;T&gt; with a timeout to ensure test operations don't hang indefinitely.

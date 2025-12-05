@@ -14,6 +14,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Stryker", "Stryker", "{F27E
 		stryker-config.json = stryker-config.json
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.Extensions.DependencyInjection.AtemSharp", "Microsoft.Extensions.DependencyInjection.AtemSharp\Microsoft.Extensions.DependencyInjection.AtemSharp.csproj", "{3D93F976-2D53-4799-A941-847AE9FAF137}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtemSharp.Demo.DependencyInjection", "AtemSharp.Demo.DependencyInjection\AtemSharp.Demo.DependencyInjection.csproj", "{06A188AF-717F-43F7-8DFC-DAC30EFBC3F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +40,13 @@ Global
 		{9EF1781B-2590-49B4-9DFC-FFDCCF508F8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9EF1781B-2590-49B4-9DFC-FFDCCF508F8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9EF1781B-2590-49B4-9DFC-FFDCCF508F8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D93F976-2D53-4799-A941-847AE9FAF137}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D93F976-2D53-4799-A941-847AE9FAF137}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D93F976-2D53-4799-A941-847AE9FAF137}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D93F976-2D53-4799-A941-847AE9FAF137}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06A188AF-717F-43F7-8DFC-DAC30EFBC3F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06A188AF-717F-43F7-8DFC-DAC30EFBC3F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06A188AF-717F-43F7-8DFC-DAC30EFBC3F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06A188AF-717F-43F7-8DFC-DAC30EFBC3F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

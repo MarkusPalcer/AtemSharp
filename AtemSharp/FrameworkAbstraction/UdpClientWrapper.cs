@@ -5,7 +5,7 @@ using System.Net.Sockets;
 namespace AtemSharp.FrameworkAbstraction;
 
 [ExcludeFromCodeCoverage(Justification="Testing this means testing the .NET framework")]
-public sealed class UdpClientWrapper : IUdpClient
+internal sealed class UdpClientWrapper : IUdpClient
 {
     private readonly UdpClient _udpClient = new();
 

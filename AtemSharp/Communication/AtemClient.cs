@@ -1,31 +1,33 @@
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks.Dataflow;
 using AtemSharp.Commands;
+using AtemSharp.Commands.DeviceProfile;
 using AtemSharp.Constants;
+using AtemSharp.DependencyInjection;
 using AtemSharp.Lib;
-using Microsoft.Extensions.Logging;
 
 namespace AtemSharp.Communication;
 
 /// <summary>
 /// Sends and receives commands to a ATEM Mixer
 /// </summary>
-internal class AtemClient(ILoggerFactory loggerFactory, Func<IAtemProtocol> protocolFactory, IActionLoopFactory actionLoopFactory)
+internal class AtemClient(IServices services)
     : IAtemClient
 {
-    private readonly CommandParser _commandParser = new();
+    private readonly ICommandParser _commandParser = services.CreateCommandParser();
+    private readonly IPacketBuilder _packetBuilder = services.CreatePacketBuilder();
+    private readonly ConcurrentDictionary<int, TaskCompletionSource> _commandAckSources = new();
+    private readonly SemaphoreSlim _sendLock = new(1);
 
     internal AtemSharp.ConnectionState State = AtemSharp.ConnectionState.Disconnected;
-
     private int _nextPacketTrackingId;
     private IPEndPoint _remoteEndpoint = new(IPAddress.None, 0);
     private IAtemProtocol? _protocol;
-    private ActionLoop? _receiveLoop;
-    private ActionLoop? _ackLoop;
-    private readonly ConcurrentDictionary<int, TaskCompletionSource> _commandAckSources = new();
+    private IActionLoop? _receiveLoop;
+    private IActionLoop? _ackLoop;
     private BufferBlock<IDeserializedCommand> _receivedCommands = new();
-    private readonly ILogger<AtemClient> _logger = loggerFactory.CreateLogger<AtemClient>();
 
     public IReceivableSourceBlock<IDeserializedCommand> ReceivedCommands => _receivedCommands;
 
@@ -45,13 +47,13 @@ internal class AtemClient(ILoggerFactory loggerFactory, Func<IAtemProtocol> prot
 
         _remoteEndpoint = new IPEndPoint(IPAddress.Parse(address), port);
 
-        _receivedCommands = new();
+        _receivedCommands = new BufferBlock<IDeserializedCommand>();
 
-        _protocol = protocolFactory();
+        _protocol = services.CreateAtemProtocol();
         await _protocol.ConnectAsync(_remoteEndpoint);
 
-        _receiveLoop = actionLoopFactory.Start(ReceivePacketLoop, _logger);
-        _ackLoop = actionLoopFactory.Start(AckLoop, _logger);
+        _receiveLoop = services.StartActionLoop(ReceivePacketLoop);
+        _ackLoop = services.StartActionLoop(AckLoop);
 
         State = AtemSharp.ConnectionState.Connected;
     }
@@ -101,6 +103,20 @@ internal class AtemClient(ILoggerFactory loggerFactory, Func<IAtemProtocol> prot
 
     public async Task SendCommandsAsync(IEnumerable<SerializedCommand> commands)
     {
+        await _sendLock.WaitAsync();
+
+        try
+        {
+            await SendCommandsAsyncInternal(commands);
+        }
+        finally
+        {
+            _sendLock.Release();
+        }
+    }
+
+    private async Task SendCommandsAsyncInternal(IEnumerable<SerializedCommand> commands)
+    {
         if (State != AtemSharp.ConnectionState.Connected)
         {
             throw new InvalidOperationException("Cannot send data while not connected");
@@ -108,13 +124,13 @@ internal class AtemClient(ILoggerFactory loggerFactory, Func<IAtemProtocol> prot
 
         commands = commands.ToArray();
 
-        var packetBuilder = new PacketBuilder(_commandParser.Version);
+        _packetBuilder.ProtocolVersion = _commandParser.Version;
         foreach (var command in commands)
         {
-            packetBuilder.AddCommand(command);
+            _packetBuilder.AddCommand(command);
         }
 
-        var packets = packetBuilder.GetPackets().Select(buffer => new AtemPacket(buffer)
+        var packets = _packetBuilder.GetPackets().Select(buffer => new AtemPacket(buffer)
         {
             TrackingId = Interlocked.Increment(ref _nextPacketTrackingId),
             Flags = PacketFlag.AckRequest
@@ -185,14 +201,20 @@ internal class AtemClient(ILoggerFactory loggerFactory, Func<IAtemProtocol> prot
             {
                 // Try to parse the command using CommandParser
                 var command = _commandParser.ParseCommand(rawName, commandData);
+                if (command is VersionCommand versionCommand)
+                {
+                    _packetBuilder.ProtocolVersion = versionCommand.Version;
+                    _commandParser.Version = versionCommand.Version;
+                }
+
                 if (command != null)
                 {
-                    _receivedCommands.SendAsync(command, token).FireAndForget(_logger);
+                    _receivedCommands.SendAsync(command, token).FireAndForget();
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while processing command");
+                Debug.WriteLine($"Error while processing command\n{ex.Message}\n{ex.StackTrace}");
             }
 
             // Move to next command

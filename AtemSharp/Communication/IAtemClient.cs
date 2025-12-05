@@ -4,7 +4,7 @@ using AtemSharp.Constants;
 
 namespace AtemSharp.Communication;
 
-internal interface IAtemClient : IAsyncDisposable
+public interface IAtemClient : IAsyncDisposable
 {
     IReceivableSourceBlock<IDeserializedCommand> ReceivedCommands { get; }
 
