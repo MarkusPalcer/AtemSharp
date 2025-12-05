@@ -122,18 +122,17 @@ public class AtemPacket
         Length = (ushort)(PacketHeaderSize + Payload.Length);
 
         var buffer = new byte[Length];
-        var bufferSpan = buffer.AsSpan();
 
         // Write header using BinaryPrimitives for big-endian writing
         // Encode flags in upper 5 bits of first byte, length in lower 11 bits
         // Stryker disable once bitwise: >> and >>> do the same for unsigned types
-        bufferSpan[0] = (byte)(((int)Flags << 3) | ((Length >> 8) & 0x07)); // First byte: upper 5 bits flags + upper 3 bits of length
-        bufferSpan[1] = (byte)(Length & 0xFF); // Second byte: lower 8 bits of length
-        bufferSpan.WriteUInt16BigEndian(2, SessionId);
-        bufferSpan.WriteUInt16BigEndian(4, AckPacketId);
-        bufferSpan.WriteUInt16BigEndian(6, RetransmitFromPacketId);
+        buffer[0] = (byte)(((int)Flags << 3) | ((Length >> 8) & 0x07)); // First byte: upper 5 bits flags + upper 3 bits of length
+        buffer[1] = (byte)(Length & 0xFF); // Second byte: lower 8 bits of length
+        buffer.WriteUInt16BigEndian(SessionId, 2);
+        buffer.WriteUInt16BigEndian(AckPacketId, 4);
+        buffer.WriteUInt16BigEndian(RetransmitFromPacketId, 6);
         // Bytes 8-9 remain zero (reserved)
-        bufferSpan.WriteUInt16BigEndian(10, PacketId);
+        buffer.WriteUInt16BigEndian(PacketId, 10);
 
         Payload.CopyTo(buffer, PacketHeaderSize);
 

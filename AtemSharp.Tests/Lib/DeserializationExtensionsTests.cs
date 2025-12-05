@@ -38,36 +38,6 @@ public class DeserializationExtensionsTests
     }
 
     [Test]
-    public void WriteUInt16BigEndian_ShouldWriteCorrectBytes()
-    {
-        // Arrange
-        var data = new byte[4];
-        var span = data.AsSpan();
-
-        // Act
-        span.WriteUInt16BigEndian(0, 0x1234);
-        span.WriteUInt16BigEndian(2, 0x5678);
-
-        // Assert
-        Assert.That(data, Is.EqualTo(new byte[] { 0x12, 0x34, 0x56, 0x78 }));
-    }
-
-    [Test]
-    public void WriteUInt32BigEndian_ShouldWriteCorrectBytes()
-    {
-        // Arrange
-        var data = new byte[8];
-        var span = data.AsSpan();
-
-        // Act
-        span.WriteUInt32BigEndian(0, 0x12345678U);
-        span.WriteUInt32BigEndian(4, 0xABCDEF00U);
-
-        // Assert
-        Assert.That(data, Is.EqualTo(new byte[] { 0x12, 0x34, 0x56, 0x78, 0xAB, 0xCD, 0xEF, 0x00 }));
-    }
-
-    [Test]
     public void ReadInt16BigEndian_ShouldReadSignedValues()
     {
         // Arrange
@@ -81,21 +51,6 @@ public class DeserializationExtensionsTests
         // Assert
         Assert.That(value1, Is.EqualTo(-32768));
         Assert.That(value2, Is.EqualTo(32767));
-    }
-
-    [Test]
-    public void WriteInt16BigEndian_ShouldWriteSignedValues()
-    {
-        // Arrange
-        var data = new byte[4];
-        var span = data.AsSpan();
-
-        // Act
-        span.WriteInt16BigEndian(0, -32768);
-        span.WriteInt16BigEndian(2, 32767);
-
-        // Assert
-        Assert.That(data, Is.EqualTo(new byte[] { 0x80, 0x00, 0x7F, 0xFF }));
     }
 
     [Test]
@@ -123,15 +78,15 @@ public class DeserializationExtensionsTests
         // Arrange
         var buffer = new byte[12];
         var writeSpan = buffer.AsSpan();
-        
+
         const ushort testUShort = 0x1234;
         const uint testUInt = 0xABCDEF00;
         const short testShort = -12345;
 
         // Act - Write values
-        writeSpan.WriteUInt16BigEndian(0, testUShort);
-        writeSpan.WriteUInt32BigEndian(2, testUInt);
-        writeSpan.WriteInt16BigEndian(6, testShort);
+        buffer.WriteUInt16BigEndian(testUShort, 0);
+        buffer.WriteUInt32BigEndian(testUInt, 2);
+        buffer.WriteInt16BigEndian(testShort, 6);
 
         // Act - Read values back
         ReadOnlySpan<byte> readSpan = buffer;

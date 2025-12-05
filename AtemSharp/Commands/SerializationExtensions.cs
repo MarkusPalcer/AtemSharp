@@ -1,4 +1,5 @@
 using System.Buffers.Binary;
+using System.Text;
 
 namespace AtemSharp.Commands;
 
@@ -127,13 +128,17 @@ public static class SerializationExtensions
 
     public static void WriteString(this byte[] self, string value, int offset)
     {
-        var bytes = System.Text.Encoding.UTF8.GetBytes(value);
+        var bytes = Encoding.UTF8.GetBytes(value);
         Array.Copy(bytes, 0, self, offset, bytes.Length);
     }
 
     public static void WriteString(this byte[] buffer, string? value, int offset, int maxLength)
     {
-        buffer.AsSpan().Slice(offset, maxLength).WriteString(value ?? string.Empty, 0, maxLength);
+        var tempQualifier = buffer.AsSpan().Slice(offset, maxLength);
+        var dataBytes = Encoding.UTF8.GetBytes(value ?? string.Empty);
+        var copyLength = Math.Min(dataBytes.Length, maxLength - 1);
+        dataBytes[..copyLength].CopyTo(tempQualifier[..copyLength]);
+        tempQualifier[copyLength] = 0;
     }
 
     public static void WriteBlob(this byte[] buffer, byte[] decodedHash, int offset, int maxLength)
