@@ -11,13 +11,15 @@ namespace AtemSharp.Communication;
 /// <summary>
 /// Sends and receives commands to a ATEM Mixer
 /// </summary>
-internal class AtemClient(ILoggerFactory loggerFactory) : IAtemClient
+internal class AtemClient(ILoggerFactory loggerFactory, Func<IAtemProtocol> protocolFactory, IActionLoopFactory actionLoopFactory)
+    : IAtemClient
 {
     private readonly CommandParser _commandParser = new();
 
+    internal AtemSharp.ConnectionState State = AtemSharp.ConnectionState.Disconnected;
+
     private int _nextPacketTrackingId;
-    private bool _isDisconnecting;
-    private IPEndPoint _remoteEndpoint =  new(IPAddress.None, 0);
+    private IPEndPoint _remoteEndpoint = new(IPAddress.None, 0);
     private IAtemProtocol? _protocol;
     private ActionLoop? _receiveLoop;
     private ActionLoop? _ackLoop;
@@ -27,116 +29,69 @@ internal class AtemClient(ILoggerFactory loggerFactory) : IAtemClient
 
     public IReceivableSourceBlock<IDeserializedCommand> ReceivedCommands => _receivedCommands;
 
-    public async Task Connect(string address, int port)
+    public async Task ConnectAsync(string address, int port = AtemConstants.DefaultPort)
     {
-        _isDisconnecting = false;
+        switch (State)
+        {
+            case AtemSharp.ConnectionState.Connecting:
+                throw new InvalidOperationException("Can't connect while already connecting");
+            case AtemSharp.ConnectionState.Connected:
+                throw new InvalidOperationException("Can't connect while already connected");
+            case AtemSharp.ConnectionState.Disconnecting:
+                throw new InvalidOperationException("Can't connect while disconnecting");
+        }
+
+        State = AtemSharp.ConnectionState.Connecting;
 
         _remoteEndpoint = new IPEndPoint(IPAddress.Parse(address), port);
 
-        if (_protocol is null)
-        {
-            _protocol = new AtemProtocol(loggerFactory.CreateLogger<AtemProtocol>());
-
-            if (_isDisconnecting || _protocol is null)
-            {
-                throw new InvalidOperationException("Disconnecting");
-            }
-        }
-
-        _commandAckSources.Clear();
         _receivedCommands = new();
-        _receiveLoop = ActionLoop.Start(DoReceivePacketLoop, _logger);
-        _ackLoop = ActionLoop.Start(DoAckLoop, _logger);
-        await _protocol.ConnectAsync(_remoteEndpoint);
-    }
 
-    private async Task DoAckLoop(CancellationToken cts)
-    {
-        var ackedId = await _protocol!.AckedTrackingIds.ReceiveAsync(cts);
-        if (!_commandAckSources.Remove(ackedId, out var tcs)) return;
-        tcs.TrySetResult();
+        _protocol = protocolFactory();
+        await _protocol.ConnectAsync(_remoteEndpoint);
+
+        _receiveLoop = actionLoopFactory.Start(ReceivePacketLoop, _logger);
+        _ackLoop = actionLoopFactory.Start(AckLoop, _logger);
+
+        State = AtemSharp.ConnectionState.Connected;
     }
 
     public async Task DisconnectAsync()
     {
-        await (_receiveLoop?.Cancel() ?? Task.CompletedTask);
-        await (_ackLoop?.Cancel() ?? Task.CompletedTask);
-
-        if (_protocol is not null)
+        switch (State)
         {
-            try
-            {
-                await _protocol.DisconnectAsync();
-                await _protocol.DisposeAsync();
-            }
-            catch (Exception)
-            {
-                // Ignore Exceptions
-            }
-
-            _protocol = null;
+            case AtemSharp.ConnectionState.Disconnected:
+                throw new InvalidOperationException("Can't disconnect while not connected");
+            case AtemSharp.ConnectionState.Connecting:
+                throw new InvalidOperationException("Can't disconnect while connecting");
+            case AtemSharp.ConnectionState.Disconnecting:
+                throw new InvalidOperationException("Can't disconnect while already disconnecting");
         }
-    }
 
-    private async Task DoReceivePacketLoop(CancellationToken token)
-    {
-        var packet = await _protocol!.ReceivedPackets.ReceiveAsync(token);
+        State = AtemSharp.ConnectionState.Disconnecting;
+
+        await _receiveLoop!.Cancel();
+        await _ackLoop!.Cancel();
 
         try
         {
-            // Extract commands from packet payload and apply to state
-            // Based on TypeScript atemSocket.ts _parseCommands method (lines 181-217)
-            var payload = packet.Payload;
-            var offset = 0;
-
-            // Parse all commands in the packet payload
-            while (offset + AtemConstants.CommandHeaderSize <= payload.Length)
-            {
-                // Extract command header (8 bytes: length, reserved, rawName)
-                var commandLength = (payload[offset] << 8) | payload[offset + 1]; // Big-endian 16-bit
-                // Skip reserved bytes (offset + 2, offset + 3)
-                var rawName = System.Text.Encoding.ASCII.GetString(payload, offset + 4, 4);
-
-                // Validate command length
-                if (commandLength < AtemConstants.CommandHeaderSize)
-                {
-                    // Commands are never less than 8 bytes (header size)
-                    break;
-                }
-
-                if (offset + commandLength > payload.Length)
-                {
-                    // Command extends beyond payload - malformed packet
-                    break;
-                }
-
-                // Extract command data (excluding the 8-byte header)
-                var commandDataStart = offset + AtemConstants.CommandHeaderSize;
-                var commandDataLength = commandLength - AtemConstants.CommandHeaderSize;
-                var commandData = new Span<byte>(payload, commandDataStart, commandDataLength);
-
-                try
-                {
-                    // Try to parse the command using CommandParser
-                    var command = _commandParser.ParseCommand(rawName, commandData);
-                    if (command != null)
-                    {
-                        _receivedCommands.SendAsync(command, token).FireAndForget(_logger);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Error while processing command");
-                }
-
-                // Move to next command
-                offset += commandLength;
-            }
+            await _protocol!.DisconnectAsync();
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            _logger.LogError(ex, "Error processing packet {Data}", BitConverter.ToString(packet.Payload));
+            // Ignore Exceptions
         }
+
+        await _protocol!.DisposeAsync();
+
+        _protocol = null;
+
+        foreach (var (_, tcs) in _commandAckSources)
+        {
+            tcs.TrySetCanceled();
+        }
+
+        State = AtemSharp.ConnectionState.Disconnected;
     }
 
     public async Task SendCommandAsync(SerializedCommand command)
@@ -146,7 +101,12 @@ internal class AtemClient(ILoggerFactory loggerFactory) : IAtemClient
 
     public async Task SendCommandsAsync(IEnumerable<SerializedCommand> commands)
     {
-        if (_protocol is null) throw new InvalidOperationException("Socket process is not open");
+        if (State != AtemSharp.ConnectionState.Connected)
+        {
+            throw new InvalidOperationException("Cannot send data while not connected");
+        }
+
+        commands = commands.ToArray();
 
         var packetBuilder = new PacketBuilder(_commandParser.Version);
         foreach (var command in commands)
@@ -169,21 +129,86 @@ internal class AtemClient(ILoggerFactory loggerFactory) : IAtemClient
             ackTcs.Add(taskCompletionSource);
         }
 
-        if (packets.Length > 0)
-        {
-            await _protocol.SendPacketsAsync(packets);
-        }
+        await _protocol!.SendPacketsAsync(packets);
 
         await Task.WhenAll(ackTcs.Select(t => t.Task));
     }
 
-    public async Task ConnectAsync(string address, int port = AtemConstants.DefaultPort, CancellationToken cancellationToken = default)
+    private async Task AckLoop(CancellationToken cts)
     {
-        await Connect(address, port);
+        var ackedId = await _protocol!.AckedTrackingIds.ReceiveAsync(cts);
+
+        if (!_commandAckSources.Remove(ackedId, out var tcs))
+        {
+            return;
+        }
+
+        tcs.TrySetResult();
+    }
+
+    private async Task ReceivePacketLoop(CancellationToken token)
+    {
+        var packet = await _protocol!.ReceivedPackets.ReceiveAsync(token);
+
+        // Extract commands from packet payload and apply to state
+        // Based on TypeScript atemSocket.ts _parseCommands method (lines 181-217)
+        var payload = packet.Payload;
+        var offset = 0;
+
+        // Parse all commands in the packet payload
+        while (offset + AtemConstants.CommandHeaderSize <= payload.Length)
+        {
+            // Extract command header (8 bytes: length, reserved, rawName)
+            var commandLength = (payload[offset] << 8) | payload[offset + 1]; // Big-endian 16-bit
+            // Skip reserved bytes (offset + 2, offset + 3)
+            var rawName = System.Text.Encoding.ASCII.GetString(payload, offset + 4, 4);
+
+            // Validate command length
+            if (commandLength < AtemConstants.CommandHeaderSize)
+            {
+                // Commands are never less than 8 bytes (header size)
+                break;
+            }
+
+            if (offset + commandLength > payload.Length)
+            {
+                // Command extends beyond payload - malformed packet
+                break;
+            }
+
+            // Extract command data (excluding the 8-byte header)
+            var commandDataStart = offset + AtemConstants.CommandHeaderSize;
+            var commandDataLength = commandLength - AtemConstants.CommandHeaderSize;
+            var commandData = new Span<byte>(payload, commandDataStart, commandDataLength);
+
+            try
+            {
+                // Try to parse the command using CommandParser
+                var command = _commandParser.ParseCommand(rawName, commandData);
+                if (command != null)
+                {
+                    _receivedCommands.SendAsync(command, token).FireAndForget(_logger);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while processing command");
+            }
+
+            // Move to next command
+            offset += commandLength;
+        }
     }
 
     public async ValueTask DisposeAsync()
     {
-        await DisconnectAsync();
+        try
+        {
+            await DisconnectAsync();
+        }
+        catch (InvalidOperationException)
+        {
+            // NOP
+        }
     }
 }

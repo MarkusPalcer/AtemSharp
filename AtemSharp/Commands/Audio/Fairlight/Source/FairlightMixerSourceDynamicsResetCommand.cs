@@ -16,10 +16,25 @@ public partial class FairlightMixerSourceDynamicsResetCommand(State.Audio.Fairli
     private void SerializeInternal(byte[] buffer)
     {
         byte val = 0;
-        if (ResetDynamics) val |= 1 << 0;
-        if (ResetExpander) val |= 1 << 1;
-        if (ResetCompressor) val |= 1 << 2;
-        if (ResetLimiter) val |= 1 << 3;
+        if (ResetDynamics)
+        {
+            val |= 1 << 0;
+        }
+
+        if (ResetExpander)
+        {
+            val |= 1 << 1;
+        }
+
+        if (ResetCompressor)
+        {
+            val |= 1 << 2;
+        }
+
+        if (ResetLimiter)
+        {
+            val |= 1 << 3;
+        }
 
         buffer.WriteUInt8(val, 17);
     }

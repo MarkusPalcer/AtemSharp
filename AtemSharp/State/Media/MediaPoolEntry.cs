@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Media;
 
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class MediaPoolEntry : ArrayItem
 {
     internal override void SetId(int id) => Id = (byte)id;

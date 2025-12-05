@@ -8,8 +8,10 @@ internal class ActionLoop
     private readonly Func<CancellationToken, Task> _loopedAction;
     private readonly string _name;
     private readonly ILogger _logger;
-    private readonly CancellationTokenSource _cancellationTokenSource  = new();
+    private readonly CancellationTokenSource _cancellationTokenSource = new();
     private readonly TaskCompletionSource _taskCompletionSource = new();
+
+    internal bool IsRunning { get; private set; }
 
     private ActionLoop(Func<CancellationToken, Task> loopedAction, string name, ILogger logger)
     {
@@ -18,62 +20,59 @@ internal class ActionLoop
         _logger = logger;
     }
 
-    public static ActionLoop Start(Func<CancellationToken, Task> loopedAction, ILogger logger, [CallerArgumentExpression(nameof(loopedAction))] string name = null!)
+    public class Factory : IActionLoopFactory
     {
-        var result = new ActionLoop(loopedAction, name, logger);
-        result.Loop();
-        return result;
+        public ActionLoop Start(Func<CancellationToken, Task> loopedAction, ILogger logger,
+                                [CallerArgumentExpression(nameof(loopedAction))]
+                                string name = null!)
+        {
+            var result = new ActionLoop(loopedAction, name, logger);
+            result.Loop();
+            return result;
+        }
     }
 
-    public static ActionLoop Start(Action<CancellationToken> loopedAction, ILogger logger, [CallerArgumentExpression(nameof(loopedAction))] string name = null!)
-    {
-        var result = new ActionLoop(cts =>
-        {
-            loopedAction(cts);
-            return Task.CompletedTask;
-        }, name, logger);
-        result.Loop();
-        return result;
-    }
 
     private async void Loop()
     {
-        _logger.LogDebug("ActionLoop {Name} started",  _name);
+        _logger.LogDebug("ActionLoop {Name} started", _name);
+        IsRunning = true;
 
-        while (!_cancellationTokenSource.IsCancellationRequested)
+        try
         {
-            try
+            while (!_cancellationTokenSource.IsCancellationRequested)
             {
-                await _loopedAction(_cancellationTokenSource.Token);
+                try
+                {
+                    await _loopedAction(_cancellationTokenSource.Token);
+                }
+                catch (OperationCanceledException)
+                {
+                    // NOP
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "ActionLoop {Name} stopped due to exception", _name);
+                    return;
+                }
             }
-            catch (OperationCanceledException)
-            {
-                // NOP
-            }
-            catch (Exception ex)
-            {
-                _taskCompletionSource.TrySetResult();
-                _logger.LogError(ex, "ActionLoop {Name} stopped due to exception",  _name);
-                return;
-            }
-        }
 
-        _logger.LogDebug("ActionLoop {Name} finished",  _name);
-        _taskCompletionSource.TrySetResult();
+            _logger.LogDebug("ActionLoop {Name} finished", _name);
+        }
+        finally
+        {
+            IsRunning = false;
+            _taskCompletionSource.TrySetResult();
+        }
     }
 
     public async Task Cancel()
     {
-        _logger.LogDebug("ActionLoop {Name} shutting down",  _name);
+        _logger.LogDebug("ActionLoop {Name} shutting down", _name);
+
         await _cancellationTokenSource.CancelAsync();
-        try
-        {
-            await _taskCompletionSource.Task;
-        }
-        catch (OperationCanceledException)
-        {
-            // Expected
-        }
-        _logger.LogDebug("ActionLoop {Name} shut down complete",  _name);
+        await _taskCompletionSource.Task;
+
+        _logger.LogDebug("ActionLoop {Name} shut down complete", _name);
     }
 }

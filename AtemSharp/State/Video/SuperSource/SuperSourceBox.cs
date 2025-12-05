@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 
 namespace AtemSharp.State.Video.SuperSource;
 
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class SuperSourceBox
 {
     public byte SuperSourceId { get; internal set; }

@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Info;
 
 /// <summary>
 /// Information about the audio mixer capabilities
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class AudioMixerInfo : MixerInfo
 {
     /// <summary>

@@ -8,18 +8,18 @@ namespace AtemSharp.State;
 /// </summary>
 public static class AtemStateUtil
 {
-    public static T[] CreateArray<T>(int length) where T : ArrayItem, new()
+    private static IEnumerable<T> CreateEnumerable<T>(int length) where T : ArrayItem, new()
     {
-        if (length <= 0) return [];
-
-        var result = Enumerable.Repeat(() => new T(), length).Select(x => x()).ToArray();
-        foreach (var (value, id) in result.Select((x, i) => (x, i)))
+        for (var i = 0; i < length; i++)
         {
-            value.SetId(id);
+            var value = new T();
+            value.SetId(i);
+            yield return value;
         }
-
-        return result;
     }
+
+    public static T[] CreateArray<T>(int length) where T : ArrayItem, new()
+        => CreateEnumerable<T>(length).ToArray();
 
     public static void ExpandToFit<T>(this IList<T> self, uint id) where T : ArrayItem, new()
     {
@@ -42,7 +42,11 @@ public static class AtemStateUtil
     {
         ArgumentNullException.ThrowIfNull(dict);
 
-        if (dict.TryGetValue(index, out var value)) return value;
+        if (dict.TryGetValue(index, out var value))
+        {
+            return value;
+        }
+
         value = new TValue();
         dict[index] = value;
         return value;

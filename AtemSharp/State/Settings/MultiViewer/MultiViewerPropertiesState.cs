@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Settings.MultiViewer;
 
 /// <summary>
 /// Properties for MultiViewer configuration
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class MultiViewerPropertiesState
 {
 	/// <summary>

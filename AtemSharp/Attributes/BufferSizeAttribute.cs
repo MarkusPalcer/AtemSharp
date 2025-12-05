@@ -7,6 +7,7 @@ namespace AtemSharp.Attributes;
 /// </summary>
 [AttributeUsage(AttributeTargets.Class)]
 [SuppressMessage("ReSharper", "UnusedParameter.Local")]
+[ExcludeFromCodeCoverage]
 public class BufferSizeAttribute : Attribute
 {
     public BufferSizeAttribute(int size)

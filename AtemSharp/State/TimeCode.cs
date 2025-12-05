@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State;
 
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class TimeCode
 {
     public byte Hours { get; internal set; }

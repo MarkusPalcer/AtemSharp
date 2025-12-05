@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Info;
 
 /// <summary>
 /// Media pool configuration and capabilities
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class MediaPoolInfo
 {
     /// <summary>

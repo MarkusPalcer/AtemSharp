@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Audio.Fairlight;
 
 /// <summary>
 /// Fairlight audio state for ATEM devices with Fairlight audio support
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class FairlightAudioState : AudioState
 {
     /// <summary>

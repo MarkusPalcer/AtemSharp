@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Settings.MultiViewer;
 
 /// <summary>
 /// MultiViewer configuration and state
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class MultiViewer : ArrayItem
 {
     internal override void SetId(int id) => Id = (byte)id;

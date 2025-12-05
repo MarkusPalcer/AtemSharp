@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Audio.ClassicAudio;
 
 /// <summary>
 /// Classic audio master channel properties
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class ClassicAudioMasterChannel
 {
     /// <summary>

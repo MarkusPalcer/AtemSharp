@@ -11,6 +11,7 @@ namespace AtemSharp.Attributes;
 /// </remarks>
 [AttributeUsage(AttributeTargets.Field)]
 [SuppressMessage("ReSharper", "UnusedParameter.Local")]
+[ExcludeFromCodeCoverage]
 public class CustomSerializationAttribute : Attribute
 {
     /// <summary>

@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Settings.MultiViewer;
 
 /// <summary>
 /// Represents the full state of a MultiViewer window, extending the source configuration with display options
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class MultiViewerWindowState
 {
     public byte MultiViewerId { get; internal set; }

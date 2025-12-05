@@ -101,50 +101,6 @@ public static class DeserializationExtensions
         return BinaryPrimitives.ReadInt32BigEndian(span.Slice(offset, sizeof(int)));
     }
 
-    /// <summary>
-    /// Writes a big-endian UInt16 to the specified offset in the span
-    /// </summary>
-    /// <param name="span">The span to write to</param>
-    /// <param name="offset">The offset to start writing at</param>
-    /// <param name="value">The value to write</param>
-    public static void WriteUInt16BigEndian(this Span<byte> span, int offset, ushort value)
-    {
-        BinaryPrimitives.WriteUInt16BigEndian(span.Slice(offset, sizeof(ushort)), value);
-    }
-
-    /// <summary>
-    /// Writes a big-endian UInt32 to the specified offset in the span
-    /// </summary>
-    /// <param name="span">The span to write to</param>
-    /// <param name="offset">The offset to start writing at</param>
-    /// <param name="value">The value to write</param>
-    public static void WriteUInt32BigEndian(this Span<byte> span, int offset, uint value)
-    {
-        BinaryPrimitives.WriteUInt32BigEndian(span.Slice(offset, sizeof(uint)), value);
-    }
-
-    /// <summary>
-    /// Writes a big-endian Int16 to the specified offset in the span
-    /// </summary>
-    /// <param name="span">The span to write to</param>
-    /// <param name="offset">The offset to start writing at</param>
-    /// <param name="value">The value to write</param>
-    public static void WriteInt16BigEndian(this Span<byte> span, int offset, short value)
-    {
-        BinaryPrimitives.WriteInt16BigEndian(span.Slice(offset, sizeof(short)), value);
-    }
-
-    /// <summary>
-    /// Writes a big-endian Int32 to the specified offset in the span
-    /// </summary>
-    /// <param name="span">The span to write to</param>
-    /// <param name="offset">The offset to start writing at</param>
-    /// <param name="value">The value to write</param>
-    public static void WriteInt32BigEndian(this Span<byte> span, int offset, int value)
-    {
-        BinaryPrimitives.WriteInt32BigEndian(span.Slice(offset, sizeof(int)), value);
-    }
-
     public static string ReadString(this ReadOnlySpan<byte> span, int offset, int maxLength)
     {
         var subSpan = span.Slice(offset, maxLength);
@@ -157,14 +113,6 @@ public static class DeserializationExtensions
         }
 
         return Encoding.UTF8.GetString(subSpan);
-    }
-
-    public static void WriteString(this Span<byte> buffer, string value, int offset, int maxLength)
-    {
-        var dataBytes = Encoding.UTF8.GetBytes(value);
-        var copyLength = Math.Min(dataBytes.Length, maxLength - 1);
-        dataBytes[..copyLength].CopyTo(buffer.Slice(offset, copyLength));
-        buffer[copyLength] = 0;
     }
 
     /// <summary>

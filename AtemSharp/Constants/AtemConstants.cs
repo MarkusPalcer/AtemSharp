@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.Constants;
 
 /// <summary>
 /// ATEM connection constants
 /// </summary>
+[ExcludeFromCodeCoverage]
 public static class AtemConstants
 {
     /// <summary>
@@ -23,7 +26,7 @@ public static class AtemConstants
     /// <summary>
     /// Size of ATEM command header in bytes
     /// </summary>
-    public const int CommandHeaderSize = 8;
+    public const ushort CommandHeaderSize = 8;
 
     /// <summary>
     /// Maximum packet ID before wrapping (15-bit, not 16-bit)
@@ -38,10 +41,10 @@ public static class AtemConstants
     /// <summary>
     /// Hello packet data for connection initiation
     /// </summary>
-    public static readonly byte[] HelloPacket = new byte[]
-    {
+    public static readonly byte[] HelloPacket =
+    [
         0x10, 0x14, 0x53, 0xab, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x3a, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00
-    };
+    ];
 }

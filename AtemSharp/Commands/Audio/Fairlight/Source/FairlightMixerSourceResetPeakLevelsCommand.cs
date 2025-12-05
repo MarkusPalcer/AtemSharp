@@ -15,9 +15,20 @@ public partial class FairlightMixerSourceResetPeakLevelsCommand(State.Audio.Fair
     private void SerializeInternal(byte[] buffer)
     {
         byte val = 0;
-        if (DynamicsInput) val |= 1 << 0;
-        if (DynamicsOutput) val |= 1 << 1;
-        if (Output) val |= 1 << 2;
+        if (DynamicsInput)
+        {
+            val |= 1 << 0;
+        }
+
+        if (DynamicsOutput)
+        {
+            val |= 1 << 1;
+        }
+
+        if (Output)
+        {
+            val |= 1 << 2;
+        }
 
         buffer.WriteUInt8(val, 17);
     }

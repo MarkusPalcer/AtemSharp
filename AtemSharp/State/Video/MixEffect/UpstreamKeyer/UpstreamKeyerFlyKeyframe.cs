@@ -1,8 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using AtemSharp.State.Border;
 
 namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class UpstreamKeyerFlyKeyframe
 {
     public byte UpstreamKeyerId { get; internal set; }

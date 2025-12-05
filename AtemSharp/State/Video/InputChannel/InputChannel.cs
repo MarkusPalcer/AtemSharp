@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State.Ports;
 
 namespace AtemSharp.State.Video.InputChannel;
@@ -5,6 +6,7 @@ namespace AtemSharp.State.Video.InputChannel;
 /// <summary>
 /// Input channel configuration and properties
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class InputChannel
 {
     /// <summary>

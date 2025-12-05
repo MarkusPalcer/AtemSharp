@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Video.MixEffect.Transition;
 
 /// <summary>
 /// Container for all transition settings for a mix effect
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class TransitionSettings
 {
     /// <summary>

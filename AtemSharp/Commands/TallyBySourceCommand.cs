@@ -35,7 +35,10 @@ public partial class TallyBySourceCommand : IDeserializedCommand
     {
         foreach (var tally in TallyBySource)
         {
-            if (!state.Video.Inputs.TryGetValue(tally.Source, out var inputChannel)) continue;
+            if (!state.Video.Inputs.TryGetValue(tally.Source, out var inputChannel))
+            {
+                continue;
+            }
 
             inputChannel.IsInProgram = tally.IsInProgram;
             inputChannel.IsInPreview = tally.IsInPreview;

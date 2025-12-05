@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 /// <summary>
 /// Upstream keyer state containing key properties and settings
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class UpstreamKeyer
 {
     public byte MixEffectId { get; internal set; }

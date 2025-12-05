@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Info;
 
 /// <summary>
 /// SuperSource configuration and capabilities
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class SuperSourceInfo : ArrayItem
 {
     internal override void SetId(int id) => Id = (byte)id;

@@ -10,6 +10,7 @@ namespace AtemSharp.Attributes;
 /// </remarks>
 [AttributeUsage(AttributeTargets.Field)]
 [SuppressMessage("ReSharper", "UnusedParameter.Local")]
+[ExcludeFromCodeCoverage]
 public class ValidationMethodAttribute : Attribute
 {
     public ValidationMethodAttribute(string methodName) {}

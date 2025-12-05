@@ -13,6 +13,7 @@ namespace AtemSharp.Attributes;
 /// </remarks>
 [AttributeUsage(AttributeTargets.Field)]
 [SuppressMessage("ReSharper", "UnusedParameter.Local")]
+[ExcludeFromCodeCoverage]
 public class ScalingFactorAttribute : Attribute
 {
     public ScalingFactorAttribute(double factor)

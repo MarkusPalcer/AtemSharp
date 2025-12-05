@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State.Settings;
 
 namespace AtemSharp.State.Info;
@@ -5,6 +6,7 @@ namespace AtemSharp.State.Info;
 /// <summary>
 /// Information about a supported video mode on the ATEM device
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class SupportedVideoMode
 {
     /// <summary>

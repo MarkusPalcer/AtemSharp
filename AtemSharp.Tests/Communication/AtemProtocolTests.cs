@@ -1,0 +1,377 @@
+using System.Net;
+using System.Threading.Tasks.Dataflow;
+using AtemSharp.Communication;
+using AtemSharp.Tests.TestUtilities;
+using Microsoft.Extensions.Logging;
+// ReSharper disable AccessToDisposedClosure to be reworked when switching to IServiceProvider
+
+namespace AtemSharp.Tests.Communication;
+
+[TestFixture]
+public class AtemProtocolTests
+{
+    private const ushort SessionId = 1234;
+
+    [Test]
+    public async Task Connect()
+    {
+        var time = new VirtualTime(DateTime.Now);
+        using var udpClient = new UdpClientFake();
+        using var loggerFactory = new LoggerFactory();
+        using TestActionLoopFactory actionLoopFactory = new();
+        await using var sut = new AtemProtocol(loggerFactory.CreateLogger<AtemProtocol>(), () => udpClient, time, actionLoopFactory);
+
+        var connectTask = sut.ConnectAsync(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9110));
+
+        var helloPacket = await udpClient.SentData.ReceiveAsync().WithTimeout();
+        Assert.Multiple(() =>
+        {
+            Assert.That(helloPacket, Is.EquivalentTo(AtemProtocol.CommandConnectHello));
+            Assert.That(connectTask.IsCompleted, Is.False);
+        });
+
+        await time.AdvanceBy(TimeSpan.FromMilliseconds(1));
+
+        var sessionPacket = new AtemPacket
+        {
+            Flags = PacketFlag.NewSessionId,
+            SessionId = SessionId
+        };
+
+        await udpClient.SimulateReceive(sessionPacket.ToBytes());
+
+        await connectTask.WithTimeout();
+
+        await time.AdvanceBy(TimeSpan.FromMilliseconds(1));
+
+        var ackPacket = AtemPacket.FromBytes(await udpClient.SentData.ReceiveAsync().WithTimeout());
+        Assert.Multiple(() =>
+        {
+            Assert.That(ackPacket.Flags, Is.EqualTo(PacketFlag.AckReply));
+            Assert.That(ackPacket.SessionId, Is.EqualTo(SessionId));
+        });
+
+        await time.AdvanceBy(TimeSpan.FromMilliseconds(1));
+    }
+
+    [Test]
+    public async Task Connect_WhileConnected()
+    {
+        var time = new VirtualTime(DateTime.Now);
+        using var udpClient = new UdpClientFake();
+        using var loggerFactory = new LoggerFactory();
+        using TestActionLoopFactory actionLoopFactory = new();
+
+        await using var sut = new AtemProtocol(loggerFactory.CreateLogger<AtemProtocol>(), () => udpClient, time, actionLoopFactory);
+        await EstablishConnection(sut, udpClient, time);
+
+        await time.AdvanceBy(TimeSpan.FromMilliseconds(1));
+
+        var ex = Assert.ThrowsAsync<InvalidOperationException>(() => sut.ConnectAsync(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9110)).WithTimeout());
+        Assert.That(ex.Message, Contains.Substring("Can only connect while not connected"));
+    }
+
+    [Test]
+    public async Task Disconnect_WhileDisconnected()
+    {
+        var time = new VirtualTime(DateTime.Now);
+        using var udpClient = new UdpClientFake();
+        using var loggerFactory = new LoggerFactory();
+        using TestActionLoopFactory actionLoopFactory = new();
+        await using var sut = new AtemProtocol(loggerFactory.CreateLogger<AtemProtocol>(), () => udpClient, time, actionLoopFactory);
+
+        await sut.DisconnectAsync().WithTimeout();
+    }
+
+    [Test]
+    public async Task SendPacket_HappyPath()
+    {
+        var time = new VirtualTime(DateTime.Now);
+        using var udpClient = new UdpClientFake();
+        using var loggerFactory = new LoggerFactory();
+        using TestActionLoopFactory actionLoopFactory = new();
+        await using var sut = new AtemProtocol(loggerFactory.CreateLogger<AtemProtocol>(), () => udpClient, time, actionLoopFactory);
+
+        await EstablishConnection(sut, udpClient, time);
+        byte[] payload = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+        var packetToSend = new AtemPacket
+        {
+            Flags = PacketFlag.AckRequest,
+            Payload = payload,
+            TrackingId = 42069
+        };
+
+        await sut.SendPacketsAsync([packetToSend]).WithTimeout();
+
+        await time.AdvanceBy(TimeSpan.FromMilliseconds(1));
+
+        var sentData = await udpClient.SentData.ReceiveAsync().WithTimeout();
+        var sentPacket = AtemPacket.FromBytes(sentData);
+
+        Assert.That(sentPacket.Payload, Is.EquivalentTo(payload));
+        Assert.That(sentPacket.Flags, Is.EqualTo(PacketFlag.AckRequest));
+        Assert.That(sentPacket.SessionId, Is.EqualTo(SessionId));
+
+        await time.AdvanceBy(TimeSpan.FromMilliseconds(1));
+
+        var ackPacket = AtemPacket.CreateAck(SessionId, sentPacket.PacketId);
+        await udpClient.SimulateReceive(ackPacket.ToBytes());
+
+        await time.AdvanceBy(TimeSpan.FromMilliseconds(1));
+
+        Assert.That(await sut.AckedTrackingIds.ReceiveAsync().WithTimeout(), Is.EqualTo(42069));
+    }
+
+    [Test]
+    public async Task PacketIdOverflow()
+    {
+        var time = new VirtualTime(DateTime.Now);
+        using var udpClient = new UdpClientFake();
+        using var loggerFactory = new LoggerFactory();
+        using TestActionLoopFactory actionLoopFactory = new();
+        await using var sut = new AtemProtocol(loggerFactory.CreateLogger<AtemProtocol>(), () => udpClient, time, actionLoopFactory);
+
+        await EstablishConnection(sut, udpClient, time);
+
+        List<ushort> packetIds = [];
+
+        for (var i = 0; i < AtemProtocol.MaxPacketId + 1; i++)
+        {
+            byte[] payload = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+            var packetToSend = new AtemPacket
+            {
+                Flags = PacketFlag.AckRequest,
+                Payload = payload,
+                TrackingId = 42069
+            };
+
+            await sut.SendPacketsAsync([packetToSend]).WithTimeout();
+
+            packetIds.Add(packetToSend.PacketId);
+        }
+
+        Assert.That(packetIds, Is.EquivalentTo(Enumerable.Range(1, AtemProtocol.MaxPacketId - 1).Concat([0, 1])));
+    }
+
+    [Test]
+    public async Task ReceiveCommand_HappyPath()
+    {
+        var time = new VirtualTime(DateTime.Now);
+        using var udpClient = new UdpClientFake();
+        using var loggerFactory = new LoggerFactory();
+        using TestActionLoopFactory actionLoopFactory = new();
+        await using var sut = new AtemProtocol(loggerFactory.CreateLogger<AtemProtocol>(), () => udpClient, time, actionLoopFactory);
+
+        await EstablishConnection(sut, udpClient, time);
+
+        byte[] payload = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+        var packetToReceive = new AtemPacket
+        {
+            PacketId = 1,
+            Flags = PacketFlag.AckRequest,
+            Payload = payload,
+            SessionId = SessionId
+        };
+
+        await udpClient.SimulateReceive(packetToReceive.ToBytes());
+
+        await time.AdvanceBy(TimeSpan.FromMilliseconds(1));
+
+        var receivedPacket = await sut.ReceivedPackets.ReceiveAsync().WithTimeout();
+        Assert.Multiple(() =>
+        {
+            Assert.That(receivedPacket.PacketId, Is.EqualTo(packetToReceive.PacketId));
+            Assert.That(receivedPacket.Flags, Is.EqualTo(PacketFlag.AckRequest));
+            Assert.That(receivedPacket.Payload, Is.EquivalentTo(payload));
+            Assert.That(receivedPacket.SessionId, Is.EqualTo(SessionId));
+        });
+
+        await time.AdvanceBy(AtemProtocol.AckDelay + TimeSpan.FromMilliseconds(1));
+
+        var ackPacket = AtemPacket.FromBytes(await udpClient.SentData.ReceiveAsync().WithTimeout());
+        Assert.Multiple(() =>
+        {
+            Assert.That(ackPacket.Flags, Is.EqualTo(PacketFlag.AckReply));
+            Assert.That(ackPacket.SessionId, Is.EqualTo(SessionId));
+            Assert.That(ackPacket.AckPacketId, Is.EqualTo(1));
+        });
+    }
+
+    [Test]
+    public async Task ReceiveCommand_ReceiveMultiple_OnlyAckOnce()
+    {
+        var time = new VirtualTime(DateTime.Now);
+        using var udpClient = new UdpClientFake();
+        using var loggerFactory = new LoggerFactory();
+        using TestActionLoopFactory actionLoopFactory = new();
+        await using var sut = new AtemProtocol(loggerFactory.CreateLogger<AtemProtocol>(), () => udpClient, time, actionLoopFactory);
+
+        await EstablishConnection(sut, udpClient, time);
+
+        var packetToReceive = new AtemPacket
+        {
+            PacketId = 1,
+            Flags = PacketFlag.AckRequest,
+            Payload = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            SessionId = SessionId
+        };
+
+        await udpClient.SimulateReceive(packetToReceive.ToBytes());
+
+        var receivedPacket = await sut.ReceivedPackets.ReceiveAsync().WithTimeout();
+        Assert.Multiple(() =>
+        {
+            Assert.That(receivedPacket.PacketId, Is.EqualTo(1));
+            Assert.That(receivedPacket.Flags, Is.EqualTo(PacketFlag.AckRequest));
+            Assert.That(receivedPacket.Payload, Is.EquivalentTo((byte[])[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
+            Assert.That(receivedPacket.SessionId, Is.EqualTo(SessionId));
+        });
+
+        await time.AdvanceBy(TimeSpan.FromMilliseconds(1));
+
+        packetToReceive = new AtemPacket
+        {
+            PacketId = 2,
+            Flags = PacketFlag.AckRequest,
+            Payload = [11, 12, 13, 14, 15, 16, 17, 18, 19, 110],
+            SessionId = SessionId
+        };
+
+        await udpClient.SimulateReceive(packetToReceive.ToBytes());
+
+        receivedPacket = await sut.ReceivedPackets.ReceiveAsync().WithTimeout();
+        Assert.Multiple(() =>
+        {
+            Assert.That(receivedPacket.PacketId, Is.EqualTo(2));
+            Assert.That(receivedPacket.Flags, Is.EqualTo(PacketFlag.AckRequest));
+            Assert.That(receivedPacket.Payload, Is.EquivalentTo((byte[])[11, 12, 13, 14, 15, 16, 17, 18, 19, 110]));
+            Assert.That(receivedPacket.SessionId, Is.EqualTo(SessionId));
+        });
+
+        await time.AdvanceBy(AtemProtocol.AckDelay + TimeSpan.FromMilliseconds(1));
+
+        var ackPacket = AtemPacket.FromBytes(await udpClient.SentData.ReceiveAsync().WithTimeout());
+        Assert.Multiple(() =>
+        {
+            Assert.That(ackPacket.Flags, Is.EqualTo(PacketFlag.AckReply));
+            Assert.That(ackPacket.SessionId, Is.EqualTo(SessionId));
+            Assert.That(ackPacket.AckPacketId, Is.EqualTo(2));
+        });
+    }
+
+    [Test]
+    public async Task ReceiveCommand_ReceiveMany_CircumventAckTimer()
+    {
+        var time = new VirtualTime(DateTime.Now);
+        using var udpClient = new UdpClientFake();
+        using var loggerFactory = new LoggerFactory();
+        using TestActionLoopFactory actionLoopFactory = new();
+        await using var sut = new AtemProtocol(loggerFactory.CreateLogger<AtemProtocol>(), () => udpClient, time, actionLoopFactory);
+
+        await EstablishConnection(sut, udpClient, time);
+
+        for (byte i = 0; i < AtemProtocol.MaxPacketPerAck; i++)
+        {
+            byte[] payload = [(byte)(i+1), (byte)(i+2), (byte)(i+3), (byte)(i+4), (byte)(i+5), (byte)(i+6), (byte)(i+7), (byte)(i+8), (byte)(i+9), (byte)(i+10)];
+            var packetToReceive = new AtemPacket
+            {
+                PacketId = (ushort)(i+1),
+                Flags = PacketFlag.AckRequest,
+                Payload = payload,
+                SessionId = SessionId
+            };
+
+            await udpClient.SimulateReceive(packetToReceive.ToBytes());
+
+            var receivedPacket = await sut.ReceivedPackets.ReceiveAsync().WithTimeout();
+            Assert.Multiple(() =>
+            {
+                Assert.That(receivedPacket.PacketId, Is.EqualTo(i+1));
+                Assert.That(receivedPacket.Flags, Is.EqualTo(PacketFlag.AckRequest));
+                Assert.That(receivedPacket.Payload, Is.EquivalentTo(payload));
+                Assert.That(receivedPacket.SessionId, Is.EqualTo(SessionId));
+            });
+        }
+
+        await time.AdvanceBy(AtemProtocol.AckDelay + TimeSpan.FromMilliseconds(1));
+
+        var ackPacket = AtemPacket.FromBytes(await udpClient.SentData.ReceiveAsync().WithTimeout());
+        Assert.Multiple(() =>
+        {
+            Assert.That(ackPacket.Flags, Is.EqualTo(PacketFlag.AckReply));
+            Assert.That(ackPacket.SessionId, Is.EqualTo(SessionId));
+            Assert.That(ackPacket.AckPacketId, Is.EqualTo(AtemProtocol.MaxPacketPerAck));
+        });
+    }
+
+    [Test]
+    public async Task ReceiveRetransmitRequest()
+    {
+        var time = new VirtualTime(DateTime.Now);
+        using var udpClient = new UdpClientFake();
+        using var loggerFactory = new LoggerFactory();
+        using TestActionLoopFactory actionLoopFactory = new();
+        await using var sut = new AtemProtocol(loggerFactory.CreateLogger<AtemProtocol>(), () => udpClient, time, actionLoopFactory);
+
+        await EstablishConnection(sut, udpClient, time);
+
+        byte[] payload = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+        var packetToSend = new AtemPacket
+        {
+            Flags = PacketFlag.AckRequest,
+            Payload = payload,
+            TrackingId = 42069
+        };
+
+        await sut.SendPacketsAsync([packetToSend]).WithTimeout();
+
+        await time.AdvanceBy(TimeSpan.FromMilliseconds(1));
+
+        var originallySentData = await udpClient.SentData.ReceiveAsync().WithTimeout();
+
+        var resendRequest = new AtemPacket
+        {
+            Flags = PacketFlag.RetransmitRequest,
+            PacketId = 1,
+            RetransmitFromPacketId = packetToSend.PacketId
+        };
+
+        await udpClient.SimulateReceive(resendRequest.ToBytes());
+
+        await time.AdvanceBy(TimeSpan.FromMilliseconds(1));
+
+        var retransmittedData = await udpClient.SentData.ReceiveAsync().WithTimeout();
+
+        Assert.That(retransmittedData, Is.EquivalentTo(originallySentData));
+    }
+
+    private async Task EstablishConnection(AtemProtocol sut, UdpClientFake udpClient, VirtualTime time)
+    {
+        var connectTask = sut.ConnectAsync(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9110));
+        var sessionPacket = new AtemPacket();
+
+        // Consume Hello Packet
+        await udpClient.SentData.ReceiveAsync().WithTimeout();
+
+        await time.AdvanceBy(TimeSpan.FromMilliseconds(1));
+
+        // Send new session ID
+        sessionPacket.Flags = PacketFlag.NewSessionId;
+        sessionPacket.SessionId = SessionId;
+        await udpClient.SimulateReceive(sessionPacket.ToBytes());
+
+        // Connection established
+        await connectTask.WithTimeout();
+
+        await time.AdvanceBy(TimeSpan.FromMilliseconds(1));
+
+        // Consume Ack Packet
+        await udpClient.SentData.ReceiveAsync().WithTimeout();
+
+        await time.AdvanceBy(TimeSpan.FromMilliseconds(1));
+    }
+}

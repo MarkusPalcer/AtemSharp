@@ -8,44 +8,27 @@ namespace AtemSharp.Communication;
 /// Helper to build ATEM packet payloads from multiple serialized commands.
 /// Mirrors the behavior of the TypeScript PacketBuilder in src/lib/packetBuilder.ts
 /// </summary>
-public class PacketBuilder
+public class PacketBuilder(ProtocolVersion protocolVersion)
 {
-    private readonly int _maxPacketSize;
-    private readonly ProtocolVersion _protocolVersion;
+    internal const int MaxPacketSize = Constants.AtemConstants.DefaultMaxPacketSize - Constants.AtemConstants.PacketHeaderSize;
+    private readonly ProtocolVersion _protocolVersion = protocolVersion;
 
-    private readonly List<byte[]> _completedBuffers = new();
+    private readonly List<byte[]> _completedBuffers = [];
 
-    private bool _finished;
-    private byte[] _currentPacketBuffer;
+    private byte[] _currentPacketBuffer = new byte[MaxPacketSize];
     private int _currentPacketFilled;
-
-    public PacketBuilder(ProtocolVersion protocolVersion)
-    {
-        _maxPacketSize = Constants.AtemConstants.DefaultMaxPacketSize - Constants.AtemConstants.PacketHeaderSize;
-        _protocolVersion = protocolVersion;
-
-        _currentPacketBuffer = new byte[_maxPacketSize];
-        _currentPacketFilled = 0;
-    }
 
     public void AddCommand(SerializedCommand cmd)
     {
-        if (_finished) throw new InvalidOperationException("Packets have been finished");
-        if (cmd == null) throw new ArgumentNullException(nameof(cmd));
-
         var rawName = cmd.GetRawName();
         if (string.IsNullOrEmpty(rawName) || rawName.Length != 4)
+        {
             throw new InvalidOperationException($"Command {cmd.GetType().Name} does not have a valid raw name");
+        }
 
         var payload = cmd.Serialize(_protocolVersion);
 
-        var totalLength = payload.Length + Constants.AtemConstants.CommandHeaderSize; // 8 bytes header
-
-        // If the command itself is larger than a normal packet, finish a buffer sized to the command
-        if (totalLength > _maxPacketSize)
-        {
-            FinishBuffer(totalLength);
-        }
+        var totalLength = payload.Length + Constants.AtemConstants.CommandHeaderSize;
 
         // Ensure the packet will fit into the current buffer
         if (totalLength + _currentPacketFilled > _currentPacketBuffer.Length)
@@ -54,8 +37,7 @@ public class PacketBuilder
         }
 
         // Write command length (big-endian 16-bit)
-        _currentPacketBuffer[_currentPacketFilled + 0] = (byte)((totalLength >> 8) & 0xFF);
-        _currentPacketBuffer[_currentPacketFilled + 1] = (byte)(totalLength & 0xFF);
+        _currentPacketBuffer.WriteUInt16BigEndian((ushort)totalLength, _currentPacketFilled);
 
         // bytes 2-3 reserved (leave as zero)
 
@@ -64,25 +46,21 @@ public class PacketBuilder
         Buffer.BlockCopy(rawNameBytes, 0, _currentPacketBuffer, _currentPacketFilled + 4, 4);
 
         // Copy payload after the 8-byte header
-        if (payload.Length > 0)
-        {
-            Buffer.BlockCopy(payload, 0, _currentPacketBuffer, _currentPacketFilled + Constants.AtemConstants.CommandHeaderSize, payload.Length);
-        }
+        Buffer.BlockCopy(payload, 0, _currentPacketBuffer, _currentPacketFilled + Constants.AtemConstants.CommandHeaderSize, payload.Length);
 
         _currentPacketFilled += totalLength;
     }
 
     public IReadOnlyList<byte[]> GetPackets()
     {
-        FinishBuffer(0);
-        _finished = true;
-        return _completedBuffers.AsReadOnly();
+        FinishBuffer();
+        var result = _completedBuffers.ToList();
+        _completedBuffers.Clear();
+        return result.AsReadOnly();
     }
 
-    private void FinishBuffer(int newBufferLength = -1)
+    private void FinishBuffer()
     {
-        if (_finished) return;
-
         if (_currentPacketFilled > 0)
         {
             var outBuf = new byte[_currentPacketFilled];
@@ -90,16 +68,7 @@ public class PacketBuilder
             _completedBuffers.Add(outBuf);
         }
 
-        if (newBufferLength == 0)
-        {
-            // Do not allocate a new buffer
-            _currentPacketBuffer = [];
-            _currentPacketFilled = 0;
-            return;
-        }
-
-        var size = newBufferLength > 0 ? newBufferLength : _maxPacketSize;
-        _currentPacketBuffer = new byte[size];
+        _currentPacketBuffer = new byte[MaxPacketSize];
         _currentPacketFilled = 0;
     }
 }

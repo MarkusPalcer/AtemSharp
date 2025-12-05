@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State.Border;
 
 namespace AtemSharp.State.Video.SuperSource;
 
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class SuperSourceBorderProperties : BorderProperties
 {
     public bool Enabled { get; internal set; }

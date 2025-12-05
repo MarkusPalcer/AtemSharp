@@ -1,5 +1,8 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.State.Audio.Fairlight;
 
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class Compressor
 {
     public bool Enabled { get; internal set; }

@@ -1,8 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State.Info;
 
 namespace AtemSharp.Attributes;
 
 [AttributeUsage(AttributeTargets.Class)]
+[ExcludeFromCodeCoverage]
 public class CommandAttribute : Attribute
 {
 	/// <summary>

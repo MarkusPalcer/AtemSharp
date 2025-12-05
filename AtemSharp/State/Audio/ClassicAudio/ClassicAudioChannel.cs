@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State.Ports;
 
 namespace AtemSharp.State.Audio.ClassicAudio;
@@ -5,6 +6,7 @@ namespace AtemSharp.State.Audio.ClassicAudio;
 /// <summary>
 /// Classic audio channel properties
 /// </summary>
+[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class ClassicAudioChannel
 {
     public ushort Id { get; init; }

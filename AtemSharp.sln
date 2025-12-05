@@ -8,6 +8,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtemSharp.Demo", "AtemSharp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtemSharp.CodeGenerators", "AtemSharp.CodeGenerators\AtemSharp.CodeGenerators.csproj", "{9EF1781B-2590-49B4-9DFC-FFDCCF508F8C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Stryker", "Stryker", "{F27EE77C-7B68-4463-8069-D5BC331D97AC}"
+	ProjectSection(SolutionItems) = preProject
+		Run-Stryker.ps1 = Run-Stryker.ps1
+		stryker-config.json = stryker-config.json
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

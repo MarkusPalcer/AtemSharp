@@ -69,27 +69,6 @@ public class AtemPacket
     }
 
     /// <summary>
-    /// Tries to parse raw packet data into an ATEM packet
-    /// </summary>
-    /// <param name="packetData">Raw packet bytes</param>
-    /// <param name="packet">Output packet if parsing succeeds</param>
-    /// <returns>True if parsing succeeded, false otherwise</returns>
-    public static bool TryParse(ReadOnlySpan<byte> packetData, out AtemPacket? packet)
-    {
-        packet = null;
-
-        try
-        {
-            packet = FromBytes(packetData);
-            return packet.IsValid();
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    /// <summary>
     /// Creates a new ATEM packet from raw packet data
     /// </summary>
     /// <param name="packetData">Raw packet bytes</param>
@@ -98,7 +77,9 @@ public class AtemPacket
     public static AtemPacket FromBytes(ReadOnlySpan<byte> packetData)
     {
         if (packetData.Length < PacketHeaderSize)
+        {
             throw new ArgumentException($"Packet too short. Expected at least {PacketHeaderSize} bytes, got {packetData.Length}");
+        }
 
         var packet = new AtemPacket();
 
@@ -109,7 +90,10 @@ public class AtemPacket
         // Flags are in the upper 5 bits of the first byte
         // Length is in the lower 11 bits of the first two bytes
         var flagsAndLength = headerSpan.ReadUInt16BigEndian(0);
-        packet.Flags = (PacketFlag)(headerSpan.ReadUInt8(0) >> 3); // Upper 5 bits of first byte
+
+        // Stryker disable once bitwise: >> and >>> do the same for unsigned types
+        packet.Flags = (PacketFlag)(headerSpan.ReadUInt8(0) >> 3);
+
         packet.Length = (ushort)(flagsAndLength & LengthMask);
         packet.SessionId = headerSpan.ReadUInt16BigEndian(2);
         packet.AckPacketId = headerSpan.ReadUInt16BigEndian(4);
@@ -119,18 +103,11 @@ public class AtemPacket
 
         // Validate length
         if (packet.Length != packetData.Length)
+        {
             throw new ArgumentException($"Packet length mismatch. Header indicates {packet.Length} bytes, but received {packetData.Length} bytes");
+        }
 
-        // Extract payload
-        if (packet.Length > PacketHeaderSize)
-        {
-            var payloadSpan = packetData.Slice(PacketHeaderSize);
-            packet.Payload = payloadSpan.ToArray();
-        }
-        else
-        {
-            packet.Payload = [];
-        }
+        packet.Payload = packetData[PacketHeaderSize..].ToArray();
 
         return packet;
     }
@@ -145,50 +122,21 @@ public class AtemPacket
         Length = (ushort)(PacketHeaderSize + Payload.Length);
 
         var buffer = new byte[Length];
-        var bufferSpan = buffer.AsSpan();
 
         // Write header using BinaryPrimitives for big-endian writing
         // Encode flags in upper 5 bits of first byte, length in lower 11 bits
-        bufferSpan[0] = (byte)(((int)Flags << 3) | ((Length >> 8) & 0x07)); // First byte: upper 5 bits flags + upper 3 bits of length
-        bufferSpan[1] = (byte)(Length & 0xFF); // Second byte: lower 8 bits of length
-        bufferSpan.WriteUInt16BigEndian(2, SessionId);
-        bufferSpan.WriteUInt16BigEndian(4, AckPacketId);
-        bufferSpan.WriteUInt16BigEndian(6, RetransmitFromPacketId);
+        // Stryker disable once bitwise: >> and >>> do the same for unsigned types
+        buffer[0] = (byte)(((int)Flags << 3) | ((Length >> 8) & 0x07)); // First byte: upper 5 bits flags + upper 3 bits of length
+        buffer[1] = (byte)(Length & 0xFF); // Second byte: lower 8 bits of length
+        buffer.WriteUInt16BigEndian(SessionId, 2);
+        buffer.WriteUInt16BigEndian(AckPacketId, 4);
+        buffer.WriteUInt16BigEndian(RetransmitFromPacketId, 6);
         // Bytes 8-9 remain zero (reserved)
-        bufferSpan.WriteUInt16BigEndian(10, PacketId);
+        buffer.WriteUInt16BigEndian(PacketId, 10);
 
-        // Write payload
-        if (Payload.Length > 0)
-        {
-            Payload.AsSpan().CopyTo(bufferSpan.Slice(PacketHeaderSize));
-        }
+        Payload.CopyTo(buffer, PacketHeaderSize);
 
         return buffer;
-    }
-
-    /// <summary>
-    /// Validates the packet structure and content
-    /// </summary>
-    /// <returns>True if packet is valid, false otherwise</returns>
-    public bool IsValid()
-    {
-        try
-        {
-            // Check length consistency
-            if (Length != PacketHeaderSize + Payload.Length)
-                return false;
-
-            // Check minimum length
-            if (Length < PacketHeaderSize)
-                return false;
-
-            // Packet structure is valid
-            return true;
-        }
-        catch
-        {
-            return false;
-        }
     }
 
     /// <summary>
@@ -216,33 +164,6 @@ public class AtemPacket
             AckPacketId = packetIdToAck,
             PacketId = 0, // ACK packets don't need their own packet ID
             Payload = []
-        };
-    }
-
-    internal static AtemPacket CreateAckRequest()
-    {
-        return new AtemPacket
-        {
-            Flags = PacketFlag.AckRequest,
-            Payload = [],
-        };
-    }
-
-    /// <summary>
-    /// Creates a hello packet for initiating connection
-    /// </summary>
-    /// <returns>Hello packet</returns>
-    public static AtemPacket CreateHello()
-    {
-        // Use the standard hello packet payload from constants
-        var helloPayload = new byte[Constants.AtemConstants.HelloPacket.Length - PacketHeaderSize];
-        Constants.AtemConstants.HelloPacket.AsSpan(PacketHeaderSize).CopyTo(helloPayload);
-
-        return new AtemPacket(helloPayload)
-        {
-            Flags = PacketFlag.NewSessionId | PacketFlag.AckRequest,
-            SessionId = 0,
-            PacketId = 1
         };
     }
 
