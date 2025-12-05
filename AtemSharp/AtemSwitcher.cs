@@ -1,12 +1,9 @@
-using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks.Dataflow;
 using AtemSharp.Commands;
 using AtemSharp.Communication;
-using AtemSharp.FrameworkAbstraction;
+using AtemSharp.DependencyInjection;
 using AtemSharp.Lib;
-using AtemSharp.Logging;
 using AtemSharp.State;
-using Microsoft.Extensions.Logging;
 
 namespace AtemSharp;
 
@@ -20,11 +17,9 @@ public class AtemSwitcher : IAtemSwitcher
     private readonly int _remotePort;
     private readonly IAtemClient _client;
     private TaskCompletionSource? _connectionCompletionSource;
-    private ActionLoop? _receiveLoop;
+    private IActionLoop? _receiveLoop;
     private ConnectionState _connectionState = ConnectionState.Disconnected;
-    private readonly ILogger<AtemSwitcher> _logger;
-    private readonly ILoggerFactory _loggerFactory;
-    private readonly IActionLoopFactory _actionLoopFactory;
+    private readonly IServices _services;
 
     /// <inheritdoc />
     public event EventHandler<ConnectionStateChangedEventArgs>? ConnectionStateChanged;
@@ -49,36 +44,13 @@ public class AtemSwitcher : IAtemSwitcher
     /// </summary>
     public static HashSet<string> UnknownCommands { get; } = new();
 
-    /// <summary>
-    /// Initializes a new instance of the Atem class
-    /// </summary>
-    /// <param name="remoteHost">IP address of the ATEM device</param>
-    /// <param name="remotePort">Port number (default: 9910)</param>
-    /// <param name="loggerFactory">A logger factory to support logging. If omitted, logging happens via Debug.WriteLine</param>
-    [ExcludeFromCodeCoverage]
-    public AtemSwitcher(string remoteHost, int remotePort = Constants.AtemConstants.DefaultPort, ILoggerFactory? loggerFactory = null)
-        : this(remoteHost, remotePort, null, loggerFactory, null)
+    public AtemSwitcher(string remoteHost, int remotePort, IServices services)
     {
-    }
-
-    // internal constructor for passing in mocked AtemClient during tests
-    internal AtemSwitcher(string remoteHost, int remotePort, IAtemClient? transport, ILoggerFactory? loggerFactory, IActionLoopFactory? actionLoopFactory)
-    {
+        _services = services;
         _remoteHost = remoteHost;
         _remotePort = remotePort;
-        loggerFactory ??= new DebugLoggerFactory();
-        _actionLoopFactory = actionLoopFactory ?? new ActionLoop.Factory();
-        _client = transport ?? new AtemClient(loggerFactory, ProtocolFactory, _actionLoopFactory);
-        _logger =  loggerFactory.CreateLogger<AtemSwitcher>();
-        _loggerFactory = loggerFactory;
-    }
 
-    [ExcludeFromCodeCoverage]
-    private AtemProtocol ProtocolFactory()
-    {
-        return new AtemProtocol(_loggerFactory.CreateLogger<AtemProtocol>(),
-                                () => new UdpClientWrapper(),
-                                new SystemTimeProvider(), _actionLoopFactory);
+        _client = _services.CreateAtemClient();
     }
 
     /// <inheritdoc />
@@ -106,7 +78,7 @@ public class AtemSwitcher : IAtemSwitcher
             throw;
         }
 
-        _receiveLoop = _actionLoopFactory.Start(ReceiveCommandLoop, _logger);
+        _receiveLoop = _services.StartActionLoop(ReceiveCommandLoop);
 
         try {
             // Wait for InitCompleteCommand to be received, indicating the connection is fully established

@@ -1,6 +1,5 @@
 using System.Reflection;
 using AtemSharp.Commands;
-using AtemSharp.Commands.DeviceProfile;
 using AtemSharp.State.Info;
 
 namespace AtemSharp.Communication;
@@ -15,7 +14,7 @@ public class CommandParser
     /// <summary>
     /// Current protocol version for parsing commands
     /// </summary>
-    public ProtocolVersion Version { get; set; } = ProtocolVersion.V7_2;
+    public ProtocolVersion Version { get; set; } = ProtocolVersion.Unknown;
 
     public CommandParser()
     {
@@ -95,12 +94,6 @@ public class CommandParser
         }
 
         var command = deserializeMethod.CreateDelegate<DeserializeCommand>()(data, Version);
-
-        // Update parser version if this is a VersionCommand (matches TypeScript behavior)
-        if (command is VersionCommand versionCmd)
-        {
-            Version = versionCmd.Version;
-        }
 
         return command;
     }

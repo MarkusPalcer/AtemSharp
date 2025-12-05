@@ -1,15 +1,16 @@
+using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks.Dataflow;
+using AtemSharp.DependencyInjection;
 using AtemSharp.FrameworkAbstraction;
 using AtemSharp.Lib;
-using Microsoft.Extensions.Logging;
 
 namespace AtemSharp.Communication;
 
 /// <summary>
 /// Handles the communication protocol for the ATEM mixers
 /// </summary>
-internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpClientFactory, ITimeProvider timeProvider, IActionLoopFactory actionLoopFactory) : IAtemProtocol
+internal class AtemProtocol(IServices services) : IAtemProtocol
 {
     private ConnectionState _connectionState = ConnectionState.Closed;
     private ushort _nextSendPacketId = 1;
@@ -19,18 +20,18 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpCl
     private IPEndPoint _remoteEndpoint = new(IPAddress.None, Constants.AtemConstants.DefaultPort);
     private IUdpClient? _udpClient;
 
-    private DateTime _lastReceivedAt = timeProvider.Now;
+    private DateTime _lastReceivedAt = services.TimeProvider.Now;
     private ushort _lastReceivedPacketId;
     private List<InFlightPacket> _inflight = [];
     private CancellationTokenSource? _ackTimerCancellation;
     private int _receivedWithoutAck;
     private TaskCompletionSource? _connectionSource;
 
-    private ActionLoop? _receiveLoop;
+    private IActionLoop? _receiveLoop;
     private BufferBlock<AtemPacket> _receivedPackets = new();
     private BufferBlock<int> _ackedTrackingIds = new();
-    private ActionLoop? _reconnectTimer;
-    private ActionLoop? _retransmitTimer;
+    private IActionLoop? _reconnectTimer;
+    private IActionLoop? _retransmitTimer;
 
     public IReceivableSourceBlock<AtemPacket> ReceivedPackets => _receivedPackets;
     public IReceivableSourceBlock<int> AckedTrackingIds => _ackedTrackingIds;
@@ -38,20 +39,20 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpCl
 
     private void StartTimers()
     {
-        _reconnectTimer ??= actionLoopFactory.Start(ReconnectTimerLoop, logger);
-        _retransmitTimer ??= actionLoopFactory.Start(RetransmitTimerLoop, logger);
+        _reconnectTimer ??= services.StartActionLoop(ReconnectTimerLoop);
+        _retransmitTimer ??= services.StartActionLoop(RetransmitTimerLoop);
     }
 
     private async Task ReconnectTimerLoop(CancellationToken token)
     {
-        await timeProvider.Delay(ConnectionRetryInterval, token);
+        await services.TimeProvider.Delay(ConnectionRetryInterval, token);
 
-        if (_lastReceivedAt + ConnectionTimeout > timeProvider.Now)
+        if (_lastReceivedAt + ConnectionTimeout > services.TimeProvider.Now)
         {
             return;
         }
 
-        StartConnection().FireAndForget(logger);
+        StartConnection().FireAndForget();
     }
 
     private async Task ClearTimers()
@@ -67,9 +68,9 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpCl
 
     private async Task RetransmitTimerLoop(CancellationToken token)
     {
-        await timeProvider.Delay(RetransmitInterval, token);
+        await services.TimeProvider.Delay(RetransmitInterval, token);
 
-        CheckForRetransmit().FireAndForget(logger);
+        CheckForRetransmit().FireAndForget();
     }
 
     public async Task ConnectAsync(IPEndPoint endPoint)
@@ -95,7 +96,6 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpCl
         _receivedPackets = new();
         _ackedTrackingIds = new();
 
-        logger.LogDebug("Disconnect");
         _connectionState = ConnectionState.Closed;
     }
 
@@ -141,7 +141,7 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpCl
         await SendPacket(packet.ToBytes());
         _inflight.Add(new(packet.PacketId, packet.TrackingId, packet.ToBytes())
         {
-            LastSent = timeProvider.Now,
+            LastSent = services.TimeProvider.Now,
             Resent = 0
         });
     }
@@ -155,10 +155,10 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpCl
 
     private void CreateSocket()
     {
-        _udpClient = udpClientFactory();
+        _udpClient = services.CreateUdpClient();
         _udpClient.Bind(new IPEndPoint(IPAddress.Any, 0));
         _udpClient.Connect(_remoteEndpoint);
-        _receiveLoop = actionLoopFactory.Start(ReceiveLoopAsync, logger);
+        _receiveLoop = services.StartActionLoop(ReceiveLoopAsync);
     }
 
     private async Task ReceiveLoopAsync(CancellationToken cancellationToken)
@@ -185,12 +185,11 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpCl
 
     private async Task ReceivePacket(byte[] buffer)
     {
-        _lastReceivedAt = timeProvider.Now;
+        _lastReceivedAt = services.TimeProvider.Now;
         var packet = AtemPacket.FromBytes(buffer);
 
         if (packet.HasFlag(PacketFlag.NewSessionId))
         {
-            logger.LogDebug("Connected");
             _connectionState = ConnectionState.Established;
             _lastReceivedPacketId = packet.PacketId;
             _sessionId = packet.SessionId;
@@ -204,8 +203,8 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpCl
             // Device asked for retransmit
             if (packet.HasFlag(PacketFlag.RetransmitRequest))
             {
-                logger.LogInformation("Retransmit request from #{FromPacketId}", packet.RetransmitFromPacketId);
-                RetransmitFrom(packet.RetransmitFromPacketId).FireAndForget(logger);
+                Debug.WriteLine($"Retransmit request from #{packet.RetransmitFromPacketId}");
+                RetransmitFrom(packet.RetransmitFromPacketId).FireAndForget();
             }
 
             // Got a packet that needs an ack
@@ -285,7 +284,7 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpCl
         _ackTimerCancellation = cts;
         try
         {
-            await timeProvider.Delay(AckDelay, cts.Token);
+            await services.TimeProvider.Delay(AckDelay, cts.Token);
         }
         catch (OperationCanceledException)
         {
@@ -316,12 +315,12 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpCl
         var fromIndex = _inflight.FindIndex(0, pkt => pkt.PacketId == fromId);
         if (fromIndex == -1)
         {
-            logger.LogError("Unable to resend from #{Id}: unknown packet ID", fromId);
+            Debug.WriteLine($"Unable to resend from #{fromId}: unknown packet ID");
             await StartConnection();
         }
         else
         {
-            var now = timeProvider.Now;
+            var now = services.TimeProvider.Now;
             for (var currentIndex = fromIndex; currentIndex < _inflight.Count; currentIndex++)
             {
                 var sentPacket =  _inflight[currentIndex];
@@ -342,7 +341,7 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpCl
             return;
         }
 
-        var now = timeProvider.Now;
+        var now = services.TimeProvider.Now;
 
         var foundPacket = _inflight.FirstOrDefault(sentPacket => sentPacket.LastSent + InFlightTimeout < now);
         if (!foundPacket.NonDefault)
@@ -352,10 +351,10 @@ internal class AtemProtocol(ILogger<AtemProtocol> logger, Func<IUdpClient> udpCl
 
         if (foundPacket.Resent <= MaxPacketRetries && IsPacketCoveredByAck(_nextSendPacketId, foundPacket.PacketId))
         {
-            logger.LogInformation("Retransmit from #{Id} timed out", foundPacket.PacketId);
+            Debug.WriteLine($"Retransmit from #{foundPacket.PacketId} timed out");
             await RetransmitFrom(foundPacket.PacketId);
         } else {
-            logger.LogInformation("Packet #{Id} timed out", foundPacket.PacketId);
+            Debug.WriteLine($"Packet #{foundPacket.PacketId} timed out");
             await StartConnection();
         }
     }

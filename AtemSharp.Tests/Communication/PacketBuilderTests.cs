@@ -1,5 +1,4 @@
 using AtemSharp.Communication;
-using AtemSharp.State.Info;
 using AtemSharp.Tests.TestUtilities.TestCommands;
 
 namespace AtemSharp.Tests.Communication;
@@ -10,7 +9,7 @@ public class PacketBuilderTests
     [Test]
     public void AddCommand_WithoutCommandAttribute_Throws()
     {
-        var sut = new PacketBuilder(ProtocolVersion.Unknown);
+        var sut = new PacketBuilder();
         var command = new NoRawNameCommand();
 
         var ex = Assert.Throws<InvalidOperationException>(() => sut.AddCommand(command));
@@ -24,7 +23,7 @@ public class PacketBuilderTests
     [Test]
     public void AddCommand_BiggerThanRestSize_FinishesBuffer()
     {
-        var sut = new PacketBuilder(ProtocolVersion.Unknown);
+        var sut = new PacketBuilder();
         sut.AddCommand(new VariableSizeCommand(0x69, PacketBuilder.MaxPacketSize - 10));
         sut.AddCommand(new VariableSizeCommand(0x42, PacketBuilder.MaxPacketSize - 10));
 
@@ -42,7 +41,7 @@ public class PacketBuilderTests
     [Test]
     public void AddCommand_WithExactBufferSize_ReturnsOnlyOneBuffer()
     {
-        var sut = new PacketBuilder(ProtocolVersion.Unknown);
+        var sut = new PacketBuilder();
         sut.AddCommand(new VariableSizeCommand(0x69, PacketBuilder.MaxPacketSize - Constants.AtemConstants.CommandHeaderSize));
 
         var packets = sut.GetPackets();
@@ -54,7 +53,7 @@ public class PacketBuilderTests
     [Test]
     public void GetPackets_ForgetsOldCommands()
     {
-        var sut = new PacketBuilder(ProtocolVersion.Unknown);
+        var sut = new PacketBuilder();
         sut.AddCommand(new VariableSizeCommand(0x69, PacketBuilder.MaxPacketSize - 10));
         _ = sut.GetPackets();
         sut.AddCommand(new VariableSizeCommand(0x42, PacketBuilder.MaxPacketSize - 10));
@@ -71,7 +70,7 @@ public class PacketBuilderTests
     [Test]
     public void GetPackest_WithoutAddingCommand()
     {
-        var sut = new PacketBuilder(ProtocolVersion.Unknown);
+        var sut = new PacketBuilder();
         Assert.That(sut.GetPackets(), Is.Empty);
     }
 }
