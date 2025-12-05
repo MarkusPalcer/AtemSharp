@@ -249,4 +249,21 @@ public class AtemSwitcherTests
         var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => await sendTask.WithTimeout());
         Assert.That(ex.Message, Contains.Substring("while not connected"));
     }
+
+    [Test]
+    public async Task DisposeAsync()
+    {
+        _services.ClientFake.SuccessfullyConnect();
+        _services.ClientFake.SimulateReceivedCommand(new InitCompleteCommand());
+        await _atem.ConnectAsync().WithTimeout();
+
+        _services.ClientFake.SuccessfullyDisconnect();
+        await _atem.DisposeAsync().AsTask().WithTimeout();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(_services.RunningLoops, Is.All.Matches<ActionLoop>(x => !x.IsRunning));
+            Assert.That(_services.ClientFake.DisposeCounter, Is.EqualTo(1));
+        });
+    }
 }

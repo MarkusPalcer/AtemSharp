@@ -21,7 +21,6 @@ Console.CancelKeyPress += (_, _) => emergencyCts.Cancel();
 
 
 var atem = lib.CreateAtemSwitcher("192.168.178.69");
-atem.ConnectionStateChanged += (_, args) => Console.WriteLine($"Connection state changed from {args.OldState} to {args.NewState}");
 
 Console.WriteLine("Connecting...");
 await atem.ConnectAsync(cancellationToken: emergencyCts.Token);

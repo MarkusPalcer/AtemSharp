@@ -18,23 +18,10 @@ public class AtemSwitcher : IAtemSwitcher
     private readonly IAtemClient _client;
     private TaskCompletionSource? _connectionCompletionSource;
     private IActionLoop? _receiveLoop;
-    private ConnectionState _connectionState = ConnectionState.Disconnected;
     private readonly IServices _services;
 
     /// <inheritdoc />
-    public event EventHandler<ConnectionStateChangedEventArgs>? ConnectionStateChanged;
-
-    /// <inheritdoc />
-    public ConnectionState ConnectionState
-    {
-        get => _connectionState;
-        private set
-        {
-            var oldValue = _connectionState;
-            _connectionState = value;
-            OnConnectionStateChanged(oldValue, value);
-        }
-    }
+    public ConnectionState ConnectionState { get; private set; } = ConnectionState.Disconnected;
 
     /// <inheritdoc />
     public AtemState State { get; private set; } = new();
@@ -176,10 +163,5 @@ public class AtemSwitcher : IAtemSwitcher
         _connectionCompletionSource?.TrySetCanceled();
         await _client.DisposeAsync();
         await StopReceiveLoop();
-    }
-
-    private void OnConnectionStateChanged(ConnectionState oldState, ConnectionState newState)
-    {
-        ConnectionStateChanged?.Invoke(this, new ConnectionStateChangedEventArgs(oldState, newState));
     }
 }

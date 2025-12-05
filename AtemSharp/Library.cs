@@ -1,8 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
 using AtemSharp.Constants;
 using AtemSharp.DependencyInjection;
 
 namespace AtemSharp;
 
+[ExcludeFromCodeCoverage]
 public class Library : IAtemSharpLibrary
 {
     private readonly IServices _services = new InternalServices();

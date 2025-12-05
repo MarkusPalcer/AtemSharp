@@ -277,6 +277,24 @@ public class AtemProtocolTests
     }
 
     [Test]
+    public async Task ReceivePacket_WithoutPayload_IsNotPropagated()
+    {
+        await using var services = new TestServices();
+        await using var sut = new AtemProtocol(services);
+
+        await EstablishConnection(sut, services);
+        var packet = new AtemPacket
+        {
+            PacketId = 1,
+            Flags = PacketFlag.AckRequest,
+            SessionId = SessionId
+        };
+
+        await services.UdpFake.SimulateReceive(packet.ToBytes());
+        await sut.ReceivedPackets.ReceiveAsync().TimesOut().WithTimeout();
+    }
+
+    [Test]
     public async Task ReceiveRetransmitRequest()
     {
         await using var services = new TestServices();
