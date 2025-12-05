@@ -5,9 +5,9 @@ using AtemSharp.Commands;
 using AtemSharp.Commands.Macro;
 using AtemSharp.Communication;
 using AtemSharp.Lib;
-using AtemSharp.State.Info;
 using AtemSharp.State.Macro;
 using AtemSharp.Tests.TestUtilities;
+using NSubstitute;
 
 namespace AtemSharp.Tests.Communication;
 
@@ -136,6 +136,8 @@ public class AtemClientTests
     public async Task Disconnect_CancelsSendTasks()
     {
         await using var data = new TestInstances();
+        var expectedPayload = new byte[] { 1, 2, 3, 4 };
+        data.Services.PacketBuilder.GetPackets().Returns(new List<byte[]> { expectedPayload });
 
         data.Services.ProtocolFake.SucceedConnection();
         await data.Sut.ConnectAsync("127.0.0.1", 12345).WithTimeout();
@@ -205,6 +207,8 @@ public class AtemClientTests
     public async Task SendCommand()
     {
         await using var data = new TestInstances();
+        var expectedPayload = new byte[] { 1, 2, 3, 4 };
+        data.Services.PacketBuilder.GetPackets().Returns(new List<byte[]> { expectedPayload });
 
         data.Services.ProtocolFake.SucceedConnection();
         await data.Sut.ConnectAsync("127.0.0.1", 12345).WithTimeout();
@@ -213,7 +217,7 @@ public class AtemClientTests
         var sendTask = data.Sut.SendCommandAsync(command);
         var packet = await data.Services.ProtocolFake.GetSentPacket().WithTimeout();
 
-        VerifySentPacket(packet, command);
+        VerifySentPacket(packet, expectedPayload);
 
         Assert.That(sendTask.IsCompleted, Is.False);
         await data.Services.ProtocolFake.AckPacket(packet).WithTimeout();
@@ -224,12 +228,15 @@ public class AtemClientTests
     public async Task SendCommand_Twice()
     {
         await using var data = new TestInstances();
+        var expectedPayload = new byte[] { 1, 2, 3, 4 };
+        data.Services.PacketBuilder.GetPackets().Returns(new List<byte[]> { expectedPayload });
 
         data.Services.ProtocolFake.SucceedConnection();
         await data.Sut.ConnectAsync("127.0.0.1", 12345).WithTimeout();
 
         var command = new MacroActionCommand(new Macro { Id = 0 }, MacroAction.Run);
-        Task[] sendTasks = [
+        Task[] sendTasks =
+        [
             data.Sut.SendCommandAsync(command),
             data.Sut.SendCommandAsync(command)
         ];
@@ -247,6 +254,8 @@ public class AtemClientTests
     public async Task SendCommands_Two()
     {
         await using var data = new TestInstances();
+        var expectedPayload = new byte[] { 1, 2, 3, 4 };
+        data.Services.PacketBuilder.GetPackets().Returns(new List<byte[]> { expectedPayload });
 
         data.Services.ProtocolFake.SucceedConnection();
         await data.Sut.ConnectAsync("127.0.0.1", 12345).WithTimeout();
@@ -277,17 +286,21 @@ public class AtemClientTests
     {
         await using var data = new TestInstances();
 
+        var expectedPayload = new byte[] { 1, 2, 3, 4 };
+        data.Services.PacketBuilder.GetPackets().Returns(new List<byte[]> { expectedPayload });
+
         data.Services.ProtocolFake.SucceedConnection();
         await data.Sut.ConnectAsync("127.0.0.1", 12345).WithTimeout();
+
 
         var command = new MacroActionCommand(new Macro { Id = 0 }, MacroAction.Run);
         var sendTask = data.Sut.SendCommandAsync(command);
         var packet = await data.Services.ProtocolFake.GetSentPacket().WithTimeout();
 
-        VerifySentPacket(packet, command);
+        VerifySentPacket(packet, expectedPayload);
 
         Assert.That(sendTask.IsCompleted, Is.False);
-        await data.Services.ProtocolFake.AckPacket(new AtemPacket { TrackingId = 123}).WithTimeout();
+        await data.Services.ProtocolFake.AckPacket(new AtemPacket { TrackingId = 123 }).WithTimeout();
         await sendTask.TimesOut();
 
         await data.Services.ProtocolFake.AckPacket(packet).WithTimeout();
@@ -481,26 +494,8 @@ public class AtemClientTests
         Assert.That(data.Services.CommandParserFake.ParsedData.Count, Is.EqualTo(2));
     }
 
-    public static void VerifySentPacket(AtemPacket packet, SerializedCommand expectedCommand)
+    public static void VerifySentPacket(AtemPacket packet, byte[] expectedBytes)
     {
-        Assert.Multiple(() =>
-        {
-            Assert.That(packet.Flags, Is.EqualTo(PacketFlag.AckRequest));
-
-            var sentData = (ReadOnlySpan<byte>)packet.Payload.AsSpan();
-            var expectedBytes = expectedCommand.Serialize(ProtocolVersion.Unknown);
-
-
-            // Bytes 1+2: Length
-            Assert.That(sentData.ReadUInt16BigEndian(0), Is.EqualTo(expectedBytes.Length + Constants.AtemConstants.CommandHeaderSize));
-
-            // Bytes 3+4: Empty
-
-            // Bytes 4-8: Command name
-            Assert.That(sentData.ReadString(4, 4), Is.EqualTo(expectedCommand.GetType().GetCustomAttribute<CommandAttribute>()?.RawName));
-
-            // Rest: Command Data
-            Assert.That(sentData[8..].ToArray(), Is.EquivalentTo(expectedBytes));
-        });
+        Assert.That(packet.Payload, Is.EquivalentTo(expectedBytes));
     }
 }

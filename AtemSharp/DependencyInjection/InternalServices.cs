@@ -24,4 +24,5 @@ internal class InternalServices : IServices
     public ITimeProvider TimeProvider { get; } = new SystemTimeProvider();
 
     public ICommandParser CreateCommandParser() => new CommandParser();
+    public IPacketBuilder CreatePacketBuilder() => new PacketBuilder();
 }

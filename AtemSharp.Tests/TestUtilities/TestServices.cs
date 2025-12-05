@@ -2,6 +2,7 @@ using AtemSharp.Communication;
 using AtemSharp.DependencyInjection;
 using AtemSharp.FrameworkAbstraction;
 using AtemSharp.Lib;
+using NSubstitute;
 
 namespace AtemSharp.Tests.TestUtilities;
 
@@ -15,7 +16,9 @@ public sealed class TestServices : IServices, IAsyncDisposable
 
     public AtemProtocolFake ProtocolFake { get; } = new();
 
-    public CommandParserFake CommandParserFake { get; } = new CommandParserFake();
+    public CommandParserFake CommandParserFake { get; } = new();
+
+    public IPacketBuilder PacketBuilder { get; } = Substitute.For<IPacketBuilder>();
 
     public IAtemClient CreateAtemClient() => ClientFake;
 
@@ -34,6 +37,9 @@ public sealed class TestServices : IServices, IAsyncDisposable
 
     public ITimeProvider TimeProvider => VirtualTime;
     public ICommandParser CreateCommandParser() => CommandParserFake;
+
+    public IPacketBuilder CreatePacketBuilder() => PacketBuilder;
+
 
     public async ValueTask DisposeAsync()
     {

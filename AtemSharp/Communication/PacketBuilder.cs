@@ -9,7 +9,7 @@ namespace AtemSharp.Communication;
 /// Helper to build ATEM packet payloads from multiple serialized commands.
 /// Mirrors the behavior of the TypeScript PacketBuilder in src/lib/packetBuilder.ts
 /// </summary>
-public class PacketBuilder
+public class PacketBuilder : IPacketBuilder
 {
     private static readonly System.Collections.ObjectModel.ReadOnlyDictionary<Type, string> CommandRawNames;
 

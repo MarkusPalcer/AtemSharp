@@ -17,7 +17,7 @@ internal class AtemClient(IServices services)
     : IAtemClient
 {
     private readonly ICommandParser _commandParser = services.CreateCommandParser();
-    private readonly PacketBuilder _packetBuilder = new();
+    private readonly IPacketBuilder _packetBuilder = services.CreatePacketBuilder();
     private readonly ConcurrentDictionary<int, TaskCompletionSource> _commandAckSources = new();
     private readonly SemaphoreSlim _sendLock = new(1);
 

@@ -13,4 +13,5 @@ public interface IServices
     IUdpClient CreateUdpClient();
     ITimeProvider TimeProvider { get; }
     ICommandParser CreateCommandParser();
+    IPacketBuilder CreatePacketBuilder();
 }
