@@ -15,11 +15,13 @@ public partial class InputPropertiesUpdateCommand : IDeserializedCommand
     /// </summary>
     [DeserializedField(0)] private ushort _inputId;
 
+    // Stryker disable once string : initialization is always overriden by deserialization
     /// <summary>
     /// Long descriptive name for the input
     /// </summary>
     [CustomDeserialization] private string _longName = string.Empty;
 
+    // Stryker disable once string : initialization is always overriden by deserialization
     /// <summary>
     /// Short name for the input
     /// </summary>

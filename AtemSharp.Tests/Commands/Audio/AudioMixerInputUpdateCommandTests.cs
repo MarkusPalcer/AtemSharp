@@ -49,5 +49,7 @@ public class AudioMixerInputUpdateCommandTests : DeserializedCommandTestBase<Aud
         Assert.That(state.GetClassicAudio().Channels[expectedData.Index].MixOption, Is.EqualTo(expectedData.MixOption));
         Assert.That(state.GetClassicAudio().Channels[expectedData.Index].Gain, Is.EqualTo(expectedData.Gain).Within(0.01));
         Assert.That(state.GetClassicAudio().Channels[expectedData.Index].Balance, Is.EqualTo(expectedData.Balance).Within(0.01));
+        Assert.That(state.GetClassicAudio().Channels[expectedData.Index].SupportsRcaToXlrEnabled, Is.False);
+        Assert.That(state.GetClassicAudio().Channels[expectedData.Index].RcaToXlrEnabled, Is.False);
     }
 }

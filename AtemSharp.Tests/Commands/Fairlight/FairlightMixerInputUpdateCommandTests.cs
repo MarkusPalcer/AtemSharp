@@ -33,7 +33,7 @@ public class FairlightMixerInputUpdateCommandTests : DeserializedCommandTestBase
         Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.InputType, Is.EqualTo(expectedData.InputType));
         Assert.That(actualCommand.ExternalPortType, Is.EqualTo(expectedData.ExternalPortType));
-        Assert.That(CommandTestUtilities.CombineComponents(actualCommand.SupportedConfigurations),
+        Assert.That(actualCommand.SupportedConfigurations.CombineComponents(),
                     Is.EqualTo(expectedData.SupportedConfigurations));
         Assert.That(actualCommand.ActiveConfiguration, Is.EqualTo(expectedData.ActiveConfiguration));
     }
@@ -49,8 +49,10 @@ public class FairlightMixerInputUpdateCommandTests : DeserializedCommandTestBase
         Assert.That(target.Id, Is.EqualTo(expectedData.Index));
         Assert.That(target.InputType, Is.EqualTo(expectedData.InputType));
         Assert.That(target.ExternalPortType, Is.EqualTo(expectedData.ExternalPortType));
-        Assert.That(CommandTestUtilities.CombineComponents(target.SupportedConfigurations),
+        Assert.That(target.SupportedConfigurations.CombineComponents(),
                     Is.EqualTo(expectedData.SupportedConfigurations));
         Assert.That(target.ActiveConfiguration, Is.EqualTo(expectedData.ActiveConfiguration));
+        Assert.That(target.SupportedInputLevels, Is.Empty);
+        Assert.That(target.ActiveInputLevel, Is.EqualTo(FairlightAnalogInputLevel.None));
     }
 }

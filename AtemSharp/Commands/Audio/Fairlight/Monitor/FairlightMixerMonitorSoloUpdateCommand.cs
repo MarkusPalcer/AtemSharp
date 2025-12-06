@@ -2,6 +2,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Commands.Audio.Fairlight.Monitor;
 
+// TODO: #72 find test data
 [Command("FAMS")]
 public partial class FairlightMixerMonitorSoloUpdateCommand : IDeserializedCommand
 {

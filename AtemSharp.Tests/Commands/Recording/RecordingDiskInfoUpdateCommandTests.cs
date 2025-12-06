@@ -24,6 +24,15 @@ public class RecordingDiskInfoUpdateCommandTests : DeserializedCommandTestBase<R
         Assert.That(actualCommand.Name, Is.EqualTo(expectedData.VolumeName));
     }
 
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        // If we test deletion, create a disk to be deleted for the test
+        if (expectedData.IsDelete)
+        {
+            state.Recording.Disks.GetOrCreate(expectedData.DiskId);
+        }
+    }
+
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)
     {
         if (expectedData.IsDelete)

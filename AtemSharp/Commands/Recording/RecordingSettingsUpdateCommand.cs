@@ -6,6 +6,7 @@ namespace AtemSharp.Commands.Recording;
 [Command("RMSu", ProtocolVersion.V8_1_1)]
 public partial class RecordingSettingsUpdateCommand : IDeserializedCommand
 {
+    // Stryker disable once string : initialization is always overriden by deserialization
     [CustomDeserialization] private string _fileName = string.Empty;
 
     [DeserializedField(128)] private uint _workingSet1DiskId;

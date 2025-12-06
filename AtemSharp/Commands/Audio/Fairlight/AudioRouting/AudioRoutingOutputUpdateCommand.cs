@@ -18,6 +18,7 @@ public partial class AudioRoutingOutputUpdateCommand : IDeserializedCommand
     [DeserializedField(10)]
     private ushort _internalPortType;
 
+    // Stryker disable once string : initialization is always overriden by deserialization
     [CustomDeserialization]
     private string _name = string.Empty;
 
@@ -29,6 +30,7 @@ public partial class AudioRoutingOutputUpdateCommand : IDeserializedCommand
 
     private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {
+        // Stryker disable once binary : >> and >>> do the same for unsigned types
         _audioOutputId = _id >> 16;
         _audioChannelPair = (AudioChannelPair)(ushort)(_id & 0xFFFF);
 

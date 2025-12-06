@@ -28,9 +28,9 @@ public class FairlightMixerInputUpdateV8CommandTests : DeserializedCommandTestBa
         Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.InputType, Is.EqualTo(expectedData.InputType));
         Assert.That(actualCommand.ExternalPortType, Is.EqualTo(expectedData.ExternalPortType));
-        Assert.That(CommandTestUtilities.CombineComponents(actualCommand.SupportedConfigurations), Is.EqualTo(expectedData.SupportedConfigurations));
+        Assert.That(actualCommand.SupportedConfigurations.CombineComponents(), Is.EqualTo(expectedData.SupportedConfigurations));
         Assert.That(actualCommand.ActiveConfiguration, Is.EqualTo(expectedData.ActiveConfiguration));
-        Assert.That(CommandTestUtilities.CombineComponents(actualCommand.SupportedInputLevels), Is.EqualTo(expectedData.SupportedInputLevels));
+        Assert.That(actualCommand.SupportedInputLevels.CombineComponents(), Is.EqualTo(expectedData.SupportedInputLevels));
         Assert.That(actualCommand.ActiveInputLevel, Is.EqualTo(expectedData.ActiveInputLevel));
     }
 
@@ -45,9 +45,9 @@ public class FairlightMixerInputUpdateV8CommandTests : DeserializedCommandTestBa
         Assert.That(target.Id, Is.EqualTo(expectedData.Index));
         Assert.That(target.InputType, Is.EqualTo(expectedData.InputType));
         Assert.That(target.ExternalPortType, Is.EqualTo(expectedData.ExternalPortType));
-        Assert.That(CommandTestUtilities.CombineComponents(target.SupportedConfigurations), Is.EqualTo(expectedData.SupportedConfigurations));
+        Assert.That(target.SupportedConfigurations.CombineComponents(), Is.EqualTo(expectedData.SupportedConfigurations));
         Assert.That(target.ActiveConfiguration, Is.EqualTo(expectedData.ActiveConfiguration));
-        Assert.That(CommandTestUtilities.CombineComponents(target.SupportedInputLevels), Is.EqualTo(expectedData.SupportedInputLevels));
+        Assert.That(target.SupportedInputLevels.CombineComponents(), Is.EqualTo(expectedData.SupportedInputLevels));
         Assert.That(target.ActiveInputLevel, Is.EqualTo(expectedData.ActiveInputLevel));
     }
 }

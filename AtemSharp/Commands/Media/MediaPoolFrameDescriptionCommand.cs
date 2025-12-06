@@ -11,8 +11,10 @@ public partial class MediaPoolFrameDescriptionCommand : IDeserializedCommand
 
     [DeserializedField(4)] private bool _isUsed;
 
+    // Stryker disable once string : initialization is always overriden by deserialization
     [CustomDeserialization] private string _hash = string.Empty;
 
+    // Stryker disable once string : initialization is always overriden by deserialization
     [CustomDeserialization] private string _fileName = string.Empty;
 
     private void DeserializeInternal(ReadOnlySpan<byte> data)

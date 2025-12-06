@@ -39,18 +39,8 @@ public partial class FairlightMixerSourceEqualizerBandUpdateCommand : IDeseriali
     public void ApplyToState(AtemState state)
     {
         var audio = state.GetFairlight();
-
-        var source = audio.Inputs.GetValueOrDefault(InputId)?.Sources.GetValueOrDefault(_sourceId);
-        if (source is null)
-        {
-            throw new IndexOutOfRangeException($"Source ID {SourceId} on Input ID {InputId} does not exist");
-        }
-
-        if (BandIndex >= source.Equalizer.Bands.Length)
-        {
-            throw new IndexOutOfRangeException($"Band Index {BandIndex} does not exist on Source ID {SourceId} on Input ID {InputId}");
-        }
-
+        var input = audio.Inputs[InputId];
+        var source = input.Sources[_sourceId];
         var band = source.Equalizer.Bands[BandIndex];
 
         band.Enabled = Enabled;

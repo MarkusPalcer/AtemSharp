@@ -7,6 +7,7 @@ public partial class MediaPoolClipDescriptionCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _clipId;
     [DeserializedField(1)] private bool _isUsed;
+    // Stryker disable once string : initialization is always overriden by deserialization
     [CustomDeserialization] private string _name = string.Empty;
     [DeserializedField(66)] private ushort _frameCount;
 

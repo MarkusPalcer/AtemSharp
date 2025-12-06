@@ -39,4 +39,49 @@ public class FairlightMixerSourceDeleteCommandTests : DeserializedCommandTestBas
     {
         Assert.That(state.GetFairlight().Inputs[expectedData.Index].Sources, Does.Not.ContainKey(long.Parse(expectedData.SourceId)));
     }
+
+    [Test]
+    public void MissingSource()
+    {
+        var sut = new FairlightMixerSourceDeleteCommand()
+        {
+            InputId = 1,
+            SourceId = 1
+        };
+
+        var state = new AtemState
+        {
+            Audio = new FairlightAudioState
+            {
+                Inputs =
+                {
+                    [1] = new FairlightAudioInput()
+                }
+            }
+        };
+
+        sut.ApplyToState(state);
+
+        Assert.That(state.GetFairlight().Inputs.Keys, Is.EquivalentTo(new ushort[] { 1 }));
+        Assert.That(state.GetFairlight().Inputs[1].Sources, Is.Empty);
+    }
+
+    [Test]
+    public void MissingInput()
+    {
+        var sut = new FairlightMixerSourceDeleteCommand()
+        {
+            InputId = 1,
+            SourceId = 1
+        };
+
+        var state = new AtemState
+        {
+            Audio = new FairlightAudioState()
+        };
+
+        sut.ApplyToState(state);
+
+        Assert.That(state.GetFairlight().Inputs, Is.Empty);
+    }
 }

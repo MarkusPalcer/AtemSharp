@@ -6,10 +6,13 @@ namespace AtemSharp.Commands.Streaming;
 [Command("SRSU", ProtocolVersion.V8_1_1)]
 public partial class StreamingServiceUpdateCommand : IDeserializedCommand
 {
+    // Stryker disable once string : initialization is always overriden by deserialization
     [CustomDeserialization] private string _serviceName = string.Empty;
 
+    // Stryker disable once string : initialization is always overriden by deserialization
     [CustomDeserialization] private string _url = string.Empty;
 
+    // Stryker disable once string : initialization is always overriden by deserialization
     [CustomDeserialization] private string _key = string.Empty;
 
     [DeserializedField(1088)] private uint _bitrate1;

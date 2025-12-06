@@ -54,7 +54,7 @@ public class FairlightMixerSourceEqualizerBandUpdateCommandTests : DeserializedC
                     {
                         [expectedData.SourceId] = new AtemSharp.State.Audio.Fairlight.Source()
                         {
-                            Equalizer = { Bands = AtemStateUtil.CreateArray<SourceEqualizerBand>(expectedData.Band + 1) }
+                            Equalizer = { Bands = AtemStateUtil.CreateArray<SourceEqualizerBand>(expectedData.Band + 1).ToList() }
                         }
                     }
                 }

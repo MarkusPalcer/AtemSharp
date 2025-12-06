@@ -11,7 +11,7 @@ namespace AtemSharp.Commands;
 [Command("Powr")]
 public partial class PowerStatusCommand : IDeserializedCommand
 {
-    [DeserializedField(0)] [NoProperty] private byte _powerStatus;
+    [DeserializedField(0)] [NoProperty] private PowerSupplyBits _powerStatus;
 
     /// <summary>
     /// Power supply status array. Each element represents the status of a power supply.
@@ -19,14 +19,20 @@ public partial class PowerStatusCommand : IDeserializedCommand
     /// </summary>
     [CustomDeserialization] private bool[] _powerSupplies = [];
 
+    [Flags]
+    private enum PowerSupplyBits : byte
+    {
+        First = 1,
+        Second = 2
+    }
+
     private void DeserializeInternal(ReadOnlySpan<byte> _)
     {
+
         _powerSupplies =
         [
-            // Extract individual power supply status bits
-            // Bit 0 = first power supply, Bit 1 = second power supply
-            (_powerStatus & (1 << 0)) != 0, // First power supply
-            (_powerStatus & (1 << 1)) != 0 // Second power supply
+            _powerStatus.HasFlag(PowerSupplyBits.First),
+            _powerStatus.HasFlag(PowerSupplyBits.Second),
         ];
     }
 

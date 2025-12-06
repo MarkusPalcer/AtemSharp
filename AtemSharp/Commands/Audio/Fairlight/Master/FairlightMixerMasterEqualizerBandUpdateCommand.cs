@@ -44,11 +44,6 @@ public partial class FairlightMixerMasterEqualizerBandUpdateCommand : IDeseriali
     public void ApplyToState(AtemState state)
     {
         var equalizer = state.GetFairlight().Master.Equalizer;
-        if (_bandIndex >= equalizer.Bands.Length)
-        {
-            throw new IndexOutOfRangeException($"Band Index {_bandIndex} does not exist on Master equalizer");
-        }
-
         var band =  equalizer.Bands[_bandIndex];
 
         band.Enabled = Enabled;

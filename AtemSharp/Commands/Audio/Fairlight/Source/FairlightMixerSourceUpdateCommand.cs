@@ -53,9 +53,13 @@ public partial class FairlightMixerSourceUpdateCommand : IDeserializedCommand
 
         source.Equalizer.Enabled = EqualizerEnabled;
         source.Equalizer.Gain = EqualizerGain;
-        if (source.Equalizer.Bands.Length < BandCount)
+        if (BandCount == 0)
         {
-            source.Equalizer.Bands = AtemStateUtil.CreateArray<SourceEqualizerBand>(BandCount);
+            source.Equalizer.Bands = [];
+        }
+        else
+        {
+            source.Equalizer.Bands.ExpandToFit((uint)BandCount - 1);
             foreach (var band in source.Equalizer.Bands)
             {
                 band.InputId = InputId;

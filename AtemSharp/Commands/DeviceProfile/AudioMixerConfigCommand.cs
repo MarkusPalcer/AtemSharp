@@ -37,6 +37,6 @@ public partial class AudioMixerConfigCommand : IDeserializedCommand
         };
 
         // Initialize audio state
-        state.Audio ??= new ClassicAudioState();
+        state.Audio = new ClassicAudioState();
     }
 }

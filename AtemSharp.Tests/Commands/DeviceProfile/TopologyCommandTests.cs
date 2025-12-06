@@ -62,5 +62,7 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
         Assert.That(state.Info.Capabilities.SuperSources, Is.EqualTo(expectedData.SuperSource));
         Assert.That(state.Info.Capabilities.TalkbackChannels, Is.EqualTo(expectedData.TalkbackChannels));
         Assert.That(state.Info.Capabilities.CameraControl, Is.EqualTo(expectedData.CameraControl));
+        Assert.That(state.Info.Capabilities.AdvancedChromaKeyers, Is.False);
+        Assert.That(state.Info.Capabilities.OnlyConfigurableOutputs, Is.False);
     }
 }

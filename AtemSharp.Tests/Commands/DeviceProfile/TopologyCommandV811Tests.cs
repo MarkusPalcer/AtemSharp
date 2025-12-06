@@ -17,7 +17,7 @@ public class TopologyCommandV811Tests : DeserializedCommandTestBase<TopologyComm
         public int SerialPort { get; set; }
         public int HyperDecks { get; set; }
 
-        // ReSharper disable once InconsistentNaming - Domain Specific Acronym
+        // ReSharper disable once InconsistentNaming - name given through test data
         public int DVE { get; set; }
         public int Stingers { get; set; }
         public int SuperSource { get; set; }
@@ -65,5 +65,8 @@ public class TopologyCommandV811Tests : DeserializedCommandTestBase<TopologyComm
         Assert.That(state.Info.Capabilities.CameraControl, Is.EqualTo(expectedData.CameraControl));
         Assert.That(state.Info.Capabilities.AdvancedChromaKeyers, Is.EqualTo(expectedData.AdvancedChromaKeyers));
         Assert.That(state.Info.Capabilities.OnlyConfigurableOutputs, Is.EqualTo(expectedData.OnlyConfigurableOutputs));
+
+        // TODO: #73 verify if this is always 10 if there are multi viewers.
+        Assert.That(state.Info.MultiViewer.WindowCount, Is.EqualTo(expectedData.Multiviewers > 0 ? 10 : 0));
     }
 }

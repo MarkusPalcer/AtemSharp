@@ -27,8 +27,11 @@ public class FadeToBlackRateUpdateCommandTests : DeserializedCommandTestBase<Fad
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)
     {
-        var actualCommand = state.Video.MixEffects[expectedData.Index];
-        Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Index));
-        Assert.That(actualCommand.FadeToBlack.Rate, Is.EqualTo(expectedData.Rate));
+        var mixEffect = state.Video.MixEffects[expectedData.Index];
+        Assert.That(mixEffect.Id, Is.EqualTo(expectedData.Index));
+        Assert.That(mixEffect.FadeToBlack.Rate, Is.EqualTo(expectedData.Rate));
+        Assert.That(mixEffect.FadeToBlack.InTransition, Is.False);
+        Assert.That(mixEffect.FadeToBlack.IsFullyBlack, Is.False);
+        Assert.That(mixEffect.FadeToBlack.RemainingFrames, Is.EqualTo(0));
     }
 }
