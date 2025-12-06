@@ -27,7 +27,7 @@ public partial class AudioRoutingSourceUpdateCommand : IDeserializedCommand
 
     private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {
-        // Stryker disable once binary : >> and >>> do the same for unsigned types
+        // Stryker disable once bitwise : >> and >>> do the same for unsigned types
         _audioSourceId = _id >> 16;
         _audioChannelPair = (AudioChannelPair)(ushort)(_id & 0xFFFF);
 
