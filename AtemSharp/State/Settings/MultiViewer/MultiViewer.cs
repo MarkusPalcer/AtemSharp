@@ -6,7 +6,7 @@ namespace AtemSharp.State.Settings.MultiViewer;
 /// MultiViewer configuration and state
 /// </summary>
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class MultiViewer : ArrayItem
+public class MultiViewer : ItemWithId<int>
 {
     internal override void SetId(int id) => Id = (byte)id;
 
@@ -23,7 +23,7 @@ public class MultiViewer : ArrayItem
     /// <summary>
     /// MultiViewer windows indexed by window index using sparse Dictionary for efficient memory usage
     /// </summary>
-    public Dictionary<int, MultiViewerWindowState> Windows { get; } = new();
+    public Dictionary<byte, MultiViewerWindowState> Windows { get; } = new();
 
     /// <summary>
     /// VU opacity level (0-100)

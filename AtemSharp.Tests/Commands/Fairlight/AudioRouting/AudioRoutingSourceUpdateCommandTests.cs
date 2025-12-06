@@ -1,9 +1,11 @@
+using AtemSharp.State;
 using AtemSharp.State.Audio.Fairlight;
 using AudioRoutingSourceUpdateCommand = AtemSharp.Commands.Audio.Fairlight.AudioRouting.AudioRoutingSourceUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.AudioRouting;
 
-public class AudioRoutingSourceUpdateCommandTests : DeserializedCommandTestBase<AudioRoutingSourceUpdateCommand, AudioRoutingSourceUpdateCommandTests.CommandData>
+public class AudioRoutingSourceUpdateCommandTests : DeserializedCommandTestBase<AudioRoutingSourceUpdateCommand,
+    AudioRoutingSourceUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -18,7 +20,8 @@ public class AudioRoutingSourceUpdateCommandTests : DeserializedCommandTestBase<
         public AudioChannelPair AudioChannelPair { get; set; }
     }
 
-    protected override void CompareCommandProperties(AudioRoutingSourceUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(AudioRoutingSourceUpdateCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
         Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Id));
         Assert.That(actualCommand.ExternalPortType, Is.EqualTo(expectedData.ExternalPortType));
@@ -26,5 +29,20 @@ public class AudioRoutingSourceUpdateCommandTests : DeserializedCommandTestBase<
         Assert.That(actualCommand.Name, Is.EqualTo(expectedData.Name));
         Assert.That(actualCommand.AudioSourceId, Is.EqualTo(expectedData.AudioInputId));
         Assert.That(actualCommand.AudioChannelPair, Is.EqualTo(expectedData.AudioChannelPair));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Audio = new FairlightAudioState();
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var target = state.GetFairlight().AudioRouting.Sources[expectedData.Id];
+        Assert.That(target.Id, Is.EqualTo(expectedData.AudioInputId));
+        Assert.That(target.ExternalPortType, Is.EqualTo(expectedData.ExternalPortType));
+        Assert.That(target.InternalPortType, Is.EqualTo(expectedData.InternalPortType));
+        Assert.That(target.Name, Is.EqualTo(expectedData.Name));
+        Assert.That(target.ChannelPair, Is.EqualTo(expectedData.AudioChannelPair));
     }
 }

@@ -6,7 +6,7 @@ namespace AtemSharp.State.Settings.MultiViewer;
 /// Represents the full state of a MultiViewer window, extending the source configuration with display options
 /// </summary>
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class MultiViewerWindowState
+public class MultiViewerWindowState : ItemWithId<byte>
 {
     public byte MultiViewerId { get; internal set; }
 
@@ -39,4 +39,6 @@ public class MultiViewerWindowState
     /// Whether this window supports safe area overlay
     /// </summary>
     public bool SupportsSafeArea { get; internal set; }
+
+    internal override void SetId(byte id) => WindowIndex = id;
 }

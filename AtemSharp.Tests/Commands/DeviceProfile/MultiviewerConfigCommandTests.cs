@@ -1,4 +1,5 @@
 using AtemSharp.Commands.DeviceProfile;
+using AtemSharp.State;
 using AtemSharp.State.Info;
 using AtemSharp.Tests.TestUtilities;
 
@@ -31,5 +32,11 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
     {
         Assert.That(actualCommand.Count, Is.EqualTo(expectedData.Count));
         Assert.That(actualCommand.WindowCount, Is.EqualTo(expectedData.WindowCount));
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        Assert.That(state.Info.MultiViewer.Count, Is.EqualTo(expectedData.Count));
+        Assert.That(state.Info.MultiViewer.WindowCount, Is.EqualTo(expectedData.WindowCount));
     }
 }

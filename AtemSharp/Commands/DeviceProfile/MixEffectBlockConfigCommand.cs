@@ -25,6 +25,7 @@ public partial class MixEffectBlockConfigCommand : IDeserializedCommand
         // Update device info mix effect configuration
         state.Info.MixEffects[Index] = new MixEffectInfo
         {
+            Id = Index,
             KeyCount = KeyCount
         };
     }

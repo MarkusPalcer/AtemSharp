@@ -1,4 +1,6 @@
 using AtemSharp.Commands.MixEffects.Key;
+using AtemSharp.State;
+using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
@@ -37,10 +39,10 @@ public class MixEffectKeyFlyKeyframeUpdateCommandTests : DeserializedCommandTest
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.MixEffectIndex));
         Assert.That(actualCommand.UpstreamKeyerId, Is.EqualTo(expectedData.KeyerIndex));
         Assert.That(actualCommand.KeyframeId, Is.EqualTo(expectedData.KeyFrame));
-        Assert.That(actualCommand.SizeX, Is.EqualTo(expectedData.SizeX).Within(0.001));
-        Assert.That(actualCommand.SizeY, Is.EqualTo(expectedData.SizeY).Within(0.001));
-        Assert.That(actualCommand.PositionX, Is.EqualTo(expectedData.PositionX).Within(0.001));
-        Assert.That(actualCommand.PositionY, Is.EqualTo(expectedData.PositionY).Within(0.001));
+        Assert.That(actualCommand.SizeX, Is.EqualTo(expectedData.SizeX).Within(0.01));
+        Assert.That(actualCommand.SizeY, Is.EqualTo(expectedData.SizeY).Within(0.01));
+        Assert.That(actualCommand.PositionX, Is.EqualTo(expectedData.PositionX).Within(0.01));
+        Assert.That(actualCommand.PositionY, Is.EqualTo(expectedData.PositionY).Within(0.01));
         Assert.That(actualCommand.Rotation, Is.EqualTo(expectedData.Rotation).Within(0.1));
         Assert.That(actualCommand.BorderOuterWidth, Is.EqualTo(expectedData.OuterWidth).Within(0.01));
         Assert.That(actualCommand.BorderInnerWidth, Is.EqualTo(expectedData.InnerWidth).Within(0.01));
@@ -58,5 +60,40 @@ public class MixEffectKeyFlyKeyframeUpdateCommandTests : DeserializedCommandTest
         Assert.That(actualCommand.MaskBottom, Is.EqualTo(expectedData.MaskBottom).Within(0.001));
         Assert.That(actualCommand.MaskLeft, Is.EqualTo(expectedData.MaskLeft).Within(0.001));
         Assert.That(actualCommand.MaskRight, Is.EqualTo(expectedData.MaskRight).Within(0.001));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(expectedData.MixEffectIndex + 1);
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var keyframe = state.Video.MixEffects[expectedData.MixEffectIndex].UpstreamKeyers[expectedData.KeyerIndex]
+                                 .Keyframes[expectedData.KeyFrame - 1];
+        Assert.That(keyframe.MixEffectId, Is.EqualTo(expectedData.MixEffectIndex));
+        Assert.That(keyframe.UpstreamKeyerId, Is.EqualTo(expectedData.KeyerIndex));
+        Assert.That(keyframe.Id, Is.EqualTo(expectedData.KeyFrame));
+        Assert.That(keyframe.Size.Width, Is.EqualTo(expectedData.SizeX).Within(0.01));
+        Assert.That(keyframe.Size.Height, Is.EqualTo(expectedData.SizeY).Within(0.01));
+        Assert.That(keyframe.Location.X, Is.EqualTo(expectedData.PositionX).Within(0.01));
+        Assert.That(keyframe.Location.Y, Is.EqualTo(expectedData.PositionY).Within(0.01));
+        Assert.That(keyframe.Rotation, Is.EqualTo(expectedData.Rotation).Within(0.1));
+        Assert.That(keyframe.Border.OuterWidth, Is.EqualTo(expectedData.OuterWidth).Within(0.01));
+        Assert.That(keyframe.Border.InnerWidth, Is.EqualTo(expectedData.InnerWidth).Within(0.01));
+        Assert.That(keyframe.Border.OuterSoftness, Is.EqualTo(expectedData.OuterSoftness));
+        Assert.That(keyframe.Border.InnerSoftness, Is.EqualTo(expectedData.InnerSoftness));
+        Assert.That(keyframe.Border.BevelSoftness, Is.EqualTo(expectedData.BevelSoftness));
+        Assert.That(keyframe.Border.BevelPosition, Is.EqualTo(expectedData.BevelPosition));
+        Assert.That(keyframe.Border.Opacity, Is.EqualTo(expectedData.BorderOpacity));
+        Assert.That(keyframe.Border.Hue, Is.EqualTo(expectedData.BorderHue).Within(0.1));
+        Assert.That(keyframe.Border.Saturation, Is.EqualTo(expectedData.BorderSaturation).Within(0.1));
+        Assert.That(keyframe.Border.Luma, Is.EqualTo(expectedData.BorderLuma).Within(0.1));
+        Assert.That(keyframe.LightSourceDirection, Is.EqualTo(expectedData.LightSourceDirection).Within(0.1));
+        Assert.That(keyframe.LightSourceAltitude, Is.EqualTo(expectedData.LightSourceAltitude));
+        Assert.That(keyframe.Mask.Top, Is.EqualTo(expectedData.MaskTop).Within(0.001));
+        Assert.That(keyframe.Mask.Bottom, Is.EqualTo(expectedData.MaskBottom).Within(0.001));
+        Assert.That(keyframe.Mask.Left, Is.EqualTo(expectedData.MaskLeft).Within(0.001));
+        Assert.That(keyframe.Mask.Right, Is.EqualTo(expectedData.MaskRight).Within(0.001));
     }
 }

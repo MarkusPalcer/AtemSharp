@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands;
@@ -8,6 +9,7 @@ public partial class TallyBySourceCommand : IDeserializedCommand
     [DeserializedField(0)] private ushort _sourceCount;
     [CustomDeserialization] private Tally[] _tallyBySource = [];
 
+    [ExcludeFromCodeCoverage]
     public class Tally
     {
         public bool IsInProgram { get; internal set; }

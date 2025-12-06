@@ -1,4 +1,5 @@
 using AtemSharp.Commands.Streaming;
+using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Streaming;
 
@@ -14,5 +15,12 @@ public class StreamingAudioBitratesUpdateCommandTests : DeserializedCommandTestB
     {
         Assert.That(actualCommand.LowBitrate, Is.EqualTo(expectedData.LowBitrate));
         Assert.That(actualCommand.HighBitrate, Is.EqualTo(expectedData.HighBitrate));
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var actualCommand = state.Streaming.AudioBitrates;
+        Assert.That(actualCommand.Low, Is.EqualTo(expectedData.LowBitrate));
+        Assert.That(actualCommand.High, Is.EqualTo(expectedData.HighBitrate));
     }
 }

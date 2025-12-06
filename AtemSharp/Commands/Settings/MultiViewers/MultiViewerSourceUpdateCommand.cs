@@ -1,5 +1,4 @@
 using AtemSharp.State;
-using AtemSharp.State.Settings.MultiViewer;
 
 namespace AtemSharp.Commands.Settings.MultiViewers;
 
@@ -38,26 +37,12 @@ public partial class MultiViewerSourceUpdateCommand : IDeserializedCommand
     public void ApplyToState(AtemState state)
     {
         var multiViewer = state.Settings.MultiViewers[MultiViewerId];
+        var window = multiViewer.Windows.GetOrCreate(WindowIndex);
 
-        // Get the current window state or create a new one
-        if (!multiViewer.Windows.TryGetValue(WindowIndex, out var currentWindow))
-        {
-            currentWindow = new MultiViewerWindowState();
-        }
-
-        // Create updated window state with new properties
-        var updatedWindow = new MultiViewerWindowState
-        {
-            WindowIndex = WindowIndex,
-            Source = Source,
-            SupportsVuMeter = SupportsVuMeter,
-            SupportsSafeArea = SupportsSafeArea,
-            // Preserve existing optional properties if they exist
-            SafeTitle = currentWindow.SafeTitle,
-            AudioMeter = currentWindow.AudioMeter
-        };
-
-        // Update the window in the MultiViewer
-        multiViewer.Windows[WindowIndex] = updatedWindow;
+        window.MultiViewerId = MultiViewerId;
+        window.WindowIndex = WindowIndex;
+        window.Source = Source;
+        window.SupportsVuMeter = SupportsVuMeter;
+        window.SupportsSafeArea = SupportsSafeArea;
     }
 }

@@ -43,5 +43,6 @@ public partial class FairlightMixerMasterCompressorUpdateCommand : IDeserialized
         compressor.Ratio = _ratio;
         compressor.Attack = _attack;
         compressor.Hold = _hold;
+        compressor.Release = _release;
     }
 }

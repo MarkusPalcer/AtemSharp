@@ -8,7 +8,7 @@ namespace AtemSharp.State;
 /// </summary>
 public static class AtemStateUtil
 {
-    private static IEnumerable<T> CreateEnumerable<T>(int length) where T : ArrayItem, new()
+    private static IEnumerable<T> CreateEnumerable<T>(int length) where T : ItemWithId<int>, new()
     {
         for (var i = 0; i < length; i++)
         {
@@ -18,10 +18,10 @@ public static class AtemStateUtil
         }
     }
 
-    public static T[] CreateArray<T>(int length) where T : ArrayItem, new()
+    public static T[] CreateArray<T>(int length) where T : ItemWithId<int>, new()
         => CreateEnumerable<T>(length).ToArray();
 
-    public static void ExpandToFit<T>(this IList<T> self, uint id) where T : ArrayItem, new()
+    public static void ExpandToFit<T>(this IList<T> self, uint id) where T : ItemWithId<int>, new()
     {
         while (self.Count <= id)
         {
@@ -37,6 +37,7 @@ public static class AtemStateUtil
     public static ClassicAudioState GetClassicAudio(this AtemState state)
         => state.Audio as ClassicAudioState ?? throw new InvalidOperationException("Classic audio state is not available");
 
+    [Obsolete]
     public static TValue GetOrCreate<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey index)
         where TValue : new() where TKey : notnull
     {
@@ -49,6 +50,75 @@ public static class AtemStateUtil
 
         value = new TValue();
         dict[index] = value;
+
+        return value;
+    }
+
+    public static TValue GetOrCreate<TValue>(this IDictionary<ushort, TValue> dict, ushort index)
+        where TValue : ItemWithId<ushort>, new()
+    {
+        ArgumentNullException.ThrowIfNull(dict);
+
+        if (dict.TryGetValue(index, out var value))
+        {
+            return value;
+        }
+
+        value = new TValue();
+        value.SetId(index);
+        dict[index] = value;
+
+        return value;
+    }
+
+    public static TValue GetOrCreate<TValue>(this IDictionary<long, TValue> dict, long index)
+        where TValue : ItemWithId<long>, new()
+    {
+        ArgumentNullException.ThrowIfNull(dict);
+
+        if (dict.TryGetValue(index, out var value))
+        {
+            return value;
+        }
+
+        value = new TValue();
+        value.SetId(index);
+        dict[index] = value;
+
+        return value;
+    }
+
+    public static TValue GetOrCreate<TValue>(this IDictionary<byte, TValue> dict, byte index)
+        where TValue : ItemWithId<byte>, new()
+    {
+        ArgumentNullException.ThrowIfNull(dict);
+
+        if (dict.TryGetValue(index, out var value))
+        {
+            return value;
+        }
+
+        value = new TValue();
+        value.SetId(index);
+        dict[index] = value;
+
+        return value;
+    }
+
+    public static TValue GetOrCreate<TValue>(this IDictionary<uint, TValue> dict, uint index)
+        where TValue : ItemWithId<uint>, new()
+    {
+        ArgumentNullException.ThrowIfNull(dict);
+
+        if (dict.TryGetValue(index, out var value))
+        {
+            return value;
+        }
+
+        value = new TValue();
+        value.SetId(index);
+        dict[index] = value;
+
         return value;
     }
 }

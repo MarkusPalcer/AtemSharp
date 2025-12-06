@@ -1,4 +1,6 @@
 using AtemSharp.Commands.MixEffects.Transition;
+using AtemSharp.State;
+using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
@@ -20,10 +22,29 @@ public class TransitionStingerUpdateCommandTests : DeserializedCommandTestBase<T
         public ushort MixRate { get; set; }
     }
 
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(expectedData.Index + 1);
+    }
+
     protected override void CompareCommandProperties(TransitionStingerUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source));
+        Assert.That(actualCommand.PreMultipliedKey, Is.EqualTo(expectedData.PreMultipliedKey));
+        Assert.That(actualCommand.Clip, Is.EqualTo(expectedData.Clip).Within(0.1));
+        Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.1));
+        Assert.That(actualCommand.Invert, Is.EqualTo(expectedData.Invert));
+        Assert.That(actualCommand.Preroll, Is.EqualTo(expectedData.Preroll));
+        Assert.That(actualCommand.ClipDuration, Is.EqualTo(expectedData.ClipDuration));
+        Assert.That(actualCommand.TriggerPoint, Is.EqualTo(expectedData.TriggerPoint));
+        Assert.That(actualCommand.MixRate, Is.EqualTo(expectedData.MixRate));
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var actualCommand = state.Video.MixEffects[expectedData.Index].TransitionSettings.Stinger;
         Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source));
         Assert.That(actualCommand.PreMultipliedKey, Is.EqualTo(expectedData.PreMultipliedKey));
         Assert.That(actualCommand.Clip, Is.EqualTo(expectedData.Clip).Within(0.1));

@@ -1,4 +1,5 @@
 using AtemSharp.Commands.Recording;
+using AtemSharp.State;
 using AtemSharp.State.Recording;
 
 namespace AtemSharp.Tests.Commands.Recording;
@@ -21,5 +22,20 @@ public class RecordingDiskInfoUpdateCommandTests : DeserializedCommandTestBase<R
         Assert.That(actualCommand.Status, Is.EqualTo(expectedData.Status));
         Assert.That(actualCommand.RecordingTimeAvailable, Is.EqualTo(expectedData.RecordingTimeAvailable));
         Assert.That(actualCommand.Name, Is.EqualTo(expectedData.VolumeName));
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        if (expectedData.IsDelete)
+        {
+            Assert.That(state.Recording.Disks, Does.Not.ContainKey(expectedData.DiskId));
+        }
+        else
+        {
+            Assert.That(state.Recording.Disks[expectedData.DiskId].DiskId, Is.EqualTo(expectedData.DiskId));
+            Assert.That(state.Recording.Disks[expectedData.DiskId].Status, Is.EqualTo(expectedData.Status));
+            Assert.That(state.Recording.Disks[expectedData.DiskId].RecordingTimeAvailable, Is.EqualTo(expectedData.RecordingTimeAvailable));
+            Assert.That(state.Recording.Disks[expectedData.DiskId].Name, Is.EqualTo(expectedData.VolumeName));
+        }
     }
 }

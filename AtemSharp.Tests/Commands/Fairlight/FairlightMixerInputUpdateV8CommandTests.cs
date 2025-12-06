@@ -1,4 +1,5 @@
 using AtemSharp.Commands.Audio.Fairlight;
+using AtemSharp.State;
 using AtemSharp.State.Audio.Fairlight;
 using AtemSharp.State.Ports;
 
@@ -8,7 +9,7 @@ public class FairlightMixerInputUpdateV8CommandTests : DeserializedCommandTestBa
 {
     public class CommandData : CommandDataBase
     {
-        public int Index { get; set; }
+        public ushort Index { get; set; }
         public FairlightInputType InputType { get; set; }
         public ExternalPortType ExternalPortType { get; set; }
         public FairlightInputConfiguration SupportedConfigurations { get; set; }
@@ -31,5 +32,22 @@ public class FairlightMixerInputUpdateV8CommandTests : DeserializedCommandTestBa
         Assert.That(actualCommand.ActiveConfiguration, Is.EqualTo(expectedData.ActiveConfiguration));
         Assert.That(CommandTestUtilities.CombineComponents(actualCommand.SupportedInputLevels), Is.EqualTo(expectedData.SupportedInputLevels));
         Assert.That(actualCommand.ActiveInputLevel, Is.EqualTo(expectedData.ActiveInputLevel));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Audio = new FairlightAudioState();
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var target = state.GetFairlight().Inputs[expectedData.Index];
+        Assert.That(target.Id, Is.EqualTo(expectedData.Index));
+        Assert.That(target.InputType, Is.EqualTo(expectedData.InputType));
+        Assert.That(target.ExternalPortType, Is.EqualTo(expectedData.ExternalPortType));
+        Assert.That(CommandTestUtilities.CombineComponents(target.SupportedConfigurations), Is.EqualTo(expectedData.SupportedConfigurations));
+        Assert.That(target.ActiveConfiguration, Is.EqualTo(expectedData.ActiveConfiguration));
+        Assert.That(CommandTestUtilities.CombineComponents(target.SupportedInputLevels), Is.EqualTo(expectedData.SupportedInputLevels));
+        Assert.That(target.ActiveInputLevel, Is.EqualTo(expectedData.ActiveInputLevel));
     }
 }

@@ -1,5 +1,7 @@
 using AtemSharp.Commands.DownstreamKey;
+using AtemSharp.State;
 using AtemSharp.State.Info;
+using AtemSharp.State.Video.DownstreamKeyer;
 using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DownstreamKey;
@@ -25,5 +27,20 @@ public class DownstreamKeyStateUpdateCommandTests : DeserializedCommandTestBase<
         Assert.That(actualCommand.InTransition, Is.EqualTo(expectedData.InTransition));
         Assert.That(actualCommand.IsAuto, Is.EqualTo(expectedData.IsAuto));
         Assert.That(actualCommand.RemainingFrames, Is.EqualTo(expectedData.RemainingFrames));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(expectedData.Index + 1);
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var target = state.Video.DownstreamKeyers[expectedData.Index];
+        Assert.That(target.Id, Is.EqualTo(expectedData.Index));
+        Assert.That(target.OnAir, Is.EqualTo(expectedData.OnAir));
+        Assert.That(target.InTransition, Is.EqualTo(expectedData.InTransition));
+        Assert.That(target.IsAuto, Is.EqualTo(expectedData.IsAuto));
+        Assert.That(target.RemainingFrames, Is.EqualTo(expectedData.RemainingFrames));
     }
 }

@@ -1,9 +1,12 @@
 using AtemSharp.Commands.DeviceProfile;
+using AtemSharp.State;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
 [TestFixture]
-public class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixEffectBlockConfigCommand, MixEffectBlockConfigCommandTests.CommandData>
+public class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixEffectBlockConfigCommand,
+    MixEffectBlockConfigCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -11,9 +14,21 @@ public class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixE
         public byte KeyCount { get; set; }
     }
 
-    protected override void CompareCommandProperties(MixEffectBlockConfigCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(MixEffectBlockConfigCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
         Assert.That(actualCommand.Index, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.KeyCount, Is.EqualTo(expectedData.KeyCount));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Info.MixEffects = AtemStateUtil.CreateArray<MixEffectInfo>(expectedData.Index + 1);
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        Assert.That(state.Info.MixEffects[expectedData.Index].Id, Is.EqualTo(expectedData.Index));
+        Assert.That(state.Info.MixEffects[expectedData.Index].KeyCount, Is.EqualTo(expectedData.KeyCount));
     }
 }

@@ -1,4 +1,5 @@
 using AtemSharp.Commands.Settings.MultiViewers;
+using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Settings.MultiViewers;
 
@@ -8,8 +9,8 @@ public class MultiViewerWindowVuMeterUpdateCommandTests : DeserializedCommandTes
 {
     public class CommandData : CommandDataBase
     {
-        public int MultiviewIndex { get; set; }
-        public int WindowIndex { get; set; }
+        public byte MultiviewIndex { get; set; }
+        public byte WindowIndex { get; set; }
         public bool VuEnabled { get; set; }
     }
 
@@ -21,4 +22,16 @@ public class MultiViewerWindowVuMeterUpdateCommandTests : DeserializedCommandTes
         Assert.That(actualCommand.VuEnabled, Is.EqualTo(expectedData.VuEnabled));
     }
 
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Settings.MultiViewers.ExpandToFit(expectedData.MultiviewIndex);
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var actualCommand = state.Settings.MultiViewers[expectedData.MultiviewIndex].Windows[expectedData.WindowIndex];
+        Assert.That(actualCommand.MultiViewerId, Is.EqualTo(expectedData.MultiviewIndex));
+        Assert.That(actualCommand.WindowIndex, Is.EqualTo(expectedData.WindowIndex));
+        Assert.That(actualCommand.AudioMeter, Is.EqualTo(expectedData.VuEnabled));
+    }
 }

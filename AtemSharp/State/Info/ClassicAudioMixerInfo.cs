@@ -6,7 +6,7 @@ namespace AtemSharp.State.Info;
 /// Information about the audio mixer capabilities
 /// </summary>
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class AudioMixerInfo : MixerInfo
+public class ClassicAudioMixerInfo : MixerInfo
 {
     /// <summary>
     /// Number of audio inputs available

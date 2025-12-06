@@ -1,4 +1,6 @@
 using AtemSharp.Commands.Media;
+using AtemSharp.State;
+using AtemSharp.State.Media;
 
 namespace AtemSharp.Tests.Commands.Media;
 
@@ -17,10 +19,26 @@ public class MediaPlayerStatusUpdateCommandTests : DeserializedCommandTestBase<M
     protected override void CompareCommandProperties(MediaPlayerStatusUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
-        Assert.That(actualCommand.MediaPlayerId, Is.EqualTo(testCase.Command.Index));
-        Assert.That(actualCommand.IsPlaying, Is.EqualTo(testCase.Command.Playing));
-        Assert.That(actualCommand.IsLooping, Is.EqualTo(testCase.Command.Loop));
-        Assert.That(actualCommand.IsAtBeginning, Is.EqualTo(testCase.Command.AtBeginning));
-        Assert.That(actualCommand.ClipFrame, Is.EqualTo(testCase.Command.ClipFrame));
+        Assert.That(actualCommand.MediaPlayerId, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.IsPlaying, Is.EqualTo(expectedData.Playing));
+        Assert.That(actualCommand.IsLooping, Is.EqualTo(expectedData.Loop));
+        Assert.That(actualCommand.IsAtBeginning, Is.EqualTo(expectedData.AtBeginning));
+        Assert.That(actualCommand.ClipFrame, Is.EqualTo(expectedData.ClipFrame));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Media.Players = AtemStateUtil.CreateArray<MediaPlayer>(expectedData.Index + 1);
+    }
+
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var actualCommand = state.Media.Players[expectedData.Index];
+        Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.IsPlaying, Is.EqualTo(expectedData.Playing));
+        Assert.That(actualCommand.IsLooping, Is.EqualTo(expectedData.Loop));
+        Assert.That(actualCommand.IsAtBeginning, Is.EqualTo(expectedData.AtBeginning));
+        Assert.That(actualCommand.ClipFrame, Is.EqualTo(expectedData.ClipFrame));
     }
 }

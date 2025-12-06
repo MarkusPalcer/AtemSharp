@@ -1,4 +1,5 @@
 using AtemSharp.Commands.MixEffects.Key;
+using AtemSharp.State;
 using AtemSharp.State.Border;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
@@ -70,5 +71,37 @@ public class MixEffectKeyDigitalVideoEffectsUpdateCommandTests : DeserializedCom
         Assert.That(command.MaskLeft, Is.EqualTo(expected.MaskLeft));
         Assert.That(command.MaskRight, Is.EqualTo(expected.MaskRight));
         Assert.That(command.Rate, Is.EqualTo(expected.Rate));
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var command = state.Video.MixEffects[expectedData.MixEffectIndex].UpstreamKeyers[expectedData.KeyerIndex]
+                           .DigitalVideoEffectsSettings;
+        Assert.That(command.SizeX, Is.EqualTo(expectedData.SizeX));
+        Assert.That(command.SizeY, Is.EqualTo(expectedData.SizeY));
+        Assert.That(command.PositionX, Is.EqualTo(expectedData.PositionX));
+        Assert.That(command.PositionY, Is.EqualTo(expectedData.PositionY));
+        Assert.That(command.Rotation, Is.EqualTo(expectedData.Rotation));
+        Assert.That(command.BorderEnabled, Is.EqualTo(expectedData.BorderEnabled));
+        Assert.That(command.ShadowEnabled, Is.EqualTo(expectedData.BorderShadowEnabled));
+        Assert.That(command.BorderBevel, Is.EqualTo(expectedData.BorderBevel));
+        Assert.That(command.BorderOuterWidth, Is.EqualTo(expectedData.BorderOuterWidth));
+        Assert.That(command.BorderInnerWidth, Is.EqualTo(expectedData.BorderInnerWidth));
+        Assert.That(command.BorderOuterSoftness, Is.EqualTo(expectedData.BorderOuterSoftness));
+        Assert.That(command.BorderInnerSoftness, Is.EqualTo(expectedData.BorderInnerSoftness));
+        Assert.That(command.BorderBevelSoftness, Is.EqualTo(expectedData.BorderBevelSoftness));
+        Assert.That(command.BorderBevelPosition, Is.EqualTo(expectedData.BorderBevelPosition));
+        Assert.That(command.BorderOpacity, Is.EqualTo(expectedData.BorderOpacity));
+        Assert.That(command.BorderHue, Is.EqualTo(expectedData.BorderHue));
+        Assert.That(command.BorderSaturation, Is.EqualTo(expectedData.BorderSaturation));
+        Assert.That(command.BorderLuma, Is.EqualTo(expectedData.BorderLuma));
+        Assert.That(command.LightSourceDirection, Is.EqualTo(expectedData.LightSourceDirection));
+        Assert.That(command.LightSourceAltitude, Is.EqualTo(expectedData.LightSourceAltitude));
+        Assert.That(command.MaskEnabled, Is.EqualTo(expectedData.MaskEnabled));
+        Assert.That(command.MaskTop, Is.EqualTo(expectedData.MaskTop));
+        Assert.That(command.MaskBottom, Is.EqualTo(expectedData.MaskBottom));
+        Assert.That(command.MaskLeft, Is.EqualTo(expectedData.MaskLeft));
+        Assert.That(command.MaskRight, Is.EqualTo(expectedData.MaskRight));
+        Assert.That(command.Rate, Is.EqualTo(expectedData.Rate));
     }
 }

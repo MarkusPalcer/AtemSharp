@@ -3,10 +3,12 @@ using System.Diagnostics.CodeAnalysis;
 namespace AtemSharp.State.Recording;
 
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class RecordingDisk
+public class RecordingDisk : ItemWithId<uint>
 {
     public uint DiskId { get; internal set; }
     public string Name { get; internal set; } = string.Empty;
     public RecordingDiskStatus Status { get; internal set; }
     public uint RecordingTimeAvailable { get; internal set; }
+
+    internal override void SetId(uint id) => DiskId = id;
 }

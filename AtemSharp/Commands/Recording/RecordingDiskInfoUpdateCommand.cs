@@ -37,7 +37,6 @@ public partial class RecordingDiskInfoUpdateCommand : IDeserializedCommand
         else
         {
             var disk = state.Recording.Disks.GetOrCreate(DiskId);
-            disk.DiskId = DiskId;
             disk.Name = Name;
             disk.Status = Status;
             disk.RecordingTimeAvailable = RecordingTimeAvailable;

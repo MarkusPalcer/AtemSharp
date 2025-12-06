@@ -5,7 +5,7 @@ namespace AtemSharp.State.Info;
 /// <summary>
 /// Device information and capabilities
 /// </summary>
-[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
+[ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
 public class DeviceInfo
 {
     /// <summary>

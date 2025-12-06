@@ -1,4 +1,6 @@
 using AtemSharp.Commands.MixEffects;
+using AtemSharp.State;
+using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects;
 
@@ -19,4 +21,13 @@ public class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Progra
         Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source));
     }
 
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(expectedData.Index + 1);
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        Assert.That(state.Video.MixEffects[expectedData.Index].ProgramInput, Is.EqualTo(expectedData.Source));
+    }
 }

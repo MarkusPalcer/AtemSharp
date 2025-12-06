@@ -28,6 +28,7 @@ namespace AtemSharp.CodeGenerators.Serialization
                      {{docComment}}
                      public {{fieldType}} {{propertyName}}
                      {
+                        [ExcludeFromCodeCoverage]
                          get => {{f.Name}};
                          set {
                              {{validationCode}}
@@ -169,10 +170,12 @@ namespace AtemSharp.CodeGenerators.Serialization
 
                     var fileContent = $$"""
                                         using System;
+                                        using System.Reflection;
+                                        using System.Diagnostics.CodeAnalysis;
+
                                         using AtemSharp;
                                         using AtemSharp.State.Info;
                                         using static AtemSharp.Commands.SerializationExtensions;
-                                        using System.Reflection;
 
                                         namespace {{ns}};
 

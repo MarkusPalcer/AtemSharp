@@ -1,4 +1,7 @@
 using AtemSharp.Commands.DeviceProfile;
+using AtemSharp.State;
+using AtemSharp.State.Info;
+using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
@@ -17,5 +20,11 @@ public class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase
     {
         Assert.That(actualCommand.Inputs, Is.EqualTo(expectedData.Inputs));
         Assert.That(actualCommand.Monitors, Is.EqualTo(expectedData.Monitors));
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        Assert.That(state.Info.Mixer.As<FairlightAudioMixerInfo>().Inputs, Is.EqualTo(expectedData.Inputs));
+        Assert.That(state.Info.Mixer.As<FairlightAudioMixerInfo>().Monitors, Is.EqualTo(expectedData.Monitors));
     }
 }

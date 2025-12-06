@@ -16,7 +16,7 @@ public partial class FairlightMixerSourceDeleteCommand : IDeserializedCommand
 
         if (!audio.Inputs.TryGetValue(_inputId, out var input))
         {
-            throw new IndexOutOfRangeException($"Input ID {_inputId} does not exist");
+            return;
         }
 
         input.Sources.Remove(_sourceId);

@@ -1,4 +1,5 @@
 using AtemSharp.Commands.Settings.MultiViewers;
+using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Settings.MultiViewers;
 
@@ -16,5 +17,15 @@ public class MultiViewerVuOpacityUpdateCommandTests : DeserializedCommandTestBas
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.Opacity, Is.EqualTo(expectedData.Opacity));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Settings.MultiViewers.ExpandToFit(expectedData.MultiviewIndex);
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        Assert.That(state.Settings.MultiViewers[expectedData.MultiviewIndex].VuOpacity, Is.EqualTo(expectedData.Opacity));
     }
 }

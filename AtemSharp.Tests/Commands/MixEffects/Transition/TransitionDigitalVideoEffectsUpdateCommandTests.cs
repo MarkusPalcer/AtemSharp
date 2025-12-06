@@ -1,4 +1,6 @@
 using AtemSharp.Commands.MixEffects.Transition;
+using AtemSharp.State;
+using AtemSharp.State.Video.MixEffect;
 using AtemSharp.State.Video.MixEffect.Transition;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
@@ -28,6 +30,28 @@ public class TransitionDigitalVideoEffectsUpdateCommandTests : DeserializedComma
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.Rate, Is.EqualTo(expectedData.Rate));
+        Assert.That(actualCommand.LogoRate, Is.EqualTo(expectedData.LogoRate));
+        Assert.That(actualCommand.Style, Is.EqualTo(expectedData.Style));
+        Assert.That(actualCommand.FillSource, Is.EqualTo(expectedData.FillSource));
+        Assert.That(actualCommand.KeySource, Is.EqualTo(expectedData.KeySource));
+        Assert.That(actualCommand.EnableKey, Is.EqualTo(expectedData.EnableKey));
+        Assert.That(actualCommand.PreMultiplied, Is.EqualTo(expectedData.PreMultiplied));
+        Assert.That(actualCommand.Clip, Is.EqualTo(expectedData.Clip).Within(0.1));
+        Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.1));
+        Assert.That(actualCommand.InvertKey, Is.EqualTo(expectedData.InvertKey));
+        Assert.That(actualCommand.Reverse, Is.EqualTo(expectedData.Reverse));
+        Assert.That(actualCommand.FlipFlop, Is.EqualTo(expectedData.FlipFlop));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(expectedData.Index + 1);
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var actualCommand = state.Video.MixEffects[expectedData.Index].TransitionSettings.DigitalVideoEffect;
         Assert.That(actualCommand.Rate, Is.EqualTo(expectedData.Rate));
         Assert.That(actualCommand.LogoRate, Is.EqualTo(expectedData.LogoRate));
         Assert.That(actualCommand.Style, Is.EqualTo(expectedData.Style));

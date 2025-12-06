@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace AtemSharp.State.Audio.Fairlight;
 
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public abstract class EqualizerBand : ArrayItem
+public abstract class EqualizerBand : ItemWithId<int>
 {
     internal override void SetId(int id) => Id = (byte)id;
     public byte Id { get; internal set; }

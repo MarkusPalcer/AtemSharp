@@ -69,7 +69,14 @@ public partial class MixEffectKeyFlyKeyframeUpdateCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        var keyframe = state.Video.MixEffects[_mixEffectId].UpstreamKeyers[_upstreamKeyerId].Keyframes[_keyframeId - 1];
+        var mixEffect = state.Video.MixEffects[_mixEffectId];
+
+        var keyer = mixEffect.UpstreamKeyers.GetOrCreate(_upstreamKeyerId);
+        keyer.MixEffectId = _mixEffectId;
+
+        var keyframe = keyer.Keyframes[_keyframeId - 1];
+        keyframe.MixEffectId = _mixEffectId;
+        keyframe.UpstreamKeyerId = _upstreamKeyerId;
         keyframe.Size = new SizeF((float)_sizeX, (float)_sizeY);
         keyframe.Location = new PointF((float)_positionX, (float)_positionY);
         keyframe.Rotation = _rotation;

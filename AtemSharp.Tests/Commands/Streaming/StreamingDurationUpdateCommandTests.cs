@@ -1,8 +1,10 @@
 using AtemSharp.Commands.Streaming;
+using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Streaming;
 
-public class StreamingDurationUpdateCommandTests : DeserializedCommandTestBase<StreamingDurationUpdateCommand, StreamingDurationUpdateCommandTests.CommandData>
+public class StreamingDurationUpdateCommandTests : DeserializedCommandTestBase<StreamingDurationUpdateCommand,
+    StreamingDurationUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -13,8 +15,19 @@ public class StreamingDurationUpdateCommandTests : DeserializedCommandTestBase<S
         public bool IsDropFrame { get; set; }
     }
 
-    protected override void CompareCommandProperties(StreamingDurationUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(StreamingDurationUpdateCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
+        Assert.That(actualCommand.Hours, Is.EqualTo(expectedData.Hour));
+        Assert.That(actualCommand.Minutes, Is.EqualTo(expectedData.Minute));
+        Assert.That(actualCommand.Seconds, Is.EqualTo(expectedData.Second));
+        Assert.That(actualCommand.Frames, Is.EqualTo(expectedData.Frame));
+        Assert.That(actualCommand.IsDropFrame, Is.EqualTo(expectedData.IsDropFrame));
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var actualCommand = state.Streaming.Duration;
         Assert.That(actualCommand.Hours, Is.EqualTo(expectedData.Hour));
         Assert.That(actualCommand.Minutes, Is.EqualTo(expectedData.Minute));
         Assert.That(actualCommand.Seconds, Is.EqualTo(expectedData.Second));

@@ -1,4 +1,5 @@
 using AtemSharp.Commands.Recording;
+using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Recording;
 
@@ -18,5 +19,13 @@ public class RecordingSettingsUpdateCommandTests : DeserializedCommandTestBase<R
         Assert.That(actualCommand.WorkingSet1DiskId, Is.EqualTo(expectedData.WorkingSet1DiskId));
         Assert.That(actualCommand.WorkingSet2DiskId, Is.EqualTo(expectedData.WorkingSet2DiskId));
         Assert.That(actualCommand.RecordInAllCameras, Is.EqualTo(expectedData.RecordInAllCameras));
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        Assert.That(state.Recording.FileName, Is.EqualTo(expectedData.Filename));
+        Assert.That(state.Recording.WorkingSet1DiskId, Is.EqualTo(expectedData.WorkingSet1DiskId));
+        Assert.That(state.Recording.WorkingSet2DiskId, Is.EqualTo(expectedData.WorkingSet2DiskId));
+        Assert.That(state.Recording.RecordInAllCameras, Is.EqualTo(expectedData.RecordInAllCameras));
     }
 }

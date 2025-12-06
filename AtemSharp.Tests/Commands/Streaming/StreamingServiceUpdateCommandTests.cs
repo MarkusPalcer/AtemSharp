@@ -1,4 +1,5 @@
 using AtemSharp.Commands.Streaming;
+using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Streaming;
 
@@ -19,5 +20,15 @@ public class StreamingServiceUpdateCommandTests : DeserializedCommandTestBase<St
         Assert.That(actualCommand.Key, Is.EqualTo(expectedData.Key));
         Assert.That(actualCommand.Bitrate1, Is.EqualTo(expectedData.Bitrates[0]));
         Assert.That(actualCommand.Bitrate2, Is.EqualTo(expectedData.Bitrates[1]));
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var streaming = state.Streaming;
+        Assert.That(streaming.ServiceName, Is.EqualTo(expectedData.ServiceName));
+        Assert.That(streaming.Url, Is.EqualTo(expectedData.Url));
+        Assert.That(streaming.Key, Is.EqualTo(expectedData.Key));
+        Assert.That(streaming.VideoBitrates.Low, Is.EqualTo(expectedData.Bitrates[0]));
+        Assert.That(streaming.VideoBitrates.High, Is.EqualTo(expectedData.Bitrates[1]));
     }
 }

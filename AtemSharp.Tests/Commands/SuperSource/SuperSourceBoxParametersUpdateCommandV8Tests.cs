@@ -1,4 +1,5 @@
 using AtemSharp.Commands.SuperSource;
+using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
@@ -28,6 +29,28 @@ public class SuperSourceBoxParametersUpdateCommandV8Tests : DeserializedCommandT
         Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source));
         Assert.That(actualCommand.X, Is.EqualTo(expectedData.PositionX).Within(0.01));
         Assert.That(actualCommand.Y, Is.EqualTo(expectedData.PositionY).Within(0.01));
+        Assert.That(actualCommand.Size, Is.EqualTo(expectedData.Size).Within(0.001));
+        Assert.That(actualCommand.Cropped, Is.EqualTo(expectedData.Cropped));
+        Assert.That(actualCommand.CropTop, Is.EqualTo(expectedData.CropTop).Within(0.001));
+        Assert.That(actualCommand.CropBottom, Is.EqualTo(expectedData.CropBottom).Within(0.001));
+        Assert.That(actualCommand.CropLeft, Is.EqualTo(expectedData.CropLeft).Within(0.001));
+        Assert.That(actualCommand.CropRight, Is.EqualTo(expectedData.CropRight).Within(0.001));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Video.SuperSources = AtemStateUtil.CreateArray<AtemSharp.State.Video.SuperSource.SuperSource>(expectedData.SSrcId + 1);
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var actualCommand =  state.Video.SuperSources[expectedData.SSrcId].Boxes[expectedData.BoxIndex];
+        Assert.That(actualCommand.SuperSourceId, Is.EqualTo(expectedData.SSrcId));
+        Assert.That(actualCommand.Id, Is.EqualTo(expectedData.BoxIndex));
+        Assert.That(actualCommand.Enabled, Is.EqualTo(expectedData.Enabled));
+        Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source));
+        Assert.That(actualCommand.Location.X, Is.EqualTo(expectedData.PositionX).Within(0.01));
+        Assert.That(actualCommand.Location.Y, Is.EqualTo(expectedData.PositionY).Within(0.01));
         Assert.That(actualCommand.Size, Is.EqualTo(expectedData.Size).Within(0.001));
         Assert.That(actualCommand.Cropped, Is.EqualTo(expectedData.Cropped));
         Assert.That(actualCommand.CropTop, Is.EqualTo(expectedData.CropTop).Within(0.001));

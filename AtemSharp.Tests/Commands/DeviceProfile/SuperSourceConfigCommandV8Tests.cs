@@ -1,9 +1,12 @@
 using AtemSharp.Commands.DeviceProfile;
+using AtemSharp.State;
+using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
 [TestFixture]
-public class SuperSourceConfigCommandV8Tests : DeserializedCommandTestBase<SuperSourceConfigCommandV8, SuperSourceConfigCommandV8Tests.CommandData>
+public class SuperSourceConfigCommandV8Tests : DeserializedCommandTestBase<SuperSourceConfigCommandV8,
+    SuperSourceConfigCommandV8Tests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -18,9 +21,20 @@ public class SuperSourceConfigCommandV8Tests : DeserializedCommandTestBase<Super
         }
     }
 
-    protected override void CompareCommandProperties(SuperSourceConfigCommandV8 actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(SuperSourceConfigCommandV8 actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
         Assert.That(actualCommand.SuperSourceId, Is.EqualTo(expectedData.SsrcId));
         Assert.That(actualCommand.BoxCount, Is.EqualTo(expectedData.BoxCount));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Info.SuperSources = AtemStateUtil.CreateArray<SuperSourceInfo>(expectedData.SsrcId + 1);
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        Assert.That(state.Info.SuperSources[expectedData.SsrcId].BoxCount, Is.EqualTo(expectedData.BoxCount));
     }
 }

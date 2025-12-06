@@ -6,8 +6,8 @@ namespace AtemSharp.State.Audio.Fairlight;
 /// <summary>
 /// Fairlight audio input state
 /// </summary>
-[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class FairlightAudioInput
+[ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+public class FairlightAudioInput : ItemWithId<ushort>
 {
     public ushort Id { get; internal set; }
 
@@ -20,4 +20,6 @@ public class FairlightAudioInput
     public bool RcaToXlrEnabled { get; internal set; }
 
     public Dictionary<long, Source> Sources { get; } = [];
+
+    internal override void SetId(ushort id) => Id = id;
 }

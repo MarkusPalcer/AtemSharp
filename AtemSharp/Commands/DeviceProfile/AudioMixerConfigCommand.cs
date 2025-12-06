@@ -29,7 +29,7 @@ public partial class AudioMixerConfigCommand : IDeserializedCommand
     public void ApplyToState(AtemState state)
     {
         // Update device info audio mixer configuration
-        state.Info.Mixer = new AudioMixerInfo
+        state.Info.Mixer = new ClassicAudioMixerInfo
         {
             Inputs = Inputs,
             Monitors = Monitors,

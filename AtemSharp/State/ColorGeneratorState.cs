@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace AtemSharp.State;
 
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class ColorGeneratorState : ArrayItem
+public class ColorGeneratorState : ItemWithId<int>
 {
     public byte Id { get; internal set; }
     public double Hue { get; internal set; }

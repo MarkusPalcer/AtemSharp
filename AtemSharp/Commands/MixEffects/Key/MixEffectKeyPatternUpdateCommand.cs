@@ -33,7 +33,10 @@ public partial class MixEffectKeyPatternUpdateCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        var properties = state.Video.MixEffects[_mixEffectId].UpstreamKeyers[_keyerId].Pattern;
+        var mixEffect = state.Video.MixEffects[MixEffectId];
+        var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerId);
+        keyer.MixEffectId = _mixEffectId;
+        var properties = keyer.Pattern;
 
         properties.Style = _style;
         properties.Size = _size;

@@ -1,4 +1,5 @@
 using AtemSharp.Commands;
+using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands;
 
@@ -15,6 +16,16 @@ public class TimeUpdateCommandTests : DeserializedCommandTestBase<TimeUpdateComm
 
     protected override void CompareCommandProperties(TimeUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
+        Assert.That(actualCommand.Hours, Is.EqualTo(expectedData.Hour));
+        Assert.That(actualCommand.Minutes, Is.EqualTo(expectedData.Minute));
+        Assert.That(actualCommand.Seconds, Is.EqualTo(expectedData.Second));
+        Assert.That(actualCommand.Frames, Is.EqualTo(expectedData.Frame));
+        Assert.That(actualCommand.IsDropFrame, Is.EqualTo(expectedData.IsDropFrame));
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var actualCommand = state.TimeCode;
         Assert.That(actualCommand.Hours, Is.EqualTo(expectedData.Hour));
         Assert.That(actualCommand.Minutes, Is.EqualTo(expectedData.Minute));
         Assert.That(actualCommand.Seconds, Is.EqualTo(expectedData.Second));

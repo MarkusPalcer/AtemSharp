@@ -1,4 +1,5 @@
 using AtemSharp.Commands.DisplayClock;
+using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DisplayClock;
 
@@ -21,6 +22,15 @@ public class DisplayClockCurrentTimeCommandTests : DeserializedCommandTestBase<D
 
     protected override void CompareCommandProperties(DisplayClockCurrentTimeCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
+        Assert.That(actualCommand.Hours, Is.EqualTo(expectedData.Time.Hour));
+        Assert.That(actualCommand.Minutes, Is.EqualTo(expectedData.Time.Minute));
+        Assert.That(actualCommand.Seconds, Is.EqualTo(expectedData.Time.Second));
+        Assert.That(actualCommand.Frames, Is.EqualTo(expectedData.Time.Frame));
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var actualCommand = state.DisplayClock.CurrentTime;
         Assert.That(actualCommand.Hours, Is.EqualTo(expectedData.Time.Hour));
         Assert.That(actualCommand.Minutes, Is.EqualTo(expectedData.Time.Minute));
         Assert.That(actualCommand.Seconds, Is.EqualTo(expectedData.Time.Second));

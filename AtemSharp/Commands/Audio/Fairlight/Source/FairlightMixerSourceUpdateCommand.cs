@@ -48,15 +48,7 @@ public partial class FairlightMixerSourceUpdateCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        var audio = state.GetFairlight();
-
-        if (!audio.Inputs.TryGetValue(InputId, out var input))
-        {
-            throw new IndexOutOfRangeException($"Input ID {InputId} does not exist");
-        }
-
-        var source = input.Sources.GetOrCreate(SourceId);
-        source.Id = SourceId;
+        var source = state.GetFairlight().Inputs.GetOrCreate(InputId).Sources.GetOrCreate(SourceId);
         source.InputId = InputId;
 
         source.Equalizer.Enabled = EqualizerEnabled;

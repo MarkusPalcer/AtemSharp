@@ -1,4 +1,5 @@
 using AtemSharp.Commands.DeviceProfile;
+using AtemSharp.State;
 using AtemSharp.State.Info;
 using AtemSharp.Tests.TestUtilities;
 
@@ -44,5 +45,22 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
         Assert.That(actualCommand.SuperSources, Is.EqualTo(expectedData.SuperSource));
         Assert.That(actualCommand.TalkbackChannels, Is.EqualTo(expectedData.TalkbackChannels));
         Assert.That(actualCommand.CameraControl, Is.EqualTo(expectedData.CameraControl));
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        Assert.That(state.Info.Capabilities.MixEffects, Is.EqualTo(expectedData.MixEffectBlocks));
+        Assert.That(state.Info.Capabilities.Sources, Is.EqualTo(expectedData.VideoSources));
+        Assert.That(state.Info.Capabilities.DownstreamKeyers, Is.EqualTo(expectedData.DownstreamKeyers));
+        Assert.That(state.Info.Capabilities.Auxiliaries, Is.EqualTo(expectedData.Auxiliaries));
+        Assert.That(state.Info.Capabilities.MixMinusOutputs, Is.EqualTo(expectedData.MixMinusOutputs));
+        Assert.That(state.Info.Capabilities.MediaPlayers, Is.EqualTo(expectedData.MediaPlayers));
+        Assert.That(state.Info.Capabilities.SerialPorts, Is.EqualTo(expectedData.SerialPort));
+        Assert.That(state.Info.Capabilities.MaxHyperdecks, Is.EqualTo(expectedData.HyperDecks));
+        Assert.That(state.Info.Capabilities.DigitalVideoEffects, Is.EqualTo(expectedData.DVE));
+        Assert.That(state.Info.Capabilities.Stingers, Is.EqualTo(expectedData.Stingers));
+        Assert.That(state.Info.Capabilities.SuperSources, Is.EqualTo(expectedData.SuperSource));
+        Assert.That(state.Info.Capabilities.TalkbackChannels, Is.EqualTo(expectedData.TalkbackChannels));
+        Assert.That(state.Info.Capabilities.CameraControl, Is.EqualTo(expectedData.CameraControl));
     }
 }

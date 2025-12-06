@@ -40,12 +40,9 @@ public partial class MixEffectKeyPropertiesGetCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        // Get or create the mix effect
         var mixEffect = state.Video.MixEffects[MixEffectIndex];
-
-        // Get or create the upstream keyer
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerIndex);
-        keyer.Id = KeyerIndex;
+        keyer.MixEffectId = MixEffectIndex;
 
         // Update keyer properties
         keyer.KeyType = KeyType;
