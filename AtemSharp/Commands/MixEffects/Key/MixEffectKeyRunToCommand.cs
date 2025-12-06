@@ -14,6 +14,7 @@ public partial class MixEffectKeyRunToCommand(UpstreamKeyerFlyKeyframe keyframe)
 
     [SerializedField(5)] private FlyKeyDirection _direction = FlyKeyDirection.CentreOfKey;
 
+    // TODO #83: Capture test data for this case
     /// <summary>
     /// Creates a new command that sends the keyer to "RunToInfinite"
     /// </summary>

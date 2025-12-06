@@ -5,8 +5,8 @@ using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
+// TODO #62: Capture test data using ATEM software and use automated test cases
 [TestFixture]
-// No inheritance from base class as test data does not contain test cases for this command
 public class VideoMixerConfigCommandTests
 {
 

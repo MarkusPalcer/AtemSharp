@@ -3,6 +3,7 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 
+// TODO #80: Capture test data and use test class base
 /// <summary>
 /// Command to update DVE settings for an upstream keyer
 /// </summary>
@@ -89,6 +90,7 @@ public partial class MixEffectKeyDigitalVideoEffectsCommand(UpstreamKeyer keyer)
 
     private void SerializeInternal(byte[] buffer)
     {
+        // TODO #79: Switch to generated serialization
         buffer.WriteUInt32BigEndian(_mixEffectId, 0);
     }
 }

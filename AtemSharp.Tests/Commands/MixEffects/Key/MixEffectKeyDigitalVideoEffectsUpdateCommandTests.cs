@@ -4,7 +4,7 @@ using AtemSharp.State.Border;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
-[TestFixture]
+// TODO #81: Capture test data and create test cases
 [Ignore("TODO: DVE scaling factors need refinement")]
 public class MixEffectKeyDigitalVideoEffectsUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyDigitalVideoEffectsUpdateCommand,
     MixEffectKeyDigitalVideoEffectsUpdateCommandTests.CommandData>

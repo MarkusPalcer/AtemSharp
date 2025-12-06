@@ -3,6 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Commands;
 
+// TODO #49: Capture test cases
 [Command("TlSr")]
 public partial class TallyBySourceCommand : IDeserializedCommand
 {
