@@ -9,6 +9,6 @@ public class BrokenCommand1 : IDeserializedCommand
 {
     public void ApplyToState(AtemState state)
     {
-        throw new NotImplementedException();
+        throw new InvalidOperationException();
     }
 }

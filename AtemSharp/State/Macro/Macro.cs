@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace AtemSharp.State.Macro;
 
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class Macro : ArrayItem
+public class Macro : ItemWithId<int>
 {
     internal override void SetId(int id) => Id = (ushort)id;
 

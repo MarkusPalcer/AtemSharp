@@ -31,6 +31,6 @@ public partial class FairlightAudioMixerConfigCommand : IDeserializedCommand
         };
 
         // Initialize fairlight state with the received configuration
-        state.Audio ??= new FairlightAudioState();
+        state.Audio = new FairlightAudioState();
     }
 }

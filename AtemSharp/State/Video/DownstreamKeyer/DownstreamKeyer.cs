@@ -6,7 +6,7 @@ namespace AtemSharp.State.Video.DownstreamKeyer;
 /// Downstream keyer state
 /// </summary>
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class DownstreamKeyer : ArrayItem
+public class DownstreamKeyer : ItemWithId<int>
 {
     internal override void SetId(int id) => Id = (byte)id;
     public byte Id { get; internal set; }

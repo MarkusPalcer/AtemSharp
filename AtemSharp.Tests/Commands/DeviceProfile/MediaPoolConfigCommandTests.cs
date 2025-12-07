@@ -1,4 +1,5 @@
 using AtemSharp.Commands.DeviceProfile;
+using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
@@ -15,5 +16,11 @@ public class MediaPoolConfigCommandTests : DeserializedCommandTestBase<MediaPool
     {
         Assert.That(actualCommand.StillCount, Is.EqualTo(expectedData.StillCount));
         Assert.That(actualCommand.ClipCount, Is.EqualTo(expectedData.ClipCount));
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        Assert.That(state.Info.MediaPool.StillCount, Is.EqualTo(expectedData.StillCount));
+        Assert.That(state.Info.MediaPool.ClipCount, Is.EqualTo(expectedData.ClipCount));
     }
 }

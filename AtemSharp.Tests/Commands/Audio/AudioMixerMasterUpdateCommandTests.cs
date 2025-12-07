@@ -1,3 +1,5 @@
+using AtemSharp.State;
+using AtemSharp.State.Audio.ClassicAudio;
 using AudioMixerMasterUpdateCommand = AtemSharp.Commands.Audio.ClassicAudio.AudioMixerMasterUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Audio;
@@ -19,5 +21,17 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
         Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));
         Assert.That(actualCommand.Balance, Is.EqualTo(expectedData.Balance).Within(0.01));
         Assert.That(actualCommand.FollowFadeToBlack, Is.EqualTo(expectedData.FollowFadeToBlack));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Audio = new ClassicAudioState();
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        Assert.That(state.GetClassicAudio().Master.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));
+        Assert.That(state.GetClassicAudio().Master.Balance, Is.EqualTo(expectedData.Balance).Within(0.01));
+        Assert.That(state.GetClassicAudio().Master.FollowFadeToBlack, Is.EqualTo(expectedData.FollowFadeToBlack));
     }
 }

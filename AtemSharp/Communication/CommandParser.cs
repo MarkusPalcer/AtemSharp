@@ -88,7 +88,7 @@ internal class CommandParser : ICommandParser
         var deserializeMethod = commandType.GetMethod("Deserialize",
                                                       BindingFlags.Static | BindingFlags.Public);
 
-        Debug.WriteLineIf(deserializeMethod == null, $"***Command {commandType.Name} missing static Deserialize method***");
+        Debug.WriteLineIf(deserializeMethod == null, $"Command {commandType.Name} missing static Deserialize method");
 
         var command = deserializeMethod?.CreateDelegate<DeserializeCommand>()(data, Version);
 

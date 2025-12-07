@@ -4,7 +4,7 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
-[TestFixture]
+// TODO #80: Capture test data and use test class base
 [Ignore("TODO: DVE serialization scaling factors need to match deserialization - see TODO comments in MixEffectKeyDVEUpdateCommand.cs")]
 public class MixEffectKeyDigitalVideoEffectsCommandTests : SerializedCommandTestBase<MixEffectKeyDigitalVideoEffectsCommand,
     MixEffectKeyDigitalVideoEffectsCommandTests.CommandData>

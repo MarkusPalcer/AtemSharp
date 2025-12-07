@@ -13,11 +13,17 @@ public partial class MacroRunStatusUpdateCommand : IDeserializedCommand
 
     [CustomDeserialization] private bool _isRunning;
 
+    private enum Status : byte
+    {
+        Running = 1,
+        Waiting = 2,
+    }
+
     private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {
-        var status = rawCommand.ReadUInt8(0);
-        IsRunning = (status & 1 << 0) > 0;
-        IsWaiting = (status & 1 << 1) > 0;
+        var status = (Status)rawCommand.ReadUInt8(0);
+        IsRunning = status.HasFlag(Status.Running);
+        IsWaiting = status.HasFlag(Status.Waiting);
     }
 
     /// <inheritdoc />

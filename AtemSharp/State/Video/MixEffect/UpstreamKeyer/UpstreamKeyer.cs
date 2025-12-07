@@ -6,7 +6,7 @@ namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 /// Upstream keyer state containing key properties and settings
 /// </summary>
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class UpstreamKeyer
+public class UpstreamKeyer : ItemWithId<byte>
 {
     public byte MixEffectId { get; internal set; }
 
@@ -93,4 +93,6 @@ public class UpstreamKeyer
 
         ];
     }
+
+    internal override void SetId(byte id) => Id = id;
 }

@@ -14,7 +14,7 @@ public class FairlightAudioState : AudioState
     /// <remarks>
     /// Fairlight input IDs are not array indices but have semantics
     /// </remarks>
-    public Dictionary<int, FairlightAudioInput> Inputs { get; } = [];
+    public Dictionary<ushort, FairlightAudioInput> Inputs { get; } = [];
 
     public MasterProperties Master { get; } = new();
     public MonitorProperties Monitor { get; } = new();

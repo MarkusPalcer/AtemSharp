@@ -30,14 +30,8 @@ public partial class MultiViewerWindowVuMeterUpdateCommand : IDeserializedComman
         // Get the MultiViewer and update its window
         var multiViewer = state.Settings.MultiViewers[MultiViewerId];
 
-        // Get the current window state or create a new one
-        if (!multiViewer.Windows.TryGetValue(WindowIndex, out var currentWindow))
-        {
-            currentWindow = new MultiViewerWindowState();
-            multiViewer.Windows[WindowIndex] = currentWindow;
-        }
-
-        // Update the VU meter state
+        var currentWindow = multiViewer.Windows.GetOrCreate(WindowIndex);
+        currentWindow.MultiViewerId = MultiViewerId;
         currentWindow.AudioMeter = VuEnabled;
     }
 }

@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace AtemSharp.State.Video.SuperSource;
 
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class SuperSource : ArrayItem
+public class SuperSource : ItemWithId<int>
 {
     internal override void SetId(int id) => Id = (byte)id;
     public byte Id { get; internal set; }

@@ -20,12 +20,9 @@ public partial class MixEffectKeyOnAirUpdateCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        // Get or create the mix effect
         var mixEffect = state.Video.MixEffects[MixEffectId];
-
-        // Get or create the upstream keyer
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerId);
-        keyer.Id = KeyerId;
+        keyer.MixEffectId = _mixEffectId;
 
         // Update the on-air state
         keyer.OnAir = OnAir;

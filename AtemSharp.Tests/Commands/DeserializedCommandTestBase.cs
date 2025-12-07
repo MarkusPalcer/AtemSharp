@@ -1,6 +1,7 @@
 using System.Reflection;
 using AtemSharp.Commands;
 using AtemSharp.Communication;
+using AtemSharp.State;
 using AtemSharp.State.Info;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -38,9 +39,30 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
 
         // Assert - Compare properties
         Assert.Multiple(() => CompareCommandProperties(actualCommand, testCase.Command, testCase));
+
+        var state = new AtemState();
+
+        if (TestApplyToState(testCase.Command))
+        {
+            PrepareState(state, testCase.Command);
+
+            actualCommand.ApplyToState(state);
+
+            Assert.Multiple(() => CompareStateProperties(state, testCase.Command));
+        }
     }
 
+
     protected abstract void CompareCommandProperties(TCommand actualCommand, TTestData expectedData, TestCaseData testCase);
+
+    protected virtual void PrepareState(AtemState state, TTestData expectedData)
+    {
+    }
+
+    protected virtual bool TestApplyToState(TTestData testData) => true;
+
+    protected abstract void CompareStateProperties(AtemState state, TTestData expectedData);
+
 
     private static TCommand DeserializeCommand(byte[] payload, ProtocolVersion protocolVersion)
     {

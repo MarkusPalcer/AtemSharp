@@ -1,4 +1,5 @@
 using AtemSharp.Commands.Recording;
+using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Recording;
 
@@ -20,5 +21,14 @@ public class RecordingDurationUpdateCommandTests : DeserializedCommandTestBase<R
         Assert.That(actualCommand.Seconds, Is.EqualTo(expectedData.Second));
         Assert.That(actualCommand.Frames, Is.EqualTo(expectedData.Frame));
         Assert.That(actualCommand.IsDropFrame, Is.EqualTo(expectedData.IsDropFrame));
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        Assert.That(state.Recording.Duration.Hours, Is.EqualTo(expectedData.Hour));
+        Assert.That(state.Recording.Duration.Minutes, Is.EqualTo(expectedData.Minute));
+        Assert.That(state.Recording.Duration.Seconds, Is.EqualTo(expectedData.Second));
+        Assert.That(state.Recording.Duration.Frames, Is.EqualTo(expectedData.Frame));
+        Assert.That(state.Recording.Duration.IsDropFrame, Is.EqualTo(expectedData.IsDropFrame));
     }
 }

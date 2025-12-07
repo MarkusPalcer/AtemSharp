@@ -7,7 +7,7 @@ namespace AtemSharp.State.Video.MixEffect;
 /// Mix effect block state containing program/preview inputs, transitions, and upstream keyers
 /// </summary>
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class MixEffect : ArrayItem
+public class MixEffect : ItemWithId<int>
 {
     internal override void SetId(int id) => Id = (byte)id;
 
@@ -54,5 +54,5 @@ public class MixEffect : ArrayItem
     /// <summary>
     /// Upstream keyers for this mix effect
     /// </summary>
-    public Dictionary<int, UpstreamKeyer.UpstreamKeyer> UpstreamKeyers { get; } = new();
+    public Dictionary<byte, UpstreamKeyer.UpstreamKeyer> UpstreamKeyers { get; } = new();
 }

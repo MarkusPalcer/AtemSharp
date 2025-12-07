@@ -1,3 +1,4 @@
+using AtemSharp.State;
 using AtemSharp.State.Audio.Fairlight;
 using FairlightMixerSourceUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Source.FairlightMixerSourceUpdateCommand;
 
@@ -8,7 +9,7 @@ public class FairlightMixerSourceUpdateCommandTests : DeserializedCommandTestBas
 {
     public class CommandData : CommandDataBase
     {
-        public int Index { get; set; }
+        public ushort Index { get; set; }
         public string SourceId { get; set; } = string.Empty;
         public int FramesDelay { get; set; }
         public double Gain { get; set; }
@@ -44,8 +45,79 @@ public class FairlightMixerSourceUpdateCommandTests : DeserializedCommandTestBas
         Assert.That(actualCommand.Balance, Is.EqualTo(expectedData.Balance).Within(0.1));
         Assert.That(actualCommand.FaderGain, Is.EqualTo(expectedData.FaderGain).Within(0.1));
         Assert.That(actualCommand.MixOption, Is.EqualTo(expectedData.MixOption));
-        Assert.That(CommandTestUtilities.CombineComponents(actualCommand.SupportedMixOptions), Is.EqualTo(expectedData.SupportedMixOptions));
+        Assert.That(actualCommand.SupportedMixOptions.CombineComponents(),
+                    Is.EqualTo(expectedData.SupportedMixOptions));
         Assert.That(actualCommand.SourceType, Is.EqualTo(expectedData.SourceType));
         Assert.That(actualCommand.MaxFramesDelay, Is.EqualTo(expectedData.MaxFramesDelay));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Audio = new FairlightAudioState();
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var source = state.GetFairlight().Inputs[expectedData.Index].Sources[long.Parse(expectedData.SourceId)];
+        Assert.That(source.InputId, Is.EqualTo(expectedData.Index));
+        Assert.That(source.Id.ToString(), Is.EqualTo(expectedData.SourceId));
+        Assert.That(source.FramesDelay, Is.EqualTo(expectedData.FramesDelay));
+        Assert.That(source.Gain, Is.EqualTo(expectedData.Gain).Within(0.1));
+        Assert.That(source.HasStereoSimulation, Is.EqualTo(expectedData.HasStereoSimulation));
+        Assert.That(source.StereoSimulation, Is.EqualTo(expectedData.StereoSimulation).Within(0.1));
+        Assert.That(source.Equalizer.Bands, Has.Count.EqualTo(expectedData.EqualizerBands));
+        Assert.That(source.Equalizer.Bands.Select(x => x.InputId), Is.All.EqualTo(expectedData.Index));
+        Assert.That(source.Equalizer.Bands.Select(x => x.SourceId), Is.All.EqualTo(long.Parse(expectedData.SourceId)));
+        Assert.That(source.Equalizer.Enabled, Is.EqualTo(expectedData.EqualizerEnabled));
+        Assert.That(source.Equalizer.Gain, Is.EqualTo(expectedData.EqualizerGain).Within(0.1));
+        Assert.That(source.Dynamics.MakeUpGain, Is.EqualTo(expectedData.MakeUpGain).Within(0.1));
+        Assert.That(source.Balance, Is.EqualTo(expectedData.Balance).Within(0.1));
+        Assert.That(source.FaderGain, Is.EqualTo(expectedData.FaderGain).Within(0.1));
+        Assert.That(source.MixOption, Is.EqualTo(expectedData.MixOption));
+        Assert.That(source.SupportedMixOptions.CombineComponents(),
+                    Is.EqualTo(expectedData.SupportedMixOptions));
+        Assert.That(source.Type, Is.EqualTo(expectedData.SourceType));
+        Assert.That(source.MaxFramesDelay, Is.EqualTo(expectedData.MaxFramesDelay));
+    }
+
+    [Test]
+    public void BandCountZero()
+    {
+        var state = new AtemState
+        {
+            Audio = new FairlightAudioState
+            {
+                Inputs =
+                {
+                    [0] = new FairlightAudioInput
+                    {
+                        Sources =
+                        {
+                            [0] = new AtemSharp.State.Audio.Fairlight.Source
+                            {
+                                Equalizer =
+                                {
+                                    Bands =
+                                    [
+                                        new SourceEqualizerBand()
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        var sut = new FairlightMixerSourceUpdateCommand
+        {
+            BandCount = 0
+        };
+
+        sut.ApplyToState(state);
+
+        var source = state.GetFairlight().Inputs[0].Sources[0];
+
+        Assert.That(source.Equalizer.Bands, Is.Empty);
     }
 }

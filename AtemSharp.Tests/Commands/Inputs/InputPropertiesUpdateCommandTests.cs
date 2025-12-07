@@ -1,4 +1,5 @@
 using AtemSharp.Commands.Inputs;
+using AtemSharp.State;
 using AtemSharp.State.Ports;
 using AtemSharp.State.Video.InputChannel;
 
@@ -23,15 +24,29 @@ public class InputPropertiesUpdateCommandTests : DeserializedCommandTestBase<Inp
         public MeAvailability MeAvailability { get; set; }
     }
 
-    protected override void CompareCommandProperties(InputPropertiesUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(InputPropertiesUpdateCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
-        Assert.That(actualCommand.InputId, Is.EqualTo(testCase.Command.Id));
-        Assert.That(actualCommand.LongName, Is.EqualTo(testCase.Command.LongName));
-        Assert.That(actualCommand.ShortName, Is.EqualTo(testCase.Command.ShortName));
-        Assert.That(actualCommand.AreNamesDefault, Is.EqualTo(testCase.Command.AreNamesDefault));
-        Assert.That(actualCommand.ExternalPortType, Is.EqualTo(testCase.Command.ExternalPortType));
-        Assert.That(actualCommand.InternalPortType, Is.EqualTo(testCase.Command.InternalPortType));
-        Assert.That(actualCommand.SourceAvailability, Is.EqualTo(testCase.Command.SourceAvailability));
-        Assert.That(actualCommand.MeAvailability, Is.EqualTo(testCase.Command.MeAvailability));
+        Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Id));
+        Assert.That(actualCommand.LongName, Is.EqualTo(expectedData.LongName));
+        Assert.That(actualCommand.ShortName, Is.EqualTo(expectedData.ShortName));
+        Assert.That(actualCommand.AreNamesDefault, Is.EqualTo(expectedData.AreNamesDefault));
+        Assert.That(actualCommand.ExternalPortType, Is.EqualTo(expectedData.ExternalPortType));
+        Assert.That(actualCommand.InternalPortType, Is.EqualTo(expectedData.InternalPortType));
+        Assert.That(actualCommand.SourceAvailability, Is.EqualTo(expectedData.SourceAvailability));
+        Assert.That(actualCommand.MeAvailability, Is.EqualTo(expectedData.MeAvailability));
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var actualCommand = state.Video.Inputs[expectedData.Id];
+        Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Id));
+        Assert.That(actualCommand.LongName, Is.EqualTo(expectedData.LongName));
+        Assert.That(actualCommand.ShortName, Is.EqualTo(expectedData.ShortName));
+        Assert.That(actualCommand.AreNamesDefault, Is.EqualTo(expectedData.AreNamesDefault));
+        Assert.That(actualCommand.ExternalPortType, Is.EqualTo(expectedData.ExternalPortType));
+        Assert.That(actualCommand.InternalPortType, Is.EqualTo(expectedData.InternalPortType));
+        Assert.That(actualCommand.SourceAvailability, Is.EqualTo(expectedData.SourceAvailability));
+        Assert.That(actualCommand.MeAvailability, Is.EqualTo(expectedData.MeAvailability));
     }
 }

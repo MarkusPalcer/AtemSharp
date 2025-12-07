@@ -1,5 +1,6 @@
 namespace AtemSharp.Commands.Macro;
 
+// TODO #74: Capture test data and create tests for this command
 [Command("MAct")]
 [BufferSize(4)]
 public partial class MacroActionCommand(State.Macro.Macro macro, MacroAction action) : SerializedCommand

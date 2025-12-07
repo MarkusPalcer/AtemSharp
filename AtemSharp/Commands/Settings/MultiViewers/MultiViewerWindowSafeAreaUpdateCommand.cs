@@ -1,5 +1,4 @@
 using AtemSharp.State;
-using AtemSharp.State.Settings.MultiViewer;
 
 namespace AtemSharp.Commands.Settings.MultiViewers;
 
@@ -27,13 +26,8 @@ public partial class MultiViewerWindowSafeAreaUpdateCommand : IDeserializedComma
         var multiViewer = state.Settings.MultiViewers[MultiViewerId];
 
         // Get the current window state or create a new one
-        if (!multiViewer.Windows.TryGetValue(WindowIndex, out var currentWindow))
-        {
-            currentWindow = new MultiViewerWindowState();
-            multiViewer.Windows[WindowIndex] = currentWindow;
-        }
-
-        // Update the safe area state
+        var currentWindow = multiViewer.Windows.GetOrCreate(WindowIndex);
+        currentWindow.MultiViewerId = MultiViewerId;
         currentWindow.SafeTitle = SafeAreaEnabled;
     }
 }

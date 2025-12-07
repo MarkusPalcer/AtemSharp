@@ -1,4 +1,5 @@
 using AtemSharp.Commands.Settings;
+using AtemSharp.State;
 using AtemSharp.State.Settings;
 
 namespace AtemSharp.Tests.Commands.Settings;
@@ -19,5 +20,10 @@ public class VideoModeUpdateCommandTests : DeserializedCommandTestBase<VideoMode
     protected override void CompareCommandProperties(VideoModeUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.Mode, Is.EqualTo(expectedData.VideoMode));
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        Assert.That(state.Settings.VideoMode, Is.EqualTo(expectedData.VideoMode));
     }
 }

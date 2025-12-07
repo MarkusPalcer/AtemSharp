@@ -3,6 +3,7 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
+// TODO #83: Capture test data for RunToInfinite case
 public class MixEffectKeyRunToCommandTests : SerializedCommandTestBase<MixEffectKeyRunToCommand, MixEffectKeyRunToCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

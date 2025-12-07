@@ -1,9 +1,13 @@
 using AtemSharp.Commands;
-using FairlightMixerMasterEqualizerBandUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Master.FairlightMixerMasterEqualizerBandUpdateCommand;
+using AtemSharp.State;
+using AtemSharp.State.Audio.Fairlight;
+using FairlightMixerMasterEqualizerBandUpdateCommand =
+    AtemSharp.Commands.Audio.Fairlight.Master.FairlightMixerMasterEqualizerBandUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Master;
 
-public class FairlightMixerMasterEqualizerBandUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerMasterEqualizerBandUpdateCommand, FairlightMixerMasterEqualizerBandUpdateCommandTests.CommandData>
+public class FairlightMixerMasterEqualizerBandUpdateCommandTests : DeserializedCommandTestBase<
+    FairlightMixerMasterEqualizerBandUpdateCommand, FairlightMixerMasterEqualizerBandUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -24,13 +28,43 @@ public class FairlightMixerMasterEqualizerBandUpdateCommandTests : DeserializedC
     {
         Assert.That(actualCommand.BandIndex, Is.EqualTo(expectedData.Band));
         Assert.That(actualCommand.Enabled, Is.EqualTo(expectedData.BandEnabled));
-        Assert.That(actualCommand.SupportedShapes, Is.EquivalentTo(DeserializationExtensions.GetComponentsLegacy(expectedData.SupportedShapes)));
+        Assert.That(actualCommand.SupportedShapes,
+                    Is.EquivalentTo(DeserializationExtensions.GetComponentsLegacy(expectedData.SupportedShapes)));
         Assert.That(actualCommand.Shape, Is.EqualTo(expectedData.Shape));
-        Assert.That(actualCommand.SupportedFrequencyRanges, Is.EquivalentTo(DeserializationExtensions.GetComponentsLegacy(expectedData.SupportedFrequencyRanges)));
+        Assert.That(actualCommand.SupportedFrequencyRanges,
+                    Is.EquivalentTo(DeserializationExtensions.GetComponentsLegacy(expectedData.SupportedFrequencyRanges)));
         Assert.That(actualCommand.FrequencyRange, Is.EqualTo(expectedData.FrequencyRange));
         Assert.That(actualCommand.Frequency, Is.EqualTo(expectedData.Frequency));
         Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));
         Assert.That(actualCommand.QFactor, Is.EqualTo(expectedData.QFactor).Within(0.01));
+    }
 
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Audio = new FairlightAudioState
+        {
+            Master =
+            {
+                Equalizer =
+                {
+                    Bands = AtemStateUtil.CreateArray<MasterEqualizerBand>(expectedData.Band + 1)
+                }
+            }
+        };
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var target = state.GetFairlight().Master.Equalizer.Bands[expectedData.Band];
+        Assert.That(target.Id, Is.EqualTo(expectedData.Band));
+        Assert.That(target.Enabled, Is.EqualTo(expectedData.BandEnabled));
+        Assert.That(target.SupportedShapes, Is.EquivalentTo(DeserializationExtensions.GetComponentsLegacy(expectedData.SupportedShapes)));
+        Assert.That(target.Shape, Is.EqualTo(expectedData.Shape));
+        Assert.That(target.SupportedFrequencyRanges,
+                    Is.EquivalentTo(DeserializationExtensions.GetComponentsLegacy(expectedData.SupportedFrequencyRanges)));
+        Assert.That(target.FrequencyRange, Is.EqualTo(expectedData.FrequencyRange));
+        Assert.That(target.Frequency, Is.EqualTo(expectedData.Frequency));
+        Assert.That(target.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));
+        Assert.That(target.QFactor, Is.EqualTo(expectedData.QFactor).Within(0.01));
     }
 }

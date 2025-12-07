@@ -7,7 +7,7 @@ namespace AtemSharp.Tests.State;
 [TestFixture]
 public class AtemStateUtilTests
 {
-    private class TestArrayItem : ArrayItem
+    private class TestItemWithId : ItemWithId<int>
     {
         internal override void SetId(int id)
         {
@@ -20,16 +20,16 @@ public class AtemStateUtilTests
     [Test]
     public void CreateArray_CreatesCorrectNumberOfElements()
     {
-        var result = AtemStateUtil.CreateArray<TestArrayItem>(5);
+        var result = AtemStateUtil.CreateArray<TestItemWithId>(5);
         Assert.That(result.Count, Is.EqualTo(5));
 
-        Assert.That(result, Is.All.InstanceOf<TestArrayItem>());
+        Assert.That(result, Is.All.InstanceOf<TestItemWithId>());
     }
 
     [Test]
     public void CreatArray_SetsCorrectIds()
     {
-        var result = AtemStateUtil.CreateArray<TestArrayItem>(5);
+        var result = AtemStateUtil.CreateArray<TestItemWithId>(5);
 
         Assert.Multiple(() =>
         {
@@ -43,14 +43,14 @@ public class AtemStateUtilTests
     [Test]
     public void CreateArray_WithNegativeLength_ReturnsEmptyArray()
     {
-        var result = AtemStateUtil.CreateArray<TestArrayItem>(-1);
+        var result = AtemStateUtil.CreateArray<TestItemWithId>(-1);
         Assert.That(result.Count, Is.EqualTo(0));
     }
 
     [Test]
     public void CreateArray_WithZeroLength_ReturnsEmptyArray()
     {
-        var result = AtemStateUtil.CreateArray<TestArrayItem>(0);
+        var result = AtemStateUtil.CreateArray<TestItemWithId>(0);
         Assert.That(result.Count, Is.EqualTo(0));
     }
 
@@ -58,8 +58,8 @@ public class AtemStateUtilTests
     public void ExpandToFit_IfListBigEnough_DoesNotChangeAnything()
     {
         // Arrange: Fill the whole list with the same item
-        var item = new TestArrayItem { Id = -1 };
-        var target = new List<TestArrayItem>(Enumerable.Repeat(item, 5));
+        var item = new TestItemWithId { Id = -1 };
+        var target = new List<TestItemWithId>(Enumerable.Repeat(item, 5));
 
         // Act
         target.ExpandToFit(2);
@@ -73,9 +73,9 @@ public class AtemStateUtilTests
     [Test]
     public void ExpandToFit_IfListIsSameSize_DoesNotChangeAnything()
     {
-        var item = new TestArrayItem { Id = -1 };
+        var item = new TestItemWithId { Id = -1 };
 
-        var target = new List<TestArrayItem>(Enumerable.Repeat(item, 5));
+        var target = new List<TestItemWithId>(Enumerable.Repeat(item, 5));
 
         // Act
         target.ExpandToFit(4);
@@ -89,9 +89,9 @@ public class AtemStateUtilTests
     [Test]
     public void ExpandToFit_IfIndexIsBiggerThanList_AddsItems()
     {
-        var item = new TestArrayItem { Id = -1 };
+        var item = new TestItemWithId { Id = -1 };
 
-        var target = new List<TestArrayItem>(Enumerable.Repeat(item, 5));
+        var target = new List<TestItemWithId>(Enumerable.Repeat(item, 5));
 
         // Act
         target.ExpandToFit(11);
@@ -106,8 +106,8 @@ public class AtemStateUtilTests
     [Test]
     public void GetOrCreate_IfIdExists_ReturnsExistingItem()
     {
-        var item = new TestArrayItem { Id = 2 };
-        var target = new Dictionary<int, TestArrayItem>()
+        var item = new TestItemWithId { Id = 2 };
+        var target = new Dictionary<int, TestItemWithId>
         {
             {2, item},
         };
@@ -120,8 +120,8 @@ public class AtemStateUtilTests
     [Test]
     public void GetOrCreate_IfIdDoesNotExist_CreatesNewInstance()
     {
-        var item = new TestArrayItem { Id = 2 };
-        var target = new Dictionary<int, TestArrayItem>
+        var item = new TestItemWithId { Id = 2 };
+        var target = new Dictionary<int, TestItemWithId>
         {
             {2, item},
         };
@@ -137,7 +137,7 @@ public class AtemStateUtilTests
     [Test]
     public void GetOrCreate_IfDictionaryIsNull_Throws()
     {
-        Dictionary<int, TestArrayItem> target = null!;
+        Dictionary<int, TestItemWithId> target = null!;
         Assert.Throws<ArgumentNullException>(() => target.GetOrCreate(1));
     }
 

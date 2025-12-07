@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State;
 using AtemSharp.State.Info;
 using AtemSharp.State.Streaming;
@@ -7,7 +8,10 @@ namespace AtemSharp.Commands.Streaming;
 [Command("StRS", ProtocolVersion.V8_1_1)]
 public class StreamingStatusUpdateCommand : IDeserializedCommand
 {
+    [ExcludeFromCodeCoverage]
     public StreamingStatus Status { get; internal set; }
+
+    [ExcludeFromCodeCoverage]
     public StreamingError Error { get; internal set; }
 
 
@@ -21,11 +25,10 @@ public class StreamingStatusUpdateCommand : IDeserializedCommand
                                 .Reverse()
                                 .Where(status => (rawStatus & status) > 0)
                                 .Select(status => (StreamingStatus)status)
-                                .FirstOrDefault();
+                                .First();
 
         var decodedError = Enum.GetValues<StreamingError>()
                                .Cast<ushort>()
-                               .Reverse()
                                .Where(error => (rawStatus & error) > 0)
                                .Select(error => (StreamingError)error)
                                .FirstOrDefault();

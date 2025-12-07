@@ -37,7 +37,6 @@ public partial class SuperSourceBoxParametersUpdateCommand : IDeserializedComman
     public void ApplyToState(AtemState state)
     {
         var box = state.Video.SuperSources[0].Boxes.GetOrCreate(_boxId);
-        box.Id = _boxId;
         box.SuperSourceId = 0;
         box.Enabled = _enabled;
         box.Source = _source;

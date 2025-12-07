@@ -17,18 +17,6 @@ public partial class FairlightMixerInputUpdateCommand : IDeserializedCommand
     private FairlightInputConfiguration[] _supportedConfigurations = [];
 
     [DeserializedField(12)] private FairlightInputConfiguration _activeConfiguration;
-    [CustomDeserialization] private FairlightAnalogInputLevel[] _supportedInputLevels = [];
-    [CustomDeserialization] private FairlightAnalogInputLevel _activeInputLevel;
-
-    private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
-    {
-        SupportedInputLevels = rawCommand.ReadBoolean(9)
-                                   ? [FairlightAnalogInputLevel.ProLine, FairlightAnalogInputLevel.Microphone]
-                                   : [];
-        ActiveInputLevel = rawCommand.ReadUInt8(9) > 0
-                               ? FairlightAnalogInputLevel.ProLine
-                               : FairlightAnalogInputLevel.Microphone;
-    }
 
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
@@ -39,7 +27,7 @@ public partial class FairlightMixerInputUpdateCommand : IDeserializedCommand
         fairlightAudioInput.ExternalPortType = ExternalPortType;
         fairlightAudioInput.SupportedConfigurations = SupportedConfigurations;
         fairlightAudioInput.ActiveConfiguration = ActiveConfiguration;
-        fairlightAudioInput.SupportedInputLevels = SupportedInputLevels;
-        fairlightAudioInput.ActiveInputLevel = ActiveInputLevel;
+        fairlightAudioInput.SupportedInputLevels = [];
+        fairlightAudioInput.ActiveInputLevel = 0;
     }
 }

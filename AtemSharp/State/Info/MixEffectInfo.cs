@@ -6,7 +6,7 @@ namespace AtemSharp.State.Info;
 /// Mix effect configuration and capabilities
 /// </summary>
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class MixEffectInfo : ArrayItem
+public class MixEffectInfo : ItemWithId<int>
 {
     internal override void SetId(int id) => Id = (byte)id;
 

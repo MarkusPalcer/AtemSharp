@@ -1,4 +1,6 @@
 using AtemSharp.Commands.MixEffects.Transition;
+using AtemSharp.State;
+using AtemSharp.State.Video.MixEffect;
 using AtemSharp.State.Video.MixEffect.Transition;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
@@ -26,4 +28,17 @@ public class TransitionPropertiesUpdateCommandTests : DeserializedCommandTestBas
         Assert.That(actualCommand.NextSelection, Is.EqualTo(expectedData.NextSelection));
     }
 
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(expectedData.Index + 1);
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var actualCommand = state.Video.MixEffects[expectedData.Index].TransitionProperties;
+        Assert.That(actualCommand.Style, Is.EqualTo(expectedData.Style));
+        Assert.That(actualCommand.Selection, Is.EqualTo(expectedData.Selection));
+        Assert.That(actualCommand.NextStyle, Is.EqualTo(expectedData.NextStyle));
+        Assert.That(actualCommand.NextSelection, Is.EqualTo(expectedData.NextSelection));
+    }
 }

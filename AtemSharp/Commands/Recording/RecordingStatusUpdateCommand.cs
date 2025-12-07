@@ -31,7 +31,7 @@ public class RecordingStatusUpdateCommand : IDeserializedCommand
 
         return new RecordingStatusUpdateCommand
         {
-            RecordingTimeAvailable = rawCommand.Length > 4 ? rawCommand.ReadUInt32BigEndian(4) : null,
+            RecordingTimeAvailable = rawCommand.ReadUInt32BigEndian(4),
             Status = decodedStatus,
             Error = decodedError
         };

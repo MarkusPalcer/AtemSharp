@@ -11,8 +11,10 @@ public partial class MacroPropertiesUpdateCommand : IDeserializedCommand
 
     [DeserializedField(3)] private bool _hasUnsupportedOps;
 
+    // Stryker disable once string : initialization is always overriden by deserialization
     [CustomDeserialization] private string _description = string.Empty;
 
+    // Stryker disable once string : initialization is always overriden by deserialization
     [CustomDeserialization] private string _name = string.Empty;
 
     private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)

@@ -1,9 +1,11 @@
 using AtemSharp.Commands.SuperSource;
+using AtemSharp.State;
 using AtemSharp.State.Video.SuperSource;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
-public class SuperSourcePropertiesUpdateV8CommandTests : DeserializedCommandTestBase<SuperSourcePropertiesUpdateV8Command, SuperSourcePropertiesUpdateV8CommandTests.CommandData>
+public class SuperSourcePropertiesUpdateV8CommandTests : DeserializedCommandTestBase<SuperSourcePropertiesUpdateV8Command,
+    SuperSourcePropertiesUpdateV8CommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -17,7 +19,8 @@ public class SuperSourcePropertiesUpdateV8CommandTests : DeserializedCommandTest
         public bool ArtInvertKey { get; set; }
     }
 
-    protected override void CompareCommandProperties(SuperSourcePropertiesUpdateV8Command actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(SuperSourcePropertiesUpdateV8Command actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
         Assert.That(actualCommand.SuperSourceId, Is.EqualTo(expectedData.SSrcId));
         Assert.That(actualCommand.ArtFillSource, Is.EqualTo(expectedData.ArtFillSource));
@@ -26,6 +29,24 @@ public class SuperSourcePropertiesUpdateV8CommandTests : DeserializedCommandTest
         Assert.That(actualCommand.ArtPremultiplied, Is.EqualTo(expectedData.ArtPreMultiplied));
         Assert.That(actualCommand.ArtClip, Is.EqualTo(expectedData.ArtClip).Within(0.1));
         Assert.That(actualCommand.ArtGain, Is.EqualTo(expectedData.ArtGain).Within(0.1));
-        Assert.That(actualCommand.ArtInvertKey,  Is.EqualTo(expectedData.ArtInvertKey));
+        Assert.That(actualCommand.ArtInvertKey, Is.EqualTo(expectedData.ArtInvertKey));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Video.SuperSources = AtemStateUtil.CreateArray<AtemSharp.State.Video.SuperSource.SuperSource>(expectedData.SSrcId + 1);
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var actualCommand = state.Video.SuperSources[expectedData.SSrcId];
+        Assert.That(actualCommand.Id, Is.EqualTo(expectedData.SSrcId));
+        Assert.That(actualCommand.FillSource, Is.EqualTo(expectedData.ArtFillSource));
+        Assert.That(actualCommand.CutSource, Is.EqualTo(expectedData.ArtCutSource));
+        Assert.That(actualCommand.Option, Is.EqualTo(expectedData.ArtOption));
+        Assert.That(actualCommand.PreMultiplied, Is.EqualTo(expectedData.ArtPreMultiplied));
+        Assert.That(actualCommand.Clip, Is.EqualTo(expectedData.ArtClip).Within(0.1));
+        Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.ArtGain).Within(0.1));
+        Assert.That(actualCommand.InvertKey, Is.EqualTo(expectedData.ArtInvertKey));
     }
 }

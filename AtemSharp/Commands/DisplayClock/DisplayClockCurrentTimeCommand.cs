@@ -1,5 +1,4 @@
 using AtemSharp.State;
-using AtemSharp.State.DisplayClock;
 
 namespace AtemSharp.Commands.DisplayClock;
 
@@ -32,12 +31,9 @@ public partial class DisplayClockCurrentTimeCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        state.DisplayClock.CurrentTime = new DisplayClockTime
-        {
-            Hours = _hours,
-            Minutes = _minutes,
-            Seconds = _seconds,
-            Frames = _frames
-        };
+        state.DisplayClock.CurrentTime.Hours = _hours;
+        state.DisplayClock.CurrentTime.Minutes = _minutes;
+        state.DisplayClock.CurrentTime.Seconds = _seconds;
+        state.DisplayClock.CurrentTime.Frames = _frames;
     }
 }

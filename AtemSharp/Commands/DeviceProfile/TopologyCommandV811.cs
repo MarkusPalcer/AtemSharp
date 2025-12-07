@@ -63,6 +63,8 @@ public partial class TopologyCommandV811: IDeserializedCommand
         state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(DownstreamKeyers);
 
         state.Info.MultiViewer.Count = MultiViewers;
+
+        // TODO #73: Verify if this is correct and write tests against the correct behavior
         state.Info.MultiViewer.WindowCount = MultiViewers > 0 ? 10 : 0;
     }
 }

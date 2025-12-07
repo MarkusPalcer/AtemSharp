@@ -1,4 +1,6 @@
 using AtemSharp.Commands.MixEffects.Transition;
+using AtemSharp.State;
+using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
@@ -16,8 +18,20 @@ public class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<Trans
     protected override void CompareCommandProperties(TransitionDipUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
-        Assert.That(actualCommand.MixEffectId, Is.EqualTo(testCase.Command.Index));
-        Assert.That(actualCommand.Rate, Is.EqualTo(testCase.Command.Rate));
-        Assert.That(actualCommand.Input, Is.EqualTo(testCase.Command.Input));
+        Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.Rate, Is.EqualTo(expectedData.Rate));
+        Assert.That(actualCommand.Input, Is.EqualTo(expectedData.Input));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(expectedData.Index + 1);
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var actualCommand = state.Video.MixEffects[expectedData.Index].TransitionSettings.Dip;
+        Assert.That(actualCommand.Rate, Is.EqualTo(expectedData.Rate));
+        Assert.That(actualCommand.Input, Is.EqualTo(expectedData.Input));
     }
 }

@@ -2,8 +2,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace AtemSharp.State.Audio.Fairlight;
 
-[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class Source
+[ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+public class Source : ItemWithId<long>
 {
     public long Id { get; internal set; }
 
@@ -21,4 +21,6 @@ public class Source
     public FairlightAudioMixOption[] SupportedMixOptions { get; internal set; } = [];
     public FairlightAudioMixOption MixOption { get; internal set; }
     public ushort InputId { get; internal set; }
+
+    internal override void SetId(long id) => Id = id;
 }

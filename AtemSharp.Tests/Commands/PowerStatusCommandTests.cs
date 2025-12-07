@@ -1,4 +1,5 @@
 using AtemSharp.Commands;
+using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands;
 
@@ -15,5 +16,16 @@ public class PowerStatusCommandTests : DeserializedCommandTestBase<PowerStatusCo
     {
         Assert.That(actualCommand.PowerSupplies[0], Is.EqualTo(expectedData.Pin1));
         Assert.That(actualCommand.PowerSupplies[1], Is.EqualTo(expectedData.Pin2));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Info.Power = [false, false];
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        Assert.That(state.Info.Power[0], Is.EqualTo(expectedData.Pin1));
+        Assert.That(state.Info.Power[1], Is.EqualTo(expectedData.Pin2));
     }
 }

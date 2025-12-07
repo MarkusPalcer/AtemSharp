@@ -14,6 +14,7 @@ public partial class ProductIdentifierCommand : IDeserializedCommand
     /// </summary>
     [DeserializedField(40)] private Model _model;
 
+    // Stryker disable once string : initialization is always overriden by deserialization
     /// <summary>
     /// Product identifier string from the device
     /// </summary>

@@ -52,6 +52,8 @@ namespace AtemSharp.CodeGenerators.Deserialization
 
                     var fileContent = $$"""
                                         using System;
+                                        using System.Diagnostics.CodeAnalysis;
+
                                         using AtemSharp;
                                         using AtemSharp.State.Info;
                                         using AtemSharp.Lib;
@@ -118,6 +120,7 @@ namespace AtemSharp.CodeGenerators.Deserialization
 
             return $$"""
                      {{Helpers.GetFieldMsDocComment(f)}}
+                     [ExcludeFromCodeCoverage]
                      public {{fieldType}} {{propertyName}}
                      {
                          get => {{f.Name}};

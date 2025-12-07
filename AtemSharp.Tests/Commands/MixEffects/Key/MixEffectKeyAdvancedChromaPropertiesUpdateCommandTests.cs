@@ -1,11 +1,13 @@
 using AtemSharp.Commands.MixEffects.Key;
+using AtemSharp.State;
+using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
 [TestFixture]
-public class MixEffectKeyAdvancedChromaPropertiesUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyAdvancedChromaPropertiesUpdateCommand, MixEffectKeyAdvancedChromaPropertiesUpdateCommandTests.CommandData>
+public class MixEffectKeyAdvancedChromaPropertiesUpdateCommandTests : DeserializedCommandTestBase<
+    MixEffectKeyAdvancedChromaPropertiesUpdateCommand, MixEffectKeyAdvancedChromaPropertiesUpdateCommandTests.CommandData>
 {
-
     public class CommandData : CommandDataBase
     {
         public byte MixEffectIndex { get; set; }
@@ -23,20 +25,43 @@ public class MixEffectKeyAdvancedChromaPropertiesUpdateCommandTests : Deserializ
         public double Blue { get; set; }
     }
 
-    protected override void CompareCommandProperties(MixEffectKeyAdvancedChromaPropertiesUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(MixEffectKeyAdvancedChromaPropertiesUpdateCommand actualCommand,
+                                                     CommandData expectedData, TestCaseData testCase)
     {
-        Assert.That(actualCommand.MixEffectId, Is.EqualTo(testCase.Command.MixEffectIndex));
-        Assert.That(actualCommand.KeyerId, Is.EqualTo(testCase.Command.KeyerIndex));
-        Assert.That(actualCommand.ForegroundLevel, Is.EqualTo(testCase.Command.ForegroundLevel).Within(0.1));
-        Assert.That(actualCommand.BackgroundLevel, Is.EqualTo(testCase.Command.BackgroundLevel).Within(0.1));
-        Assert.That(actualCommand.KeyEdge, Is.EqualTo(testCase.Command.KeyEdge).Within(0.1));
-        Assert.That(actualCommand.SpillSuppression, Is.EqualTo(testCase.Command.SpillSuppression).Within(0.1));
-        Assert.That(actualCommand.FlareSuppression, Is.EqualTo(testCase.Command.FlareSuppression).Within(0.1));
-        Assert.That(actualCommand.Brightness, Is.EqualTo(testCase.Command.Brightness).Within(0.1));
-        Assert.That(actualCommand.Contrast, Is.EqualTo(testCase.Command.Contrast).Within(0.1));
-        Assert.That(actualCommand.Saturation, Is.EqualTo(testCase.Command.Saturation).Within(0.1));
-        Assert.That(actualCommand.Red, Is.EqualTo(testCase.Command.Red).Within(0.1));
-        Assert.That(actualCommand.Green, Is.EqualTo(testCase.Command.Green).Within(0.1));
-        Assert.That(actualCommand.Blue, Is.EqualTo(testCase.Command.Blue).Within(0.1));
+        Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.MixEffectIndex));
+        Assert.That(actualCommand.KeyerId, Is.EqualTo(expectedData.KeyerIndex));
+        Assert.That(actualCommand.ForegroundLevel, Is.EqualTo(expectedData.ForegroundLevel).Within(0.1));
+        Assert.That(actualCommand.BackgroundLevel, Is.EqualTo(expectedData.BackgroundLevel).Within(0.1));
+        Assert.That(actualCommand.KeyEdge, Is.EqualTo(expectedData.KeyEdge).Within(0.1));
+        Assert.That(actualCommand.SpillSuppression, Is.EqualTo(expectedData.SpillSuppression).Within(0.1));
+        Assert.That(actualCommand.FlareSuppression, Is.EqualTo(expectedData.FlareSuppression).Within(0.1));
+        Assert.That(actualCommand.Brightness, Is.EqualTo(expectedData.Brightness).Within(0.1));
+        Assert.That(actualCommand.Contrast, Is.EqualTo(expectedData.Contrast).Within(0.1));
+        Assert.That(actualCommand.Saturation, Is.EqualTo(expectedData.Saturation).Within(0.1));
+        Assert.That(actualCommand.Red, Is.EqualTo(expectedData.Red).Within(0.1));
+        Assert.That(actualCommand.Green, Is.EqualTo(expectedData.Green).Within(0.1));
+        Assert.That(actualCommand.Blue, Is.EqualTo(expectedData.Blue).Within(0.1));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(expectedData.MixEffectIndex + 1);
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var actualCommand = state.Video.MixEffects[expectedData.MixEffectIndex].UpstreamKeyers[expectedData.KeyerIndex]
+                                 .AdvancedChromaSettings.Properties;
+        Assert.That(actualCommand.ForegroundLevel, Is.EqualTo(expectedData.ForegroundLevel).Within(0.1));
+        Assert.That(actualCommand.BackgroundLevel, Is.EqualTo(expectedData.BackgroundLevel).Within(0.1));
+        Assert.That(actualCommand.KeyEdge, Is.EqualTo(expectedData.KeyEdge).Within(0.1));
+        Assert.That(actualCommand.SpillSuppression, Is.EqualTo(expectedData.SpillSuppression).Within(0.1));
+        Assert.That(actualCommand.FlareSuppression, Is.EqualTo(expectedData.FlareSuppression).Within(0.1));
+        Assert.That(actualCommand.Brightness, Is.EqualTo(expectedData.Brightness).Within(0.1));
+        Assert.That(actualCommand.Contrast, Is.EqualTo(expectedData.Contrast).Within(0.1));
+        Assert.That(actualCommand.Saturation, Is.EqualTo(expectedData.Saturation).Within(0.1));
+        Assert.That(actualCommand.Red, Is.EqualTo(expectedData.Red).Within(0.1));
+        Assert.That(actualCommand.Green, Is.EqualTo(expectedData.Green).Within(0.1));
+        Assert.That(actualCommand.Blue, Is.EqualTo(expectedData.Blue).Within(0.1));
     }
 }

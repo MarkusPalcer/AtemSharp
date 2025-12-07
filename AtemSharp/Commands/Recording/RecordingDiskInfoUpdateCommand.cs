@@ -15,6 +15,7 @@ public partial class RecordingDiskInfoUpdateCommand : IDeserializedCommand
 
     [DeserializedField(4)] private uint _recordingTimeAvailable;
 
+    // Stryker disable once string : initialization is always overriden by deserialization
     [CustomDeserialization] private string _name = string.Empty;
 
     private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
@@ -37,7 +38,6 @@ public partial class RecordingDiskInfoUpdateCommand : IDeserializedCommand
         else
         {
             var disk = state.Recording.Disks.GetOrCreate(DiskId);
-            disk.DiskId = DiskId;
             disk.Name = Name;
             disk.Status = Status;
             disk.RecordingTimeAvailable = RecordingTimeAvailable;

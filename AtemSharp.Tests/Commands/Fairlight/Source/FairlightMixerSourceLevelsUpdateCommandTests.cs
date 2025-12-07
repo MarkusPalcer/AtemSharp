@@ -1,8 +1,10 @@
+using AtemSharp.State;
 using FairlightMixerSourceLevelsUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Source.FairlightMixerSourceLevelsUpdateCommand;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
-public class FairlightMixerSourceLevelsUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerSourceLevelsUpdateCommand, FairlightMixerSourceLevelsUpdateCommandTests.CommandData>
+public class FairlightMixerSourceLevelsUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerSourceLevelsUpdateCommand,
+    FairlightMixerSourceLevelsUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -27,7 +29,8 @@ public class FairlightMixerSourceLevelsUpdateCommandTests : DeserializedCommandT
         public double RightPeak { get; set; }
     }
 
-    protected override void CompareCommandProperties(FairlightMixerSourceLevelsUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    protected override void CompareCommandProperties(FairlightMixerSourceLevelsUpdateCommand actualCommand, CommandData expectedData,
+                                                     TestCaseData testCase)
     {
         Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.SourceId, Is.EqualTo(expectedData.SourceId));
@@ -46,5 +49,10 @@ public class FairlightMixerSourceLevelsUpdateCommandTests : DeserializedCommandT
         Assert.That(actualCommand.RightLevel, Is.EqualTo(expectedData.RightLevel).Within(0.01));
         Assert.That(actualCommand.LeftPeak, Is.EqualTo(expectedData.LeftPeak).Within(0.01));
         Assert.That(actualCommand.RightPeak, Is.EqualTo(expectedData.RightPeak).Within(0.01));
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        // No change to state
     }
 }

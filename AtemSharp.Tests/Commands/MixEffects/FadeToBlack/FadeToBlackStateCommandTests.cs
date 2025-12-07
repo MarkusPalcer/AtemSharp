@@ -1,4 +1,6 @@
 using AtemSharp.Commands.MixEffects.FadeToBlack;
+using AtemSharp.State;
+using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects.FadeToBlack;
 
@@ -18,5 +20,19 @@ public class FadeToBlackStateCommandTests : DeserializedCommandTestBase<FadeToBl
         Assert.That(actualCommand.IsFullyBlack, Is.EqualTo(expectedData.IsFullyBlack));
         Assert.That(actualCommand.InTransition, Is.EqualTo(expectedData.InTransition));
         Assert.That(actualCommand.RemainingFrames, Is.EqualTo(expectedData.RemainingFrames));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(expectedData.Index + 1);
+    }
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var actualCommand = state.Video.MixEffects[expectedData.Index];
+        Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.FadeToBlack.IsFullyBlack, Is.EqualTo(expectedData.IsFullyBlack));
+        Assert.That(actualCommand.FadeToBlack.InTransition, Is.EqualTo(expectedData.InTransition));
+        Assert.That(actualCommand.FadeToBlack.RemainingFrames, Is.EqualTo(expectedData.RemainingFrames));
     }
 }

@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace AtemSharp.State.Video;
 
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class AuxiliaryOutput : ArrayItem
+public class AuxiliaryOutput : ItemWithId<int>
 {
     internal override void SetId(int id) => Id = (byte)id;
 

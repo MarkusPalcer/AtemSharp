@@ -1,4 +1,6 @@
 using AtemSharp.Commands.Media;
+using AtemSharp.State;
+using AtemSharp.State.Media;
 
 namespace AtemSharp.Tests.Commands.Media;
 
@@ -14,9 +16,24 @@ public class MediaPoolClipDescriptionCommandTests : DeserializedCommandTestBase<
 
     protected override void CompareCommandProperties(MediaPoolClipDescriptionCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
-        Assert.That(actualCommand.ClipId, Is.EqualTo(testCase.Command.Index));
-        Assert.That(actualCommand.IsUsed, Is.EqualTo(testCase.Command.IsUsed));
-        Assert.That(actualCommand.Name, Is.EqualTo(testCase.Command.Name));
-        Assert.That(actualCommand.FrameCount, Is.EqualTo(testCase.Command.FrameCount));
+        Assert.That(actualCommand.ClipId, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.IsUsed, Is.EqualTo(expectedData.IsUsed));
+        Assert.That(actualCommand.Name, Is.EqualTo(expectedData.Name));
+        Assert.That(actualCommand.FrameCount, Is.EqualTo(expectedData.FrameCount));
+    }
+
+    protected override void PrepareState(AtemState state, CommandData expectedData)
+    {
+        state.Media.Clips = AtemStateUtil.CreateArray<MediaPoolEntry>(expectedData.Index + 1);
+    }
+
+
+    protected override void CompareStateProperties(AtemState state, CommandData expectedData)
+    {
+        var actualCommand = state.Media.Clips[expectedData.Index];
+        Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Index));
+        Assert.That(actualCommand.IsUsed, Is.EqualTo(expectedData.IsUsed));
+        Assert.That(actualCommand.Name, Is.EqualTo(expectedData.Name));
+        Assert.That(actualCommand.FrameCount, Is.EqualTo(expectedData.FrameCount));
     }
 }

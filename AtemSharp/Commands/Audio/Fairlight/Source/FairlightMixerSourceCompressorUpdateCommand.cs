@@ -31,12 +31,9 @@ public partial class FairlightMixerSourceCompressorUpdateCommand : IDeserialized
     {
         var audio = state.GetFairlight();
 
-        if (!audio.Inputs.TryGetValue(InputId, out var input))
-        {
-            throw new IndexOutOfRangeException($"Input ID {InputId} does not exist");
-        }
-
+        var input = audio.Inputs.GetOrCreate(InputId);
         var source = input.Sources.GetOrCreate(SourceId);
+
         source.Id = SourceId;
         source.InputId = InputId;
 

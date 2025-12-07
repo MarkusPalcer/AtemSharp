@@ -21,11 +21,13 @@ public partial class AudioRoutingSourceUpdateCommand : IDeserializedCommand
     [CustomDeserialization]
     private AudioChannelPair _audioChannelPair;
 
+    // Stryker disable once string : initialization is always overriden by deserialization
     [CustomDeserialization]
     private string _name = string.Empty;
 
     private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)
     {
+        // Stryker disable once bitwise : >> and >>> do the same for unsigned types
         _audioSourceId = _id >> 16;
         _audioChannelPair = (AudioChannelPair)(ushort)(_id & 0xFFFF);
 
