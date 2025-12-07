@@ -1,5 +1,6 @@
 using System.Drawing;
 using AtemSharp.State;
+using AtemSharp.Types;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 
@@ -87,9 +88,10 @@ public partial class MixEffectKeyFlyKeyframeUpdateCommand : IDeserializedCommand
         keyframe.Border.BevelSoftness = _borderBevelSoftness;
         keyframe.Border.BevelPosition = _borderBevelPosition;
         keyframe.Border.Opacity = _borderOpacity;
-        keyframe.Border.Hue = _borderHue;
-        keyframe.Border.Saturation = _borderSaturation;
-        keyframe.Border.Luma = _borderLuma;
+        keyframe.Border.Color = new HslColor(
+            _borderHue,
+            _borderSaturation,
+            _borderLuma);
         keyframe.LightSourceDirection = _lightSourceDirection;
         keyframe.LightSourceAltitude = _lightSourceAltitude;
         // keyframe.Mask.Enabled = _maskEnabled;

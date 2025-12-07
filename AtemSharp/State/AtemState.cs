@@ -7,6 +7,7 @@ using AtemSharp.State.Recording;
 using AtemSharp.State.Settings;
 using AtemSharp.State.Streaming;
 using AtemSharp.State.Video;
+using AtemSharp.Types;
 
 namespace AtemSharp.State;
 

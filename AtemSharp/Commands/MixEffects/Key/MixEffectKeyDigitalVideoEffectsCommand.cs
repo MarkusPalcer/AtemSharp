@@ -1,5 +1,5 @@
-using AtemSharp.State.Border;
 using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
+using AtemSharp.Types.Border;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 

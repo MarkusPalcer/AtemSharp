@@ -1,5 +1,6 @@
 using AtemSharp.Commands.ColorGenerators;
 using AtemSharp.State;
+using AtemSharp.Types;
 
 namespace AtemSharp.Tests.Commands.ColorGenerators;
 
@@ -24,10 +25,8 @@ public class ColorGeneratorCommandTests : SerializedCommandTestBase<ColorGenerat
     {
         return new ColorGeneratorCommand(new ColorGeneratorState
         {
-                Id = testCase.Command.Index,
-                Hue = testCase.Command.Hue,
-                Saturation = testCase.Command.Saturation,
-                Luma = testCase.Command.Luma,
-            });
+            Id = testCase.Command.Index,
+            Color = new HslColor(testCase.Command.Hue, testCase.Command.Saturation, testCase.Command.Luma)
+        });
     }
 }

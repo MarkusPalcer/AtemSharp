@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -48,6 +49,8 @@ namespace AtemSharp.CodeGenerators.Deserialization
                         continue;
                     }
 
+                    var namespaces = fields.Select(x => x!.NamespaceCode).Distinct();
+
                     var internalDeserialization = GetInternalDeserializationMethod(classDecl);
 
                     var fileContent = $$"""
@@ -57,6 +60,8 @@ namespace AtemSharp.CodeGenerators.Deserialization
                                         using AtemSharp;
                                         using AtemSharp.State.Info;
                                         using AtemSharp.Lib;
+
+                                        {{string.Join("\n", namespaces)}}
 
                                         namespace {{ns}};
 
@@ -175,11 +180,27 @@ namespace AtemSharp.CodeGenerators.Deserialization
 
             var propertyCode = CreatePropertyCode(f);
 
+            var namespaceCode = CreateNamespaceCode(f);
+
             return new DeserializedField
             {
                 PropertyCode = propertyCode,
-                DeserializationCode = serializationCode
+                DeserializationCode = serializationCode,
+                NamespaceCode = namespaceCode,
             };
+        }
+
+        private static string CreateNamespaceCode(IFieldSymbol fieldSymbol)
+        {
+            var type = fieldSymbol.Type;
+            var ns = type.ContainingNamespace;
+
+            if (ns is null || string.IsNullOrEmpty(ns.ToString()))
+            {
+                return string.Empty;
+            }
+
+            return $"using {ns};";
         }
     }
 }

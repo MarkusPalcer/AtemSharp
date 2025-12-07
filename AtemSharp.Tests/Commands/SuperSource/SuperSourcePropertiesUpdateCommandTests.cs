@@ -1,6 +1,6 @@
 using AtemSharp.Commands.SuperSource;
 using AtemSharp.State;
-using AtemSharp.State.Border;
+using AtemSharp.Types.Border;
 using AtemSharp.State.Info;
 using AtemSharp.State.Video.SuperSource;
 using AtemSharp.Tests.TestUtilities;
@@ -83,9 +83,9 @@ public class SuperSourcePropertiesUpdateCommandTests : DeserializedCommandTestBa
         Assert.That(actualCommand.Border.InnerSoftness, Is.EqualTo(expectedData.BorderInnerSoftness));
         Assert.That(actualCommand.Border.BevelSoftness, Is.EqualTo(expectedData.BorderBevelSoftness));
         Assert.That(actualCommand.Border.BevelPosition, Is.EqualTo(expectedData.BorderBevelPosition));
-        Assert.That(actualCommand.Border.Hue, Is.EqualTo(expectedData.BorderHue).Within(0.1));
-        Assert.That(actualCommand.Border.Saturation, Is.EqualTo(expectedData.BorderSaturation).Within(0.1));
-        Assert.That(actualCommand.Border.Luma, Is.EqualTo(expectedData.BorderLuma).Within(0.1));
+        Assert.That(actualCommand.Border.Color.Hue, Is.EqualTo(expectedData.BorderHue).Within(0.1));
+        Assert.That(actualCommand.Border.Color.Saturation, Is.EqualTo(expectedData.BorderSaturation).Within(0.1));
+        Assert.That(actualCommand.Border.Color.Luma, Is.EqualTo(expectedData.BorderLuma).Within(0.1));
         Assert.That(actualCommand.Border.LightSourceDirection, Is.EqualTo(expectedData.BorderLightSourceDirection).Within(0.1));
         Assert.That(actualCommand.Border.LightSourceAltitude, Is.EqualTo(expectedData.BorderLightSourceAltitude).Within(1));
     }

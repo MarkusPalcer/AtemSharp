@@ -1,5 +1,5 @@
 using AtemSharp.State;
-using AtemSharp.State.Border;
+using AtemSharp.Types.Border;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 

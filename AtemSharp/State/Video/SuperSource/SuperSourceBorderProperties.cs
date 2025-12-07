@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using AtemSharp.State.Border;
+using AtemSharp.Types.Border;
 
 namespace AtemSharp.State.Video.SuperSource;
 
