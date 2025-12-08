@@ -78,6 +78,16 @@ public partial class MixEffectKeyFlyKeyframeCommand(UpstreamKeyerFlyKeyframe key
         }
     }
 
+    public SizeF Size
+    {
+        get => new((float)_sizeX, (float)_sizeY);
+        set
+        {
+            SizeX =  value.Width;
+            SizeY =  value.Height;
+        }
+    }
+
     private void SerializeInternal(byte[] buffer)
     {
         buffer.WriteUInt32BigEndian(Flag, 0);

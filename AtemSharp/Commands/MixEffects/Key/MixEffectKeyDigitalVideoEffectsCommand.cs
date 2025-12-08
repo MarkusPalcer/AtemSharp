@@ -17,10 +17,10 @@ public partial class MixEffectKeyDigitalVideoEffectsCommand(UpstreamKeyer keyer)
     [SerializedField(5)] [NoProperty] private readonly byte _keyerId = keyer.Id;
 
     [SerializedField(8, 0)] [SerializedType(typeof(ulong))] [ScalingFactor(1000.0)]
-    private double _sizeX = keyer.DigitalVideoEffectsSettings.SizeX;
+    private double _sizeX = keyer.DigitalVideoEffectsSettings.Size.Width;
 
     [SerializedField(12, 1)] [SerializedType(typeof(ulong))] [ScalingFactor(1000.0)]
-    private double _sizeY = keyer.DigitalVideoEffectsSettings.SizeY;
+    private double _sizeY = keyer.DigitalVideoEffectsSettings.Size.Height;
 
     [SerializedField(16, 2)] [SerializedType(typeof(long))] [ScalingFactor(1000.0)]
     private double _positionX = keyer.DigitalVideoEffectsSettings.Location.X;
@@ -96,6 +96,16 @@ public partial class MixEffectKeyDigitalVideoEffectsCommand(UpstreamKeyer keyer)
         {
             PositionX = value.X;
             PositionY = value.Y;
+        }
+    }
+
+    public SizeF Size
+    {
+        get => new((float)_sizeX, (float)_sizeY);
+        set
+        {
+            SizeX =  value.Width;
+            SizeY =  value.Height;
         }
     }
 

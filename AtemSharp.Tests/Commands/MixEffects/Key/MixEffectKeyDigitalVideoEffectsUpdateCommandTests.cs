@@ -81,8 +81,8 @@ public class MixEffectKeyDigitalVideoEffectsUpdateCommandTests : DeserializedCom
     {
         var dve = state.Video.MixEffects[expected.MixEffectIndex].UpstreamKeyers[expected.KeyerIndex]
                            .DigitalVideoEffectsSettings;
-        Assert.That(dve.SizeX, Is.EqualTo(expected.SizeX).Within(0.001));
-        Assert.That(dve.SizeY, Is.EqualTo(expected.SizeY).Within(0.001));
+        Assert.That(dve.Size.Width, Is.EqualTo(expected.SizeX).Within(0.001));
+        Assert.That(dve.Size.Height, Is.EqualTo(expected.SizeY).Within(0.001));
         Assert.That(dve.Location.X, Is.EqualTo(expected.PositionX).Within(0.001));
         Assert.That(dve.Location.Y, Is.EqualTo(expected.PositionY).Within(0.001));
         Assert.That(dve.Rotation, Is.EqualTo(expected.Rotation).Within(0.1));

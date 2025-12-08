@@ -125,4 +125,35 @@ public class MixEffectKeyFlyKeyframeCommandTests : SerializedCommandTestBase<Mix
             Assert.That(sut.Location.Y, Is.EqualTo(45.6).Within(0.01));
         });
     }
+
+    [Test]
+    public void GettingSize_ShouldGetWidthAndHeight()
+    {
+        var sut = new MixEffectKeyDigitalVideoEffectsCommand(new UpstreamKeyer())
+        {
+            SizeX = 12.3,
+            SizeY = 45.6
+        };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.Size.Width, Is.EqualTo(12.3).Within(0.01));
+            Assert.That(sut.Size.Height, Is.EqualTo(45.6).Within(0.01));
+        });
+    }
+
+    [Test]
+    public void SettingSize_ShouldSetWidthAndHeight()
+    {
+        var sut = new MixEffectKeyDigitalVideoEffectsCommand(new UpstreamKeyer())
+        {
+            Size = new SizeF(12.3f, 45.6f)
+        };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.SizeX, Is.EqualTo(12.3).Within(0.01));
+            Assert.That(sut.SizeY, Is.EqualTo(45.6).Within(0.01));
+        });
+    }
 }

@@ -10,15 +10,7 @@ namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class UpstreamKeyerDigitalVideoEffectSettings
 {
-    /// <summary>
-    /// Horizontal size scale factor
-    /// </summary>
-    public double SizeX { get; internal set; }
-
-    /// <summary>
-    /// Vertical size scale factor
-    /// </summary>
-    public double SizeY { get; internal set; }
+    public SizeF Size { get; internal set; }
 
     public PointF Location { get; internal set; }
 

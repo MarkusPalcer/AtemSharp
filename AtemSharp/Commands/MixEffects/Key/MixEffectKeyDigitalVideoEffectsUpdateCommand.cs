@@ -180,8 +180,7 @@ public partial class MixEffectKeyDigitalVideoEffectsUpdateCommand : IDeserialize
         keyer.Id = KeyerId;
 
         // Update the DVE settings
-        keyer.DigitalVideoEffectsSettings.SizeX = SizeX;
-        keyer.DigitalVideoEffectsSettings.SizeY = SizeY;
+        keyer.DigitalVideoEffectsSettings.Size = new SizeF((float)SizeX, (float)SizeY);
         keyer.DigitalVideoEffectsSettings.Location = new PointF((float)PositionX, (float)PositionY);
         keyer.DigitalVideoEffectsSettings.Rotation = Rotation;
         keyer.DigitalVideoEffectsSettings.ShadowEnabled = ShadowEnabled;
