@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using AtemSharp.Types.Border;
 
 namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
@@ -19,15 +20,7 @@ public class UpstreamKeyerDigitalVideoEffectSettings
     /// </summary>
     public double SizeY { get; internal set; }
 
-    /// <summary>
-    /// Horizontal position offset
-    /// </summary>
-    public double PositionX { get; internal set; }
-
-    /// <summary>
-    /// Vertical position offset
-    /// </summary>
-    public double PositionY { get; internal set; }
+    public PointF Location { get; internal set; }
 
     /// <summary>
     /// Rotation angle in degrees

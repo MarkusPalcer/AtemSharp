@@ -1,3 +1,4 @@
+using System.Drawing;
 using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 using AtemSharp.Types.Border;
 
@@ -22,10 +23,10 @@ public partial class MixEffectKeyDigitalVideoEffectsCommand(UpstreamKeyer keyer)
     private double _sizeY = keyer.DigitalVideoEffectsSettings.SizeY;
 
     [SerializedField(16, 2)] [SerializedType(typeof(long))] [ScalingFactor(1000.0)]
-    private double _positionX = keyer.DigitalVideoEffectsSettings.PositionX;
+    private double _positionX = keyer.DigitalVideoEffectsSettings.Location.X;
 
     [SerializedField(20, 3)] [SerializedType(typeof(long))] [ScalingFactor(1000.0)]
-    private double _positionY = keyer.DigitalVideoEffectsSettings.PositionY;
+    private double _positionY = keyer.DigitalVideoEffectsSettings.Location.Y;
 
     [SerializedField(24, 4)] [SerializedType(typeof(long))] [ScalingFactor(10.0)]
     private double _rotation = keyer.DigitalVideoEffectsSettings.Rotation;
@@ -87,6 +88,16 @@ public partial class MixEffectKeyDigitalVideoEffectsCommand(UpstreamKeyer keyer)
     private double _maskRight = keyer.DigitalVideoEffectsSettings.MaskRight;
 
     [SerializedField(60, 25)] private byte _rate = keyer.DigitalVideoEffectsSettings.Rate;
+
+    public PointF Location
+    {
+        get => new((float)_positionX, (float)_positionY);
+        set
+        {
+            PositionX = value.X;
+            PositionY = value.Y;
+        }
+    }
 
     private void SerializeInternal(byte[] buffer)
     {

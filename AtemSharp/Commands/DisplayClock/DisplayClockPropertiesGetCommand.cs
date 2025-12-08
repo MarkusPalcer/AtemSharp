@@ -1,3 +1,4 @@
+using System.Drawing;
 using AtemSharp.State;
 using AtemSharp.State.DisplayClock;
 
@@ -67,8 +68,7 @@ public partial class DisplayClockPropertiesGetCommand : IDeserializedCommand
         state.DisplayClock.Enabled = Enabled;
         state.DisplayClock.Size = Size;
         state.DisplayClock.Opacity = Opacity;
-        state.DisplayClock.PositionX = PositionX;
-        state.DisplayClock.PositionY = PositionY;
+        state.DisplayClock.Location = new PointF((float)PositionX, (float)PositionY);
         state.DisplayClock.AutoHide = AutoHide;
         state.DisplayClock.StartFrom = new()
         {

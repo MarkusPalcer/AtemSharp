@@ -91,4 +91,38 @@ public class MixEffectKeyFlyKeyframeCommandTests : SerializedCommandTestBase<Mix
             }
         });
     }
+
+
+    [Test]
+    public void SettingLocation_ShouldSetPositionXAndPositionY()
+    {
+        var state = new UpstreamKeyerFlyKeyframe();
+        var sut =  new MixEffectKeyFlyKeyframeCommand(state)
+        {
+            Location = new PointF((float)12.3, (float)45.6)
+        };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.PositionX, Is.EqualTo(12.3).Within(0.01));
+            Assert.That(sut.PositionY, Is.EqualTo(45.6).Within(0.01));
+        });
+    }
+
+    [Test]
+    public void BettingLocation_ShouldGetPositionXAndPositionY()
+    {
+        var state = new UpstreamKeyerFlyKeyframe();
+        var sut =  new MixEffectKeyFlyKeyframeCommand(state)
+        {
+            PositionX = 12.3,
+            PositionY = 45.6
+        };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.Location.X, Is.EqualTo(12.3).Within(0.01));
+            Assert.That(sut.Location.Y, Is.EqualTo(45.6).Within(0.01));
+        });
+    }
 }

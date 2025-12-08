@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 
 namespace AtemSharp.State.DisplayClock;
 
@@ -27,15 +28,7 @@ public class DisplayClock
     /// </summary>
     public byte Opacity { get; internal set; }
 
-    /// <summary>
-    /// X position of the clock display
-    /// </summary>
-    public double PositionX { get; internal set; }
-
-    /// <summary>
-    /// Y position of the clock display
-    /// </summary>
-    public double PositionY { get; internal set; }
+    public PointF Location { get; internal set; }
 
     /// <summary>
     /// Whether the clock should auto-hide

@@ -1,3 +1,4 @@
+using System.Drawing;
 using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Commands.MixEffects.Key;
@@ -66,6 +67,16 @@ public partial class MixEffectKeyFlyKeyframeCommand(UpstreamKeyerFlyKeyframe key
 
     [SerializedField(54, 20)] [ScalingFactor(1000)] [SerializedType(typeof(short))]
     private double _maskRight = keyframe.Mask.Right;
+
+    public PointF Location
+    {
+        get => new((float)_positionX, (float)_positionY);
+        set
+        {
+            PositionX = value.X;
+            PositionY = value.Y;
+        }
+    }
 
     private void SerializeInternal(byte[] buffer)
     {

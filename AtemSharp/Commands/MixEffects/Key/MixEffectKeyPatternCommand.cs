@@ -1,3 +1,4 @@
+using System.Drawing;
 using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Commands.MixEffects.Key;
@@ -28,4 +29,14 @@ public partial class MixEffectKeyPatternCommand(UpstreamKeyer keyer) : Serialize
     private double _positionY = keyer.Pattern.Location.Y;
 
     [SerializedField(14, 6)] private bool _invert = keyer.Pattern.Invert;
+
+    public PointF Location
+    {
+        get => new((float)_positionX, (float)_positionY);
+        set
+        {
+            PositionX = value.X;
+            PositionY = value.Y;
+        }
+    }
 }

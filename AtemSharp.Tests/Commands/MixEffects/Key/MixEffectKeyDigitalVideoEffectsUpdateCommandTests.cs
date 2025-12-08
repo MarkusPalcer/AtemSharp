@@ -83,8 +83,8 @@ public class MixEffectKeyDigitalVideoEffectsUpdateCommandTests : DeserializedCom
                            .DigitalVideoEffectsSettings;
         Assert.That(dve.SizeX, Is.EqualTo(expected.SizeX).Within(0.001));
         Assert.That(dve.SizeY, Is.EqualTo(expected.SizeY).Within(0.001));
-        Assert.That(dve.PositionX, Is.EqualTo(expected.PositionX).Within(0.001));
-        Assert.That(dve.PositionY, Is.EqualTo(expected.PositionY).Within(0.001));
+        Assert.That(dve.Location.X, Is.EqualTo(expected.PositionX).Within(0.001));
+        Assert.That(dve.Location.Y, Is.EqualTo(expected.PositionY).Within(0.001));
         Assert.That(dve.Rotation, Is.EqualTo(expected.Rotation).Within(0.1));
         Assert.That(dve.Border.Enabled, Is.EqualTo(expected.BorderEnabled));
         Assert.That(dve.Border.Bevel, Is.EqualTo(expected.BorderBevel));

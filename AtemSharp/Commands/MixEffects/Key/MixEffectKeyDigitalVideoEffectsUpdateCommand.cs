@@ -1,3 +1,4 @@
+using System.Drawing;
 using AtemSharp.State;
 using AtemSharp.Types;
 using AtemSharp.Types.Border;
@@ -81,14 +82,12 @@ public partial class MixEffectKeyDigitalVideoEffectsUpdateCommand : IDeserialize
     /// <summary>
     /// Outer border softness
     /// </summary>
-    [DeserializedField(32)]
-    private byte _borderOuterSoftness;
+    [DeserializedField(32)] private byte _borderOuterSoftness;
 
     /// <summary>
     /// Inner border softness
     /// </summary>
-    [DeserializedField(33)]
-    private byte _borderInnerSoftness;
+    [DeserializedField(33)] private byte _borderInnerSoftness;
 
     /// <summary>
     /// Border bevel softness
@@ -183,8 +182,7 @@ public partial class MixEffectKeyDigitalVideoEffectsUpdateCommand : IDeserialize
         // Update the DVE settings
         keyer.DigitalVideoEffectsSettings.SizeX = SizeX;
         keyer.DigitalVideoEffectsSettings.SizeY = SizeY;
-        keyer.DigitalVideoEffectsSettings.PositionX = PositionX;
-        keyer.DigitalVideoEffectsSettings.PositionY = PositionY;
+        keyer.DigitalVideoEffectsSettings.Location = new PointF((float)PositionX, (float)PositionY);
         keyer.DigitalVideoEffectsSettings.Rotation = Rotation;
         keyer.DigitalVideoEffectsSettings.ShadowEnabled = ShadowEnabled;
         keyer.DigitalVideoEffectsSettings.Border.Enabled = BorderEnabled;
