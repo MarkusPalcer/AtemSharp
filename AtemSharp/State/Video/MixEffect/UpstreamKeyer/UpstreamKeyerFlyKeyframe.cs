@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using AtemSharp.Types;
 using AtemSharp.Types.Border;
 
 namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
@@ -19,5 +20,9 @@ public class UpstreamKeyerFlyKeyframe
     public BorderProperties Border { get; } = new();
     public double LightSourceDirection { get; internal set; }
     public byte LightSourceAltitude { get; internal set; }
+
+    /// <summary>
+    /// Mask configuration
+    /// </summary>
     public MaskProperties Mask { get; } = new();
 }

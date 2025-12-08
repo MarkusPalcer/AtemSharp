@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace AtemSharp.State.Video;
+namespace AtemSharp.Types;
 
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class MaskProperties

@@ -196,11 +196,11 @@ public partial class MixEffectKeyDigitalVideoEffectsUpdateCommand : IDeserialize
         keyer.DigitalVideoEffectsSettings.Border.Color = new HslColor(BorderHue, BorderSaturation, BorderLuma);
         keyer.DigitalVideoEffectsSettings.Border.LightSourceDirection = LightSourceDirection;
         keyer.DigitalVideoEffectsSettings.Border.LightSourceAltitude = LightSourceAltitude;
-        keyer.DigitalVideoEffectsSettings.MaskEnabled = MaskEnabled;
-        keyer.DigitalVideoEffectsSettings.MaskTop = MaskTop;
-        keyer.DigitalVideoEffectsSettings.MaskBottom = MaskBottom;
-        keyer.DigitalVideoEffectsSettings.MaskLeft = MaskLeft;
-        keyer.DigitalVideoEffectsSettings.MaskRight = MaskRight;
+        keyer.DigitalVideoEffectsSettings.Mask.Enabled = MaskEnabled;
+        keyer.DigitalVideoEffectsSettings.Mask.Top = MaskTop;
+        keyer.DigitalVideoEffectsSettings.Mask.Bottom = MaskBottom;
+        keyer.DigitalVideoEffectsSettings.Mask.Left = MaskLeft;
+        keyer.DigitalVideoEffectsSettings.Mask.Right = MaskRight;
         keyer.DigitalVideoEffectsSettings.Rate = Rate;
     }
 }

@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
+using AtemSharp.Types;
 using AtemSharp.Types.Border;
 
 namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
@@ -26,33 +27,12 @@ public class UpstreamKeyerDigitalVideoEffectSettings
     /// </summary>
     public bool ShadowEnabled { get; internal set; }
 
-
     public ExtendedBorderProperties Border { get; } = new();
 
     /// <summary>
-    /// Whether masking is enabled
+    /// Mask configuration
     /// </summary>
-    public bool MaskEnabled { get; internal set; }
-
-    /// <summary>
-    /// Top edge of mask
-    /// </summary>
-    public double MaskTop { get; internal set; }
-
-    /// <summary>
-    /// Bottom edge of mask
-    /// </summary>
-    public double MaskBottom { get; internal set; }
-
-    /// <summary>
-    /// Left edge of mask
-    /// </summary>
-    public double MaskLeft { get; internal set; }
-
-    /// <summary>
-    /// Right edge of mask
-    /// </summary>
-    public double MaskRight { get; internal set; }
+    public MaskProperties Mask { get; } = new();
 
     /// <summary>
     /// Transition rate (frames)

@@ -73,19 +73,19 @@ public partial class MixEffectKeyDigitalVideoEffectsCommand(UpstreamKeyer keyer)
     [SerializedField(50, 19)] [SerializedType(typeof(byte))]
     private double _lightSourceAltitude = keyer.DigitalVideoEffectsSettings.Border.LightSourceAltitude;
 
-    [SerializedField(51, 20)] private bool _maskEnabled = keyer.DigitalVideoEffectsSettings.MaskEnabled;
+    [SerializedField(51, 20)] private bool _maskEnabled = keyer.DigitalVideoEffectsSettings.Mask.Enabled;
 
     [SerializedField(52, 21)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
-    private double _maskTop = keyer.DigitalVideoEffectsSettings.MaskTop;
+    private double _maskTop = keyer.DigitalVideoEffectsSettings.Mask.Top;
 
     [SerializedField(54, 22)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
-    private double _maskBottom = keyer.DigitalVideoEffectsSettings.MaskBottom;
+    private double _maskBottom = keyer.DigitalVideoEffectsSettings.Mask.Bottom;
 
     [SerializedField(56, 23)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
-    private double _maskLeft = keyer.DigitalVideoEffectsSettings.MaskLeft;
+    private double _maskLeft = keyer.DigitalVideoEffectsSettings.Mask.Left;
 
     [SerializedField(58, 24)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
-    private double _maskRight = keyer.DigitalVideoEffectsSettings.MaskRight;
+    private double _maskRight = keyer.DigitalVideoEffectsSettings.Mask.Right;
 
     [SerializedField(60, 25)] private byte _rate = keyer.DigitalVideoEffectsSettings.Rate;
 

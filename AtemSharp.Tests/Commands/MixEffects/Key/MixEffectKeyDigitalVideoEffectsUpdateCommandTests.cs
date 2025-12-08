@@ -101,11 +101,11 @@ public class MixEffectKeyDigitalVideoEffectsUpdateCommandTests : DeserializedCom
         Assert.That(dve.Border.LightSourceDirection, Is.EqualTo(expected.LightSourceDirection).Within(0.1));
         Assert.That(dve.Border.LightSourceAltitude, Is.EqualTo(expected.LightSourceAltitude));
         Assert.That(dve.ShadowEnabled, Is.EqualTo(expected.BorderShadowEnabled));
-        Assert.That(dve.MaskEnabled, Is.EqualTo(expected.MaskEnabled));
-        Assert.That(dve.MaskTop, Is.EqualTo(expected.MaskTop).Within(0.001));
-        Assert.That(dve.MaskBottom, Is.EqualTo(expected.MaskBottom).Within(0.001));
-        Assert.That(dve.MaskLeft, Is.EqualTo(expected.MaskLeft).Within(0.001));
-        Assert.That(dve.MaskRight, Is.EqualTo(expected.MaskRight).Within(0.001));
+        Assert.That(dve.Mask.Enabled, Is.EqualTo(expected.MaskEnabled));
+        Assert.That(dve.Mask.Top, Is.EqualTo(expected.MaskTop).Within(0.001));
+        Assert.That(dve.Mask.Bottom, Is.EqualTo(expected.MaskBottom).Within(0.001));
+        Assert.That(dve.Mask.Left, Is.EqualTo(expected.MaskLeft).Within(0.001));
+        Assert.That(dve.Mask.Right, Is.EqualTo(expected.MaskRight).Within(0.001));
         Assert.That(dve.Rate, Is.EqualTo(expected.Rate));
     }
 }

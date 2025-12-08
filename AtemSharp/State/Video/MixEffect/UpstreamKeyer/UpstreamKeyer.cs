@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using AtemSharp.Types;
 
 namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
@@ -46,7 +47,7 @@ public class UpstreamKeyer : ItemWithId<byte>
     public bool FlyEnabled { get; internal set; }
 
     /// <summary>
-    /// Mask settings for the upstream keyer
+    /// Mask configuration
     /// </summary>
     public MaskProperties Mask { get; } = new();
 

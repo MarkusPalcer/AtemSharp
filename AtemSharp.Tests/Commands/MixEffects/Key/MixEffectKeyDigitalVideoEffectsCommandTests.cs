@@ -105,11 +105,14 @@ public class MixEffectKeyDigitalVideoEffectsCommandTests : SerializedCommandTest
                     (float)testCase.Command.PositionX,
                     (float)testCase.Command.PositionY),
                 Rotation = testCase.Command.Rotation,
-                MaskEnabled = testCase.Command.MaskEnabled,
-                MaskTop = testCase.Command.MaskTop,
-                MaskBottom = testCase.Command.MaskBottom,
-                MaskLeft = testCase.Command.MaskLeft,
-                MaskRight = testCase.Command.MaskRight
+                Mask =
+                {
+                    Enabled = testCase.Command.MaskEnabled,
+                    Top = testCase.Command.MaskTop,
+                    Bottom = testCase.Command.MaskBottom,
+                    Left = testCase.Command.MaskLeft,
+                    Right = testCase.Command.MaskRight
+                }
             }
         });
     }
