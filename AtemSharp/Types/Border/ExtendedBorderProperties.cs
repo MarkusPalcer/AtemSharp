@@ -1,10 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
-using AtemSharp.Types.Border;
 
-namespace AtemSharp.State.Video.SuperSource;
+namespace AtemSharp.Types.Border;
 
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class SuperSourceBorderProperties : BorderProperties
+public class ExtendedBorderProperties : BorderProperties
 {
     public bool Enabled { get; internal set; }
     public BorderBevel Bevel { get; internal set; }

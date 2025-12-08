@@ -17,7 +17,7 @@ public class SuperSourceBorderUpdateCommandTests : DeserializedCommandTestBase<S
         public byte OuterSoftness { get; set; }
         public byte InnerSoftness { get; set; }
         public byte BevelSoftness { get; set; }
-        public byte BevelPosition { get; set; }
+        public double BevelPosition { get; set; }
         public double Hue { get; set; }
         public double Saturation { get; set; }
         public double Luma { get; set; }
