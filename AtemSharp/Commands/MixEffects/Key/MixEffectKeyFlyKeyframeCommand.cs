@@ -1,8 +1,8 @@
 using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
-using AtemSharp.Types;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 
+// TODO #82: Capture real test data and verify implementation and tests
 [Command("CKFP")]
 [BufferSize(56)]
 public partial class MixEffectKeyFlyKeyframeCommand(UpstreamKeyerFlyKeyframe keyframe) : SerializedCommand
