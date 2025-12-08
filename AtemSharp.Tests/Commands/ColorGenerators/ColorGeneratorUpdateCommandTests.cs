@@ -26,8 +26,8 @@ public class ColorGeneratorUpdateCommandTests : DeserializedCommandTestBase<Colo
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)
     {
         Assert.That(state.ColorGenerators[expectedData.Index].Id, Is.EqualTo(expectedData.Index));
-        Assert.That(state.ColorGenerators[expectedData.Index].Hue, Is.EqualTo(expectedData.Hue).Within(0.1));
-        Assert.That(state.ColorGenerators[expectedData.Index].Saturation, Is.EqualTo(expectedData.Saturation).Within(0.1));
-        Assert.That(state.ColorGenerators[expectedData.Index].Luma, Is.EqualTo(expectedData.Luma).Within(0.1));
+        Assert.That(state.ColorGenerators[expectedData.Index].Color.Hue, Is.EqualTo(expectedData.Hue).Within(0.1));
+        Assert.That(state.ColorGenerators[expectedData.Index].Color.Saturation, Is.EqualTo(expectedData.Saturation).Within(0.1));
+        Assert.That(state.ColorGenerators[expectedData.Index].Color.Luma, Is.EqualTo(expectedData.Luma).Within(0.1));
     }
 }

@@ -1,5 +1,6 @@
 using AtemSharp.Commands.SuperSource;
-using AtemSharp.State.Border;
+using AtemSharp.Types;
+using AtemSharp.Types.Border;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
@@ -48,9 +49,10 @@ public class SuperSourceBorderCommandTests : SerializedCommandTestBase<SuperSour
                 InnerSoftness = testCase.Command.InnerSoftness,
                 BevelSoftness = testCase.Command.BevelSoftness,
                 BevelPosition = testCase.Command.BevelPosition,
-                Hue = testCase.Command.Hue,
-                Saturation = testCase.Command.Saturation,
-                Luma = testCase.Command.Luma,
+                Color = new HslColor(
+                    testCase.Command.Hue,
+                    testCase.Command.Saturation,
+                    testCase.Command.Luma),
                 LightSourceDirection = testCase.Command.LightSourceDirection,
                 LightSourceAltitude = testCase.Command.LightSourceAltitude
             }

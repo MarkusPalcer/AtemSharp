@@ -1,11 +1,13 @@
 using AtemSharp.Commands.MixEffects.Key;
-using AtemSharp.State.Border;
+using AtemSharp.Types.Border;
 using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
+using AtemSharp.Types;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
 // TODO #80: Capture test data and use test class base
-[Ignore("TODO: DVE serialization scaling factors need to match deserialization - see TODO comments in MixEffectKeyDVEUpdateCommand.cs")]
+//           for some reason byte 31 contains data in the TS test data and I don't know which
+[Ignore("TODO #80: Capture test data and use test class base")]
 public class MixEffectKeyDigitalVideoEffectsCommandTests : SerializedCommandTestBase<MixEffectKeyDigitalVideoEffectsCommand,
     MixEffectKeyDigitalVideoEffectsCommandTests.CommandData>
 {
@@ -14,22 +16,23 @@ public class MixEffectKeyDigitalVideoEffectsCommandTests : SerializedCommandTest
     /// </summary>
     protected override Range[] GetFloatingPointByteRanges()
     {
-        return [
-            8..12,   // SizeX field (UInt32)
-            12..16,  // SizeY field (UInt32)
-            16..20,  // PositionX field (Int32)
-            20..24,  // PositionY field (Int32)
-            24..28,  // Rotation field (Int32)
-            32..34,  // BorderOuterWidth field (UInt16)
-            34..36,  // BorderInnerWidth field (UInt16)
-            42..44,  // BorderHue field (UInt16)
-            44..46,  // BorderSaturation field (UInt16)
-            46..48,  // BorderLuma field (UInt16)
-            48..50,  // LightSourceDirection field (UInt16)
-            52..54,  // MaskTop field (UInt16)
-            54..56,  // MaskBottom field (UInt16)
-            56..58,  // MaskLeft field (UInt16)
-            58..60   // MaskRight field (UInt16)
+        return
+        [
+            8..12, // SizeX field (UInt32)
+            12..16, // SizeY field (UInt32)
+            16..20, // PositionX field (Int32)
+            20..24, // PositionY field (Int32)
+            24..28, // Rotation field (Int32)
+            32..34, // BorderOuterWidth field (UInt16)
+            34..36, // BorderInnerWidth field (UInt16)
+            42..44, // BorderHue field (UInt16)
+            44..46, // BorderSaturation field (UInt16)
+            46..48, // BorderLuma field (UInt16)
+            48..50, // LightSourceDirection field (UInt16)
+            52..54, // MaskTop field (UInt16)
+            54..56, // MaskBottom field (UInt16)
+            56..58, // MaskLeft field (UInt16)
+            58..60 // MaskRight field (UInt16)
         ];
     }
 
@@ -47,11 +50,11 @@ public class MixEffectKeyDigitalVideoEffectsCommandTests : SerializedCommandTest
         public BorderBevel BorderBevel { get; set; }
         public double BorderOuterWidth { get; set; }
         public double BorderInnerWidth { get; set; }
-        public double BorderOuterSoftness { get; set; }
-        public double BorderInnerSoftness { get; set; }
-        public double BorderBevelSoftness { get; set; }
-        public double BorderBevelPosition { get; set; }
-        public double BorderOpacity { get; set; }
+        public byte BorderOuterSoftness { get; set; }
+        public byte BorderInnerSoftness { get; set; }
+        public byte BorderBevelSoftness { get; set; }
+        public byte BorderBevelPosition { get; set; }
+        public byte BorderOpacity { get; set; }
         public double BorderHue { get; set; }
         public double BorderSaturation { get; set; }
         public double BorderLuma { get; set; }
@@ -74,27 +77,31 @@ public class MixEffectKeyDigitalVideoEffectsCommandTests : SerializedCommandTest
             Id = testCase.Command.KeyerIndex,
             DigitalVideoEffectsSettings =
             {
-                BorderBevel = testCase.Command.BorderBevel,
-                BorderBevelPosition = testCase.Command.BorderBevelPosition,
-                BorderBevelSoftness = testCase.Command.BorderBevelSoftness,
-                LightSourceAltitude = testCase.Command.LightSourceAltitude,
-                BorderEnabled = testCase.Command.BorderEnabled,
+                Border =
+                {
+                    Bevel = testCase.Command.BorderBevel,
+                    BevelPosition = testCase.Command.BorderBevelPosition,
+                    BevelSoftness = testCase.Command.BorderBevelSoftness,
+                    Enabled = testCase.Command.BorderEnabled,
+                    InnerSoftness = testCase.Command.BorderInnerSoftness,
+                    OuterSoftness = testCase.Command.BorderOuterSoftness,
+                    Color = new HslColor(
+                        testCase.Command.BorderHue,
+                        testCase.Command.BorderSaturation,
+                        testCase.Command.BorderLuma),
+                    Opacity = testCase.Command.BorderOpacity,
+                    OuterWidth = testCase.Command.BorderOuterWidth,
+                    InnerWidth = testCase.Command.BorderInnerWidth,
+                    LightSourceAltitude = testCase.Command.LightSourceAltitude,
+                    LightSourceDirection = testCase.Command.LightSourceDirection,
+                },
                 ShadowEnabled = testCase.Command.BorderShadowEnabled,
-                BorderInnerSoftness = testCase.Command.BorderInnerSoftness,
-                BorderOuterSoftness = testCase.Command.BorderOuterSoftness,
-                BorderHue = testCase.Command.BorderHue,
-                BorderSaturation = testCase.Command.BorderSaturation,
-                BorderLuma = testCase.Command.BorderLuma,
-                BorderOpacity = testCase.Command.BorderOpacity,
                 Rate = testCase.Command.Rate,
                 SizeX = testCase.Command.SizeX,
                 SizeY = testCase.Command.SizeY,
                 PositionX = testCase.Command.PositionX,
                 PositionY = testCase.Command.PositionY,
                 Rotation = testCase.Command.Rotation,
-                BorderOuterWidth = testCase.Command.BorderOuterWidth,
-                BorderInnerWidth = testCase.Command.BorderInnerWidth,
-                LightSourceDirection = testCase.Command.LightSourceDirection,
                 MaskEnabled = testCase.Command.MaskEnabled,
                 MaskTop = testCase.Command.MaskTop,
                 MaskBottom = testCase.Command.MaskBottom,

@@ -1,6 +1,7 @@
 using AtemSharp.State;
-using AtemSharp.State.Border;
 using AtemSharp.State.Video.SuperSource;
+using AtemSharp.Types;
+using AtemSharp.Types.Border;
 
 namespace AtemSharp.Commands.SuperSource;
 
@@ -61,9 +62,7 @@ public partial class SuperSourcePropertiesUpdateCommand : IDeserializedCommand
         superSource.Border.InnerSoftness = _innerSoftness;
         superSource.Border.BevelSoftness = _bevelSoftness;
         superSource.Border.BevelPosition = _bevelPosition;
-        superSource.Border.Hue = _hue;
-        superSource.Border.Saturation = _saturation;
-        superSource.Border.Luma = _luma;
+        superSource.Border.Color = new HslColor(_hue, _saturation, _luma);
         superSource.Border.LightSourceDirection = _lightSourceDirection;
         superSource.Border.LightSourceAltitude = _lightSourceAltitude;
         superSource.FillSource = _artFillSource;

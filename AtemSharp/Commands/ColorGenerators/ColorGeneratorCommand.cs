@@ -9,11 +9,11 @@ public partial class ColorGeneratorCommand(ColorGeneratorState colorGenerator) :
     [SerializedField(1, 0)] [NoProperty] private readonly byte _id = colorGenerator.Id;
 
     [SerializedField(2, 0)] [ScalingFactor(10.0)]
-    private double _hue = colorGenerator.Hue;
+    private double _hue = colorGenerator.Color.Hue;
 
     [SerializedField(4, 1)] [ScalingFactor(10.0)]
-    private double _saturation = colorGenerator.Saturation;
+    private double _saturation = colorGenerator.Color.Saturation;
 
     [SerializedField(6, 2)] [ScalingFactor(10.0)]
-    private double _luma = colorGenerator.Luma;
+    private double _luma = colorGenerator.Color.Luma;
 }

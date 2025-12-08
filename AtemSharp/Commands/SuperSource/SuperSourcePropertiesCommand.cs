@@ -1,5 +1,5 @@
-using AtemSharp.State.Border;
 using AtemSharp.State.Video.SuperSource;
+using AtemSharp.Types.Border;
 
 namespace AtemSharp.Commands.SuperSource;
 
@@ -34,13 +34,13 @@ public partial class SuperSourcePropertiesCommand(State.Video.SuperSource.SuperS
     [SerializedField(25, 14)] private byte _bevelPosition = superSource.Border.BevelPosition;
 
     [SerializedField(26, 15)] [ScalingFactor(10)] [SerializedType(typeof(ushort))]
-    private double _hue = superSource.Border.Hue;
+    private double _hue = superSource.Border.Color.Hue;
 
     [SerializedField(28, 16)] [ScalingFactor(10)] [SerializedType(typeof(ushort))]
-    private double _saturation = superSource.Border.Saturation;
+    private double _saturation = superSource.Border.Color.Saturation;
 
     [SerializedField(30, 17)] [ScalingFactor(10)] [SerializedType(typeof(ushort))]
-    private double _luma = superSource.Border.Luma;
+    private double _luma = superSource.Border.Color.Luma;
 
     [SerializedField(32, 18)] [ScalingFactor(10)] [SerializedType(typeof(ushort))]
     private double _lightSourceDirection = superSource.Border.LightSourceDirection;

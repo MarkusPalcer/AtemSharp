@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace AtemSharp.State;
+namespace AtemSharp.Types;
 
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class TimeCode

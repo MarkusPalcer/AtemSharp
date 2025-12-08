@@ -1,6 +1,7 @@
 using System.Drawing;
 using AtemSharp.Commands.MixEffects.Key;
 using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
+using AtemSharp.Types;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
@@ -69,9 +70,10 @@ public class MixEffectKeyFlyKeyframeCommandTests : SerializedCommandTestBase<Mix
             {
                 BevelPosition = testCase.Command.BevelPosition,
                 BevelSoftness = testCase.Command.BevelSoftness,
-                Hue = testCase.Command.BorderHue,
-                Saturation = testCase.Command.BorderSaturation,
-                Luma = testCase.Command.BorderLuma,
+                Color = new HslColor(
+                    testCase.Command.BorderHue,
+                    testCase.Command.BorderSaturation,
+                    testCase.Command.BorderLuma),
                 InnerSoftness = testCase.Command.InnerSoftness,
                 InnerWidth = testCase.Command.InnerWidth,
                 Opacity = testCase.Command.BorderOpacity,

@@ -1,5 +1,6 @@
 using AtemSharp.State;
-using AtemSharp.State.Border;
+using AtemSharp.Types;
+using AtemSharp.Types.Border;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 
@@ -80,55 +81,52 @@ public partial class MixEffectKeyDigitalVideoEffectsUpdateCommand : IDeserialize
     /// <summary>
     /// Outer border softness
     /// </summary>
-    [DeserializedField(32)] [SerializedType(typeof(sbyte))]
-    private double _borderOuterSoftness;
+    [DeserializedField(32)]
+    private byte _borderOuterSoftness;
 
     /// <summary>
     /// Inner border softness
     /// </summary>
-    [DeserializedField(33)] [SerializedType(typeof(sbyte))]
-    private double _borderInnerSoftness;
+    [DeserializedField(33)]
+    private byte _borderInnerSoftness;
 
     /// <summary>
     /// Border bevel softness
     /// </summary>
-    [DeserializedField(34)] [SerializedType(typeof(sbyte))]
-    private double _borderBevelSoftness;
+    [DeserializedField(34)] private byte _borderBevelSoftness;
 
     /// <summary>
     /// Border bevel position
     /// </summary>
-    [DeserializedField(35)] [SerializedType(typeof(sbyte))]
-    private double _borderBevelPosition;
+    [DeserializedField(35)] private byte _borderBevelPosition;
 
     /// <summary>
     /// Border opacity
     /// </summary>
-    [DeserializedField(36)] [SerializedType(typeof(sbyte))]
-    private double _borderOpacity;
+    [DeserializedField(36)] private byte _borderOpacity;
 
     /// <summary>
     /// Border color hue
     /// </summary>
-    [DeserializedField(38)] [SerializedType(typeof(ushort))]
+    [DeserializedField(38)] [SerializedType(typeof(ushort))] [ScalingFactor(10.0)]
     private double _borderHue;
 
     /// <summary>
     /// Border color saturation
     /// </summary>
-    [DeserializedField(40)] [SerializedType(typeof(ushort))]
+    [DeserializedField(40)] [SerializedType(typeof(ushort))] [ScalingFactor(10.0)]
     private double _borderSaturation;
 
     /// <summary>
     /// Border color luminance
     /// </summary>
-    [DeserializedField(42)] [SerializedType(typeof(ushort))]
+    [DeserializedField(42)] [SerializedType(typeof(ushort))] [ScalingFactor(10.0)]
     private double _borderLuma;
 
     /// <summary>
     /// Light source direction angle
     /// </summary>
-    [DeserializedField(44)] [SerializedType(typeof(ushort))]
+    [DeserializedField(44)] [SerializedType(typeof(ushort))] [ScalingFactor(10.0)]
     private double _lightSourceDirection;
 
     /// <summary>
@@ -145,25 +143,25 @@ public partial class MixEffectKeyDigitalVideoEffectsUpdateCommand : IDeserialize
     /// <summary>
     /// Top edge of mask
     /// </summary>
-    [DeserializedField(48)] [SerializedType(typeof(ushort))]
+    [DeserializedField(48)] [SerializedType(typeof(ushort))] [ScalingFactor(1000.0)]
     private double _maskTop;
 
     /// <summary>
     /// Bottom edge of mask
     /// </summary>
-    [DeserializedField(50)] [SerializedType(typeof(ushort))]
+    [DeserializedField(50)] [SerializedType(typeof(ushort))] [ScalingFactor(1000.0)]
     private double _maskBottom;
 
     /// <summary>
     /// Left edge of mask
     /// </summary>
-    [DeserializedField(52)] [SerializedType(typeof(ushort))]
+    [DeserializedField(52)] [SerializedType(typeof(ushort))] [ScalingFactor(1000.0)]
     private double _maskLeft;
 
     /// <summary>
     /// Right edge of mask
     /// </summary>
-    [DeserializedField(54)] [SerializedType(typeof(ushort))]
+    [DeserializedField(54)] [SerializedType(typeof(ushort))] [ScalingFactor(1000.0)]
     private double _maskRight;
 
     /// <summary>
@@ -188,21 +186,19 @@ public partial class MixEffectKeyDigitalVideoEffectsUpdateCommand : IDeserialize
         keyer.DigitalVideoEffectsSettings.PositionX = PositionX;
         keyer.DigitalVideoEffectsSettings.PositionY = PositionY;
         keyer.DigitalVideoEffectsSettings.Rotation = Rotation;
-        keyer.DigitalVideoEffectsSettings.BorderEnabled = BorderEnabled;
         keyer.DigitalVideoEffectsSettings.ShadowEnabled = ShadowEnabled;
-        keyer.DigitalVideoEffectsSettings.BorderBevel = BorderBevel;
-        keyer.DigitalVideoEffectsSettings.BorderOuterWidth = BorderOuterWidth;
-        keyer.DigitalVideoEffectsSettings.BorderInnerWidth = BorderInnerWidth;
-        keyer.DigitalVideoEffectsSettings.BorderOuterSoftness = BorderOuterSoftness;
-        keyer.DigitalVideoEffectsSettings.BorderInnerSoftness = BorderInnerSoftness;
-        keyer.DigitalVideoEffectsSettings.BorderBevelSoftness = BorderBevelSoftness;
-        keyer.DigitalVideoEffectsSettings.BorderBevelPosition = BorderBevelPosition;
-        keyer.DigitalVideoEffectsSettings.BorderOpacity = BorderOpacity;
-        keyer.DigitalVideoEffectsSettings.BorderHue = BorderHue;
-        keyer.DigitalVideoEffectsSettings.BorderSaturation = BorderSaturation;
-        keyer.DigitalVideoEffectsSettings.BorderLuma = BorderLuma;
-        keyer.DigitalVideoEffectsSettings.LightSourceDirection = LightSourceDirection;
-        keyer.DigitalVideoEffectsSettings.LightSourceAltitude = LightSourceAltitude;
+        keyer.DigitalVideoEffectsSettings.Border.Enabled = BorderEnabled;
+        keyer.DigitalVideoEffectsSettings.Border.Bevel = BorderBevel;
+        keyer.DigitalVideoEffectsSettings.Border.OuterWidth = BorderOuterWidth;
+        keyer.DigitalVideoEffectsSettings.Border.InnerWidth = BorderInnerWidth;
+        keyer.DigitalVideoEffectsSettings.Border.OuterSoftness = BorderOuterSoftness;
+        keyer.DigitalVideoEffectsSettings.Border.InnerSoftness = BorderInnerSoftness;
+        keyer.DigitalVideoEffectsSettings.Border.BevelSoftness = BorderBevelSoftness;
+        keyer.DigitalVideoEffectsSettings.Border.BevelPosition = BorderBevelPosition;
+        keyer.DigitalVideoEffectsSettings.Border.Opacity = BorderOpacity;
+        keyer.DigitalVideoEffectsSettings.Border.Color = new HslColor(BorderHue, BorderSaturation, BorderLuma);
+        keyer.DigitalVideoEffectsSettings.Border.LightSourceDirection = LightSourceDirection;
+        keyer.DigitalVideoEffectsSettings.Border.LightSourceAltitude = LightSourceAltitude;
         keyer.DigitalVideoEffectsSettings.MaskEnabled = MaskEnabled;
         keyer.DigitalVideoEffectsSettings.MaskTop = MaskTop;
         keyer.DigitalVideoEffectsSettings.MaskBottom = MaskBottom;

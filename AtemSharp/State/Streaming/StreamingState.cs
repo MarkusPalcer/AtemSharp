@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using AtemSharp.Types;
 
 namespace AtemSharp.State.Streaming;
 

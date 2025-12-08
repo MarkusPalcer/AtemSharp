@@ -2,6 +2,7 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 
+// TODO #82: Capture real test data and verify implementation and tests
 [Command("CKFP")]
 [BufferSize(56)]
 public partial class MixEffectKeyFlyKeyframeCommand(UpstreamKeyerFlyKeyframe keyframe) : SerializedCommand
@@ -39,13 +40,13 @@ public partial class MixEffectKeyFlyKeyframeCommand(UpstreamKeyerFlyKeyframe key
     [SerializedField(36, 11)] private byte _borderOpacity = keyframe.Border.Opacity;
 
     [SerializedField(38, 12)] [ScalingFactor(10)] [SerializedType(typeof(ushort))]
-    private double _borderHue = keyframe.Border.Hue;
+    private double _borderHue = keyframe.Border.Color.Hue;
 
     [SerializedField(40, 13)] [ScalingFactor(10)] [SerializedType(typeof(ushort))]
-    private double _borderSaturation = keyframe.Border.Saturation;
+    private double _borderSaturation = keyframe.Border.Color.Saturation;
 
     [SerializedField(42, 14)] [ScalingFactor(10)] [SerializedType(typeof(ushort))]
-    private double _borderLuma = keyframe.Border.Luma;
+    private double _borderLuma = keyframe.Border.Color.Luma;
 
     [SerializedField(44, 15)] [ScalingFactor(10)] [SerializedType(typeof(ushort))]
     private double _lightSourceDirection = keyframe.LightSourceDirection;

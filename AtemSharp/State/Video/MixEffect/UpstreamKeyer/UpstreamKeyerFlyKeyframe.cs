@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
-using AtemSharp.State.Border;
+using AtemSharp.Types.Border;
 
 namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 

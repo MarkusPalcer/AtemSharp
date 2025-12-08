@@ -1,6 +1,7 @@
 using AtemSharp.Commands.MixEffects.Key;
 using AtemSharp.State;
 using AtemSharp.State.Video.MixEffect;
+using AtemSharp.Types;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
@@ -86,9 +87,7 @@ public class MixEffectKeyFlyKeyframeUpdateCommandTests : DeserializedCommandTest
         Assert.That(keyframe.Border.BevelSoftness, Is.EqualTo(expectedData.BevelSoftness));
         Assert.That(keyframe.Border.BevelPosition, Is.EqualTo(expectedData.BevelPosition));
         Assert.That(keyframe.Border.Opacity, Is.EqualTo(expectedData.BorderOpacity));
-        Assert.That(keyframe.Border.Hue, Is.EqualTo(expectedData.BorderHue).Within(0.1));
-        Assert.That(keyframe.Border.Saturation, Is.EqualTo(expectedData.BorderSaturation).Within(0.1));
-        Assert.That(keyframe.Border.Luma, Is.EqualTo(expectedData.BorderLuma).Within(0.1));
+        Assert.That(keyframe.Border.Color, Is.EqualTo(new HslColor(expectedData.BorderHue, expectedData.BorderSaturation, expectedData.BorderLuma)));
         Assert.That(keyframe.LightSourceDirection, Is.EqualTo(expectedData.LightSourceDirection).Within(0.1));
         Assert.That(keyframe.LightSourceAltitude, Is.EqualTo(expectedData.LightSourceAltitude));
         Assert.That(keyframe.Mask.Top, Is.EqualTo(expectedData.MaskTop).Within(0.001));

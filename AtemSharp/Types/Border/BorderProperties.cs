@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace AtemSharp.State.Border;
+namespace AtemSharp.Types.Border;
 
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class BorderProperties
@@ -12,7 +12,5 @@ public class BorderProperties
     public byte BevelSoftness { get; internal set; }
     public byte BevelPosition { get; internal set; }
     public byte Opacity { get; internal set; }
-    public double Hue { get; internal set; }
-    public double Saturation { get; internal set; }
-    public double Luma { get; internal set; }
+    public HslColor Color { get; internal set; }
 }

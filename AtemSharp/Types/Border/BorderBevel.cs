@@ -1,4 +1,4 @@
-namespace AtemSharp.State.Border;
+namespace AtemSharp.Types.Border;
 
 /// <summary>
 /// Border bevel effect types for DVE

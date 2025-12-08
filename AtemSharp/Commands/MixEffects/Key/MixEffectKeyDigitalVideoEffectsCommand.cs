@@ -1,5 +1,5 @@
-using AtemSharp.State.Border;
 using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
+using AtemSharp.Types.Border;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 
@@ -30,60 +30,60 @@ public partial class MixEffectKeyDigitalVideoEffectsCommand(UpstreamKeyer keyer)
     [SerializedField(24, 4)] [SerializedType(typeof(long))] [ScalingFactor(10.0)]
     private double _rotation = keyer.DigitalVideoEffectsSettings.Rotation;
 
-    [SerializedField(28, 5)] private bool _borderEnabled = keyer.DigitalVideoEffectsSettings.BorderEnabled;
+    [SerializedField(28, 5)] private bool _borderEnabled = keyer.DigitalVideoEffectsSettings.Border.Enabled;
 
     [SerializedField(29, 6)] private bool _shadowEnabled = keyer.DigitalVideoEffectsSettings.ShadowEnabled;
 
-    [SerializedField(30, 7)] private BorderBevel _borderBevel = keyer.DigitalVideoEffectsSettings.BorderBevel;
+    [SerializedField(30, 7)] private BorderBevel _borderBevel = keyer.DigitalVideoEffectsSettings.Border.Bevel;
 
     [SerializedField(32, 8)] [SerializedType(typeof(ushort))] [ScalingFactor(65536.0 / 16.0)]
-    private double _borderOuterWidth = keyer.DigitalVideoEffectsSettings.BorderOuterWidth;
+    private double _borderOuterWidth = keyer.DigitalVideoEffectsSettings.Border.OuterWidth;
 
     [SerializedField(34, 9)] [SerializedType(typeof(ushort))] [ScalingFactor(65536.0 / 16.0)]
-    private double _borderInnerWidth = keyer.DigitalVideoEffectsSettings.BorderInnerWidth;
+    private double _borderInnerWidth = keyer.DigitalVideoEffectsSettings.Border.InnerWidth;
 
-    [SerializedField(36, 10)] [SerializedType(typeof(byte))]
-    private double _borderOuterSoftness = keyer.DigitalVideoEffectsSettings.BorderOuterSoftness;
+    [SerializedField(36, 10)]
+    private byte _borderOuterSoftness = keyer.DigitalVideoEffectsSettings.Border.OuterSoftness;
 
-    [SerializedField(37, 11)] [SerializedType(typeof(byte))]
-    private double _borderInnerSoftness = keyer.DigitalVideoEffectsSettings.BorderInnerSoftness;
+    [SerializedField(37, 11)]
+    private byte _borderInnerSoftness = keyer.DigitalVideoEffectsSettings.Border.InnerSoftness;
 
-    [SerializedField(38, 12)] [SerializedType(typeof(byte))]
-    private double _borderBevelSoftness = keyer.DigitalVideoEffectsSettings.BorderBevelSoftness;
+    [SerializedField(38, 12)]
+    private byte _borderBevelSoftness = keyer.DigitalVideoEffectsSettings.Border.BevelSoftness;
 
-    [SerializedField(39, 13)] [SerializedType(typeof(byte))]
-    private double _borderBevelPosition = keyer.DigitalVideoEffectsSettings.BorderBevelPosition;
+    [SerializedField(39, 13)]
+    private byte _borderBevelPosition = keyer.DigitalVideoEffectsSettings.Border.BevelPosition;
 
-    [SerializedField(40, 14)] [SerializedType(typeof(byte))]
-    private double _borderOpacity = keyer.DigitalVideoEffectsSettings.BorderOpacity;
+    [SerializedField(40, 14)]
+    private byte _borderOpacity = keyer.DigitalVideoEffectsSettings.Border.Opacity;
 
     [SerializedField(42, 15)] [SerializedType(typeof(ushort))] [ScalingFactor(10.0)]
-    private double _borderHue = keyer.DigitalVideoEffectsSettings.BorderHue;
+    private double _borderHue = keyer.DigitalVideoEffectsSettings.Border.Color.Hue;
 
     [SerializedField(44, 16)] [SerializedType(typeof(ushort))] [ScalingFactor(10.0)]
-    private double _borderSaturation = keyer.DigitalVideoEffectsSettings.BorderSaturation;
+    private double _borderSaturation = keyer.DigitalVideoEffectsSettings.Border.Color.Saturation;
 
     [SerializedField(46, 17)] [SerializedType(typeof(ushort))] [ScalingFactor(10.0)]
-    private double _borderLuma = keyer.DigitalVideoEffectsSettings.BorderLuma;
+    private double _borderLuma = keyer.DigitalVideoEffectsSettings.Border.Color.Luma;
 
     [SerializedField(48, 18)] [SerializedType(typeof(ushort))] [ScalingFactor(10.0)]
-    private double _lightSourceDirection = keyer.DigitalVideoEffectsSettings.LightSourceDirection;
+    private double _lightSourceDirection = keyer.DigitalVideoEffectsSettings.Border.LightSourceDirection;
 
     [SerializedField(50, 19)] [SerializedType(typeof(byte))]
-    private double _lightSourceAltitude = keyer.DigitalVideoEffectsSettings.LightSourceAltitude;
+    private double _lightSourceAltitude = keyer.DigitalVideoEffectsSettings.Border.LightSourceAltitude;
 
     [SerializedField(51, 20)] private bool _maskEnabled = keyer.DigitalVideoEffectsSettings.MaskEnabled;
 
-    [SerializedField(52, 21)] [SerializedType(typeof(ushort))] [ScalingFactor(65536.0 * 1.515 / 100.0)]
+    [SerializedField(52, 21)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
     private double _maskTop = keyer.DigitalVideoEffectsSettings.MaskTop;
 
-    [SerializedField(54, 22)] [SerializedType(typeof(ushort))] [ScalingFactor(65536.0 * 1.515 / 100.0)]
+    [SerializedField(54, 22)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
     private double _maskBottom = keyer.DigitalVideoEffectsSettings.MaskBottom;
 
-    [SerializedField(56, 23)] [SerializedType(typeof(ushort))] [ScalingFactor(65536.0 * 1.515 / 100.0)]
+    [SerializedField(56, 23)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
     private double _maskLeft = keyer.DigitalVideoEffectsSettings.MaskLeft;
 
-    [SerializedField(58, 24)] [SerializedType(typeof(ushort))] [ScalingFactor(65536.0 * 1.515 / 100.0)]
+    [SerializedField(58, 24)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
     private double _maskRight = keyer.DigitalVideoEffectsSettings.MaskRight;
 
     [SerializedField(60, 25)] private byte _rate = keyer.DigitalVideoEffectsSettings.Rate;
@@ -91,6 +91,6 @@ public partial class MixEffectKeyDigitalVideoEffectsCommand(UpstreamKeyer keyer)
     private void SerializeInternal(byte[] buffer)
     {
         // TODO #79: Switch to generated serialization
-        buffer.WriteUInt32BigEndian(_mixEffectId, 0);
+        buffer.WriteUInt32BigEndian(Flag, 0);
     }
 }

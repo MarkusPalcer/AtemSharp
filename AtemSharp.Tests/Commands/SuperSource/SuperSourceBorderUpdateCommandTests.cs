@@ -1,6 +1,6 @@
 using AtemSharp.Commands.SuperSource;
 using AtemSharp.State;
-using AtemSharp.State.Border;
+using AtemSharp.Types.Border;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
@@ -17,7 +17,7 @@ public class SuperSourceBorderUpdateCommandTests : DeserializedCommandTestBase<S
         public byte OuterSoftness { get; set; }
         public byte InnerSoftness { get; set; }
         public byte BevelSoftness { get; set; }
-        public byte BevelPosition { get; set; }
+        public double BevelPosition { get; set; }
         public double Hue { get; set; }
         public double Saturation { get; set; }
         public double Luma { get; set; }
@@ -60,9 +60,9 @@ public class SuperSourceBorderUpdateCommandTests : DeserializedCommandTestBase<S
         Assert.That(actualCommand.InnerSoftness, Is.EqualTo(expectedData.InnerSoftness));
         Assert.That(actualCommand.BevelSoftness, Is.EqualTo(expectedData.BevelSoftness));
         Assert.That(actualCommand.BevelPosition, Is.EqualTo(expectedData.BevelPosition));
-        Assert.That(actualCommand.Hue, Is.EqualTo(expectedData.Hue).Within(0.1));
-        Assert.That(actualCommand.Saturation, Is.EqualTo(expectedData.Saturation).Within(0.1));
-        Assert.That(actualCommand.Luma, Is.EqualTo(expectedData.Luma).Within(0.1));
+        Assert.That(actualCommand.Color.Hue, Is.EqualTo(expectedData.Hue).Within(0.1));
+        Assert.That(actualCommand.Color.Saturation, Is.EqualTo(expectedData.Saturation).Within(0.1));
+        Assert.That(actualCommand.Color.Luma, Is.EqualTo(expectedData.Luma).Within(0.1));
         Assert.That(actualCommand.LightSourceDirection, Is.EqualTo(expectedData.LightSourceDirection).Within(0.1));
         Assert.That(actualCommand.LightSourceAltitude, Is.EqualTo(expectedData.LightSourceAltitude).Within(1));
     }
