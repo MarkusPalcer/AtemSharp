@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 
 namespace AtemSharp.Types;
@@ -5,11 +7,12 @@ namespace AtemSharp.Types;
 /// <summary>
 /// Structure to define HSL.
 /// </summary>
+[DebuggerDisplay("{ToString(),nq}")]
 public struct HslColor : IEquatable<HslColor>
 {
-    private double _hue;
-    private double _saturation;
-    private double _luma;
+    private readonly double _hue;
+    private readonly double _saturation;
+    private readonly double _luma;
 
     /// <summary>
     /// Gets or sets the hue
@@ -20,16 +23,7 @@ public struct HslColor : IEquatable<HslColor>
     public double Hue
     {
         get => _hue;
-        set
-        {
-            _hue = value;
-            while (_hue < 360.0)
-            {
-                _hue += 360.0;
-            }
-
-            _hue %= 360.0;
-        }
+        init => _hue = KeepWithin(value, 0.0, 360.0);
     }
 
     /// <summary>
@@ -41,7 +35,7 @@ public struct HslColor : IEquatable<HslColor>
     public double Saturation
     {
         get => _saturation;
-        set => _saturation = value > 100 ? 100 : value < 0 ? 0 : value;
+        init => _saturation = value > 100 ? 100 : value < 0 ? 0 : value;
     }
 
     /// <summary>
@@ -53,7 +47,7 @@ public struct HslColor : IEquatable<HslColor>
     public double Luma
     {
         get => _luma;
-        set => _luma = value > 100 ? 100 : value < 0 ? 0 : value;
+        init => _luma = value > 100 ? 100 : value < 0 ? 0 : value;
     }
 
     /// <summary>
@@ -83,10 +77,10 @@ public struct HslColor : IEquatable<HslColor>
     }
 
     /// <inheritdoc />
+    [ExcludeFromCodeCoverage(Justification="Testing this means testing the .NET framework")]
     public override int GetHashCode()
     {
-        return Hue.GetHashCode() ^ Saturation.GetHashCode() ^
-               Luma.GetHashCode();
+        return HashCode.Combine(Hue, Saturation, Luma);
     }
 
     public static implicit operator HslColor(Color color)
@@ -135,6 +129,17 @@ public struct HslColor : IEquatable<HslColor>
         return new HslColor(hue, saturation * 100.0, luminance * 100.0);
     }
 
+    private static double KeepWithin(double value, double min, double max)
+    {
+        value %= max;
+        if (value < min)
+        {
+            value += max;
+        }
+
+        return value;
+    }
+
     public static implicit operator Color(HslColor color)
     {
         var h = color.Hue;
@@ -158,15 +163,7 @@ public struct HslColor : IEquatable<HslColor>
 
         for (var i = 0; i < 3; i++)
         {
-            if (T[i] < 0)
-            {
-                T[i] += 1.0;
-            }
-
-            if (T[i] > 1)
-            {
-                T[i] -= 1.0;
-            }
+            T[i] = KeepWithin(T[i], 0.0, 1.0);
 
             if (T[i] * 6 < 1)
             {
@@ -195,6 +192,7 @@ public struct HslColor : IEquatable<HslColor>
         return Equals((object)other);
     }
 
+    [ExcludeFromCodeCoverage]
     public override string ToString()
     {
         return $"HslColor({Hue}, {Saturation}, {Luma})";

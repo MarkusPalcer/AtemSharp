@@ -94,4 +94,78 @@ public class HslColorTests
         });
     }
 
+    [TestCase(120.0, 100.0)]
+    [TestCase(240.0, 100.0)]
+    [TestCase(-240.0, 0.0)]
+    [TestCase(-120.0, 0.0)]
+    public void OutOfBoundsSaturation(double given, double expected)
+    {
+        var sut = new HslColor(0.0, given, 0.5);
+
+        Assert.That(sut.Saturation, Is.EqualTo(expected).Within(0.1));
+    }
+
+    [TestCase(120.0, 100.0)]
+    [TestCase(240.0, 100.0)]
+    [TestCase(-240.0, 0.0)]
+    [TestCase(-120.0, 0.0)]
+    public void OutOfBoundsLuma(double given, double expected)
+    {
+        var sut = new HslColor(0.0, 0.5, given);
+
+        Assert.That(sut.Luma, Is.EqualTo(expected).Within(0.1));
+    }
+
+    [TestCase(370.0, 10.0)]
+    [TestCase(-10.0, 350.0)]
+    [TestCase(-360.0, 0.0)]
+    [TestCase(360.0, 0.0)]
+    public void OutOfBoundsHue(double given, double expected)
+    {
+        var sut = new HslColor(given, 0.0, 0.5);
+
+        Assert.That(sut.Hue, Is.EqualTo(expected).Within(0.1));
+    }
+
+    [Test]
+    public void EqualsWrongType()
+    {
+        var sut = new HslColor(0.0, 0.0, 0.0);
+        Assert.That(sut.Equals(new object()), Is.False);
+    }
+
+    [Test]
+    public void EqualsNull()
+    {
+        var sut = new HslColor(0.0, 0.0, 0.0);
+        Assert.That(sut.Equals(null), Is.False);
+    }
+
+    [Test]
+    public void EqualsSameColor()
+    {
+        var sut =  new HslColor(0.0, 0.0, 0.0);
+        var other = new HslColor(0.0, 0.0, 0.0);
+
+        Assert.That(sut.Equals(other), Is.True);
+    }
+
+    [TestCase(1.0,0.0,0.0)]
+    [TestCase(0.0,1.0,0.0)]
+    [TestCase(0.0,0.0,1.0)]
+    public void EqualsOtherColor(double h, double s, double l)
+    {
+
+        var sut =  new HslColor(0.0, 0.0, 0.0);
+        var other = new HslColor
+        {
+            Hue = h,
+            Saturation = s,
+            Luma = l,
+        };
+
+        Assert.That(sut.Equals(other), Is.False);
+    }
+
+
 }
