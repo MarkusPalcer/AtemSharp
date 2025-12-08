@@ -7,12 +7,14 @@ namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 /// <summary>
 /// DVE (Digital Video Effects) settings for upstream keyer
 /// </summary>
-[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
+[ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
 public class UpstreamKeyerDigitalVideoEffectSettings
 {
     public SizeF Size { get; internal set; }
 
     public PointF Location { get; internal set; }
+
+    public RectangleF Bounds => new(Location.X, Location.Y, Size.Width, Size.Height);
 
     /// <summary>
     /// Rotation angle in degrees

@@ -109,6 +109,16 @@ public partial class MixEffectKeyDigitalVideoEffectsCommand(UpstreamKeyer keyer)
         }
     }
 
+    public RectangleF Bounds
+    {
+        get => new(Location, Size);
+        set
+        {
+            Location = value.Location;
+            Size = value.Size;
+        }
+    }
+
     private void SerializeInternal(byte[] buffer)
     {
         // TODO #79: Switch to generated serialization

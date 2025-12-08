@@ -119,7 +119,7 @@ public class MixEffectKeyDigitalVideoEffectsCommandTests : SerializedCommandTest
     public void SettingLocation_ShouldSetPositionXAndPositionY()
     {
         var state = new UpstreamKeyer();
-        var sut =  new MixEffectKeyDigitalVideoEffectsCommand(state)
+        var sut = new MixEffectKeyDigitalVideoEffectsCommand(state)
         {
             Location = new PointF((float)12.3, (float)45.6)
         };
@@ -132,10 +132,10 @@ public class MixEffectKeyDigitalVideoEffectsCommandTests : SerializedCommandTest
     }
 
     [Test]
-    public void BettingLocation_ShouldGetPositionXAndPositionY()
+    public void GettingLocation_ShouldGetPositionXAndPositionY()
     {
         var state = new UpstreamKeyer();
-        var sut =  new MixEffectKeyDigitalVideoEffectsCommand(state)
+        var sut = new MixEffectKeyDigitalVideoEffectsCommand(state)
         {
             PositionX = 12.3,
             PositionY = 45.6
@@ -176,6 +176,41 @@ public class MixEffectKeyDigitalVideoEffectsCommandTests : SerializedCommandTest
         {
             Assert.That(sut.SizeX, Is.EqualTo(12.3).Within(0.01));
             Assert.That(sut.SizeY, Is.EqualTo(45.6).Within(0.01));
+        });
+    }
+
+    [Test]
+    public void GettingBounds_ShouldGetLocationAndSize()
+    {
+        var sut = new MixEffectKeyDigitalVideoEffectsCommand(new UpstreamKeyer())
+        {
+            Location = new PointF(12.3f, 45.6f),
+            Size = new SizeF(78.9f, 0.12f),
+        };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.Bounds.Location.X, Is.EqualTo(12.3f).Within(0.01));
+            Assert.That(sut.Bounds.Location.Y, Is.EqualTo(45.6f).Within(0.01));
+            Assert.That(sut.Bounds.Size.Width, Is.EqualTo(78.9f).Within(0.01));
+            Assert.That(sut.Bounds.Size.Height, Is.EqualTo(0.12f).Within(0.01));
+        });
+    }
+
+    [Test]
+    public void SettingBounds_ShouldSetLocationAndSize()
+    {
+        var sut = new MixEffectKeyDigitalVideoEffectsCommand(new UpstreamKeyer())
+        {
+            Bounds = new RectangleF(12.3f, 45.6f, 78.9f, 0.12f)
+        };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.Location.X, Is.EqualTo(12.3f).Within(0.01));
+            Assert.That(sut.Location.Y, Is.EqualTo(45.6f).Within(0.01));
+            Assert.That(sut.SizeX, Is.EqualTo(78.9).Within(0.01));
+            Assert.That(sut.SizeY, Is.EqualTo(0.12f).Within(0.01));
         });
     }
 }

@@ -88,6 +88,16 @@ public partial class MixEffectKeyFlyKeyframeCommand(UpstreamKeyerFlyKeyframe key
         }
     }
 
+    public RectangleF Bounds
+    {
+        get => new(Location, Size);
+        set
+        {
+            Location = value.Location;
+            Size = value.Size;
+        }
+    }
+
     private void SerializeInternal(byte[] buffer)
     {
         buffer.WriteUInt32BigEndian(Flag, 0);

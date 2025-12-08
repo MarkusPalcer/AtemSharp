@@ -14,6 +14,7 @@ public class UpstreamKeyerFlyKeyframe
     public byte Id { get; internal set; }
     public SizeF Size { get; internal set; }
     public PointF Location { get; internal set; }
+    public RectangleF Bounds => new(Location.X, Location.Y, Size.Width, Size.Height);
     public double Rotation { get; internal set; }
     public BorderProperties Border { get; } = new();
     public double LightSourceDirection { get; internal set; }
