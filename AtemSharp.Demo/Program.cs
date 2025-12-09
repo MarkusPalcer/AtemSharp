@@ -2,7 +2,6 @@
 
 using System.Diagnostics;
 using AtemSharp;
-using AtemSharp.Commands.Macro;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -10,6 +9,7 @@ var lib = new Library();
 
 
 Console.WriteLine("=== AtemSharp Demo ===\n");
+Console.WriteLine("Connects to the ATEM switcher and then captures its state");
 
 var emergencyCts = new CancellationTokenSource();
 if (!Debugger.IsAttached)
@@ -28,9 +28,6 @@ await atem.ConnectAsync(cancellationToken: emergencyCts.Token);
 Console.WriteLine("Waiting 2s for data to come in...");
 await Task.Delay(TimeSpan.FromSeconds(2), emergencyCts.Token);
 
-Console.WriteLine($"Executing Macro {atem.State.Macros.Macros[0].Name} ...");
-await atem.SendCommandAsync(new MacroActionCommand(atem.State.Macros.Macros[0], MacroAction.Run));
-
 var state = atem.State;
 
 // Serialize state to JSON
@@ -44,19 +41,3 @@ Console.WriteLine($"State written to: {Path.GetFullPath("state.json")}");
 var unknownCommandsText = string.Join(Environment.NewLine, AtemSwitcher.UnknownCommands.Select(cmd => $"- {cmd}"));
 await File.WriteAllTextAsync("unknown_commands.txt", unknownCommandsText);
 Console.WriteLine($"Unknown commands written to: {Path.GetFullPath("unknown_commands.txt")}");
-
-Console.WriteLine("Disconnecting...");
-await atem.DisconnectAsync();
-
-Console.WriteLine("Reconnecting...");
-await atem.ConnectAsync( cancellationToken: emergencyCts.Token);
-
-Console.WriteLine("Waiting 2s for data to come in ...");
-await Task.Delay(TimeSpan.FromSeconds(2), emergencyCts.Token);
-
-Console.WriteLine($"Executing Macro {atem.State.Macros.Macros[1].Name} ...");
-await atem.SendCommandAsync(new MacroActionCommand(atem.State.Macros.Macros[1], MacroAction.Run));
-
-
-Console.WriteLine("Disconnecting...");
-await atem.DisconnectAsync();
