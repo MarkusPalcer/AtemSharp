@@ -15,4 +15,10 @@
       <ProjectReference Include="..\AtemSharp\AtemSharp.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+        <PackageReference Include="GitVersion.MsBuild" Version="6.5.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
 </Project>
