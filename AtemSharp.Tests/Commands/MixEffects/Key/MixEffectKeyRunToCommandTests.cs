@@ -16,14 +16,27 @@ public class MixEffectKeyRunToCommandTests : SerializedCommandTestBase<MixEffect
 
     protected override MixEffectKeyRunToCommand CreateSut(TestCaseData testCase)
     {
-        return new MixEffectKeyRunToCommand(new UpstreamKeyerFlyKeyframe
+        switch (testCase.Command.KeyFrame)
         {
-            MixEffectId = testCase.Command.MixEffectIndex,
-            UpstreamKeyerId = testCase.Command.KeyerIndex,
-            Id = testCase.Command.KeyFrame
-        })
-        {
-            Direction = testCase.Command.RunToInfinite
-        };
+            case 3:
+                return MixEffectKeyRunToCommand.RunToFull(new UpstreamKeyer
+                {
+                    MixEffectId = testCase.Command.MixEffectIndex,
+                    Id = testCase.Command.KeyerIndex
+                }, testCase.Command.RunToInfinite);
+            case 4:
+                return MixEffectKeyRunToCommand.RunToInfinite(new UpstreamKeyer
+                {
+                    MixEffectId = testCase.Command.MixEffectIndex,
+                    Id = testCase.Command.KeyerIndex
+                }, testCase.Command.RunToInfinite);
+            default:
+                return MixEffectKeyRunToCommand.RunToKeyframe(new UpstreamKeyerFlyKeyframe
+                {
+                    MixEffectId = testCase.Command.MixEffectIndex,
+                    UpstreamKeyerId = testCase.Command.KeyerIndex,
+                    Id = testCase.Command.KeyFrame
+                }, testCase.Command.RunToInfinite);
+        }
     }
 }
