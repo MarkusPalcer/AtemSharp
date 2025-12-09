@@ -34,12 +34,12 @@ public class MixEffectKeyLumaCommandTests : SerializedCommandTestBase<MixEffectK
         {
             Id = testCase.Command.KeyerIndex,
             MixEffectId = testCase.Command.MixEffectIndex,
-            LumaSettings =
+            PreMultipliedKey =
             {
-                PreMultiplied = testCase.Command.PreMultiplied,
+                Enabled = testCase.Command.PreMultiplied,
                 Clip = testCase.Command.Clip,
                 Gain = testCase.Command.Gain,
-                Invert = testCase.Command.Invert
+                Inverted = testCase.Command.Invert
             }
         });
     }

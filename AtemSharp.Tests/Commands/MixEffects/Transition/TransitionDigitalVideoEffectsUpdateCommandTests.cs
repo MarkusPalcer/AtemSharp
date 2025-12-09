@@ -58,10 +58,10 @@ public class TransitionDigitalVideoEffectsUpdateCommandTests : DeserializedComma
         Assert.That(actualCommand.FillSource, Is.EqualTo(expectedData.FillSource));
         Assert.That(actualCommand.KeySource, Is.EqualTo(expectedData.KeySource));
         Assert.That(actualCommand.EnableKey, Is.EqualTo(expectedData.EnableKey));
-        Assert.That(actualCommand.PreMultiplied, Is.EqualTo(expectedData.PreMultiplied));
-        Assert.That(actualCommand.Clip, Is.EqualTo(expectedData.Clip).Within(0.1));
-        Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.1));
-        Assert.That(actualCommand.InvertKey, Is.EqualTo(expectedData.InvertKey));
+        Assert.That(actualCommand.PreMultipliedKey.Enabled, Is.EqualTo(expectedData.PreMultiplied));
+        Assert.That(actualCommand.PreMultipliedKey.Clip, Is.EqualTo(expectedData.Clip).Within(0.1));
+        Assert.That(actualCommand.PreMultipliedKey.Gain, Is.EqualTo(expectedData.Gain).Within(0.1));
+        Assert.That(actualCommand.PreMultipliedKey.Inverted, Is.EqualTo(expectedData.InvertKey));
         Assert.That(actualCommand.Reverse, Is.EqualTo(expectedData.Reverse));
         Assert.That(actualCommand.FlipFlop, Is.EqualTo(expectedData.FlipFlop));
     }

@@ -62,10 +62,10 @@ public partial class TransitionStingerUpdateCommand : IDeserializedCommand
     {
         var mixEffect = state.Video.MixEffects[_mixEffectId];
         mixEffect.TransitionSettings.Stinger.Source = Source;
-        mixEffect.TransitionSettings.Stinger.PreMultipliedKey = PreMultipliedKey;
-        mixEffect.TransitionSettings.Stinger.Clip = Clip;
-        mixEffect.TransitionSettings.Stinger.Gain = Gain;
-        mixEffect.TransitionSettings.Stinger.Invert = Invert;
+        mixEffect.TransitionSettings.Stinger.PreMultipliedKey.Enabled = PreMultipliedKey;
+        mixEffect.TransitionSettings.Stinger.PreMultipliedKey.Clip = Clip;
+        mixEffect.TransitionSettings.Stinger.PreMultipliedKey.Gain = Gain;
+        mixEffect.TransitionSettings.Stinger.PreMultipliedKey.Inverted = Invert;
         mixEffect.TransitionSettings.Stinger.Preroll = Preroll;
         mixEffect.TransitionSettings.Stinger.ClipDuration = ClipDuration;
         mixEffect.TransitionSettings.Stinger.TriggerPoint = TriggerPoint;

@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using AtemSharp.Types;
 
 namespace AtemSharp.State.Video.MixEffect.Transition;
 
@@ -13,25 +14,7 @@ public class StingerTransitionSettings
     /// </summary>
     public byte Source { get; internal set; }
 
-    /// <summary>
-    /// Whether the key is pre-multiplied
-    /// </summary>
-    public bool PreMultipliedKey { get; internal set; }
-
-    /// <summary>
-    /// Clip value for the stinger transition
-    /// </summary>
-    public double Clip { get; internal set; }
-
-    /// <summary>
-    /// Gain value for the stinger transition (0-100%)
-    /// </summary>
-    public double Gain { get; internal set; }
-
-    /// <summary>
-    /// Whether the stinger transition is inverted
-    /// </summary>
-    public bool Invert { get; internal set; }
+    public PreMultipliedKey PreMultipliedKey { get; } = new();
 
     /// <summary>
     /// Preroll value for the stinger transition

@@ -41,10 +41,13 @@ public class TransitionStingerCommandTests : SerializedCommandTestBase<Transitio
                 Stinger =
                 {
                     Source = testCase.Command.Source,
-                    PreMultipliedKey = testCase.Command.PreMultipliedKey,
-                    Clip = testCase.Command.Clip,
-                    Gain = testCase.Command.Gain,
-                    Invert = testCase.Command.Invert,
+                    PreMultipliedKey =
+                    {
+                        Enabled = testCase.Command.PreMultipliedKey,
+                        Clip = testCase.Command.Clip,
+                        Gain = testCase.Command.Gain,
+                        Inverted = testCase.Command.Invert,
+                    },
                     Preroll = testCase.Command.Preroll,
                     ClipDuration = testCase.Command.ClipDuration,
                     TriggerPoint = testCase.Command.TriggerPoint,

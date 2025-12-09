@@ -37,17 +37,13 @@ public partial class MixEffectKeyLumaUpdateCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        // Get or create the mix effect
         var mixEffect = state.Video.MixEffects[MixEffectId];
-
-        // Get or create the upstream keyer
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerId);
         keyer.Id = KeyerId;
 
-        // Update the luma settings
-        keyer.LumaSettings.PreMultiplied = PreMultiplied;
-        keyer.LumaSettings.Clip = Clip;
-        keyer.LumaSettings.Gain = Gain;
-        keyer.LumaSettings.Invert = Invert;
+        keyer.PreMultipliedKey.Enabled = PreMultiplied;
+        keyer.PreMultipliedKey.Clip = Clip;
+        keyer.PreMultipliedKey.Gain = Gain;
+        keyer.PreMultipliedKey.Inverted = Invert;
     }
 }

@@ -45,24 +45,24 @@ public partial class TransitionDigitalVideoEffectCommand(MixEffect mixEffect) : 
     /// <summary>
     /// Whether the key is pre-multiplied
     /// </summary>
-    [SerializedField(11, 6)] private bool _preMultiplied = mixEffect.TransitionSettings.DigitalVideoEffect.PreMultiplied;
+    [SerializedField(11, 6)] private bool _preMultiplied = mixEffect.TransitionSettings.DigitalVideoEffect.PreMultipliedKey.Enabled;
 
     /// <summary>
     /// Key clip value (0.0 to 100.0)
     /// </summary>
     [SerializedField(12, 7)] [SerializedType(typeof(ushort))] [ScalingFactor(10)]
-    private double _clip = mixEffect.TransitionSettings.DigitalVideoEffect.Clip;
+    private double _clip = mixEffect.TransitionSettings.DigitalVideoEffect.PreMultipliedKey.Clip;
 
     /// <summary>
     /// Key gain value (0.0 to 100.0)
     /// </summary>
     [SerializedField(14, 8)] [SerializedType(typeof(ushort))] [ScalingFactor(10)]
-    private double _gain = mixEffect.TransitionSettings.DigitalVideoEffect.Gain;
+    private double _gain = mixEffect.TransitionSettings.DigitalVideoEffect.PreMultipliedKey.Gain;
 
     /// <summary>
     /// Whether the key is inverted
     /// </summary>
-    [SerializedField(16, 9)] private bool _invertKey = mixEffect.TransitionSettings.DigitalVideoEffect.InvertKey;
+    [SerializedField(16, 9)] private bool _invertKey = mixEffect.TransitionSettings.DigitalVideoEffect.PreMultipliedKey.Inverted;
 
     /// <summary>
     /// Whether the transition is reversed

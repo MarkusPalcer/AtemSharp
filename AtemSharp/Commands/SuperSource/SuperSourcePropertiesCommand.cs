@@ -10,15 +10,15 @@ public partial class SuperSourcePropertiesCommand(State.Video.SuperSource.SuperS
     [SerializedField(4, 0)] private ushort _artFillSource = superSource.FillSource;
     [SerializedField(6, 1)] private ushort _artCutSource = superSource.CutSource;
     [SerializedField(8, 2)] private ArtOption _artOption = superSource.Option;
-    [SerializedField(9, 3)] private bool _artPremultiplied = superSource.PreMultiplied;
+    [SerializedField(9, 3)] private bool _artPremultiplied = superSource.PreMultipliedKey.Enabled;
 
     [SerializedField(10, 4)] [SerializedType(typeof(ushort))] [ScalingFactor(10)]
-    private double _artClip = superSource.Clip;
+    private double _artClip = superSource.PreMultipliedKey.Clip;
 
     [SerializedField(12, 5)] [SerializedType(typeof(ushort))] [ScalingFactor(10)]
-    private double _artGain = superSource.Gain;
+    private double _artGain = superSource.PreMultipliedKey.Gain;
 
-    [SerializedField(14, 6)] private bool _artInvertKey = superSource.InvertKey;
+    [SerializedField(14, 6)] private bool _artInvertKey = superSource.PreMultipliedKey.Inverted;
     [SerializedField(15, 7)] private bool _enabled = superSource.Border.Enabled;
     [SerializedField(16, 8)] private BorderBevel _bevel = superSource.Border.Bevel;
 

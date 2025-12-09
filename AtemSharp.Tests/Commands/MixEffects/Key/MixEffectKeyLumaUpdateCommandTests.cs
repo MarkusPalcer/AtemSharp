@@ -35,10 +35,10 @@ public class MixEffectKeyLumaUpdateCommandTests : DeserializedCommandTestBase<Mi
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)
     {
-        var actualCommand = state.Video.MixEffects[expectedData.MixEffectIndex].UpstreamKeyers[expectedData.KeyerIndex].LumaSettings;
-        Assert.That(actualCommand.PreMultiplied, Is.EqualTo(expectedData.PreMultiplied));
+        var actualCommand = state.Video.MixEffects[expectedData.MixEffectIndex].UpstreamKeyers[expectedData.KeyerIndex].PreMultipliedKey;
+        Assert.That(actualCommand.Enabled, Is.EqualTo(expectedData.PreMultiplied));
         Assert.That(actualCommand.Clip, Is.EqualTo(expectedData.Clip).Within(0.10));
         Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.10));
-        Assert.That(actualCommand.Invert, Is.EqualTo(expectedData.Invert));
+        Assert.That(actualCommand.Inverted, Is.EqualTo(expectedData.Invert));
     }
 }

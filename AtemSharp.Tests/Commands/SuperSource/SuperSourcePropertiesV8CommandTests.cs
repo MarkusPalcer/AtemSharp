@@ -3,7 +3,8 @@ using AtemSharp.State.Video.SuperSource;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
-public class SuperSourcePropertiesV8CommandTests : SerializedCommandTestBase<SuperSourcePropertiesV8Command, SuperSourcePropertiesV8CommandTests.CommandData>
+public class SuperSourcePropertiesV8CommandTests : SerializedCommandTestBase<SuperSourcePropertiesV8Command,
+    SuperSourcePropertiesV8CommandTests.CommandData>
 {
     protected override Range[] GetFloatingPointByteRanges() =>
     [
@@ -31,10 +32,13 @@ public class SuperSourcePropertiesV8CommandTests : SerializedCommandTestBase<Sup
             FillSource = testCase.Command.ArtFillSource,
             CutSource = testCase.Command.ArtCutSource,
             Option = testCase.Command.ArtOption,
-            PreMultiplied = testCase.Command.ArtPreMultiplied,
-            Clip = testCase.Command.ArtClip,
-            Gain = testCase.Command.ArtGain,
-            InvertKey = testCase.Command.ArtInvertKey,
+            PreMultipliedKey =
+            {
+                Enabled = testCase.Command.ArtPreMultiplied,
+                Clip = testCase.Command.ArtClip,
+                Gain = testCase.Command.ArtGain,
+                Inverted = testCase.Command.ArtInvertKey,
+            }
         });
     }
 }

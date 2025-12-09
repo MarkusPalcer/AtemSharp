@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using AtemSharp.Types;
 
 namespace AtemSharp.State.Video.MixEffect.Transition;
 
@@ -38,25 +39,7 @@ public class DigitalVideoEffectTransitionSettings
     /// </summary>
     public bool EnableKey { get; internal set; }
 
-    /// <summary>
-    /// Whether the key is pre-multiplied
-    /// </summary>
-    public bool PreMultiplied { get; internal set; }
-
-    /// <summary>
-    /// Key clip value (0.0 to 100.0)
-    /// </summary>
-    public double Clip { get; internal set; }
-
-    /// <summary>
-    /// Key gain value (0.0 to 100.0)
-    /// </summary>
-    public double Gain { get; internal set; }
-
-    /// <summary>
-    /// Whether the key is inverted
-    /// </summary>
-    public bool InvertKey { get; internal set; }
+    public PreMultipliedKey PreMultipliedKey { get; } = new();
 
     /// <summary>
     /// Whether the transition is reversed

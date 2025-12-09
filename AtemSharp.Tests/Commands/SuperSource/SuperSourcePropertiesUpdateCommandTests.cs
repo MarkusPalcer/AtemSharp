@@ -71,10 +71,10 @@ public class SuperSourcePropertiesUpdateCommandTests : DeserializedCommandTestBa
         Assert.That(actualCommand.FillSource, Is.EqualTo(expectedData.ArtFillInput));
         Assert.That(actualCommand.CutSource, Is.EqualTo(expectedData.ArtKeyInput));
         Assert.That(actualCommand.Option, Is.EqualTo(expectedData.ArtOption));
-        Assert.That(actualCommand.PreMultiplied, Is.EqualTo(expectedData.ArtPreMultiplied));
-        Assert.That(actualCommand.Clip, Is.EqualTo(expectedData.ArtClip).Within(0.1));
-        Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.ArtGain).Within(0.1));
-        Assert.That(actualCommand.InvertKey, Is.EqualTo(expectedData.ArtInvertKey));
+        Assert.That(actualCommand.PreMultipliedKey.Enabled, Is.EqualTo(expectedData.ArtPreMultiplied));
+        Assert.That(actualCommand.PreMultipliedKey.Clip, Is.EqualTo(expectedData.ArtClip).Within(0.1));
+        Assert.That(actualCommand.PreMultipliedKey.Gain, Is.EqualTo(expectedData.ArtGain).Within(0.1));
+        Assert.That(actualCommand.PreMultipliedKey.Inverted, Is.EqualTo(expectedData.ArtInvertKey));
         Assert.That(actualCommand.Border.Enabled, Is.EqualTo(expectedData.BorderEnabled));
         Assert.That(actualCommand.Border.Bevel, Is.EqualTo(expectedData.BorderBevel));
         Assert.That(actualCommand.Border.OuterWidth, Is.EqualTo(expectedData.BorderOuterWidth).Within(0.01));

@@ -1,5 +1,4 @@
 using AtemSharp.State;
-using AtemSharp.State.Settings.MultiViewer;
 
 namespace AtemSharp.Commands.Settings.MultiViewers;
 
