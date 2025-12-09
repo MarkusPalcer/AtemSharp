@@ -23,6 +23,10 @@ For a quick start there are the following simple demo applications:
 - [AtemSharp.Demo](AtemSharp.Demo/Program.cs) - Single file command line application that reads the state and executs the first two macros
 - [AtemSharp.Demo.DependencyInjection](AtemSharp.Demo.DependencyInjection/Program.cs) - Same as above but registers the library using DI
 
+## Contained development tools
+
+- PacketDecoder - A tool that shows the packet flags and all contained commands with their respective payloads from a Wireshark-sniffed packet data
+
 ## License
 
 MIT License - see LICENSE file for details.

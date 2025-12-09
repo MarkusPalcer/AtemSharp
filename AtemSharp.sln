@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHub", "GitHub", "{2EF9AD
 		.github\workflows\pr.yml = .github\workflows\pr.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacketDecoder", "PacketDecoder\PacketDecoder.csproj", "{4ED09CC2-7DB8-4A91-AECF-EF762349AE9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,5 +56,9 @@ Global
 		{06A188AF-717F-43F7-8DFC-DAC30EFBC3F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{06A188AF-717F-43F7-8DFC-DAC30EFBC3F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06A188AF-717F-43F7-8DFC-DAC30EFBC3F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4ED09CC2-7DB8-4A91-AECF-EF762349AE9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4ED09CC2-7DB8-4A91-AECF-EF762349AE9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4ED09CC2-7DB8-4A91-AECF-EF762349AE9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4ED09CC2-7DB8-4A91-AECF-EF762349AE9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
