@@ -1,3 +1,4 @@
+using System.Drawing;
 using AtemSharp.Commands.MixEffects.Key;
 using AtemSharp.Types.Border;
 using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
@@ -92,22 +93,130 @@ public class MixEffectKeyDigitalVideoEffectsCommandTests : SerializedCommandTest
                     Opacity = testCase.Command.BorderOpacity,
                     OuterWidth = testCase.Command.BorderOuterWidth,
                     InnerWidth = testCase.Command.BorderInnerWidth,
+                },
+                Shadow =
+                {
                     LightSourceAltitude = testCase.Command.LightSourceAltitude,
                     LightSourceDirection = testCase.Command.LightSourceDirection,
+                    Enabled = testCase.Command.BorderShadowEnabled,
                 },
-                ShadowEnabled = testCase.Command.BorderShadowEnabled,
                 Rate = testCase.Command.Rate,
-                SizeX = testCase.Command.SizeX,
-                SizeY = testCase.Command.SizeY,
-                PositionX = testCase.Command.PositionX,
-                PositionY = testCase.Command.PositionY,
+                Size = new SizeF(
+                    (float)testCase.Command.SizeX,
+                    (float)testCase.Command.SizeY),
+                Location = new PointF(
+                    (float)testCase.Command.PositionX,
+                    (float)testCase.Command.PositionY),
                 Rotation = testCase.Command.Rotation,
-                MaskEnabled = testCase.Command.MaskEnabled,
-                MaskTop = testCase.Command.MaskTop,
-                MaskBottom = testCase.Command.MaskBottom,
-                MaskLeft = testCase.Command.MaskLeft,
-                MaskRight = testCase.Command.MaskRight
+                Mask =
+                {
+                    Enabled = testCase.Command.MaskEnabled,
+                    Top = testCase.Command.MaskTop,
+                    Bottom = testCase.Command.MaskBottom,
+                    Left = testCase.Command.MaskLeft,
+                    Right = testCase.Command.MaskRight
+                }
             }
+        });
+    }
+
+
+    [Test]
+    public void SettingLocation_ShouldSetPositionXAndPositionY()
+    {
+        var state = new UpstreamKeyer();
+        var sut = new MixEffectKeyDigitalVideoEffectsCommand(state)
+        {
+            Location = new PointF((float)12.3, (float)45.6)
+        };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.PositionX, Is.EqualTo(12.3).Within(0.01));
+            Assert.That(sut.PositionY, Is.EqualTo(45.6).Within(0.01));
+        });
+    }
+
+    [Test]
+    public void GettingLocation_ShouldGetPositionXAndPositionY()
+    {
+        var state = new UpstreamKeyer();
+        var sut = new MixEffectKeyDigitalVideoEffectsCommand(state)
+        {
+            PositionX = 12.3,
+            PositionY = 45.6
+        };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.Location.X, Is.EqualTo(12.3).Within(0.01));
+            Assert.That(sut.Location.Y, Is.EqualTo(45.6).Within(0.01));
+        });
+    }
+
+    [Test]
+    public void GettingSize_ShouldGetWidthAndHeight()
+    {
+        var sut = new MixEffectKeyDigitalVideoEffectsCommand(new UpstreamKeyer())
+        {
+            SizeX = 12.3,
+            SizeY = 45.6
+        };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.Size.Width, Is.EqualTo(12.3).Within(0.01));
+            Assert.That(sut.Size.Height, Is.EqualTo(45.6).Within(0.01));
+        });
+    }
+
+    [Test]
+    public void SettingSize_ShouldSetWidthAndHeight()
+    {
+        var sut = new MixEffectKeyDigitalVideoEffectsCommand(new UpstreamKeyer())
+        {
+            Size = new SizeF(12.3f, 45.6f)
+        };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.SizeX, Is.EqualTo(12.3).Within(0.01));
+            Assert.That(sut.SizeY, Is.EqualTo(45.6).Within(0.01));
+        });
+    }
+
+    [Test]
+    public void GettingBounds_ShouldGetLocationAndSize()
+    {
+        var sut = new MixEffectKeyDigitalVideoEffectsCommand(new UpstreamKeyer())
+        {
+            Location = new PointF(12.3f, 45.6f),
+            Size = new SizeF(78.9f, 0.12f),
+        };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.Bounds.Location.X, Is.EqualTo(12.3f).Within(0.01));
+            Assert.That(sut.Bounds.Location.Y, Is.EqualTo(45.6f).Within(0.01));
+            Assert.That(sut.Bounds.Size.Width, Is.EqualTo(78.9f).Within(0.01));
+            Assert.That(sut.Bounds.Size.Height, Is.EqualTo(0.12f).Within(0.01));
+        });
+    }
+
+    [Test]
+    public void SettingBounds_ShouldSetLocationAndSize()
+    {
+        var sut = new MixEffectKeyDigitalVideoEffectsCommand(new UpstreamKeyer())
+        {
+            Bounds = new RectangleF(12.3f, 45.6f, 78.9f, 0.12f)
+        };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.Location.X, Is.EqualTo(12.3f).Within(0.01));
+            Assert.That(sut.Location.Y, Is.EqualTo(45.6f).Within(0.01));
+            Assert.That(sut.SizeX, Is.EqualTo(78.9).Within(0.01));
+            Assert.That(sut.SizeY, Is.EqualTo(0.12f).Within(0.01));
         });
     }
 }

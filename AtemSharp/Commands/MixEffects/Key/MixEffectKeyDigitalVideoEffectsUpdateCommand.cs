@@ -1,3 +1,4 @@
+using System.Drawing;
 using AtemSharp.State;
 using AtemSharp.Types;
 using AtemSharp.Types.Border;
@@ -81,14 +82,12 @@ public partial class MixEffectKeyDigitalVideoEffectsUpdateCommand : IDeserialize
     /// <summary>
     /// Outer border softness
     /// </summary>
-    [DeserializedField(32)]
-    private byte _borderOuterSoftness;
+    [DeserializedField(32)] private byte _borderOuterSoftness;
 
     /// <summary>
     /// Inner border softness
     /// </summary>
-    [DeserializedField(33)]
-    private byte _borderInnerSoftness;
+    [DeserializedField(33)] private byte _borderInnerSoftness;
 
     /// <summary>
     /// Border bevel softness
@@ -181,12 +180,9 @@ public partial class MixEffectKeyDigitalVideoEffectsUpdateCommand : IDeserialize
         keyer.Id = KeyerId;
 
         // Update the DVE settings
-        keyer.DigitalVideoEffectsSettings.SizeX = SizeX;
-        keyer.DigitalVideoEffectsSettings.SizeY = SizeY;
-        keyer.DigitalVideoEffectsSettings.PositionX = PositionX;
-        keyer.DigitalVideoEffectsSettings.PositionY = PositionY;
+        keyer.DigitalVideoEffectsSettings.Size = new SizeF((float)SizeX, (float)SizeY);
+        keyer.DigitalVideoEffectsSettings.Location = new PointF((float)PositionX, (float)PositionY);
         keyer.DigitalVideoEffectsSettings.Rotation = Rotation;
-        keyer.DigitalVideoEffectsSettings.ShadowEnabled = ShadowEnabled;
         keyer.DigitalVideoEffectsSettings.Border.Enabled = BorderEnabled;
         keyer.DigitalVideoEffectsSettings.Border.Bevel = BorderBevel;
         keyer.DigitalVideoEffectsSettings.Border.OuterWidth = BorderOuterWidth;
@@ -197,13 +193,14 @@ public partial class MixEffectKeyDigitalVideoEffectsUpdateCommand : IDeserialize
         keyer.DigitalVideoEffectsSettings.Border.BevelPosition = BorderBevelPosition;
         keyer.DigitalVideoEffectsSettings.Border.Opacity = BorderOpacity;
         keyer.DigitalVideoEffectsSettings.Border.Color = new HslColor(BorderHue, BorderSaturation, BorderLuma);
-        keyer.DigitalVideoEffectsSettings.Border.LightSourceDirection = LightSourceDirection;
-        keyer.DigitalVideoEffectsSettings.Border.LightSourceAltitude = LightSourceAltitude;
-        keyer.DigitalVideoEffectsSettings.MaskEnabled = MaskEnabled;
-        keyer.DigitalVideoEffectsSettings.MaskTop = MaskTop;
-        keyer.DigitalVideoEffectsSettings.MaskBottom = MaskBottom;
-        keyer.DigitalVideoEffectsSettings.MaskLeft = MaskLeft;
-        keyer.DigitalVideoEffectsSettings.MaskRight = MaskRight;
+        keyer.DigitalVideoEffectsSettings.Shadow.Enabled = ShadowEnabled;
+        keyer.DigitalVideoEffectsSettings.Shadow.LightSourceDirection = LightSourceDirection;
+        keyer.DigitalVideoEffectsSettings.Shadow.LightSourceAltitude = LightSourceAltitude;
+        keyer.DigitalVideoEffectsSettings.Mask.Enabled = MaskEnabled;
+        keyer.DigitalVideoEffectsSettings.Mask.Top = MaskTop;
+        keyer.DigitalVideoEffectsSettings.Mask.Bottom = MaskBottom;
+        keyer.DigitalVideoEffectsSettings.Mask.Left = MaskLeft;
+        keyer.DigitalVideoEffectsSettings.Mask.Right = MaskRight;
         keyer.DigitalVideoEffectsSettings.Rate = Rate;
     }
 }

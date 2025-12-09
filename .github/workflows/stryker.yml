@@ -1,6 +1,6 @@
-name: Pull-Request
+name: Stryker Mutation Testing
 
-on: pull_request
+on: workflow_dispatch
 
 jobs:
   build:
@@ -21,3 +21,14 @@ jobs:
 
       - name: Build
         run: dotnet build -c Release
+
+      - name: Mutation testing
+        run: |
+          dotnet tool restore
+          dotnet stryker --since:main
+
+      - name: Upload Stryker Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: stryker-report
+          path: StrykerOutput

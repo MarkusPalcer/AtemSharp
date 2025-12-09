@@ -46,10 +46,10 @@ public class TransitionStingerUpdateCommandTests : DeserializedCommandTestBase<T
     {
         var actualCommand = state.Video.MixEffects[expectedData.Index].TransitionSettings.Stinger;
         Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source));
-        Assert.That(actualCommand.PreMultipliedKey, Is.EqualTo(expectedData.PreMultipliedKey));
-        Assert.That(actualCommand.Clip, Is.EqualTo(expectedData.Clip).Within(0.1));
-        Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.1));
-        Assert.That(actualCommand.Invert, Is.EqualTo(expectedData.Invert));
+        Assert.That(actualCommand.PreMultipliedKey.Enabled, Is.EqualTo(expectedData.PreMultipliedKey));
+        Assert.That(actualCommand.PreMultipliedKey.Clip, Is.EqualTo(expectedData.Clip).Within(0.1));
+        Assert.That(actualCommand.PreMultipliedKey.Gain, Is.EqualTo(expectedData.Gain).Within(0.1));
+        Assert.That(actualCommand.PreMultipliedKey.Inverted, Is.EqualTo(expectedData.Invert));
         Assert.That(actualCommand.Preroll, Is.EqualTo(expectedData.Preroll));
         Assert.That(actualCommand.ClipDuration, Is.EqualTo(expectedData.ClipDuration));
         Assert.That(actualCommand.TriggerPoint, Is.EqualTo(expectedData.TriggerPoint));

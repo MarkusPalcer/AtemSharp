@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using System.Globalization;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -28,8 +27,15 @@ namespace AtemSharp.CodeGenerators.Deserialization
                 {
                     var semanticModel = compilation.GetSemanticModel(classDecl.SyntaxTree);
                     var symbol = semanticModel.GetDeclaredSymbol(classDecl);
-                    if (symbol == null) continue;
-                    if (!symbol.Interfaces.Any(i => i.Name == "IDeserializedCommand")) continue;
+                    if (symbol == null)
+                    {
+                        continue;
+                    }
+
+                    if (!symbol.Interfaces.Any(i => i.Name == "IDeserializedCommand"))
+                    {
+                        continue;
+                    }
 
                     var ns = symbol.ContainingNamespace.ToDisplayString();
                     var className = symbol.Name;
@@ -94,10 +100,26 @@ namespace AtemSharp.CodeGenerators.Deserialization
             // Look for: void DeserializeInternal(ReadOnlySpan<byte>, ProtocolVersion)
             foreach (var member in classDecl.Members)
             {
-                if (member is not MethodDeclarationSyntax method) continue;
-                if (method.Identifier.Text != "DeserializeInternal") continue;
-                if (!method.Modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword) || m.IsKind(SyntaxKind.PrivateKeyword) || m.IsKind(SyntaxKind.InternalKeyword)))  continue;
-                if (method.ReturnType is not PredefinedTypeSyntax returnType || !returnType.Keyword.IsKind(SyntaxKind.VoidKeyword)) continue;
+                if (member is not MethodDeclarationSyntax method)
+                {
+                    continue;
+                }
+
+                if (method.Identifier.Text != "DeserializeInternal")
+                {
+                    continue;
+                }
+
+                if (!method.Modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword) || m.IsKind(SyntaxKind.PrivateKeyword) || m.IsKind(SyntaxKind.InternalKeyword)))
+                {
+                    continue;
+                }
+
+                if (method.ReturnType is not PredefinedTypeSyntax returnType || !returnType.Keyword.IsKind(SyntaxKind.VoidKeyword))
+                {
+                    continue;
+                }
+
                 var parameterTypes = method.ParameterList.Parameters.Select(p => p.Type?.ToString()).ToArray();
 
                 if (parameterTypes.SequenceEqual(new[] { "ReadOnlySpan<byte>" }))
@@ -118,7 +140,10 @@ namespace AtemSharp.CodeGenerators.Deserialization
         private static string CreatePropertyCode(IFieldSymbol f)
         {
             var hasProperty = !f.GetAttributes().Any(a => a.AttributeClass?.Name == "NoPropertyAttribute");
-            if (!hasProperty) return string.Empty;
+            if (!hasProperty)
+            {
+                return string.Empty;
+            }
 
             var propertyName = Helpers.GetPropertyName(f);
             var fieldType = Helpers.GetFieldType(f);
@@ -138,7 +163,11 @@ namespace AtemSharp.CodeGenerators.Deserialization
 
         private static string? CreateDeserializationCode(IFieldSymbol f, SourceProductionContext spc)
         {
-            if (f.GetAttributes().Any(a => a.AttributeClass?.Name == "CustomDeserializationAttribute")) return string.Empty;
+            if (f.GetAttributes().Any(a => a.AttributeClass?.Name == "CustomDeserializationAttribute"))
+            {
+                return string.Empty;
+            }
+
             var extensionMethod = Helpers.GetSerializationMethod(f);
             if (extensionMethod is null)
             {
@@ -176,7 +205,10 @@ namespace AtemSharp.CodeGenerators.Deserialization
         private static DeserializedField? ProcessField(IFieldSymbol f, SourceProductionContext spc)
         {
             var serializationCode = CreateDeserializationCode(f, spc);
-            if (serializationCode is null) return null;
+            if (serializationCode is null)
+            {
+                return null;
+            }
 
             var propertyCode = CreatePropertyCode(f);
 

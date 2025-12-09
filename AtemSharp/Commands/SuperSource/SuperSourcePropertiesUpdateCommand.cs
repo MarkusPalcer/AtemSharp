@@ -63,14 +63,14 @@ public partial class SuperSourcePropertiesUpdateCommand : IDeserializedCommand
         superSource.Border.BevelSoftness = _bevelSoftness;
         superSource.Border.BevelPosition = _bevelPosition;
         superSource.Border.Color = new HslColor(_hue, _saturation, _luma);
-        superSource.Border.LightSourceDirection = _lightSourceDirection;
-        superSource.Border.LightSourceAltitude = _lightSourceAltitude;
+        superSource.Shadow.LightSourceDirection = _lightSourceDirection;
+        superSource.Shadow.LightSourceAltitude = _lightSourceAltitude;
         superSource.FillSource = _artFillSource;
         superSource.CutSource = _artCutSource;
         superSource.Option = _artOption;
-        superSource.PreMultiplied = _artPremultiplied;
-        superSource.Clip = _artClip;
-        superSource.Gain = _artGain;
-        superSource.InvertKey = _artInvertKey;
+        superSource.PreMultipliedKey.Enabled = _artPremultiplied;
+        superSource.PreMultipliedKey.Clip = _artClip;
+        superSource.PreMultipliedKey.Gain = _artGain;
+        superSource.PreMultipliedKey.Inverted = _artInvertKey;
     }
 }

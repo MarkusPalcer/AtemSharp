@@ -1,3 +1,4 @@
+using System.Drawing;
 using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 using AtemSharp.Types.Border;
 
@@ -16,23 +17,23 @@ public partial class MixEffectKeyDigitalVideoEffectsCommand(UpstreamKeyer keyer)
     [SerializedField(5)] [NoProperty] private readonly byte _keyerId = keyer.Id;
 
     [SerializedField(8, 0)] [SerializedType(typeof(ulong))] [ScalingFactor(1000.0)]
-    private double _sizeX = keyer.DigitalVideoEffectsSettings.SizeX;
+    private double _sizeX = keyer.DigitalVideoEffectsSettings.Size.Width;
 
     [SerializedField(12, 1)] [SerializedType(typeof(ulong))] [ScalingFactor(1000.0)]
-    private double _sizeY = keyer.DigitalVideoEffectsSettings.SizeY;
+    private double _sizeY = keyer.DigitalVideoEffectsSettings.Size.Height;
 
     [SerializedField(16, 2)] [SerializedType(typeof(long))] [ScalingFactor(1000.0)]
-    private double _positionX = keyer.DigitalVideoEffectsSettings.PositionX;
+    private double _positionX = keyer.DigitalVideoEffectsSettings.Location.X;
 
     [SerializedField(20, 3)] [SerializedType(typeof(long))] [ScalingFactor(1000.0)]
-    private double _positionY = keyer.DigitalVideoEffectsSettings.PositionY;
+    private double _positionY = keyer.DigitalVideoEffectsSettings.Location.Y;
 
     [SerializedField(24, 4)] [SerializedType(typeof(long))] [ScalingFactor(10.0)]
     private double _rotation = keyer.DigitalVideoEffectsSettings.Rotation;
 
     [SerializedField(28, 5)] private bool _borderEnabled = keyer.DigitalVideoEffectsSettings.Border.Enabled;
 
-    [SerializedField(29, 6)] private bool _shadowEnabled = keyer.DigitalVideoEffectsSettings.ShadowEnabled;
+    [SerializedField(29, 6)] private bool _shadowEnabled = keyer.DigitalVideoEffectsSettings.Shadow.Enabled;
 
     [SerializedField(30, 7)] private BorderBevel _borderBevel = keyer.DigitalVideoEffectsSettings.Border.Bevel;
 
@@ -67,26 +68,56 @@ public partial class MixEffectKeyDigitalVideoEffectsCommand(UpstreamKeyer keyer)
     private double _borderLuma = keyer.DigitalVideoEffectsSettings.Border.Color.Luma;
 
     [SerializedField(48, 18)] [SerializedType(typeof(ushort))] [ScalingFactor(10.0)]
-    private double _lightSourceDirection = keyer.DigitalVideoEffectsSettings.Border.LightSourceDirection;
+    private double _lightSourceDirection = keyer.DigitalVideoEffectsSettings.Shadow.LightSourceDirection;
 
     [SerializedField(50, 19)] [SerializedType(typeof(byte))]
-    private double _lightSourceAltitude = keyer.DigitalVideoEffectsSettings.Border.LightSourceAltitude;
+    private double _lightSourceAltitude = keyer.DigitalVideoEffectsSettings.Shadow.LightSourceAltitude;
 
-    [SerializedField(51, 20)] private bool _maskEnabled = keyer.DigitalVideoEffectsSettings.MaskEnabled;
+    [SerializedField(51, 20)] private bool _maskEnabled = keyer.DigitalVideoEffectsSettings.Mask.Enabled;
 
     [SerializedField(52, 21)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
-    private double _maskTop = keyer.DigitalVideoEffectsSettings.MaskTop;
+    private double _maskTop = keyer.DigitalVideoEffectsSettings.Mask.Top;
 
     [SerializedField(54, 22)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
-    private double _maskBottom = keyer.DigitalVideoEffectsSettings.MaskBottom;
+    private double _maskBottom = keyer.DigitalVideoEffectsSettings.Mask.Bottom;
 
     [SerializedField(56, 23)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
-    private double _maskLeft = keyer.DigitalVideoEffectsSettings.MaskLeft;
+    private double _maskLeft = keyer.DigitalVideoEffectsSettings.Mask.Left;
 
     [SerializedField(58, 24)] [SerializedType(typeof(short))] [ScalingFactor(1000.0)]
-    private double _maskRight = keyer.DigitalVideoEffectsSettings.MaskRight;
+    private double _maskRight = keyer.DigitalVideoEffectsSettings.Mask.Right;
 
     [SerializedField(60, 25)] private byte _rate = keyer.DigitalVideoEffectsSettings.Rate;
+
+    public PointF Location
+    {
+        get => new((float)_positionX, (float)_positionY);
+        set
+        {
+            PositionX = value.X;
+            PositionY = value.Y;
+        }
+    }
+
+    public SizeF Size
+    {
+        get => new((float)_sizeX, (float)_sizeY);
+        set
+        {
+            SizeX =  value.Width;
+            SizeY =  value.Height;
+        }
+    }
+
+    public RectangleF Bounds
+    {
+        get => new(Location, Size);
+        set
+        {
+            Location = value.Location;
+            Size = value.Size;
+        }
+    }
 
     private void SerializeInternal(byte[] buffer)
     {

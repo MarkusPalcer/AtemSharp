@@ -23,13 +23,18 @@ namespace AtemSharp.CodeGenerators.Analyzers
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
             if (root == null)
+            {
                 return;
+            }
+
             var diagnostic = context.Diagnostics.First();
             var diagnosticSpan = diagnostic.Location.SourceSpan;
             var node = root.FindNode(diagnosticSpan);
             var methodDecl = node as MethodDeclarationSyntax ?? node.AncestorsAndSelf().OfType<MethodDeclarationSyntax>().FirstOrDefault();
             if (methodDecl == null)
+            {
                 return;
+            }
 
             // Offer three fixes: internal, protected, private
             context.RegisterCodeFix(

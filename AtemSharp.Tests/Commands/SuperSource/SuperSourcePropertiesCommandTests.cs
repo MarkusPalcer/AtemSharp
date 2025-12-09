@@ -55,10 +55,13 @@ public class SuperSourcePropertiesCommandTests : SerializedCommandTestBase<Super
             FillSource = testCase.Command.ArtFillSource,
             CutSource = testCase.Command.ArtCutSource,
             Option = testCase.Command.ArtOption,
-            PreMultiplied = testCase.Command.ArtPreMultiplied,
-            Clip = testCase.Command.ArtClip,
-            Gain = testCase.Command.ArtGain,
-            InvertKey = testCase.Command.ArtInvertKey,
+            PreMultipliedKey =
+            {
+                Enabled = testCase.Command.ArtPreMultiplied,
+                Clip = testCase.Command.ArtClip,
+                Gain = testCase.Command.ArtGain,
+                Inverted = testCase.Command.ArtInvertKey,
+            },
             Border =
             {
                 Enabled = testCase.Command.BorderEnabled,
@@ -73,6 +76,9 @@ public class SuperSourcePropertiesCommandTests : SerializedCommandTestBase<Super
                     testCase.Command.BorderHue,
                     testCase.Command.BorderSaturation,
                     testCase.Command.BorderLuma),
+            },
+            Shadow =
+            {
                 LightSourceDirection = testCase.Command.BorderLightSourceDirection,
                 LightSourceAltitude = testCase.Command.BorderLightSourceAltitude
             }

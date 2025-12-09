@@ -88,8 +88,8 @@ public class MixEffectKeyFlyKeyframeUpdateCommandTests : DeserializedCommandTest
         Assert.That(keyframe.Border.BevelPosition, Is.EqualTo(expectedData.BevelPosition));
         Assert.That(keyframe.Border.Opacity, Is.EqualTo(expectedData.BorderOpacity));
         Assert.That(keyframe.Border.Color, Is.EqualTo(new HslColor(expectedData.BorderHue, expectedData.BorderSaturation, expectedData.BorderLuma)));
-        Assert.That(keyframe.LightSourceDirection, Is.EqualTo(expectedData.LightSourceDirection).Within(0.1));
-        Assert.That(keyframe.LightSourceAltitude, Is.EqualTo(expectedData.LightSourceAltitude));
+        Assert.That(keyframe.Shadow.LightSourceDirection, Is.EqualTo(expectedData.LightSourceDirection).Within(0.1));
+        Assert.That(keyframe.Shadow.LightSourceAltitude, Is.EqualTo(expectedData.LightSourceAltitude));
         Assert.That(keyframe.Mask.Top, Is.EqualTo(expectedData.MaskTop).Within(0.001));
         Assert.That(keyframe.Mask.Bottom, Is.EqualTo(expectedData.MaskBottom).Within(0.001));
         Assert.That(keyframe.Mask.Left, Is.EqualTo(expectedData.MaskLeft).Within(0.001));

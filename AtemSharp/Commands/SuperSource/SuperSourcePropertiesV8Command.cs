@@ -11,13 +11,13 @@ public partial class SuperSourcePropertiesV8Command(State.Video.SuperSource.Supe
     [SerializedField(2, 0)] private ushort _artFillSource = source.FillSource;
     [SerializedField(4, 1)] private ushort _artCutSource = source.CutSource;
     [SerializedField(6, 2)] private ArtOption _artOption = source.Option;
-    [SerializedField(7, 3)] private bool _artPremultiplied = source.PreMultiplied;
+    [SerializedField(7, 3)] private bool _artPremultiplied = source.PreMultipliedKey.Enabled;
 
     [SerializedField(8, 4)] [SerializedType(typeof(ushort))] [ScalingFactor(10)]
-    private double _artClip = source.Clip;
+    private double _artClip = source.PreMultipliedKey.Clip;
 
     [SerializedField(10, 5)] [SerializedType(typeof(ushort))] [ScalingFactor(10)]
-    private double _artGain = source.Gain;
+    private double _artGain = source.PreMultipliedKey.Gain;
 
-    [SerializedField(12, 6)] private bool _artInvertKey = source.InvertKey;
+    [SerializedField(12, 6)] private bool _artInvertKey = source.PreMultipliedKey.Inverted;
 }

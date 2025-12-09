@@ -1,3 +1,4 @@
+using System.Drawing;
 using AtemSharp.State.DisplayClock;
 
 namespace AtemSharp.Commands.DisplayClock;
@@ -28,13 +29,13 @@ public partial class DisplayClockPropertiesSetCommand(State.DisplayClock.Display
     /// X position of the clock display
     /// </summary>
     [SerializedField(8, 3)] [ScalingFactor(1000.0)] [SerializedType(typeof(short))]
-    private double _positionX = currentState.PositionX;
+    private double _positionX = currentState.Location.X;
 
     /// <summary>
     /// Y position of the clock display
     /// </summary>
     [SerializedField(10, 4)] [ScalingFactor(1000.0)] [SerializedType(typeof(short))]
-    private double _positionY = currentState.PositionY;
+    private double _positionY = currentState.Location.Y;
 
     /// <summary>
     /// Whether the clock should auto-hide
@@ -55,6 +56,16 @@ public partial class DisplayClockPropertiesSetCommand(State.DisplayClock.Display
     /// Clock mode (countdown, countup, time of day)
     /// </summary>
     [SerializedField(24, 8)] private DisplayClockClockMode _clockMode = currentState.ClockMode;
+
+    public PointF Location
+    {
+        get => new((float)_positionX, (float)_positionY);
+        set
+        {
+            PositionX = value.X;
+            PositionY = value.Y;
+        }
+    }
 
     private void SerializeInternal(byte[] buffer)
     {

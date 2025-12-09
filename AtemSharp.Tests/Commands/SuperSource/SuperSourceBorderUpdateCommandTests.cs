@@ -51,19 +51,19 @@ public class SuperSourceBorderUpdateCommandTests : DeserializedCommandTestBase<S
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)
     {
-        var actualCommand = state.Video.SuperSources[expectedData.SSrcId].Border;
-        Assert.That(actualCommand.Enabled, Is.EqualTo(expectedData.Enabled));
-        Assert.That(actualCommand.Bevel, Is.EqualTo(expectedData.Bevel));
-        Assert.That(actualCommand.OuterWidth, Is.EqualTo(expectedData.OuterWidth).Within(0.01));
-        Assert.That(actualCommand.InnerWidth, Is.EqualTo(expectedData.InnerWidth).Within(0.01));
-        Assert.That(actualCommand.OuterSoftness, Is.EqualTo(expectedData.OuterSoftness));
-        Assert.That(actualCommand.InnerSoftness, Is.EqualTo(expectedData.InnerSoftness));
-        Assert.That(actualCommand.BevelSoftness, Is.EqualTo(expectedData.BevelSoftness));
-        Assert.That(actualCommand.BevelPosition, Is.EqualTo(expectedData.BevelPosition));
-        Assert.That(actualCommand.Color.Hue, Is.EqualTo(expectedData.Hue).Within(0.1));
-        Assert.That(actualCommand.Color.Saturation, Is.EqualTo(expectedData.Saturation).Within(0.1));
-        Assert.That(actualCommand.Color.Luma, Is.EqualTo(expectedData.Luma).Within(0.1));
-        Assert.That(actualCommand.LightSourceDirection, Is.EqualTo(expectedData.LightSourceDirection).Within(0.1));
-        Assert.That(actualCommand.LightSourceAltitude, Is.EqualTo(expectedData.LightSourceAltitude).Within(1));
+        var actualCommand = state.Video.SuperSources[expectedData.SSrcId];
+        Assert.That(actualCommand.Border.Enabled, Is.EqualTo(expectedData.Enabled));
+        Assert.That(actualCommand.Border.Bevel, Is.EqualTo(expectedData.Bevel));
+        Assert.That(actualCommand.Border.OuterWidth, Is.EqualTo(expectedData.OuterWidth).Within(0.01));
+        Assert.That(actualCommand.Border.InnerWidth, Is.EqualTo(expectedData.InnerWidth).Within(0.01));
+        Assert.That(actualCommand.Border.OuterSoftness, Is.EqualTo(expectedData.OuterSoftness));
+        Assert.That(actualCommand.Border.InnerSoftness, Is.EqualTo(expectedData.InnerSoftness));
+        Assert.That(actualCommand.Border.BevelSoftness, Is.EqualTo(expectedData.BevelSoftness));
+        Assert.That(actualCommand.Border.BevelPosition, Is.EqualTo(expectedData.BevelPosition));
+        Assert.That(actualCommand.Border.Color.Hue, Is.EqualTo(expectedData.Hue).Within(0.1));
+        Assert.That(actualCommand.Border.Color.Saturation, Is.EqualTo(expectedData.Saturation).Within(0.1));
+        Assert.That(actualCommand.Border.Color.Luma, Is.EqualTo(expectedData.Luma).Within(0.1));
+        Assert.That(actualCommand.Shadow.LightSourceDirection, Is.EqualTo(expectedData.LightSourceDirection).Within(0.1));
+        Assert.That(actualCommand.Shadow.LightSourceAltitude, Is.EqualTo(expectedData.LightSourceAltitude).Within(1));
     }
 }

@@ -6,7 +6,8 @@ namespace AtemSharp.Tests.Commands.SuperSource;
 
 public class SuperSourceBorderCommandTests : SerializedCommandTestBase<SuperSourceBorderCommand, SuperSourceBorderCommandTests.CommandData>
 {
-    protected override Range[] GetFloatingPointByteRanges() => [
+    protected override Range[] GetFloatingPointByteRanges() =>
+    [
         (6..8),
         (8..10),
         (14..16),
@@ -19,18 +20,18 @@ public class SuperSourceBorderCommandTests : SerializedCommandTestBase<SuperSour
     public class CommandData : CommandDataBase
     {
         public byte SSrcId { get; set; }
-        public bool Enabled  { get; set; }
+        public bool Enabled { get; set; }
         public BorderBevel Bevel { get; set; }
-        public double OuterWidth  { get; set; }
+        public double OuterWidth { get; set; }
         public double InnerWidth { get; set; }
         public byte OuterSoftness { get; set; }
         public byte InnerSoftness { get; set; }
         public byte BevelSoftness { get; set; }
-        public byte BevelPosition  { get; set; }
-        public double Hue    { get; set; }
-        public double Saturation  { get; set; }
-        public double Luma  { get; set; }
-        public double LightSourceDirection  { get; set; }
+        public byte BevelPosition { get; set; }
+        public double Hue { get; set; }
+        public double Saturation { get; set; }
+        public double Luma { get; set; }
+        public double LightSourceDirection { get; set; }
         public double LightSourceAltitude { get; set; }
     }
 
@@ -53,6 +54,9 @@ public class SuperSourceBorderCommandTests : SerializedCommandTestBase<SuperSour
                     testCase.Command.Hue,
                     testCase.Command.Saturation,
                     testCase.Command.Luma),
+            },
+            Shadow =
+            {
                 LightSourceDirection = testCase.Command.LightSourceDirection,
                 LightSourceAltitude = testCase.Command.LightSourceAltitude
             }

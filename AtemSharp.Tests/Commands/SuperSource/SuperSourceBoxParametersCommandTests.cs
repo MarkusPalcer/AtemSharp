@@ -47,4 +47,36 @@ public class SuperSourceBoxParametersCommandTests : SerializedCommandTestBase<Su
             CropRight = testCase.Command.CropRight
         });
     }
+
+
+    [Test]
+    public void SettingLocation_ShouldSetPositionXAndPositionY()
+    {
+        var sut =  new SuperSourceBoxParametersCommand(new SuperSourceBox())
+        {
+            Location = new PointF((float)12.3, (float)45.6)
+        };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.X, Is.EqualTo(12.3).Within(0.01));
+            Assert.That(sut.Y, Is.EqualTo(45.6).Within(0.01));
+        });
+    }
+
+    [Test]
+    public void BettingLocation_ShouldGetPositionXAndPositionY()
+    {
+        var sut =  new SuperSourceBoxParametersCommand(new SuperSourceBox())
+        {
+            X = 12.3,
+            Y = 45.6
+        };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.Location.X, Is.EqualTo(12.3).Within(0.01));
+            Assert.That(sut.Location.Y, Is.EqualTo(45.6).Within(0.01));
+        });
+    }
 }

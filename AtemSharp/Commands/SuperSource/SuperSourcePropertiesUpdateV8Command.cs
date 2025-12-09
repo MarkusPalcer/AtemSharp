@@ -28,9 +28,9 @@ public partial class SuperSourcePropertiesUpdateV8Command : IDeserializedCommand
         superSource.FillSource = _artFillSource;
         superSource.CutSource = _artCutSource;
         superSource.Option = _artOption;
-        superSource.PreMultiplied = _artPremultiplied;
-        superSource.Clip = _artClip;
-        superSource.Gain = _artGain;
-        superSource.InvertKey = _artInvertKey;
+        superSource.PreMultipliedKey.Enabled = _artPremultiplied;
+        superSource.PreMultipliedKey.Clip = _artClip;
+        superSource.PreMultipliedKey.Gain = _artGain;
+        superSource.PreMultipliedKey.Inverted = _artInvertKey;
     }
 }

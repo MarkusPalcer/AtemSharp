@@ -46,10 +46,13 @@ public class TransitionDigitalVideoEffectCommandTests : SerializedCommandTestBas
                     FillSource = testCase.Command.FillSource,
                     KeySource = testCase.Command.KeySource,
                     EnableKey = testCase.Command.EnableKey,
-                    PreMultiplied = testCase.Command.PreMultiplied,
-                    Clip = testCase.Command.Clip,
-                    Gain = testCase.Command.Gain,
-                    InvertKey = testCase.Command.InvertKey,
+                    PreMultipliedKey =
+                    {
+                        Enabled = testCase.Command.PreMultiplied,
+                        Clip = testCase.Command.Clip,
+                        Gain = testCase.Command.Gain,
+                        Inverted = testCase.Command.InvertKey,
+                    },
                     Reverse = testCase.Command.Reverse,
                     FlipFlop = testCase.Command.FlipFlop
                 }

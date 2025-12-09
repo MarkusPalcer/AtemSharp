@@ -129,7 +129,9 @@ namespace AtemSharp.CodeGenerators
             {
                 var int16Type = fieldSymbol.ContainingType.ContainingAssembly.GetTypeByMetadataName("System.Int16");
                 if (int16Type != null)
+                {
                     return int16Type;
+                }
             }
             return typeSymbol;
         }
@@ -144,14 +146,18 @@ namespace AtemSharp.CodeGenerators
         {
             var xml = field.GetDocumentationCommentXml();
             if (string.IsNullOrWhiteSpace(xml))
+            {
                 return string.Empty;
+            }
 
             try
             {
                 var doc = System.Xml.Linq.XDocument.Parse(xml);
                 var member = doc.Root;
                 if (member == null || member.Name != "member")
+                {
                     return string.Empty;
+                }
 
                 // Get the inner XML (everything inside <member>...</member>)
                 var innerXml = string.Concat(member.Nodes().Select(n => n.ToString()));
@@ -161,7 +167,9 @@ namespace AtemSharp.CodeGenerators
                 {
                     var trimmed = line.TrimEnd();
                     if (trimmed.Length > 0)
+                    {
                         sb.AppendLine($"/// {trimmed}");
+                    }
                 }
                 return sb.ToString();
             }
@@ -176,7 +184,10 @@ namespace AtemSharp.CodeGenerators
         {
             // Check for ScalingFactorAttribute
             var scalingAttr = f.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "ScalingFactorAttribute");
-            if (scalingAttr == null) return null;
+            if (scalingAttr == null)
+            {
+                return null;
+            }
 
             var arg = scalingAttr.ConstructorArguments[0];
 
@@ -200,9 +211,14 @@ namespace AtemSharp.CodeGenerators
             // Derive property name from field name (remove leading underscores, capitalize first letter)
             var propertyName = f.Name.TrimStart('_');
             if (!string.IsNullOrEmpty(propertyName) && propertyName.Length > 1)
+            {
                 propertyName = char.ToUpper(propertyName[0]) + propertyName.Substring(1);
+            }
             else if (!string.IsNullOrEmpty(propertyName))
+            {
                 propertyName = propertyName.ToUpper();
+            }
+
             return propertyName;
         }
 
@@ -214,7 +230,9 @@ namespace AtemSharp.CodeGenerators
             {
                 var arg = attr.ConstructorArguments[0];
                 if (arg.Value is int intVal)
+                {
                     offset = (uint)intVal;
+                }
             }
 
             return offset;
@@ -228,7 +246,9 @@ namespace AtemSharp.CodeGenerators
             {
                 var arg = attr.ConstructorArguments[0];
                 if (arg.Value is int intVal)
+                {
                     offset = (uint)intVal;
+                }
             }
 
             return offset;
@@ -246,7 +266,9 @@ namespace AtemSharp.CodeGenerators
                 {
                     using var stream = assembly.GetManifestResourceStream(resourceName);
                     if (stream == null)
+                    {
                         throw new InvalidOperationException("Resource stream is null.");
+                    }
 
                     using var reader = new StreamReader(stream);
 
@@ -275,7 +297,9 @@ namespace AtemSharp.CodeGenerators
             // Look for the CustomScalingAttribute
             var attr = f.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == attributeTypeName);
             if (attr == null || attr.ConstructorArguments.Length == 0)
+            {
                 return null;
+            }
 
             var arg = attr.ConstructorArguments[0];
 

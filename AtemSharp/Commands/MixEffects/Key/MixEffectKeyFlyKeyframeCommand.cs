@@ -1,3 +1,4 @@
+using System.Drawing;
 using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Commands.MixEffects.Key;
@@ -49,9 +50,9 @@ public partial class MixEffectKeyFlyKeyframeCommand(UpstreamKeyerFlyKeyframe key
     private double _borderLuma = keyframe.Border.Color.Luma;
 
     [SerializedField(44, 15)] [ScalingFactor(10)] [SerializedType(typeof(ushort))]
-    private double _lightSourceDirection = keyframe.LightSourceDirection;
+    private double _lightSourceDirection = keyframe.Shadow.LightSourceDirection;
 
-    [SerializedField(46, 16)] private byte _lightSourceAltitude = keyframe.LightSourceAltitude;
+    [SerializedField(46, 16)] private byte _lightSourceAltitude = (byte)keyframe.Shadow.LightSourceAltitude;
 
     //[SerializedField(47)] private bool _maskEnabled = keyframe.Mask.Enabled;
 
@@ -66,6 +67,36 @@ public partial class MixEffectKeyFlyKeyframeCommand(UpstreamKeyerFlyKeyframe key
 
     [SerializedField(54, 20)] [ScalingFactor(1000)] [SerializedType(typeof(short))]
     private double _maskRight = keyframe.Mask.Right;
+
+    public PointF Location
+    {
+        get => new((float)_positionX, (float)_positionY);
+        set
+        {
+            PositionX = value.X;
+            PositionY = value.Y;
+        }
+    }
+
+    public SizeF Size
+    {
+        get => new((float)_sizeX, (float)_sizeY);
+        set
+        {
+            SizeX =  value.Width;
+            SizeY =  value.Height;
+        }
+    }
+
+    public RectangleF Bounds
+    {
+        get => new(Location, Size);
+        set
+        {
+            Location = value.Location;
+            Size = value.Size;
+        }
+    }
 
     private void SerializeInternal(byte[] buffer)
     {

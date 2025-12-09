@@ -19,24 +19,24 @@ public partial class TransitionStingerCommand(MixEffect mixEffect) : SerializedC
     /// <summary>
     /// Whether the key is pre-multiplied
     /// </summary>
-    [SerializedField(4, 1)] private bool _preMultipliedKey = mixEffect.TransitionSettings.Stinger.PreMultipliedKey;
+    [SerializedField(4, 1)] private bool _preMultipliedKey = mixEffect.TransitionSettings.Stinger.PreMultipliedKey.Enabled;
 
     /// <summary>
     /// Clip value for the stinger transition
     /// </summary>
     [SerializedField(6, 2)] [SerializedType(typeof(ushort))] [ScalingFactor(10)]
-    private double _clip = mixEffect.TransitionSettings.Stinger.Clip;
+    private double _clip = mixEffect.TransitionSettings.Stinger.PreMultipliedKey.Clip;
 
     /// <summary>
     /// Gain value for the stinger transition (0-100%)
     /// </summary>
     [SerializedField(8, 3)] [SerializedType(typeof(ushort))] [ScalingFactor(10)]
-    private double _gain = mixEffect.TransitionSettings.Stinger.Gain;
+    private double _gain = mixEffect.TransitionSettings.Stinger.PreMultipliedKey.Gain;
 
     /// <summary>
     /// Whether the stinger transition is inverted
     /// </summary>
-    [SerializedField(10, 4)] private bool _invert = mixEffect.TransitionSettings.Stinger.Invert;
+    [SerializedField(10, 4)] private bool _invert = mixEffect.TransitionSettings.Stinger.PreMultipliedKey.Inverted;
 
     /// <summary>
     /// Preroll value for the stinger transition

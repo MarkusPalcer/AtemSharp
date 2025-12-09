@@ -20,13 +20,19 @@ namespace AtemSharp.CodeGenerators.Analyzers
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
-            if (root == null) return;
+            if (root == null)
+            {
+                return;
+            }
 
             var diagnostic = context.Diagnostics[0];
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
             var classDecl = root.FindToken(diagnosticSpan.Start).Parent?.AncestorsAndSelf().OfType<ClassDeclarationSyntax>().FirstOrDefault();
-            if (classDecl == null) return;
+            if (classDecl == null)
+            {
+                return;
+            }
 
             context.RegisterCodeFix(
                 Microsoft.CodeAnalysis.CodeActions.CodeAction.Create(

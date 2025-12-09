@@ -83,10 +83,10 @@ public partial class TransitionDigitalVideoEffectsUpdateCommand : IDeserializedC
         mixEffect.TransitionSettings.DigitalVideoEffect.FillSource = FillSource;
         mixEffect.TransitionSettings.DigitalVideoEffect.KeySource = KeySource;
         mixEffect.TransitionSettings.DigitalVideoEffect.EnableKey = EnableKey;
-        mixEffect.TransitionSettings.DigitalVideoEffect.PreMultiplied = PreMultiplied;
-        mixEffect.TransitionSettings.DigitalVideoEffect.Clip = Clip;
-        mixEffect.TransitionSettings.DigitalVideoEffect.Gain = Gain;
-        mixEffect.TransitionSettings.DigitalVideoEffect.InvertKey = InvertKey;
+        mixEffect.TransitionSettings.DigitalVideoEffect.PreMultipliedKey.Enabled = PreMultiplied;
+        mixEffect.TransitionSettings.DigitalVideoEffect.PreMultipliedKey.Clip = Clip;
+        mixEffect.TransitionSettings.DigitalVideoEffect.PreMultipliedKey.Gain = Gain;
+        mixEffect.TransitionSettings.DigitalVideoEffect.PreMultipliedKey.Inverted = InvertKey;
         mixEffect.TransitionSettings.DigitalVideoEffect.Reverse = Reverse;
         mixEffect.TransitionSettings.DigitalVideoEffect.FlipFlop = FlipFlop;
     }

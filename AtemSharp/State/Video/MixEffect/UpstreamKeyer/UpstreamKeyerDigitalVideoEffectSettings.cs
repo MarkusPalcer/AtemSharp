@@ -1,4 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
+using AtemSharp.Types;
 using AtemSharp.Types.Border;
 
 namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
@@ -6,66 +8,28 @@ namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 /// <summary>
 /// DVE (Digital Video Effects) settings for upstream keyer
 /// </summary>
-[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
+[ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
 public class UpstreamKeyerDigitalVideoEffectSettings
 {
-    /// <summary>
-    /// Horizontal size scale factor
-    /// </summary>
-    public double SizeX { get; internal set; }
+    public SizeF Size { get; internal set; }
 
-    /// <summary>
-    /// Vertical size scale factor
-    /// </summary>
-    public double SizeY { get; internal set; }
+    public PointF Location { get; internal set; }
 
-    /// <summary>
-    /// Horizontal position offset
-    /// </summary>
-    public double PositionX { get; internal set; }
-
-    /// <summary>
-    /// Vertical position offset
-    /// </summary>
-    public double PositionY { get; internal set; }
+    public RectangleF Bounds => new(Location.X, Location.Y, Size.Width, Size.Height);
 
     /// <summary>
     /// Rotation angle in degrees
     /// </summary>
     public double Rotation { get; internal set; }
 
-    /// <summary>
-    /// Whether shadow effect is enabled
-    /// </summary>
-    public bool ShadowEnabled { get; internal set; }
+    public Shadow Shadow { get; } = new();
 
-
-    public ExtendedBorderProperties Border { get; } = new();
+    public Border Border { get; } = new();
 
     /// <summary>
-    /// Whether masking is enabled
+    /// Mask configuration
     /// </summary>
-    public bool MaskEnabled { get; internal set; }
-
-    /// <summary>
-    /// Top edge of mask
-    /// </summary>
-    public double MaskTop { get; internal set; }
-
-    /// <summary>
-    /// Bottom edge of mask
-    /// </summary>
-    public double MaskBottom { get; internal set; }
-
-    /// <summary>
-    /// Left edge of mask
-    /// </summary>
-    public double MaskLeft { get; internal set; }
-
-    /// <summary>
-    /// Right edge of mask
-    /// </summary>
-    public double MaskRight { get; internal set; }
+    public MaskProperties Mask { get; } = new();
 
     /// <summary>
     /// Transition rate (frames)

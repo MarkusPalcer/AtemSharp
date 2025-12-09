@@ -1,3 +1,4 @@
+using System.Drawing;
 using AtemSharp.Commands.DisplayClock;
 using AtemSharp.State.DisplayClock;
 
@@ -93,8 +94,8 @@ public class DisplayClockPropertiesSetCommandTests : SerializedCommandTestBase<D
             Enabled = testCase.Command.Enabled,
             Size = testCase.Command.Size,
             Opacity = testCase.Command.Opacity,
-            PositionX = testCase.Command.PositionX,
-            PositionY = testCase.Command.PositionY,
+            Location = new PointF((float)testCase.Command.PositionX,
+                                  (float)testCase.Command.PositionY),
             AutoHide = testCase.Command.AutoHide,
             StartFrom = new DisplayClockTime
             {
@@ -108,5 +109,38 @@ public class DisplayClockPropertiesSetCommandTests : SerializedCommandTestBase<D
         {
             StartFromFrames = testCase.Command.StartFromFrames
         };
+    }
+
+    [Test]
+    public void SettingLocation_ShouldSetPositionXAndPositionY()
+    {
+        var state = new AtemSharp.State.DisplayClock.DisplayClock();
+        var sut =  new DisplayClockPropertiesSetCommand(state)
+        {
+            Location = new PointF((float)12.3, (float)45.6)
+        };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.PositionX, Is.EqualTo(12.3).Within(0.01));
+            Assert.That(sut.PositionY, Is.EqualTo(45.6).Within(0.01));
+        });
+    }
+
+    [Test]
+    public void BettingLocation_ShouldGetPositionXAndPositionY()
+    {
+        var state = new AtemSharp.State.DisplayClock.DisplayClock();
+        var sut =  new DisplayClockPropertiesSetCommand(state)
+        {
+            PositionX = 12.3,
+            PositionY = 45.6
+        };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.Location.X, Is.EqualTo(12.3).Within(0.01));
+            Assert.That(sut.Location.Y, Is.EqualTo(45.6).Within(0.01));
+        });
     }
 }

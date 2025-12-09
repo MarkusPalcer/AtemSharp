@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using AtemSharp.Types;
 
 namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
@@ -46,14 +47,17 @@ public class UpstreamKeyer : ItemWithId<byte>
     public bool FlyEnabled { get; internal set; }
 
     /// <summary>
-    /// Mask settings for the upstream keyer
+    /// Mask configuration
     /// </summary>
     public MaskProperties Mask { get; } = new();
 
     /// <summary>
-    /// Luma key settings for the upstream keyer
+    /// The settings for the pre multiplied key
     /// </summary>
-    public UpstreamKeyerLumaSettings LumaSettings { get; } = new();
+    /// <remarks>
+    /// Only used for Luma
+    /// </remarks>
+    public PreMultipliedKey PreMultipliedKey { get; } = new();
 
     /// <summary>
     /// Advanced chroma key settings for the upstream keyer

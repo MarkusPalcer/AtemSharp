@@ -16,22 +16,22 @@ public partial class MixEffectKeyLumaCommand(UpstreamKeyer keyer) : SerializedCo
     /// <summary>
     /// Whether the key should be treated as premultiplied
     /// </summary>
-    [SerializedField(3, 0)] private bool _preMultiplied = keyer.LumaSettings.PreMultiplied;
+    [SerializedField(3, 0)] private bool _preMultiplied = keyer.PreMultipliedKey.Enabled;
 
     /// <summary>
     /// Clip threshold value (0-100)
     /// </summary>
     [SerializedField(4, 1)] [ScalingFactor(10)] [SerializedType(typeof(ushort))]
-    private double _clip = keyer.LumaSettings.Clip;
+    private double _clip = keyer.PreMultipliedKey.Clip;
 
     /// <summary>
     /// Gain value for the luma key (0-100)
     /// </summary>
     [SerializedField(6, 2)] [ScalingFactor(10)] [SerializedType(typeof(ushort))]
-    private double _gain = keyer.LumaSettings.Gain;
+    private double _gain = keyer.PreMultipliedKey.Gain;
 
     /// <summary>
     /// Whether to invert the luma key
     /// </summary>
-    [SerializedField(8, 3)] private bool _invert = keyer.LumaSettings.Invert;
+    [SerializedField(8, 3)] private bool _invert = keyer.PreMultipliedKey.Inverted;
 }

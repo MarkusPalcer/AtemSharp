@@ -48,7 +48,9 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
             var (start, length) = range.GetOffsetAndLength(totalLength);
             var end = start + length - 1;
             if (index >= start && index <= end)
+            {
                 return true;
+            }
         }
 
         return false;
@@ -56,7 +58,10 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
 
     private bool AreApproximatelyEqual(byte[] actual, byte[] expected)
     {
-        if (actual.Length != expected.Length) return false;
+        if (actual.Length != expected.Length)
+        {
+            return false;
+        }
 
         for (var i = 0; i < actual.Length; i++)
         {

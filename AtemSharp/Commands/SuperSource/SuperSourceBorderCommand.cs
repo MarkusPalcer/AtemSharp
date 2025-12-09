@@ -32,10 +32,10 @@ public partial class SuperSourceBorderCommand(State.Video.SuperSource.SuperSourc
     private double _luma = superSource.Border.Color.Luma;
 
     [SerializedField(20, 11)] [ScalingFactor(10)] [SerializedType(typeof(ushort))]
-    private double _lightSourceDirection = superSource.Border.LightSourceDirection;
+    private double _lightSourceDirection = superSource.Shadow.LightSourceDirection;
 
     [SerializedField(22, 12)] [SerializedType(typeof(byte))]
-    private double _lightSourceAltitude = superSource.Border.LightSourceAltitude;
+    private double _lightSourceAltitude = superSource.Shadow.LightSourceAltitude;
 
     private void SerializeInternal(byte[] buffer)
     {

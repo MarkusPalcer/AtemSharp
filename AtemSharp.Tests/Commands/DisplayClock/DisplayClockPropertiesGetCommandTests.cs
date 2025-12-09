@@ -53,8 +53,8 @@ public class DisplayClockPropertiesGetCommandTests : DeserializedCommandTestBase
         Assert.That(state.DisplayClock.Enabled, Is.EqualTo(expectedData.Enabled));
         Assert.That(state.DisplayClock.Size, Is.EqualTo(expectedData.Size));
         Assert.That(state.DisplayClock.Opacity, Is.EqualTo(expectedData.Opacity));
-        Assert.That(state.DisplayClock.PositionX, Is.EqualTo(expectedData.PositionX).Within(0.01));
-        Assert.That(state.DisplayClock.PositionY, Is.EqualTo(expectedData.PositionY).Within(0.01));
+        Assert.That(state.DisplayClock.Location.X, Is.EqualTo(expectedData.PositionX).Within(0.01));
+        Assert.That(state.DisplayClock.Location.Y, Is.EqualTo(expectedData.PositionY).Within(0.01));
         Assert.That(state.DisplayClock.AutoHide, Is.EqualTo(expectedData.AutoHide));
         Assert.That(state.DisplayClock.StartFrom.Hours, Is.EqualTo(expectedData.StartFrom.Hour));
         Assert.That(state.DisplayClock.StartFrom.Minutes, Is.EqualTo(expectedData.StartFrom.Minute));

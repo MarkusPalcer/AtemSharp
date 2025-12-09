@@ -92,8 +92,8 @@ public partial class MixEffectKeyFlyKeyframeUpdateCommand : IDeserializedCommand
             _borderHue,
             _borderSaturation,
             _borderLuma);
-        keyframe.LightSourceDirection = _lightSourceDirection;
-        keyframe.LightSourceAltitude = _lightSourceAltitude;
+        keyframe.Shadow.LightSourceDirection = _lightSourceDirection;
+        keyframe.Shadow.LightSourceAltitude = _lightSourceAltitude;
         // keyframe.Mask.Enabled = _maskEnabled;
         keyframe.Mask.Top = _maskTop;
         keyframe.Mask.Bottom = _maskBottom;

@@ -1,3 +1,4 @@
+using System.Drawing;
 using AtemSharp.State.Video.SuperSource;
 
 namespace AtemSharp.Commands.SuperSource;
@@ -33,6 +34,16 @@ public partial class SuperSourceBoxParametersCommand(SuperSourceBox box) : Seria
 
     [SerializedField(20, 9)] [ScalingFactor(1000)] [SerializedType(typeof(ushort))]
     private double _cropRight = box.CropRight;
+
+    public PointF Location
+    {
+        get => new((float)_x, (float)_y);
+        set
+        {
+            X = value.X;
+            Y = value.Y;
+        }
+    }
 
     private void SerializeInternal(byte[] buffer)
     {

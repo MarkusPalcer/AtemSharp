@@ -22,7 +22,9 @@ namespace AtemSharp.CodeGenerators.Analyzers
         {
             var classSymbol = (INamedTypeSymbol)context.Symbol;
             if (classSymbol.TypeKind != TypeKind.Class)
+            {
                 return;
+            }
 
             var methods = classSymbol.GetMembers().OfType<IMethodSymbol>().Where(m => m.Name == "SerializeInternal").ToList();
             foreach (var method in methods)
