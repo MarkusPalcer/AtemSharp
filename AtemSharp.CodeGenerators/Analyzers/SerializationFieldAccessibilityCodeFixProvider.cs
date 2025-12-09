@@ -22,12 +22,18 @@ namespace AtemSharp.CodeGenerators.Analyzers
         public override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
-            if (root == null) return;
+            if (root == null)
+            {
+                return;
+            }
 
             var diagnostic = context.Diagnostics.First();
             var diagnosticSpan = diagnostic.Location.SourceSpan;
             var fieldDecl = root.FindToken(diagnosticSpan.Start).Parent?.AncestorsAndSelf().OfType<FieldDeclarationSyntax>().FirstOrDefault();
-            if (fieldDecl == null) return;
+            if (fieldDecl == null)
+            {
+                return;
+            }
 
             if (diagnostic.Id == "GEN008")
             {
@@ -68,7 +74,10 @@ namespace AtemSharp.CodeGenerators.Analyzers
             var newField = fieldDecl.WithModifiers(SyntaxFactory.TokenList(newModifiers));
             var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
             if (root == null)
+            {
                 return document;
+            }
+
             var newRoot = root.ReplaceNode(fieldDecl, newField);
             return document.WithSyntaxRoot(newRoot);
         }
@@ -87,7 +96,10 @@ namespace AtemSharp.CodeGenerators.Analyzers
             var newField = fieldDecl.WithModifiers(newModifiers);
             var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
             if (root == null)
+            {
                 return document;
+            }
+
             var newRoot = root.ReplaceNode(fieldDecl, newField);
             return document.WithSyntaxRoot(newRoot);
         }

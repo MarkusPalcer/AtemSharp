@@ -22,7 +22,9 @@ namespace AtemSharp.CodeGenerators.Analyzers
         {
             var classSymbol = (INamedTypeSymbol)context.Symbol;
             if (classSymbol.TypeKind != TypeKind.Class)
+            {
                 return;
+            }
 
             // Check if any field has CustomSerializationAttribute
             var hasCustomSerializationField = classSymbol.GetMembers()
@@ -34,7 +36,9 @@ namespace AtemSharp.CodeGenerators.Analyzers
                                                            .Any(f => f.GetAttributes().Any(a => a.AttributeClass?.Name == "SerializedFieldAttribute" || a.AttributeClass?.Name == "SerializedField"));
 
             if (!hasCustomSerializationField || !hasGeneratedSerializationCode)
+            {
                 return;
+            }
 
             // Check for SerializeInternal method
             var hasSerializeInternal = classSymbol.GetMembers()

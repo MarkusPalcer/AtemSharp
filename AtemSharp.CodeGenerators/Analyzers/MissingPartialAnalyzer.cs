@@ -22,7 +22,9 @@ namespace AtemSharp.CodeGenerators.Analyzers
         {
             var classDecl = (ClassDeclarationSyntax)context.Node;
             if (classDecl.Modifiers.Any(SyntaxKind.PartialKeyword))
+            {
                 return;
+            }
 
             var semanticModel = context.SemanticModel;
             foreach (var member in classDecl.Members)
@@ -33,7 +35,10 @@ namespace AtemSharp.CodeGenerators.Analyzers
                     {
                         var symbol = semanticModel.GetDeclaredSymbol(variable);
                         if (symbol == null)
+                        {
                             continue;
+                        }
+
                         foreach (var attr in symbol.GetAttributes())
                         {
                             if (attr.AttributeClass?.Name == "DeserializedFieldAttribute" || attr.AttributeClass?.Name == "SerializedFieldAttribute")

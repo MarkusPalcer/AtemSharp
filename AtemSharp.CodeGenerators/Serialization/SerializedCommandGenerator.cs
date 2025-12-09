@@ -42,7 +42,10 @@ namespace AtemSharp.CodeGenerators.Serialization
         private static SerializedField? ProcessField(IFieldSymbol f, SourceProductionContext spc)
         {
             var serializationCode = GetSerializationCode(f, spc);
-            if (serializationCode is null) return null;
+            if (serializationCode is null)
+            {
+                return null;
+            }
 
             var propertyCode = GetPropertyCode(f);
 
@@ -55,7 +58,10 @@ namespace AtemSharp.CodeGenerators.Serialization
 
         private static string? GetSerializationCode(IFieldSymbol f, SourceProductionContext spc)
         {
-            if (f.GetAttributes().Any(a => a.AttributeClass?.Name == "CustomSerializationAttribute")) return string.Empty;
+            if (f.GetAttributes().Any(a => a.AttributeClass?.Name == "CustomSerializationAttribute"))
+            {
+                return string.Empty;
+            }
 
             var offset = Helpers.GetSerializationOffest(f);
             var fieldType = Helpers.GetFieldType(f);
@@ -126,11 +132,16 @@ namespace AtemSharp.CodeGenerators.Serialization
                 {
                     var semanticModel = compilation.GetSemanticModel(classDecl.SyntaxTree);
                     var classSymbol = semanticModel.GetDeclaredSymbol(classDecl);
-                    if (classSymbol == null) continue;
+                    if (classSymbol == null)
+                    {
+                        continue;
+                    }
 
                     // Check if class has SerializedCommand as base type in its type hierarchy
                     if (!InheritsFrom(classSymbol, "SerializedCommand"))
+                    {
                         continue;
+                    }
 
                     var ns = classSymbol.ContainingNamespace.ToDisplayString();
                     var className = classSymbol.Name;
@@ -213,10 +224,16 @@ namespace AtemSharp.CodeGenerators.Serialization
         private static int? GetBufferSize(INamedTypeSymbol classSymbol)
         {
             var bufferSizeAttr = classSymbol.GetAttributes().FirstOrDefault(a => a.AttributeClass?.Name == "BufferSizeAttribute");
-            if (bufferSizeAttr == null || bufferSizeAttr.ConstructorArguments.Length <= 0) return null;
+            if (bufferSizeAttr == null || bufferSizeAttr.ConstructorArguments.Length <= 0)
+            {
+                return null;
+            }
 
             var arg = bufferSizeAttr.ConstructorArguments[0];
-            if (arg.Value is int size) return size;
+            if (arg.Value is int size)
+            {
+                return size;
+            }
 
             return null;
         }
@@ -226,7 +243,10 @@ namespace AtemSharp.CodeGenerators.Serialization
             while (symbol is { BaseType: { } })
             {
                 if (symbol.BaseType.Name == baseTypeName)
+                {
                     return true;
+                }
+
                 symbol = symbol.BaseType;
             }
 
@@ -239,11 +259,17 @@ namespace AtemSharp.CodeGenerators.Serialization
             // Look for: void SerializeInternal(ReadOnlySpan<byte>)
             foreach (var member in classDecl.Members)
             {
-                if (!(member is MethodDeclarationSyntax method)) continue;
+                if (!(member is MethodDeclarationSyntax method))
+                {
+                    continue;
+                }
 
                 if (method.Identifier.Text != "SerializeInternal" ||
                     !method.Modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword) || m.IsKind(SyntaxKind.PrivateKeyword) ||
-                                               m.IsKind(SyntaxKind.InternalKeyword))) continue;
+                                               m.IsKind(SyntaxKind.InternalKeyword)))
+                {
+                    continue;
+                }
 
                 if (method.ReturnType is PredefinedTypeSyntax returnType && returnType.Keyword.IsKind(SyntaxKind.VoidKeyword))
                 {

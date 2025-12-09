@@ -28,7 +28,9 @@ namespace AtemSharp.CodeGenerators.Analyzers
             // Ignore fields with NoPropertyAttribute
             var hasNoProperty = fieldSymbol.GetAttributes().Any(attr => attr.AttributeClass?.Name == "NoPropertyAttribute");
             if (hasNoProperty)
+            {
                 return;
+            }
 
             foreach (var attribute in fieldSymbol.GetAttributes())
             {

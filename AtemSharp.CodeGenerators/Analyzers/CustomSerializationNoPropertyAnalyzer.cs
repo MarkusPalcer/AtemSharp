@@ -25,7 +25,9 @@ namespace AtemSharp.CodeGenerators.Analyzers
             var semanticModel = context.SemanticModel;
             var fieldSymbol = semanticModel.GetDeclaredSymbol(fieldDecl.Declaration.Variables.First(), context.CancellationToken) as IFieldSymbol;
             if (fieldSymbol == null)
+            {
                 return;
+            }
 
             // Find attribute syntax nodes
             var customSerializationAttrs = fieldDecl.AttributeLists
