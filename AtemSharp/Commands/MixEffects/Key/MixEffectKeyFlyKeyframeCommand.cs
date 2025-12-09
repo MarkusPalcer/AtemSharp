@@ -50,9 +50,9 @@ public partial class MixEffectKeyFlyKeyframeCommand(UpstreamKeyerFlyKeyframe key
     private double _borderLuma = keyframe.Border.Color.Luma;
 
     [SerializedField(44, 15)] [ScalingFactor(10)] [SerializedType(typeof(ushort))]
-    private double _lightSourceDirection = keyframe.LightSourceDirection;
+    private double _lightSourceDirection = keyframe.Shadow.LightSourceDirection;
 
-    [SerializedField(46, 16)] private byte _lightSourceAltitude = keyframe.LightSourceAltitude;
+    [SerializedField(46, 16)] private byte _lightSourceAltitude = (byte)keyframe.Shadow.LightSourceAltitude;
 
     //[SerializedField(47)] private bool _maskEnabled = keyframe.Mask.Enabled;
 

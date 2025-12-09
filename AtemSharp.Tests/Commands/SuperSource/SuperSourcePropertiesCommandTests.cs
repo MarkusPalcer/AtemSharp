@@ -73,6 +73,9 @@ public class SuperSourcePropertiesCommandTests : SerializedCommandTestBase<Super
                     testCase.Command.BorderHue,
                     testCase.Command.BorderSaturation,
                     testCase.Command.BorderLuma),
+            },
+            Shadow =
+            {
                 LightSourceDirection = testCase.Command.BorderLightSourceDirection,
                 LightSourceAltitude = testCase.Command.BorderLightSourceAltitude
             }

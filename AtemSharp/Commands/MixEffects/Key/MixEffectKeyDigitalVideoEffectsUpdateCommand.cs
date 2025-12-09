@@ -183,7 +183,6 @@ public partial class MixEffectKeyDigitalVideoEffectsUpdateCommand : IDeserialize
         keyer.DigitalVideoEffectsSettings.Size = new SizeF((float)SizeX, (float)SizeY);
         keyer.DigitalVideoEffectsSettings.Location = new PointF((float)PositionX, (float)PositionY);
         keyer.DigitalVideoEffectsSettings.Rotation = Rotation;
-        keyer.DigitalVideoEffectsSettings.ShadowEnabled = ShadowEnabled;
         keyer.DigitalVideoEffectsSettings.Border.Enabled = BorderEnabled;
         keyer.DigitalVideoEffectsSettings.Border.Bevel = BorderBevel;
         keyer.DigitalVideoEffectsSettings.Border.OuterWidth = BorderOuterWidth;
@@ -194,8 +193,9 @@ public partial class MixEffectKeyDigitalVideoEffectsUpdateCommand : IDeserialize
         keyer.DigitalVideoEffectsSettings.Border.BevelPosition = BorderBevelPosition;
         keyer.DigitalVideoEffectsSettings.Border.Opacity = BorderOpacity;
         keyer.DigitalVideoEffectsSettings.Border.Color = new HslColor(BorderHue, BorderSaturation, BorderLuma);
-        keyer.DigitalVideoEffectsSettings.Border.LightSourceDirection = LightSourceDirection;
-        keyer.DigitalVideoEffectsSettings.Border.LightSourceAltitude = LightSourceAltitude;
+        keyer.DigitalVideoEffectsSettings.Shadow.Enabled = ShadowEnabled;
+        keyer.DigitalVideoEffectsSettings.Shadow.LightSourceDirection = LightSourceDirection;
+        keyer.DigitalVideoEffectsSettings.Shadow.LightSourceAltitude = LightSourceAltitude;
         keyer.DigitalVideoEffectsSettings.Mask.Enabled = MaskEnabled;
         keyer.DigitalVideoEffectsSettings.Mask.Top = MaskTop;
         keyer.DigitalVideoEffectsSettings.Mask.Bottom = MaskBottom;

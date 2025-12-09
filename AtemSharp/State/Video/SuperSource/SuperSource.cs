@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using AtemSharp.Types;
 using AtemSharp.Types.Border;
 
 namespace AtemSharp.State.Video.SuperSource;
@@ -10,7 +11,10 @@ public class SuperSource : ItemWithId<int>
     public byte Id { get; internal set; }
 
     public Dictionary<byte, SuperSourceBox> Boxes { get; } = [];
-    public ExtendedBorderProperties Border { get; } = new();
+    public Border Border { get; } = new();
+
+    public ShadowProperties Shadow { get; } = new();
+
     public ushort FillSource { get; internal set; }
     public ushort CutSource { get; internal set; }
     public ArtOption Option { get; internal set; }

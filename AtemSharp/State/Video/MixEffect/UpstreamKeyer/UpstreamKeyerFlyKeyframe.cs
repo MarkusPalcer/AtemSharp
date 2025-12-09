@@ -18,8 +18,8 @@ public class UpstreamKeyerFlyKeyframe
     public RectangleF Bounds => new(Location.X, Location.Y, Size.Width, Size.Height);
     public double Rotation { get; internal set; }
     public BorderProperties Border { get; } = new();
-    public double LightSourceDirection { get; internal set; }
-    public byte LightSourceAltitude { get; internal set; }
+
+    public ShadowProperties Shadow { get; } = new();
 
     /// <summary>
     /// Mask configuration

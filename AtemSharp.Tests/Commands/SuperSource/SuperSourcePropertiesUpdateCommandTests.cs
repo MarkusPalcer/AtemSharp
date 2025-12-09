@@ -86,7 +86,7 @@ public class SuperSourcePropertiesUpdateCommandTests : DeserializedCommandTestBa
         Assert.That(actualCommand.Border.Color.Hue, Is.EqualTo(expectedData.BorderHue).Within(0.1));
         Assert.That(actualCommand.Border.Color.Saturation, Is.EqualTo(expectedData.BorderSaturation).Within(0.1));
         Assert.That(actualCommand.Border.Color.Luma, Is.EqualTo(expectedData.BorderLuma).Within(0.1));
-        Assert.That(actualCommand.Border.LightSourceDirection, Is.EqualTo(expectedData.BorderLightSourceDirection).Within(0.1));
-        Assert.That(actualCommand.Border.LightSourceAltitude, Is.EqualTo(expectedData.BorderLightSourceAltitude).Within(1));
+        Assert.That(actualCommand.Shadow.LightSourceDirection, Is.EqualTo(expectedData.BorderLightSourceDirection).Within(0.1));
+        Assert.That(actualCommand.Shadow.LightSourceAltitude, Is.EqualTo(expectedData.BorderLightSourceAltitude).Within(1));
     }
 }

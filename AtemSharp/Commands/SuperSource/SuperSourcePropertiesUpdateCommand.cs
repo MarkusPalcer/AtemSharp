@@ -63,8 +63,8 @@ public partial class SuperSourcePropertiesUpdateCommand : IDeserializedCommand
         superSource.Border.BevelSoftness = _bevelSoftness;
         superSource.Border.BevelPosition = _bevelPosition;
         superSource.Border.Color = new HslColor(_hue, _saturation, _luma);
-        superSource.Border.LightSourceDirection = _lightSourceDirection;
-        superSource.Border.LightSourceAltitude = _lightSourceAltitude;
+        superSource.Shadow.LightSourceDirection = _lightSourceDirection;
+        superSource.Shadow.LightSourceAltitude = _lightSourceAltitude;
         superSource.FillSource = _artFillSource;
         superSource.CutSource = _artCutSource;
         superSource.Option = _artOption;

@@ -93,10 +93,13 @@ public class MixEffectKeyDigitalVideoEffectsCommandTests : SerializedCommandTest
                     Opacity = testCase.Command.BorderOpacity,
                     OuterWidth = testCase.Command.BorderOuterWidth,
                     InnerWidth = testCase.Command.BorderInnerWidth,
+                },
+                Shadow =
+                {
                     LightSourceAltitude = testCase.Command.LightSourceAltitude,
                     LightSourceDirection = testCase.Command.LightSourceDirection,
+                    Enabled = testCase.Command.BorderShadowEnabled,
                 },
-                ShadowEnabled = testCase.Command.BorderShadowEnabled,
                 Rate = testCase.Command.Rate,
                 Size = new SizeF(
                     (float)testCase.Command.SizeX,

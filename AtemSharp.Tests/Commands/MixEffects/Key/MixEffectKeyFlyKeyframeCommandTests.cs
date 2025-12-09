@@ -81,8 +81,10 @@ public class MixEffectKeyFlyKeyframeCommandTests : SerializedCommandTestBase<Mix
                 OuterSoftness = testCase.Command.OuterSoftness,
                 OuterWidth = testCase.Command.OuterWidth
             },
+            Shadow = {
             LightSourceDirection = testCase.Command.LightSourceDirection,
             LightSourceAltitude = testCase.Command.LightSourceAltitude,
+            },
             Mask =
             {
                 Top = testCase.Command.MaskTop,

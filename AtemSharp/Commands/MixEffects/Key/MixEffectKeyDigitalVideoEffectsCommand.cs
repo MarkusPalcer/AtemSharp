@@ -33,7 +33,7 @@ public partial class MixEffectKeyDigitalVideoEffectsCommand(UpstreamKeyer keyer)
 
     [SerializedField(28, 5)] private bool _borderEnabled = keyer.DigitalVideoEffectsSettings.Border.Enabled;
 
-    [SerializedField(29, 6)] private bool _shadowEnabled = keyer.DigitalVideoEffectsSettings.ShadowEnabled;
+    [SerializedField(29, 6)] private bool _shadowEnabled = keyer.DigitalVideoEffectsSettings.Shadow.Enabled;
 
     [SerializedField(30, 7)] private BorderBevel _borderBevel = keyer.DigitalVideoEffectsSettings.Border.Bevel;
 
@@ -68,10 +68,10 @@ public partial class MixEffectKeyDigitalVideoEffectsCommand(UpstreamKeyer keyer)
     private double _borderLuma = keyer.DigitalVideoEffectsSettings.Border.Color.Luma;
 
     [SerializedField(48, 18)] [SerializedType(typeof(ushort))] [ScalingFactor(10.0)]
-    private double _lightSourceDirection = keyer.DigitalVideoEffectsSettings.Border.LightSourceDirection;
+    private double _lightSourceDirection = keyer.DigitalVideoEffectsSettings.Shadow.LightSourceDirection;
 
     [SerializedField(50, 19)] [SerializedType(typeof(byte))]
-    private double _lightSourceAltitude = keyer.DigitalVideoEffectsSettings.Border.LightSourceAltitude;
+    private double _lightSourceAltitude = keyer.DigitalVideoEffectsSettings.Shadow.LightSourceAltitude;
 
     [SerializedField(51, 20)] private bool _maskEnabled = keyer.DigitalVideoEffectsSettings.Mask.Enabled;
 

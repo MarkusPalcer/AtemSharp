@@ -22,12 +22,9 @@ public class UpstreamKeyerDigitalVideoEffectSettings
     /// </summary>
     public double Rotation { get; internal set; }
 
-    /// <summary>
-    /// Whether shadow effect is enabled
-    /// </summary>
-    public bool ShadowEnabled { get; internal set; }
+    public Shadow Shadow { get; } = new();
 
-    public ExtendedBorderProperties Border { get; } = new();
+    public Border Border { get; } = new();
 
     /// <summary>
     /// Mask configuration
