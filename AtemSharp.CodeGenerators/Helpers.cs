@@ -322,6 +322,19 @@ namespace AtemSharp.CodeGenerators
             return arg.Value?.ToString();
         }
 
+        public static bool InheritsFrom(INamedTypeSymbol? symbol, string baseTypeName)
+        {
+            while (symbol is { BaseType: { } })
+            {
+                if (symbol.BaseType.Name == baseTypeName)
+                {
+                    return true;
+                }
 
+                symbol = symbol.BaseType;
+            }
+
+            return false;
+        }
     }
 }
