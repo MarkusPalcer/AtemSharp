@@ -22,5 +22,7 @@ public class MediaPoolConfigCommandTests : DeserializedCommandTestBase<MediaPool
     {
         Assert.That(state.Info.MediaPool.StillCount, Is.EqualTo(expectedData.StillCount));
         Assert.That(state.Info.MediaPool.ClipCount, Is.EqualTo(expectedData.ClipCount));
+        Assert.That(state.Media.Frames.Count(), Is.EqualTo(expectedData.StillCount));
+        Assert.That(state.Media.Clips.Count(), Is.EqualTo(expectedData.ClipCount));
     }
 }

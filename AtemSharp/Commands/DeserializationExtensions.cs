@@ -107,7 +107,7 @@ public static class DeserializationExtensions
 
         // Search for null terminator
         var nullIndex = subSpan.IndexOf((byte)0);
-        if ( nullIndex > -1)
+        if (nullIndex > -1)
         {
             subSpan = subSpan[..nullIndex];
         }

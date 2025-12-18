@@ -12,7 +12,7 @@ public class ItemCollectionTests
     }
 
     [Test]
-    public void Populate_CreatesCorrectNumberOfElements()
+    public void Populate_CreatesCorrectNumberOfElementsByInvokingFactoryWithEachIndex()
     {
         var sut = new ItemCollection<int, TestItem>(id => new TestItem { Id = id });
         sut.Populate(5);
@@ -67,5 +67,16 @@ public class ItemCollectionTests
 
         sut.Populate(6);
         Assert.That(sut[0].Data, Is.EqualTo(string.Empty));
+    }
+
+    [Test]
+    public void Populate_WithSameSize_DoesNotTouchElements()
+    {
+        var sut = new ItemCollection<int, TestItem>(id => new TestItem { Id = id });
+        sut.Populate(5);
+        sut[2].Data = "Test";
+
+        sut.Populate(5);
+        Assert.That(sut[2].Data, Is.EqualTo("Test"));
     }
 }

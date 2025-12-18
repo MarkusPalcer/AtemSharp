@@ -64,5 +64,13 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
         Assert.That(state.Info.Capabilities.CameraControl, Is.EqualTo(expectedData.CameraControl));
         Assert.That(state.Info.Capabilities.AdvancedChromaKeyers, Is.False);
         Assert.That(state.Info.Capabilities.OnlyConfigurableOutputs, Is.False);
+
+        Assert.That(state.Info.MixEffects.Count(), Is.EqualTo(expectedData.MixEffectBlocks));
+        Assert.That(state.Video.MixEffects.Count(), Is.EqualTo(expectedData.MixEffectBlocks));
+        Assert.That(state.Video.Auxiliaries.Count(), Is.EqualTo(expectedData.Auxiliaries));
+        Assert.That(state.Media.Players.Count(), Is.EqualTo(expectedData.MediaPlayers));
+        Assert.That(state.Info.SuperSources.Count(), Is.EqualTo(expectedData.SuperSource));
+        Assert.That(state.Video.SuperSources.Count(), Is.EqualTo(expectedData.SuperSource));
+        Assert.That(state.Video.DownstreamKeyers.Count(), Is.EqualTo(expectedData.DownstreamKeyers));
     }
 }

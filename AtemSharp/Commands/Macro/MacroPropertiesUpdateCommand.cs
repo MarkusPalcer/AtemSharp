@@ -22,8 +22,8 @@ public partial class MacroPropertiesUpdateCommand : IDeserializedCommand
         var nameLength = rawCommand.ReadUInt16BigEndian(4);
         var descriptionLength = rawCommand.ReadUInt16BigEndian(6);
 
-        Name = nameLength > 0 ? rawCommand.ReadString(8, nameLength) : string.Empty;
-        Description = descriptionLength > 0 ? rawCommand.ReadString(8 + nameLength, descriptionLength) : string.Empty;
+        Name = rawCommand.ReadString(8, nameLength);
+        Description = rawCommand.ReadString(8 + nameLength, descriptionLength);
     }
 
     /// <inheritdoc />

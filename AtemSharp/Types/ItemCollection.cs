@@ -54,11 +54,6 @@ public class ItemCollection<TId, TItem> : IEnumerable<TItem>
         var id = _firstId;
         for (var i = 0; i < count; i++)
         {
-            if (_items.TryGetValue(id, out _))
-            {
-                continue;
-            }
-
             _items.Add(id, _factory(id));
             id++;
         }
