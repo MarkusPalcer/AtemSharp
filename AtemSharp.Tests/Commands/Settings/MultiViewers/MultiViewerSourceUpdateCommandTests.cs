@@ -9,7 +9,7 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
 {
     public class CommandData : CommandDataBase
     {
-        public int MultiviewIndex { get; set; } // Match TypeScript property name
+        public byte MultiviewIndex { get; set; } // Match TypeScript property name
         public byte WindowIndex { get; set; }
         public int Source { get; set; }
         public bool SupportVuMeter { get; set; } // Match TypeScript property name (no 's')
@@ -28,7 +28,7 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Settings.MultiViewers.ExpandToFit((uint)expectedData.MultiviewIndex);
+        state.Settings.MultiViewers.GetOrCreate(expectedData.MultiviewIndex);
     }
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)

@@ -12,7 +12,7 @@ public class InputChannel
     /// <summary>
     /// Input identifier/number
     /// </summary>
-    public ushort InputId { get; internal set; }
+    public ushort InputId { get; internal init; }
 
     /// <summary>
     /// Long descriptive name for the input
@@ -32,7 +32,7 @@ public class InputChannel
     /// <summary>
     /// Available external port types for this input
     /// </summary>
-    public ExternalPortType[]? ExternalPorts { get; internal set; }
+    public ExternalPortType[] ExternalPorts { get; internal set; } = [];
 
     /// <summary>
     /// Current external port type being used

@@ -1,6 +1,5 @@
 using AtemSharp.Commands.DeviceProfile;
 using AtemSharp.State;
-using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
@@ -23,7 +22,7 @@ public class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixE
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Info.MixEffects = AtemStateUtil.CreateArray<MixEffectInfo>(expectedData.Index + 1);
+        state.Info.MixEffects.GetOrCreate(expectedData.Index);
     }
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)

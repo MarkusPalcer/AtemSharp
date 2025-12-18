@@ -177,7 +177,6 @@ public partial class MixEffectKeyDigitalVideoEffectsUpdateCommand : IDeserialize
 
         // Get or create the upstream keyer
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerId);
-        keyer.Id = KeyerId;
 
         // Update the DVE settings
         keyer.DigitalVideoEffectsSettings.Size = new SizeF((float)SizeX, (float)SizeY);

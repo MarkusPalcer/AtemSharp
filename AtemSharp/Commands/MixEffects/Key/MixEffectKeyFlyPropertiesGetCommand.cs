@@ -41,7 +41,6 @@ public partial class MixEffectKeyFlyPropertiesGetCommand : IDeserializedCommand
 
         // Get or create the upstream keyer
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerIndex);
-        keyer.Id = KeyerIndex;
 
         keyer.FlyProperties.IsASet = IsASet;
         keyer.FlyProperties.IsBSet = IsBSet;

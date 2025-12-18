@@ -27,7 +27,6 @@ public partial class MultiViewerWindowSafeAreaUpdateCommand : IDeserializedComma
 
         // Get the current window state or create a new one
         var currentWindow = multiViewer.Windows.GetOrCreate(WindowIndex);
-        currentWindow.MultiViewerId = MultiViewerId;
         currentWindow.SafeTitle = SafeAreaEnabled;
     }
 }

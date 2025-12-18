@@ -6,14 +6,12 @@ namespace AtemSharp.State.Info;
 /// Mix effect configuration and capabilities
 /// </summary>
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class MixEffectInfo : ItemWithId<int>
+public class MixEffectInfo
 {
-    internal override void SetId(int id) => Id = (byte)id;
-
     /// <summary>
     /// Mix effect index (0-based)
     /// </summary>
-    public byte Id { get; internal set; }
+    public byte Id { get; internal init; }
 
     /// <summary>
     /// Number of keyers available in this mix effect

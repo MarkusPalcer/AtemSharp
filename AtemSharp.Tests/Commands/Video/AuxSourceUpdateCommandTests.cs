@@ -1,6 +1,5 @@
 using AtemSharp.Commands.Video;
 using AtemSharp.State;
-using AtemSharp.State.Video;
 
 namespace AtemSharp.Tests.Commands.Video;
 
@@ -10,7 +9,7 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
 {
     public class CommandData : CommandDataBase
     {
-        public int Id { get; set; }
+        public byte Id { get; set; }
         public int Source { get; set; }
     }
 
@@ -22,7 +21,7 @@ public class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSource
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Video.Auxiliaries = AtemStateUtil.CreateArray<AuxiliaryOutput>(expectedData.Id + 1);
+        state.Video.Auxiliaries.GetOrCreate(expectedData.Id);
     }
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)

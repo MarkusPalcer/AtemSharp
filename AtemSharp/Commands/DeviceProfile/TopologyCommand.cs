@@ -1,9 +1,4 @@
 using AtemSharp.State;
-using AtemSharp.State.Info;
-using AtemSharp.State.Media;
-using AtemSharp.State.Video;
-using AtemSharp.State.Video.DownstreamKeyer;
-using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
@@ -49,17 +44,17 @@ public partial class TopologyCommand : IDeserializedCommand
         state.Info.Capabilities.OnlyConfigurableOutputs = false;
 
         // Create arrays now that their sizes are known
-        state.Info.MixEffects = AtemStateUtil.CreateArray<MixEffectInfo>(MixEffects);
-        state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(MixEffects);
+        state.Info.MixEffects.Populate(MixEffects);
+        state.Video.MixEffects.Populate(MixEffects);
 
-        state.Video.Auxiliaries = AtemStateUtil.CreateArray<AuxiliaryOutput>(Auxiliaries);
+        state.Video.Auxiliaries.Populate(Auxiliaries);
 
-        state.Media.Players = AtemStateUtil.CreateArray<MediaPlayer>(MediaPlayers);
+        state.Media.Players.Populate(MediaPlayers);
 
-        state.Info.SuperSources = new SuperSourceInfo[SuperSources];
-        state.Video.SuperSources = AtemStateUtil.CreateArray<State.Video.SuperSource.SuperSource>(SuperSources);
+        state.Info.SuperSources.Populate(SuperSources);
+        state.Video.SuperSources.Populate(SuperSources);
 
-        state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(DownstreamKeyers);
+        state.Video.DownstreamKeyers.Populate(DownstreamKeyers);
 
         state.Info.MultiViewer.Count = 0;
         state.Info.MultiViewer.WindowCount = 0;

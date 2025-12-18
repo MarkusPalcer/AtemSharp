@@ -1,9 +1,15 @@
 using System.Diagnostics.CodeAnalysis;
+using AtemSharp.Types;
 
 namespace AtemSharp.State.Audio.Fairlight;
 
-[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class MasterEqualizer : Equalizer
 {
-    public MasterEqualizerBand[] Bands { get; internal set; } = [];
+    internal MasterEqualizer()
+    {
+        Bands = new ItemCollection<byte, MasterEqualizerBand>(id => new MasterEqualizerBand { Id = id });
+    }
+
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+    public ItemCollection<byte, MasterEqualizerBand> Bands { get; }
 }

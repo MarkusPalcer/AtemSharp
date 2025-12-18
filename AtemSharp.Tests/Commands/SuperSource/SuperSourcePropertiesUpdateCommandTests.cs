@@ -62,7 +62,7 @@ public class SuperSourcePropertiesUpdateCommandTests : DeserializedCommandTestBa
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Video.SuperSources = AtemStateUtil.CreateArray<AtemSharp.State.Video.SuperSource.SuperSource>(1);
+        state.Video.SuperSources.GetOrCreate(0);
     }
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)

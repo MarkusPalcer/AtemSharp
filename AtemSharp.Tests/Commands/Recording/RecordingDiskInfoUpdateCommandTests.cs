@@ -37,7 +37,7 @@ public class RecordingDiskInfoUpdateCommandTests : DeserializedCommandTestBase<R
     {
         if (expectedData.IsDelete)
         {
-            Assert.That(state.Recording.Disks, Does.Not.ContainKey(expectedData.DiskId));
+            Assert.That(state.Recording.Disks, Is.Empty);
         }
         else
         {

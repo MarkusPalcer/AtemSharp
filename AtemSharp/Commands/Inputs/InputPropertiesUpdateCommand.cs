@@ -38,7 +38,7 @@ public partial class InputPropertiesUpdateCommand : IDeserializedCommand
     [DeserializedField(28)]
     [SerializedType(typeof(ExternalPortType))]
     [CustomScaling($"{nameof(DeserializationExtensions)}.{nameof(DeserializationExtensions.GetComponents)}")]
-    private ExternalPortType[]? _externalPorts;
+    private ExternalPortType[] _externalPorts = [];
 
     /// <summary>
     /// Current external port type being used
@@ -69,17 +69,14 @@ public partial class InputPropertiesUpdateCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        state.Video.Inputs[InputId] = new InputChannel
-        {
-            InputId = InputId,
-            LongName = LongName,
-            ShortName = ShortName,
-            AreNamesDefault = AreNamesDefault,
-            ExternalPorts = ExternalPorts,
-            ExternalPortType = ExternalPortType,
-            InternalPortType = InternalPortType,
-            SourceAvailability = SourceAvailability,
-            MeAvailability = MeAvailability
-        };
+        var inputChannel = state.Video.Inputs.GetOrCreate(InputId);
+        inputChannel.LongName = LongName;
+        inputChannel.ShortName = ShortName;
+        inputChannel.AreNamesDefault = AreNamesDefault;
+        inputChannel.ExternalPorts = ExternalPorts;
+        inputChannel.ExternalPortType = ExternalPortType;
+        inputChannel.InternalPortType = InternalPortType;
+        inputChannel.SourceAvailability = SourceAvailability;
+        inputChannel.MeAvailability = MeAvailability;
     }
 }

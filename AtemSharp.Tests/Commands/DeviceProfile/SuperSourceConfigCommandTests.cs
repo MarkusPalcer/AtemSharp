@@ -31,7 +31,7 @@ public class SuperSourceConfigCommandTests : DeserializedCommandTestBase<SuperSo
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Info.SuperSources = AtemStateUtil.CreateArray<SuperSourceInfo>(1);
+        state.Info.SuperSources.GetOrCreate(0);
     }
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)

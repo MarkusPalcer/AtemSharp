@@ -23,53 +23,43 @@ public class FairlightMixerSourceDeleteCommandTests : DeserializedCommandTestBas
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
         // Create an entry to remove
-        state.Audio = new FairlightAudioState
-        {
-            Inputs =
-            {
-                [expectedData.Index] = new FairlightAudioInput
-                {
-                    Sources = { [long.Parse(expectedData.SourceId)] = new AtemSharp.State.Audio.Fairlight.Source() }
-                }
-            }
-        };
+        var audio = new FairlightAudioState();
+        audio.Inputs.GetOrCreate(expectedData.Index).Sources.GetOrCreate(long.Parse(expectedData.SourceId));
+        state.Audio = audio;
     }
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)
     {
-        Assert.That(state.GetFairlight().Inputs[expectedData.Index].Sources, Does.Not.ContainKey(long.Parse(expectedData.SourceId)));
+        Assert.That(state.GetFairlight().Inputs[expectedData.Index].Sources.Select(x => x.Id), Does.Not.Contain(long.Parse(expectedData.SourceId)));
     }
 
     [Test]
     public void MissingSource()
     {
-        var sut = new FairlightMixerSourceDeleteCommand()
+        var sut = new FairlightMixerSourceDeleteCommand
         {
             InputId = 1,
             SourceId = 1
         };
 
+        var audio = new FairlightAudioState();
+        audio.Inputs.GetOrCreate(1);
+
         var state = new AtemState
         {
-            Audio = new FairlightAudioState
-            {
-                Inputs =
-                {
-                    [1] = new FairlightAudioInput()
-                }
-            }
+            Audio = audio
         };
 
         sut.ApplyToState(state);
 
-        Assert.That(state.GetFairlight().Inputs.Keys, Is.EquivalentTo(new ushort[] { 1 }));
+        Assert.That(state.GetFairlight().Inputs.Select(x => x.Id), Is.EquivalentTo(new ushort[] { 1 }));
         Assert.That(state.GetFairlight().Inputs[1].Sources, Is.Empty);
     }
 
     [Test]
     public void MissingInput()
     {
-        var sut = new FairlightMixerSourceDeleteCommand()
+        var sut = new FairlightMixerSourceDeleteCommand
         {
             InputId = 1,
             SourceId = 1

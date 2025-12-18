@@ -1,6 +1,5 @@
 using AtemSharp.Commands.DownstreamKey;
 using AtemSharp.State;
-using AtemSharp.State.Video.DownstreamKeyer;
 
 namespace AtemSharp.Tests.Commands.DownstreamKey;
 
@@ -9,7 +8,7 @@ public class DownstreamKeySourcesUpdateCommandTests : DeserializedCommandTestBas
 {
     public class CommandData : CommandDataBase
     {
-        public int Index { get; set; }
+        public byte Index { get; set; }
 
         public int CutSource { get; set; }
 
@@ -26,7 +25,7 @@ public class DownstreamKeySourcesUpdateCommandTests : DeserializedCommandTestBas
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Video.DownstreamKeyers = AtemStateUtil.CreateArray<DownstreamKeyer>(expectedData.Index + 1);
+        state.Video.DownstreamKeyers.GetOrCreate(expectedData.Index);
     }
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)

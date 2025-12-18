@@ -24,7 +24,7 @@ public class MultiViewerWindowSafeAreaUpdateCommandTests : DeserializedCommandTe
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Settings.MultiViewers.ExpandToFit(expectedData.MultiviewIndex);
+        state.Settings.MultiViewers.GetOrCreate(expectedData.MultiviewIndex);
     }
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)

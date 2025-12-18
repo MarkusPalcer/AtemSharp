@@ -14,42 +14,58 @@ namespace AtemSharp.State;
 /// <summary>
 /// Main ATEM state container
 /// </summary>
-[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class AtemState
 {
+    public AtemState()
+    {
+        ColorGenerators = new ItemCollection<byte, ColorGeneratorState>(id => new ColorGeneratorState { Id = id });
+    }
+
     /// <summary>
     /// Device information and capabilities
     /// </summary>
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public DeviceInfo Info { get; } = new();
 
     /// <summary>
     /// Audio state for classic ATEM devices
     /// </summary>
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public AudioState? Audio { get; internal set; }
 
     /// <summary>
     /// Display clock state and configuration
     /// </summary>
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public DisplayClock.DisplayClock DisplayClock { get; } = new();
 
     /// <summary>
     /// Video state including downstream keyers, mix effects, etc.
     /// </summary>
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public VideoState Video { get; } = new();
 
     /// <summary>
     /// Settings state including video mode and other device settings
     /// </summary>
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public SettingsState Settings { get; } = new();
 
-    public List<ColorGeneratorState> ColorGenerators { get; } = [];
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+    public ItemCollection<byte, ColorGeneratorState> ColorGenerators { get; }
 
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public MediaState Media { get; } = new();
 
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public MacroState Macros { get; } = new();
+
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public RecordingState Recording { get; } = new();
 
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public StreamingState Streaming { get; } = new();
 
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public TimeCode TimeCode { get; } = new();
 }

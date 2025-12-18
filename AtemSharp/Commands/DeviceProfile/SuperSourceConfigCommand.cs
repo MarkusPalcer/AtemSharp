@@ -1,5 +1,4 @@
 using AtemSharp.State;
-using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
@@ -17,10 +16,6 @@ public partial class SuperSourceConfigCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        // Update device info SuperSource configuration
-        state.Info.SuperSources[0] = new SuperSourceInfo
-        {
-            BoxCount = BoxCount
-        };
+        state.Info.SuperSources[0].BoxCount = BoxCount;
     }
 }

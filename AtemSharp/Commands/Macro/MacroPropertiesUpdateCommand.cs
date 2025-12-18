@@ -29,12 +29,6 @@ public partial class MacroPropertiesUpdateCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        if (Id >= state.Macros.Macros.Length)
-        {
-            throw new IndexOutOfRangeException(
-                $"Macro ID {Id} is out of range of the macro state array which has length {state.Macros.Macros.Length}");
-        }
-
         var macro = state.Macros.Macros[Id];
         macro.Name = Name;
         macro.Description = Description;

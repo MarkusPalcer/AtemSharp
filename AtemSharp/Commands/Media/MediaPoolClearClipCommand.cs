@@ -6,5 +6,5 @@ namespace AtemSharp.Commands.Media;
 [BufferSize(4)]
 public partial class MediaPoolClearClipCommand(MediaPoolEntry entry) : SerializedCommand
 {
-    [SerializedField(0)] [NoProperty] private readonly byte _index = entry.Id;
+    [SerializedField(0)] [NoProperty] private readonly byte _index = (byte)entry.Id;
 }

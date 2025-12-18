@@ -32,7 +32,7 @@ public class MediaPlayerSourceUpdateCommandTests : DeserializedCommandTestBase<M
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Media.Players = AtemStateUtil.CreateArray<MediaPlayer>(expectedData.Index + 1);
+        state.Media.Players.GetOrCreate(expectedData.Index);
     }
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)

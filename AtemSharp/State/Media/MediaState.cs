@@ -1,13 +1,23 @@
 using System.Diagnostics.CodeAnalysis;
+using AtemSharp.Types;
 
 namespace AtemSharp.State.Media;
 
-[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class MediaState
 {
-    public MediaPoolEntry[] Frames { get; internal set; } = [];
+    internal MediaState()
+    {
+        Players = new ItemCollection<byte, MediaPlayer>(id => new MediaPlayer { Id = id });
+        Clips = new ItemCollection<ushort, MediaPoolEntry>(id => new MediaPoolEntry { Id = id });
+        Frames = new ItemCollection<ushort, MediaPoolEntry>(id => new MediaPoolEntry { Id = id });
+    }
 
-    public MediaPoolEntry[] Clips { get; internal set; } = [];
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+    public ItemCollection<ushort, MediaPoolEntry> Frames { get; }
 
-    public MediaPlayer[] Players { get; internal set; } = [];
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+    public ItemCollection<ushort, MediaPoolEntry> Clips { get; }
+
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+    public ItemCollection<byte, MediaPlayer> Players { get; }
 }

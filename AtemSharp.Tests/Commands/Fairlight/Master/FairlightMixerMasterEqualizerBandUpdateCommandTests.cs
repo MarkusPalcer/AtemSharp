@@ -22,7 +22,6 @@ public class FairlightMixerMasterEqualizerBandUpdateCommandTests : DeserializedC
         public double QFactor { get; set; }
     }
 
-
     protected override void CompareCommandProperties(FairlightMixerMasterEqualizerBandUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
@@ -41,16 +40,8 @@ public class FairlightMixerMasterEqualizerBandUpdateCommandTests : DeserializedC
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Audio = new FairlightAudioState
-        {
-            Master =
-            {
-                Equalizer =
-                {
-                    Bands = AtemStateUtil.CreateArray<MasterEqualizerBand>(expectedData.Band + 1)
-                }
-            }
-        };
+        state.Audio = new FairlightAudioState();
+        state.GetFairlight().Master.Equalizer.Bands.GetOrCreate(expectedData.Band);
     }
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)

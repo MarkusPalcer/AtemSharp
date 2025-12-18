@@ -1,6 +1,5 @@
 using AtemSharp.Commands.MixEffects.FadeToBlack;
 using AtemSharp.State;
-using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects.FadeToBlack;
 
@@ -22,7 +21,7 @@ public class FadeToBlackRateUpdateCommandTests : DeserializedCommandTestBase<Fad
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(expectedData.Index + 1);
+        state.Video.MixEffects.GetOrCreate(expectedData.Index);
     }
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)

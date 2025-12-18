@@ -39,8 +39,6 @@ public partial class MultiViewerSourceUpdateCommand : IDeserializedCommand
         var multiViewer = state.Settings.MultiViewers[MultiViewerId];
         var window = multiViewer.Windows.GetOrCreate(WindowIndex);
 
-        window.MultiViewerId = MultiViewerId;
-        window.WindowIndex = WindowIndex;
         window.Source = Source;
         window.SupportsVuMeter = SupportsVuMeter;
         window.SupportsSafeArea = SupportsSafeArea;

@@ -2,25 +2,52 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace AtemSharp.State.Audio.Fairlight;
 
-[ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
-public class Source : ItemWithId<long>
+public class Source
 {
+    public Source()
+    {
+        Equalizer = new SourceEqualizer(this);
+    }
+
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public long Id { get; internal set; }
 
-    public SourceEqualizer Equalizer { get; } = new();
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+    public SourceEqualizer Equalizer { get; }
 
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public Dynamics Dynamics { get; } = new();
-    public FairlightAudioSourceType Type { get; internal set; }
-    public byte MaxFramesDelay { get; internal set; }
-    public byte FramesDelay { get; internal set; }
-    public double Gain { get; internal set; }
-    public bool HasStereoSimulation { get; internal set; }
-    public double StereoSimulation { get; internal set; }
-    public double Balance { get; internal set; }
-    public double FaderGain { get; internal set; }
-    public FairlightAudioMixOption[] SupportedMixOptions { get; internal set; } = [];
-    public FairlightAudioMixOption MixOption { get; internal set; }
-    public ushort InputId { get; internal set; }
 
-    internal override void SetId(long id) => Id = id;
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+    public FairlightAudioSourceType Type { get; internal set; }
+
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+    public byte MaxFramesDelay { get; internal set; }
+
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+    public byte FramesDelay { get; internal set; }
+
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+    public double Gain { get; internal set; }
+
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+    public bool HasStereoSimulation { get; internal set; }
+
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+    public double StereoSimulation { get; internal set; }
+
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+    public double Balance { get; internal set; }
+
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+    public double FaderGain { get; internal set; }
+
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+    public FairlightAudioMixOption[] SupportedMixOptions { get; internal set; } = [];
+
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+    public FairlightAudioMixOption MixOption { get; internal set; }
+
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+    public ushort InputId { get; internal set; }
 }

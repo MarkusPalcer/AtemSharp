@@ -1,6 +1,5 @@
 using AtemSharp.Commands.DeviceProfile;
 using AtemSharp.State;
-using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
@@ -10,7 +9,7 @@ public class SuperSourceConfigCommandV8Tests : DeserializedCommandTestBase<Super
 {
     public class CommandData : CommandDataBase
     {
-        public int SsrcId { get; set; }
+        public byte SsrcId { get; set; }
         public byte BoxCount { get; set; }
 
         // For older protocol versions that may use "Boxes" property in test data
@@ -30,7 +29,7 @@ public class SuperSourceConfigCommandV8Tests : DeserializedCommandTestBase<Super
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Info.SuperSources = AtemStateUtil.CreateArray<SuperSourceInfo>(expectedData.SsrcId + 1);
+        state.Info.SuperSources.GetOrCreate(expectedData.SsrcId);
     }
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)

@@ -58,18 +58,13 @@ public partial class AudioMixerInputUpdateV8Command : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        var audio = state.GetClassicAudio();
-
-        audio.Channels[Index] = new ClassicAudioChannel
-        {
-            Id = Index,
-            SourceType = SourceType,
-            PortType = PortType,
-            MixOption = MixOption,
-            Gain = Gain,
-            Balance = Balance,
-            SupportsRcaToXlrEnabled = SupportsRcaToXlrEnabled,
-            RcaToXlrEnabled = RcaToXlrEnabled
-        };
+        var channel = state.GetClassicAudio().Channels.GetOrCreate(Index);
+        channel.SourceType = SourceType;
+        channel.PortType = PortType;
+        channel.MixOption = MixOption;
+        channel.Gain = Gain;
+        channel.Balance = Balance;
+        channel.SupportsRcaToXlrEnabled = SupportsRcaToXlrEnabled;
+        channel.RcaToXlrEnabled = RcaToXlrEnabled;
     }
 }

@@ -1,6 +1,5 @@
 using AtemSharp.Commands.MixEffects.Key;
 using AtemSharp.State;
-using AtemSharp.State.Video.MixEffect;
 using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
@@ -37,7 +36,7 @@ public class MixEffectKeyPatternUpdateCommandTests : DeserializedCommandTestBase
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(expectedData.MixEffectIndex + 1);
+        state.Video.MixEffects.GetOrCreate(expectedData.MixEffectIndex);
     }
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)

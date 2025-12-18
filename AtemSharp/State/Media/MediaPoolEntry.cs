@@ -3,11 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 namespace AtemSharp.State.Media;
 
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class MediaPoolEntry : ItemWithId<int>
+public class MediaPoolEntry
 {
-    internal override void SetId(int id) => Id = (byte)id;
-
-    public byte Id { get; internal set; }
+    public ushort Id { get; internal init; }
     public bool IsUsed { get; internal set; }
 
     public string Name { get; internal set; } = string.Empty;
