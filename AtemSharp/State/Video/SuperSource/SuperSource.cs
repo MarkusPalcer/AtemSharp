@@ -1,9 +1,11 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using AtemSharp.Types;
 using AtemSharp.Types.Border;
 
 namespace AtemSharp.State.Video.SuperSource;
 
+[DebuggerDisplay("{" + nameof(ToString) + ",nq}")]
 public class SuperSource
 {
     public SuperSource()
@@ -38,4 +40,7 @@ public class SuperSource
 
     [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public PreMultipliedKey PreMultipliedKey { get; } = new();
+
+    [ExcludeFromCodeCoverage]
+    public override string ToString() => $"{GetType().Name} #{Id}";
 }

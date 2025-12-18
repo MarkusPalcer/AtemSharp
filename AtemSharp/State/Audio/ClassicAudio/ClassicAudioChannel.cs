@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State.Ports;
 
@@ -6,7 +7,8 @@ namespace AtemSharp.State.Audio.ClassicAudio;
 /// <summary>
 /// Classic audio channel properties
 /// </summary>
-[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
+[ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+[DebuggerDisplay("{" + nameof(ToString) + ",nq}")]
 public class ClassicAudioChannel
 {
     public ushort Id { get; init; }
@@ -45,4 +47,7 @@ public class ClassicAudioChannel
     /// RCA to XLR enabled
     /// </summary>
     public bool RcaToXlrEnabled { get; internal set; }
+
+    [ExcludeFromCodeCoverage]
+    public override string ToString() => $"{GetType().Name} #{Id}";
 }

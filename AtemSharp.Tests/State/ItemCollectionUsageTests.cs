@@ -82,7 +82,7 @@ public class ItemCollectionUsageTests
         var sut = new MacroState();
 
         sut.Macros.Populate(5);
-        Assert.That(sut.Macros.Select(x => x.Id), Is.EquivalentTo(Enumerable.Range(1, 5)));
+        Assert.That(sut.Macros.Select(x => x.Id), Is.EquivalentTo(Enumerable.Range(0, 5)));
     }
 
     [Test]

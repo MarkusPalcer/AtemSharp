@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace AtemSharp.State.Video.DownstreamKeyer;
@@ -6,6 +7,7 @@ namespace AtemSharp.State.Video.DownstreamKeyer;
 /// Downstream keyer state
 /// </summary>
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
+[DebuggerDisplay("{" + nameof(ToString) + ",nq}")]
 public class DownstreamKeyer
 {
     public byte Id { get; internal init; }
@@ -47,4 +49,7 @@ public class DownstreamKeyer
     /// Downstream keyer properties and configuration
     /// </summary>
     public DownstreamKeyerProperties Properties { get; } = new();
+
+    [ExcludeFromCodeCoverage]
+    public override string ToString() => $"{GetType().Name} #{Id}";
 }

@@ -1,9 +1,11 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 
 namespace AtemSharp.State.Video.SuperSource;
 
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
+[DebuggerDisplay("{" + nameof(ToString) + ",nq}")]
 public class SuperSourceBox
 {
     public byte SuperSourceId { get; internal init; }
@@ -17,4 +19,7 @@ public class SuperSourceBox
     public double CropBottom { get; internal set; }
     public double CropLeft { get; internal set; }
     public double CropRight { get; internal set; }
+
+    [ExcludeFromCodeCoverage]
+    public override string ToString() => $"{GetType().Name} #{SuperSourceId}.#{Id}";
 }

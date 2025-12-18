@@ -19,18 +19,14 @@ public class ItemCollection<TId, TItem> : IEnumerable<TItem>
 {
     private readonly Dictionary<TId, TItem> _items = new();
     private readonly Func<TId, TItem> _factory;
-    private readonly TId _firstId;
 
     /// <summary>
     /// Creates a new ItemCollection
     /// </summary>
     /// <param name="factory">The method to create a new item with the given ID</param>
-    /// <param name="firstId">The first ID in an array (in case the IDs start with 1 instead of 0)</param>
-    internal ItemCollection(Func<TId, TItem> factory, TId firstId = default!)
+    internal ItemCollection(Func<TId, TItem> factory)
     {
-        // IIncrementOperators<TId> makes TId non-nullable, so we can use default! here
         _factory = factory;
-        _firstId = firstId;
     }
 
     public TItem this[TId id] => _items[id];
@@ -51,7 +47,8 @@ public class ItemCollection<TId, TItem> : IEnumerable<TItem>
 
         _items.Clear();
 
-        var id = _firstId;
+        // IIncrementOperators<TId> makes TId non-nullable, so we can use default! here
+        var id = default(TId)!;
         for (var i = 0; i < count; i++)
         {
             _items.Add(id, _factory(id));

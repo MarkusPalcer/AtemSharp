@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace AtemSharp.State.Audio.Fairlight;
 
+[DebuggerDisplay("{" + nameof(ToString) + ",nq}")]
 public class Source
 {
     public Source()
@@ -50,4 +52,7 @@ public class Source
 
     [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public ushort InputId { get; internal set; }
+
+    [ExcludeFromCodeCoverage]
+    public override string ToString() => $"{GetType().Name} #{InputId}.#{Id}";
 }

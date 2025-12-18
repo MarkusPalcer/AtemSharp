@@ -42,5 +42,6 @@ public class FairlightAudioInput
 
     public ItemCollection<long, Source> Sources { get; }
 
-    public override string ToString() => $"FairlightAudioInput #{Id}";
+    [ExcludeFromCodeCoverage]
+    public override string ToString() => $"{GetType().Name} #{Id}";
 }

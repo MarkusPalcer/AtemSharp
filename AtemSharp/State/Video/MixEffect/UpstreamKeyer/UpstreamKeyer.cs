@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using AtemSharp.Types;
 
@@ -6,7 +7,8 @@ namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 /// <summary>
 /// Upstream keyer state containing key properties and settings
 /// </summary>
-[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
+[ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+[DebuggerDisplay("{" + nameof(ToString) + ",nq}")]
 public class UpstreamKeyer
 {
     public byte MixEffectId { get; internal init; }
@@ -96,4 +98,7 @@ public class UpstreamKeyer
             }
         ];
     }
+
+    [ExcludeFromCodeCoverage]
+    public override string ToString() => $"{GetType().Name} #{MixEffectId}.#{Id}";
 }

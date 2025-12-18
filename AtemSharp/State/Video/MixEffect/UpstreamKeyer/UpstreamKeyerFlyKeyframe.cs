@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using AtemSharp.Types;
@@ -5,6 +6,7 @@ using AtemSharp.Types.Border;
 
 namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
+[DebuggerDisplay("{" + nameof(ToString) + ",nq}")]
 public class UpstreamKeyerFlyKeyframe
 {
     [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
@@ -38,4 +40,7 @@ public class UpstreamKeyerFlyKeyframe
     /// </summary>
     [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public MaskProperties Mask { get; } = new();
+
+    [ExcludeFromCodeCoverage]
+    public override string ToString() => $"{GetType().Name} #{MixEffectId}.#{UpstreamKeyerId}.#{Id}";
 }

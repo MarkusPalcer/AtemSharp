@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using AtemSharp.Types;
 
@@ -6,6 +7,7 @@ namespace AtemSharp.State.Settings.MultiViewer;
 /// <summary>
 /// MultiViewer configuration and state
 /// </summary>
+[DebuggerDisplay("{" + nameof(ToString) + ",nq}")]
 public class MultiViewer
 {
     public MultiViewer()
@@ -40,4 +42,7 @@ public class MultiViewer
     /// </summary>
     [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
     public byte VuOpacity { get; internal set; }
+
+    [ExcludeFromCodeCoverage]
+    public override string ToString() => $"{GetType().Name} #{Id}";
 }

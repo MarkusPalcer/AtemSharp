@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace AtemSharp.State.Settings.MultiViewer;
@@ -6,6 +7,7 @@ namespace AtemSharp.State.Settings.MultiViewer;
 /// Represents the full state of a MultiViewer window, extending the source configuration with display options
 /// </summary>
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
+[DebuggerDisplay("{" + nameof(ToString) + ",nq}")]
 public class MultiViewerWindowState
 {
     public byte MultiViewerId { get; internal init; }
@@ -39,4 +41,7 @@ public class MultiViewerWindowState
     /// Whether this window supports safe area overlay
     /// </summary>
     public bool SupportsSafeArea { get; internal set; }
+
+    [ExcludeFromCodeCoverage]
+    public override string ToString() => $"{GetType().Name} #{MultiViewerId}.#{WindowIndex}";
 }

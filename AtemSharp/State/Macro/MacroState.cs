@@ -7,7 +7,7 @@ public class MacroState
 {
     internal MacroState()
     {
-        Macros = new ItemCollection<ushort, Macro>(id => new Macro { Id = id }, 1);
+        Macros = new ItemCollection<ushort, Macro>(id => new Macro { Id = id });
     }
 
     [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]

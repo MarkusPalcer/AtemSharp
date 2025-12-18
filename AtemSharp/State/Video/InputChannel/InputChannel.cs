@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State.Ports;
 
@@ -7,6 +8,7 @@ namespace AtemSharp.State.Video.InputChannel;
 /// Input channel configuration and properties
 /// </summary>
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
+[DebuggerDisplay("{" + nameof(ToString) + ",nq}")]
 public class InputChannel
 {
     /// <summary>
@@ -63,4 +65,7 @@ public class InputChannel
     /// Whether this source is visible in the preview output
     /// </summary>
     public bool IsInPreview { get; internal set; }
+
+    [ExcludeFromCodeCoverage]
+    public override string ToString() => $"{GetType().Name} #{InputId}";
 }
