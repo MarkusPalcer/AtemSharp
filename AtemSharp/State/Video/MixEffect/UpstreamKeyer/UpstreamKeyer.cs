@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using AtemSharp.Types;
 
@@ -6,15 +7,16 @@ namespace AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 /// <summary>
 /// Upstream keyer state containing key properties and settings
 /// </summary>
-[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class UpstreamKeyer : ItemWithId<byte>
+[ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
+[DebuggerDisplay("{" + nameof(ToString) + ",nq}")]
+public class UpstreamKeyer
 {
-    public byte MixEffectId { get; internal set; }
+    public byte MixEffectId { get; internal init; }
 
     /// <summary>
     /// Upstream keyer index (0-based)
     /// </summary>
-    public byte Id { get; internal set; }
+    public byte Id { get; internal init; }
 
     /// <summary>
     /// Whether the keyer is currently on air
@@ -94,9 +96,9 @@ public class UpstreamKeyer : ItemWithId<byte>
                 MixEffectId = MixEffectId,
                 UpstreamKeyerId = Id
             }
-
         ];
     }
 
-    internal override void SetId(byte id) => Id = id;
+    [ExcludeFromCodeCoverage]
+    public override string ToString() => $"{GetType().Name} #{MixEffectId}.#{Id}";
 }

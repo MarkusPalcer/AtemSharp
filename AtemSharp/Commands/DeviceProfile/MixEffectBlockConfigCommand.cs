@@ -1,5 +1,4 @@
 using AtemSharp.State;
-using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
@@ -22,11 +21,7 @@ public partial class MixEffectBlockConfigCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        // Update device info mix effect configuration
-        state.Info.MixEffects[Index] = new MixEffectInfo
-        {
-            Id = Index,
-            KeyCount = KeyCount
-        };
+        var item = state.Info.MixEffects[Index];
+        item.KeyCount = KeyCount;
     }
 }

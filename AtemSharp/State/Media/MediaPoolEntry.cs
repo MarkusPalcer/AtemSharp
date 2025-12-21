@@ -1,13 +1,13 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace AtemSharp.State.Media;
 
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class MediaPoolEntry : ItemWithId<int>
+[DebuggerDisplay("{" + nameof(ToString) + ",nq}")]
+public class MediaPoolEntry
 {
-    internal override void SetId(int id) => Id = (byte)id;
-
-    public byte Id { get; internal set; }
+    public ushort Id { get; internal init; }
     public bool IsUsed { get; internal set; }
 
     public string Name { get; internal set; } = string.Empty;
@@ -15,4 +15,7 @@ public class MediaPoolEntry : ItemWithId<int>
     public string Hash { get; internal set; } = string.Empty;
     public string FileName { get; internal set; } = string.Empty;
     public ushort FrameCount { get; internal set; }
+
+    [ExcludeFromCodeCoverage]
+    public override string ToString() => $"{GetType().Name} #{Id}";
 }

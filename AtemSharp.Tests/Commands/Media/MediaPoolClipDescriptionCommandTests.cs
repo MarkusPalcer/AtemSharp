@@ -1,6 +1,5 @@
 using AtemSharp.Commands.Media;
 using AtemSharp.State;
-using AtemSharp.State.Media;
 
 namespace AtemSharp.Tests.Commands.Media;
 
@@ -24,7 +23,7 @@ public class MediaPoolClipDescriptionCommandTests : DeserializedCommandTestBase<
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Media.Clips = AtemStateUtil.CreateArray<MediaPoolEntry>(expectedData.Index + 1);
+        state.Media.Clips.GetOrCreate(expectedData.Index);
     }
 
 

@@ -61,11 +61,6 @@ public static class DeserializationExtensions
         return span[offset];
     }
 
-    public static sbyte ReadInt8(this ReadOnlySpan<byte> span, int offset)
-    {
-        return unchecked((sbyte)span[offset]);
-    }
-
     public static bool ReadBoolean(this ReadOnlySpan<byte> span, int offset) => ReadUInt8(span, offset) != 0;
 
     /// <summary>
@@ -107,7 +102,7 @@ public static class DeserializationExtensions
 
         // Search for null terminator
         var nullIndex = subSpan.IndexOf((byte)0);
-        if ( nullIndex > -1)
+        if (nullIndex > -1)
         {
             subSpan = subSpan[..nullIndex];
         }

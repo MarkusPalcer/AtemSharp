@@ -1,6 +1,5 @@
 using AtemSharp.Commands.Media;
 using AtemSharp.State;
-using AtemSharp.State.Media;
 
 namespace AtemSharp.Tests.Commands.Media;
 
@@ -28,7 +27,7 @@ public class MediaPlayerStatusUpdateCommandTests : DeserializedCommandTestBase<M
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Media.Players = AtemStateUtil.CreateArray<MediaPlayer>(expectedData.Index + 1);
+        state.Media.Players.GetOrCreate(expectedData.Index);
     }
 
 

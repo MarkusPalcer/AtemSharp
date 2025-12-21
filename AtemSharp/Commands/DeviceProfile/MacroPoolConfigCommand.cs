@@ -17,6 +17,6 @@ public partial class MacroPoolConfigCommand : IDeserializedCommand
     public void ApplyToState(AtemState state)
     {
         state.Info.MacroPool.MacroCount = MacroCount;
-        state.Macros.Macros = AtemStateUtil.CreateArray<State.Macro.Macro>(MacroCount);
+        state.Macros.Macros.Populate(MacroCount);
     }
 }

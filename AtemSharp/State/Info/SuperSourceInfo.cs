@@ -6,10 +6,9 @@ namespace AtemSharp.State.Info;
 /// SuperSource configuration and capabilities
 /// </summary>
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class SuperSourceInfo : ItemWithId<int>
+public class SuperSourceInfo
 {
-    internal override void SetId(int id) => Id = (byte)id;
-    public byte Id { get; internal set; }
+    public byte Id { get; internal init; }
 
     /// <summary>
     /// Number of SuperSource boxes available

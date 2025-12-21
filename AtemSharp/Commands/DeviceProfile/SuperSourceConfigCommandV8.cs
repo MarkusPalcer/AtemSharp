@@ -15,14 +15,9 @@ public partial class SuperSourceConfigCommandV8 : IDeserializedCommand
     [DeserializedField(0)] private byte _superSourceId;
     [DeserializedField(2)] private byte _boxCount;
 
-
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        // Update device info SuperSource configuration
-        state.Info.SuperSources[SuperSourceId] = new SuperSourceInfo
-        {
-            BoxCount = BoxCount
-        };
+        state.Info.SuperSources[SuperSourceId].BoxCount = BoxCount;
     }
 }

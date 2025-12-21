@@ -1,5 +1,4 @@
 using AtemSharp.State;
-using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Audio.Fairlight.Master;
 
@@ -31,9 +30,6 @@ public partial class FairlightMixerMasterUpdateCommand : IDeserializedCommand
         fairlight.Master.Equalizer.Gain = EqualizerGain;
         fairlight.Master.FollowFadeToBlack = FollowFadeToBlack;
 
-        if (fairlight.Master.Equalizer.Bands.Length != BandCount)
-        {
-            fairlight.Master.Equalizer.Bands = AtemStateUtil.CreateArray<MasterEqualizerBand>(BandCount);
-        }
+        fairlight.Master.Equalizer.Bands.Populate(BandCount);
     }
 }

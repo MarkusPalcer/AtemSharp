@@ -1,10 +1,19 @@
 using System.Diagnostics.CodeAnalysis;
+using AtemSharp.Types;
 
 namespace AtemSharp.State.Audio.Fairlight;
 
-[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 public class AudioRouting
 {
-    public Dictionary<ulong, AudioRoutingEntry> Outputs { get; } = new();
-    public Dictionary<ulong, AudioRoutingEntry> Sources { get; } = new();
+    internal AudioRouting()
+    {
+        Outputs = new ItemCollection<ulong, AudioRoutingEntry>(_ => new AudioRoutingEntry());
+        Sources = new ItemCollection<ulong, AudioRoutingEntry>(_ => new AudioRoutingEntry());
+    }
+
+    [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
+    public ItemCollection<ulong, AudioRoutingEntry> Outputs { get; }
+
+    [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
+    public ItemCollection<ulong, AudioRoutingEntry> Sources { get; }
 }

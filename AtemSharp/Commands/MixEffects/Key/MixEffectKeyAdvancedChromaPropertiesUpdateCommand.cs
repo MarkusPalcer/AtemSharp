@@ -92,7 +92,6 @@ public partial class MixEffectKeyAdvancedChromaPropertiesUpdateCommand : IDeseri
 
         // Get or create the upstream keyer
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerId);
-        keyer.Id = KeyerId;
 
         // Update the advanced chroma properties
         var properties = keyer.AdvancedChromaSettings.Properties;

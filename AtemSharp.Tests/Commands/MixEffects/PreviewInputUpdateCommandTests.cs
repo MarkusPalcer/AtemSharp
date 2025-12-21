@@ -1,6 +1,5 @@
 using AtemSharp.Commands.MixEffects;
 using AtemSharp.State;
-using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects;
 
@@ -10,7 +9,7 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
 {
     public class CommandData : CommandDataBase
     {
-        public int Index { get; set; }
+        public byte Index { get; set; }
         public int Source { get; set; }
     }
 
@@ -23,7 +22,7 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Video.MixEffects = AtemStateUtil.CreateArray<MixEffect>(expectedData.Index + 1);
+        state.Video.MixEffects.GetOrCreate(expectedData.Index);
     }
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)

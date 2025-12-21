@@ -22,7 +22,6 @@ public partial class MixEffectKeyOnAirUpdateCommand : IDeserializedCommand
     {
         var mixEffect = state.Video.MixEffects[MixEffectId];
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerId);
-        keyer.MixEffectId = _mixEffectId;
 
         // Update the on-air state
         keyer.OnAir = OnAir;

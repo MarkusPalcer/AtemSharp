@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace AtemSharp.State.Video.DownstreamKeyer;
@@ -6,10 +7,10 @@ namespace AtemSharp.State.Video.DownstreamKeyer;
 /// Downstream keyer state
 /// </summary>
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class DownstreamKeyer : ItemWithId<int>
+[DebuggerDisplay("{" + nameof(ToString) + ",nq}")]
+public class DownstreamKeyer
 {
-    internal override void SetId(int id) => Id = (byte)id;
-    public byte Id { get; internal set; }
+    public byte Id { get; internal init; }
 
     /// <summary>
     /// Whether the downstream keyer is currently in transition
@@ -48,4 +49,7 @@ public class DownstreamKeyer : ItemWithId<int>
     /// Downstream keyer properties and configuration
     /// </summary>
     public DownstreamKeyerProperties Properties { get; } = new();
+
+    [ExcludeFromCodeCoverage]
+    public override string ToString() => $"{GetType().Name} #{Id}";
 }

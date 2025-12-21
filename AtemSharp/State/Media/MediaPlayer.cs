@@ -3,11 +3,9 @@ using System.Diagnostics.CodeAnalysis;
 namespace AtemSharp.State.Media;
 
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class MediaPlayer : ItemWithId<int>
+public class MediaPlayer
 {
-    internal override void SetId(int id) => Id = (byte)id;
-
-    public byte Id { get; internal set; }
+    public byte Id { get; internal init; }
     public MediaSourceType SourceType { get; internal set; }
     public byte StillIndex { get; internal set; }
     public byte ClipIndex { get; internal set; }

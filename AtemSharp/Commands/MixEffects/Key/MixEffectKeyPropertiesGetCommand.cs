@@ -42,7 +42,6 @@ public partial class MixEffectKeyPropertiesGetCommand : IDeserializedCommand
     {
         var mixEffect = state.Video.MixEffects[MixEffectIndex];
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerIndex);
-        keyer.MixEffectId = MixEffectIndex;
 
         // Update keyer properties
         keyer.KeyType = KeyType;

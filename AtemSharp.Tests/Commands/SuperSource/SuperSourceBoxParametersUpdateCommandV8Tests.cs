@@ -39,7 +39,7 @@ public class SuperSourceBoxParametersUpdateCommandV8Tests : DeserializedCommandT
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Video.SuperSources = AtemStateUtil.CreateArray<AtemSharp.State.Video.SuperSource.SuperSource>(expectedData.SSrcId + 1);
+        state.Video.SuperSources.GetOrCreate(expectedData.SSrcId);
     }
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)

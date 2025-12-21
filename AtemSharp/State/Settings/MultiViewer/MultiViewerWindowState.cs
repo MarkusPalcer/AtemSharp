@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace AtemSharp.State.Settings.MultiViewer;
@@ -6,9 +7,10 @@ namespace AtemSharp.State.Settings.MultiViewer;
 /// Represents the full state of a MultiViewer window, extending the source configuration with display options
 /// </summary>
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class MultiViewerWindowState : ItemWithId<byte>
+[DebuggerDisplay("{" + nameof(ToString) + ",nq}")]
+public class MultiViewerWindowState
 {
-    public byte MultiViewerId { get; internal set; }
+    public byte MultiViewerId { get; internal init; }
 
     /// <summary>
     /// Whether safe title overlay is enabled for this window (optional)
@@ -28,7 +30,7 @@ public class MultiViewerWindowState : ItemWithId<byte>
     /// <summary>
     /// The window index within the MultiViewer (read-only in TypeScript, but settable here for C# flexibility)
     /// </summary>
-    public byte WindowIndex { get; internal set; }
+    public byte WindowIndex { get; internal init; }
 
     /// <summary>
     /// Whether this window supports VU meter display
@@ -40,5 +42,6 @@ public class MultiViewerWindowState : ItemWithId<byte>
     /// </summary>
     public bool SupportsSafeArea { get; internal set; }
 
-    internal override void SetId(byte id) => WindowIndex = id;
+    [ExcludeFromCodeCoverage]
+    public override string ToString() => $"{GetType().Name} #{MultiViewerId}.#{WindowIndex}";
 }

@@ -37,7 +37,7 @@ public class ProductIdentifierCommandTests : DeserializedCommandTestBase<Product
     [TestCase(Model.Constellation4K4ME)]
     public void TwoPowerSupplies(Model model)
     {
-        var sut = new ProductIdentifierCommand()
+        var sut = new ProductIdentifierCommand
         {
             Model = model
         };

@@ -12,13 +12,6 @@ public partial class FairlightMixerSourceDeleteCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        var audio = state.GetFairlight();
-
-        if (!audio.Inputs.TryGetValue(_inputId, out var input))
-        {
-            return;
-        }
-
-        input.Sources.Remove(_sourceId);
+        state.GetFairlight().Inputs.GetValueOrDefault(_inputId)?.Sources.Remove(_sourceId);
     }
 }

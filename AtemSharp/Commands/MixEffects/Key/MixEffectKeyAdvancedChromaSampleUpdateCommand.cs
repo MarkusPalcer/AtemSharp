@@ -72,7 +72,6 @@ public partial class MixEffectKeyAdvancedChromaSampleUpdateCommand : IDeserializ
 
         // Get or create the upstream keyer
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerId);
-        keyer.Id = KeyerId;
 
         // Update the advanced chroma sample settings
         var sample = keyer.AdvancedChromaSettings.Sample;

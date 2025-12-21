@@ -6,7 +6,7 @@ namespace AtemSharp.Commands.Media;
 [BufferSize(68)]
 public partial class MediaPoolSetClipCommand(MediaPoolEntry entry) : SerializedCommand
 {
-    [SerializedField(1)] private byte _id = entry.Id;
+    [SerializedField(1)] private byte _id = (byte)entry.Id;
     [CustomSerialization] private string _name = entry.Name;
     [SerializedField(66)] private ushort _frames = entry.FrameCount;
 

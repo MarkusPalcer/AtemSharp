@@ -39,7 +39,6 @@ public partial class MixEffectKeyLumaUpdateCommand : IDeserializedCommand
     {
         var mixEffect = state.Video.MixEffects[MixEffectId];
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerId);
-        keyer.Id = KeyerId;
 
         keyer.PreMultipliedKey.Enabled = PreMultiplied;
         keyer.PreMultipliedKey.Clip = Clip;

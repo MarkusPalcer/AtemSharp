@@ -68,5 +68,13 @@ public class TopologyCommandV811Tests : DeserializedCommandTestBase<TopologyComm
 
         // TODO: #73 verify if this is always 10 if there are multi viewers.
         Assert.That(state.Info.MultiViewer.WindowCount, Is.EqualTo(expectedData.Multiviewers > 0 ? 10 : 0));
+
+        Assert.That(state.Info.MixEffects.Count(), Is.EqualTo(expectedData.MixEffectBlocks));
+        Assert.That(state.Video.MixEffects.Count(), Is.EqualTo(expectedData.MixEffectBlocks));
+        Assert.That(state.Video.Auxiliaries.Count(), Is.EqualTo(expectedData.Auxiliaries));
+        Assert.That(state.Media.Players.Count(), Is.EqualTo(expectedData.MediaPlayers));
+        Assert.That(state.Info.SuperSources.Count(), Is.EqualTo(expectedData.SuperSource));
+        Assert.That(state.Video.SuperSources.Count(), Is.EqualTo(expectedData.SuperSource));
+        Assert.That(state.Video.DownstreamKeyers.Count(), Is.EqualTo(expectedData.DownstreamKeyers));
     }
 }

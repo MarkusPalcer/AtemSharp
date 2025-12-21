@@ -1,6 +1,5 @@
 using AtemSharp.Commands.Media;
 using AtemSharp.State;
-using AtemSharp.State.Media;
 
 namespace AtemSharp.Tests.Commands.Media;
 
@@ -10,7 +9,7 @@ public class MediaPoolFrameDescriptionCommandTests : DeserializedCommandTestBase
     public class CommandData : CommandDataBase
     {
         public int Bank { get; set; }
-        public int Index { get; set; }
+        public ushort Index { get; set; }
         public bool IsUsed { get; set; }
         public string Hash { get; set; } = string.Empty;
         public string Filename { get; set; } = string.Empty;
@@ -20,7 +19,7 @@ public class MediaPoolFrameDescriptionCommandTests : DeserializedCommandTestBase
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.MediaPoolId, Is.EqualTo((byte)expectedData.Bank));
-        Assert.That(actualCommand.FrameIndex, Is.EqualTo((ushort)expectedData.Index));
+        Assert.That(actualCommand.FrameIndex, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.IsUsed, Is.EqualTo(expectedData.IsUsed));
         Assert.That(actualCommand.Hash, Is.EqualTo(expectedData.Hash));
         Assert.That(actualCommand.FileName, Is.EqualTo(expectedData.Filename));
@@ -34,8 +33,8 @@ public class MediaPoolFrameDescriptionCommandTests : DeserializedCommandTestBase
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Media.Clips = AtemStateUtil.CreateArray<MediaPoolEntry>(expectedData.Index + 1);
-        state.Media.Frames = AtemStateUtil.CreateArray<MediaPoolEntry>(expectedData.Index + 1);
+        state.Media.Clips.GetOrCreate(expectedData.Index);
+        state.Media.Frames.GetOrCreate(expectedData.Index);
     }
 
 
@@ -49,7 +48,7 @@ public class MediaPoolFrameDescriptionCommandTests : DeserializedCommandTestBase
         };
 
         var item = source[expectedData.Index];
-        Assert.That(item.Id, Is.EqualTo((byte)expectedData.Index));
+        Assert.That(item.Id, Is.EqualTo(expectedData.Index));
         Assert.That(item.IsUsed, Is.EqualTo(expectedData.IsUsed));
         Assert.That(item.Hash, Is.EqualTo(expectedData.Hash));
         Assert.That(item.FileName, Is.EqualTo(expectedData.Filename));

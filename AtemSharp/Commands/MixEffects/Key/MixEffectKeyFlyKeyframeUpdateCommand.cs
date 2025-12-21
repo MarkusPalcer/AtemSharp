@@ -73,7 +73,6 @@ public partial class MixEffectKeyFlyKeyframeUpdateCommand : IDeserializedCommand
         var mixEffect = state.Video.MixEffects[_mixEffectId];
 
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(_upstreamKeyerId);
-        keyer.MixEffectId = _mixEffectId;
 
         var keyframe = keyer.Keyframes[_keyframeId - 1];
         keyframe.MixEffectId = _mixEffectId;

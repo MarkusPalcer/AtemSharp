@@ -35,9 +35,8 @@ public partial class MixEffectKeyPatternUpdateCommand : IDeserializedCommand
     {
         var mixEffect = state.Video.MixEffects[MixEffectId];
         var keyer = mixEffect.UpstreamKeyers.GetOrCreate(KeyerId);
-        keyer.MixEffectId = _mixEffectId;
-        var properties = keyer.Pattern;
 
+        var properties = keyer.Pattern;
         properties.Style = _style;
         properties.Size = _size;
         properties.Symmetry = _symmetry;

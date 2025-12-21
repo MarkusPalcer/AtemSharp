@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State.Ports;
 
@@ -7,12 +8,13 @@ namespace AtemSharp.State.Video.InputChannel;
 /// Input channel configuration and properties
 /// </summary>
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
+[DebuggerDisplay("{" + nameof(ToString) + ",nq}")]
 public class InputChannel
 {
     /// <summary>
     /// Input identifier/number
     /// </summary>
-    public ushort InputId { get; internal set; }
+    public ushort InputId { get; internal init; }
 
     /// <summary>
     /// Long descriptive name for the input
@@ -32,7 +34,7 @@ public class InputChannel
     /// <summary>
     /// Available external port types for this input
     /// </summary>
-    public ExternalPortType[]? ExternalPorts { get; internal set; }
+    public ExternalPortType[] ExternalPorts { get; internal set; } = [];
 
     /// <summary>
     /// Current external port type being used
@@ -63,4 +65,7 @@ public class InputChannel
     /// Whether this source is visible in the preview output
     /// </summary>
     public bool IsInPreview { get; internal set; }
+
+    [ExcludeFromCodeCoverage]
+    public override string ToString() => $"{GetType().Name} #{InputId}";
 }

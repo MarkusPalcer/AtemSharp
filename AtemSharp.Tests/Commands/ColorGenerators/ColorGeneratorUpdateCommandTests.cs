@@ -8,7 +8,7 @@ public class ColorGeneratorUpdateCommandTests : DeserializedCommandTestBase<Colo
 {
     public class CommandData : CommandDataBase
     {
-        public int Index { get; set; }
+        public byte Index { get; set; }
         public double Hue { get; set; }
         public double Saturation { get; set; }
         public double Luma { get; set; }

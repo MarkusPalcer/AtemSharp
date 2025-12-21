@@ -29,7 +29,7 @@ public class MacroPropertiesUpdateCommandTests : DeserializedCommandTestBase<Mac
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Macros.Macros = AtemStateUtil.CreateArray<AtemSharp.State.Macro.Macro>(expectedData.Index + 1);
+        state.Macros.Macros.GetOrCreate(expectedData.Index);
     }
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)
@@ -44,10 +44,11 @@ public class MacroPropertiesUpdateCommandTests : DeserializedCommandTestBase<Mac
     [Test]
     public void EmptyNameAndDescription()
     {
-        var data = (byte[])[
+        var data = (byte[])
+        [
             0, 0, // ID = 0
-            0,    // IsUsed = false
-            0,    // HasUnsupportedOos = false
+            0, // IsUsed = false
+            0, // HasUnsupportedOos = false
             0, 0, // Name length = 0
             0, 0, // Description length = 0
         ];
@@ -60,20 +61,14 @@ public class MacroPropertiesUpdateCommandTests : DeserializedCommandTestBase<Mac
         Assert.That(command.Name, Is.EqualTo(string.Empty));
         Assert.That(command.Description, Is.EqualTo(string.Empty));
 
-        var state = new AtemState
-        {
-            Macros =
-            {
-                Macros = [new AtemSharp.State.Macro.Macro
-                {
-                    Id = 0,
-                    IsUsed = true,
-                    HasUnsupportedOps = true,
-                    Name = "WrongName",
-                    Description = "WrongDescription"
-                }]
-            }
-        };
+
+        var state = new AtemState();
+        var macro = state.Macros.Macros.GetOrCreate(0);
+        macro.Id = 0;
+        macro.IsUsed = true;
+        macro.HasUnsupportedOps = true;
+        macro.Name = "WrongName";
+        macro.Description = "WrongDescription";
 
         command.ApplyToState(state);
         Assert.That(state.Macros.Macros.Count, Is.EqualTo(1));
@@ -88,7 +83,7 @@ public class MacroPropertiesUpdateCommandTests : DeserializedCommandTestBase<Mac
     {
         var sut = new MacroPropertiesUpdateCommand
         {
-            Id = 0,
+            Id = 1,
             IsUsed = false,
             HasUnsupportedOps = false,
             Name = "Name",
@@ -96,8 +91,6 @@ public class MacroPropertiesUpdateCommandTests : DeserializedCommandTestBase<Mac
         };
 
         var state = new AtemState();
-        var ex = Assert.Throws<IndexOutOfRangeException>(() => sut.ApplyToState(state));
-        Assert.That(ex.Message, Contains.Substring("Macro ID"));
+        Assert.Throws<KeyNotFoundException>(() => sut.ApplyToState(state));
     }
-
 }

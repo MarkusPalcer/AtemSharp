@@ -41,8 +41,7 @@ public partial class ColorGeneratorUpdateCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        state.ColorGenerators.ExpandToFit(Id);
-        var colorGeneratorState = state.ColorGenerators[Id];
+        var colorGeneratorState = state.ColorGenerators.GetOrCreate(Id);
         colorGeneratorState.Color = new HslColor(Hue, Saturation, Luma);
     }
 }

@@ -19,6 +19,6 @@ public class MacroPoolConfigCommandTests : DeserializedCommandTestBase<MacroPool
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)
     {
         Assert.That(state.Info.MacroPool.MacroCount, Is.EqualTo(expectedData.MacroCount));
-        Assert.That(state.Macros.Macros, Has.Length.EqualTo(expectedData.MacroCount));
+        Assert.That(state.Macros.Macros.Select(x => x.Id), Is.EquivalentTo(Enumerable.Range(0, expectedData.MacroCount)));
     }
 }

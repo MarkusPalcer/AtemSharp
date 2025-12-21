@@ -25,8 +25,7 @@ public partial class MultiViewerPropertiesUpdateCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        state.Settings.MultiViewers.ExpandToFit(MultiViewerId);
-        var multiViewer = state.Settings.MultiViewers[MultiViewerId];
+        var multiViewer = state.Settings.MultiViewers.GetOrCreate(MultiViewerId);
         multiViewer.Id = _multiViewerId;
         multiViewer.Properties.Layout = Layout;
         multiViewer.Properties.ProgramPreviewSwapped = ProgramPreviewSwapped;

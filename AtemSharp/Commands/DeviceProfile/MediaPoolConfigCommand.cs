@@ -1,5 +1,4 @@
 using AtemSharp.State;
-using AtemSharp.State.Media;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
@@ -26,7 +25,7 @@ public partial class MediaPoolConfigCommand : IDeserializedCommand
         state.Info.MediaPool.StillCount = StillCount;
         state.Info.MediaPool.ClipCount = ClipCount;
 
-        state.Media.Frames = AtemStateUtil.CreateArray<MediaPoolEntry>(StillCount);
-        state.Media.Clips = AtemStateUtil.CreateArray<MediaPoolEntry>(ClipCount);
+        state.Media.Frames.Populate(StillCount);
+        state.Media.Clips.Populate(ClipCount);
     }
 }

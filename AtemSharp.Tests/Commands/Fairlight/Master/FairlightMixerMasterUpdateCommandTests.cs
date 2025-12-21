@@ -37,7 +37,7 @@ public class FairlightMixerMasterUpdateCommandTests : DeserializedCommandTestBas
     {
         Assert.That(state.GetFairlight().Master.Equalizer.Enabled, Is.EqualTo(expectedData.EqualizerEnabled));
         Assert.That(state.GetFairlight().Master.Equalizer.Gain, Is.EqualTo(expectedData.EqualizerGain).Within(0.01));
-        Assert.That(state.GetFairlight().Master.Equalizer.Bands, Has.Length.EqualTo(expectedData.EqualizerBands));
+        Assert.That(state.GetFairlight().Master.Equalizer.Bands.Select(x => x.Id), Is.EquivalentTo(Enumerable.Range(0, expectedData.EqualizerBands)));
         Assert.That(state.GetFairlight().Master.Dynamics.MakeUpGain, Is.EqualTo(expectedData.MakeUpGain).Within(0.01));
         Assert.That(state.GetFairlight().Master.FaderGain, Is.EqualTo(expectedData.Gain).Within(0.01));
         Assert.That(state.GetFairlight().Master.FollowFadeToBlack, Is.EqualTo(expectedData.FollowFadeToBlack));

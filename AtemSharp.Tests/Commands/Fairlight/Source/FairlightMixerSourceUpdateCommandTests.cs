@@ -65,7 +65,7 @@ public class FairlightMixerSourceUpdateCommandTests : DeserializedCommandTestBas
         Assert.That(source.Gain, Is.EqualTo(expectedData.Gain).Within(0.1));
         Assert.That(source.HasStereoSimulation, Is.EqualTo(expectedData.HasStereoSimulation));
         Assert.That(source.StereoSimulation, Is.EqualTo(expectedData.StereoSimulation).Within(0.1));
-        Assert.That(source.Equalizer.Bands, Has.Count.EqualTo(expectedData.EqualizerBands));
+        Assert.That(source.Equalizer.Bands.Select(x => x.Id), Is.EquivalentTo(Enumerable.Range(0, expectedData.EqualizerBands)));
         Assert.That(source.Equalizer.Bands.Select(x => x.InputId), Is.All.EqualTo(expectedData.Index));
         Assert.That(source.Equalizer.Bands.Select(x => x.SourceId), Is.All.EqualTo(long.Parse(expectedData.SourceId)));
         Assert.That(source.Equalizer.Enabled, Is.EqualTo(expectedData.EqualizerEnabled));
@@ -83,30 +83,14 @@ public class FairlightMixerSourceUpdateCommandTests : DeserializedCommandTestBas
     [Test]
     public void BandCountZero()
     {
+        var audio = new FairlightAudioState();
+
+        var source = audio.Inputs.GetOrCreate(0).Sources.GetOrCreate(0);
+        source.Equalizer.Bands.GetOrCreate(0);
+
         var state = new AtemState
         {
-            Audio = new FairlightAudioState
-            {
-                Inputs =
-                {
-                    [0] = new FairlightAudioInput
-                    {
-                        Sources =
-                        {
-                            [0] = new AtemSharp.State.Audio.Fairlight.Source
-                            {
-                                Equalizer =
-                                {
-                                    Bands =
-                                    [
-                                        new SourceEqualizerBand()
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            Audio = audio,
         };
 
         var sut = new FairlightMixerSourceUpdateCommand
@@ -115,8 +99,6 @@ public class FairlightMixerSourceUpdateCommandTests : DeserializedCommandTestBas
         };
 
         sut.ApplyToState(state);
-
-        var source = state.GetFairlight().Inputs[0].Sources[0];
 
         Assert.That(source.Equalizer.Bands, Is.Empty);
     }
