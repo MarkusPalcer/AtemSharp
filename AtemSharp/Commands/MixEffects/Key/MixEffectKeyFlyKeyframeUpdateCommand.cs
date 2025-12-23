@@ -53,8 +53,6 @@ internal partial class MixEffectKeyFlyKeyframeUpdateCommand : IDeserializedComma
 
     [DeserializedField(42)] private byte _lightSourceAltitude;
 
-    //[DeserializedField(43)] private bool _maskEnabled;
-
     [DeserializedField(44)] [ScalingFactor(1000)] [SerializedType(typeof(short))]
     private double _maskTop;
 
