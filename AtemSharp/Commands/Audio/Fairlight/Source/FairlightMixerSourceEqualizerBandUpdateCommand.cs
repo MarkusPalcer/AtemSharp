@@ -22,11 +22,11 @@ internal partial class FairlightMixerSourceEqualizerBandUpdateCommand : IDeseria
     [DeserializedField(19)] private Shape _shape;
 
     [DeserializedField(20)]
-    [CustomScaling($"{nameof(DeserializationExtensions)}.{nameof(DeserializationExtensions.GetComponentsLegacy)}")]
-    [SerializedType(typeof(byte))]
-    private byte[] _supportedFrequencyRanges = [];
+    [CustomScaling($"{nameof(DeserializationExtensions)}.{nameof(DeserializationExtensions.GetComponents)}")]
+    [SerializedType(typeof(FrequencyRange))]
+    private FrequencyRange[] _supportedFrequencyRanges = [];
 
-    [DeserializedField(21)] private byte _frequencyRange;
+    [DeserializedField(21)] private FrequencyRange _frequencyRange;
 
     [DeserializedField(24)] private uint _frequency;
 

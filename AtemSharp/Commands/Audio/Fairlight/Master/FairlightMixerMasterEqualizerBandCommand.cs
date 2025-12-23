@@ -20,7 +20,7 @@ public partial class FairlightMixerMasterEqualizerBandCommand(MasterEqualizerBan
     private Shape _shape = band.Shape;
 
     [SerializedField(4, 2)]
-    private byte _frequencyRange = band.FrequencyRange;
+    private FrequencyRange _frequencyRange = band.FrequencyRange;
 
     [SerializedField(8,3)]
     [SerializedType(typeof(uint))]

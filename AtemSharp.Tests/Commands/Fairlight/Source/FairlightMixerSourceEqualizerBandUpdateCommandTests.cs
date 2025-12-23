@@ -17,8 +17,8 @@ internal class FairlightMixerSourceEqualizerBandUpdateCommandTests : Deserialize
         public bool BandEnabled { get; set; }
         public Shape SupportedShapes { get; set; }
         public Shape Shape { get; set; }
-        public byte SupportedFrequencyRanges { get; set; }
-        public byte FrequencyRange { get; set; }
+        public FrequencyRange SupportedFrequencyRanges { get; set; }
+        public FrequencyRange FrequencyRange { get; set; }
         public uint Frequency { get; set; }
         public double Gain { get; set; }
         public double QFactor { get; set; }
@@ -34,7 +34,7 @@ internal class FairlightMixerSourceEqualizerBandUpdateCommandTests : Deserialize
                     Is.EquivalentTo(DeserializationExtensions.GetComponents(expectedData.SupportedShapes)));
         Assert.That(actualCommand.Shape, Is.EqualTo(expectedData.Shape));
         Assert.That(actualCommand.SupportedFrequencyRanges,
-                    Is.EquivalentTo(DeserializationExtensions.GetComponentsLegacy(expectedData.SupportedFrequencyRanges)));
+                    Is.EquivalentTo(DeserializationExtensions.GetComponents(expectedData.SupportedFrequencyRanges)));
         Assert.That(actualCommand.FrequencyRange, Is.EqualTo(expectedData.FrequencyRange));
         Assert.That(actualCommand.Frequency, Is.EqualTo(expectedData.Frequency));
         Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));
@@ -57,7 +57,7 @@ internal class FairlightMixerSourceEqualizerBandUpdateCommandTests : Deserialize
                     Is.EquivalentTo(DeserializationExtensions.GetComponents(expectedData.SupportedShapes)));
         Assert.That(actualCommand.Shape, Is.EqualTo(expectedData.Shape));
         Assert.That(actualCommand.SupportedFrequencyRanges,
-                    Is.EquivalentTo(DeserializationExtensions.GetComponentsLegacy(expectedData.SupportedFrequencyRanges)));
+                    Is.EquivalentTo(DeserializationExtensions.GetComponents(expectedData.SupportedFrequencyRanges)));
         Assert.That(actualCommand.FrequencyRange, Is.EqualTo(expectedData.FrequencyRange));
         Assert.That(actualCommand.Frequency, Is.EqualTo(expectedData.Frequency));
         Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));

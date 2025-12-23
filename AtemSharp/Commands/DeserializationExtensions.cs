@@ -130,19 +130,4 @@ internal static class DeserializationExtensions
 
         return result.ToArray();
     }
-
-    [Obsolete("Only used when the enum type is unknown, prefer using GetComponents<T>")]
-    public static byte[] GetComponentsLegacy(byte value)
-    {
-        var result = new List<byte>();
-        for (byte next = 1; next <= value; next <<= 1)
-        {
-            if ((value & next) > 0)
-            {
-                result.Add(next);
-            }
-        }
-
-        return result.ToArray();
-    }
 }

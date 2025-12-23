@@ -19,7 +19,7 @@ public class FairlightMixerSourceEqualizerBandCommandTests : SerializedCommandTe
         public byte Band { get; set; }
         public bool BandEnabled { get; set; }
         public Shape Shape { get; set; }
-        public byte FrequencyRange { get; set; }
+        public FrequencyRange FrequencyRange { get; set; }
         public uint Frequency { get; set; }
         public double Gain { get; set; }
         public double QFactor { get; set; }
