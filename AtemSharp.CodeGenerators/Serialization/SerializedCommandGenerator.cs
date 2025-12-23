@@ -49,14 +49,18 @@ public class SerializedCommandGenerator : CodeGeneratorBase
 
         var internalSerialization = GetInternalSerializationCode(classDecl, classSymbol, spc);
 
-        var fileContent = $$"""
-                            using System;
-                            using System.Reflection;
-                            using System.Diagnostics.CodeAnalysis;
+        var namespaces = new[]
+        {
+            "using System;",
+            "using System.Reflection;",
+            "using System.Diagnostics.CodeAnalysis;",
+            "using AtemSharp;",
+            "using AtemSharp.State.Info;",
+            "using static AtemSharp.Commands.SerializationExtensions;"
+        }.Concat(fields.Select(x => x!.NamespaceCode)).Distinct();
 
-                            using AtemSharp;
-                            using AtemSharp.State.Info;
-                            using static AtemSharp.Commands.SerializationExtensions;
+        var fileContent = $$"""
+                            {{string.Join("\n", namespaces)}}
 
                             namespace {{ns}};
 
@@ -103,6 +107,7 @@ public class SerializedCommandGenerator : CodeGeneratorBase
         {
             SerializationCode = serializationCode,
             PropertyCode = propertyCode,
+            NamespaceCode = Helpers.CreateNamespaceCode(f)
         };
     }
 

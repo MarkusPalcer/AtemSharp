@@ -46,18 +46,19 @@ public class DeserializedCommandGenerator : CodeGeneratorBase
             return;
         }
 
-        var namespaces = fields.Select(x => x!.NamespaceCode).Distinct();
+        var namespaces = new[] {
+            "using System;",
+            "using System.Diagnostics.CodeAnalysis;",
+            "using AtemSharp;",
+            "using AtemSharp.State.Info;",
+            "using AtemSharp.Lib;"
+        }.Concat(fields.Select(x => x!.NamespaceCode)).Distinct();
 
         var internalDeserialization = GetInternalDeserializationMethod(classDecl);
 
+
+
         var fileContent = $$"""
-                            using System;
-                            using System.Diagnostics.CodeAnalysis;
-
-                            using AtemSharp;
-                            using AtemSharp.State.Info;
-                            using AtemSharp.Lib;
-
                             {{string.Join("\n", namespaces)}}
 
                             namespace {{ns}};
@@ -201,7 +202,7 @@ public class DeserializedCommandGenerator : CodeGeneratorBase
 
         var propertyCode = CreatePropertyCode(f);
 
-        var namespaceCode = CreateNamespaceCode(f);
+        var namespaceCode = Helpers.CreateNamespaceCode(f);
 
         return new DeserializedField
         {
@@ -209,18 +210,5 @@ public class DeserializedCommandGenerator : CodeGeneratorBase
             DeserializationCode = serializationCode,
             NamespaceCode = namespaceCode,
         };
-    }
-
-    private static string CreateNamespaceCode(IFieldSymbol fieldSymbol)
-    {
-        var type = fieldSymbol.Type;
-        var ns = type.ContainingNamespace;
-
-        if (ns is null || string.IsNullOrEmpty(ns.ToString()))
-        {
-            return string.Empty;
-        }
-
-        return $"using {ns};";
     }
 }

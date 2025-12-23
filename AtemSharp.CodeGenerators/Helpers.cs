@@ -336,5 +336,18 @@ namespace AtemSharp.CodeGenerators
 
             return false;
         }
+
+        public static string CreateNamespaceCode(IFieldSymbol fieldSymbol)
+        {
+            var type = fieldSymbol.Type;
+            var ns = type.ContainingNamespace;
+
+            if (ns is null || string.IsNullOrEmpty(ns.ToString()))
+            {
+                return string.Empty;
+            }
+
+            return $"using {ns};";
+        }
     }
 }
