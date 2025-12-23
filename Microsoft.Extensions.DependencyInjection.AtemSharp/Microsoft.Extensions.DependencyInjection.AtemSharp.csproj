@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <RootNamespace>Microsoft.Extensions.DependencyInjection</RootNamespace>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageId>Microsoft.Extensions.DependencyInjection.AtemSharp</PackageId>
+        <PackageId>AtemSharp.MSDependencyInjection</PackageId>
         <Authors>Markus Palcer</Authors>
         <Description>C# library for connecting with ATEM switchers</Description>
         <Copyright>MIT</Copyright>

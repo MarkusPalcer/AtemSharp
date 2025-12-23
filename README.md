@@ -20,7 +20,7 @@ dotnet add package AtemSharp
 ### DI-Extensions
 
 ```bash
-dotnet add package Microsoft.Extensions.DependencyInjection.AtemSharp
+dotnet add package AtemSharp.MSDependencyInjection
 ```
 
 ## Quick Start
