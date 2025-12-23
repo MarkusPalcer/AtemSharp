@@ -8,7 +8,7 @@ public class DisplayClockRequestTimeCommandTests : SerializedCommandTestBase<Dis
 {
     public class CommandData : CommandDataBase;
 
-    protected override DisplayClockRequestTimeCommand CreateSut(TestCaseData testCase)
+    protected override DisplayClockRequestTimeCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new DisplayClockRequestTimeCommand();
     }

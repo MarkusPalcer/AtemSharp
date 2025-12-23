@@ -23,8 +23,7 @@ internal class AudioMixerInputUpdateV8CommandTests : DeserializedCommandTestBase
         public bool IndexOfSourceType { get; set; }
     }
 
-    internal override void CompareCommandProperties(AudioMixerInputUpdateV8Command actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(AudioMixerInputUpdateV8Command actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.Index, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.SourceType, Is.EqualTo(expectedData.SourceType));

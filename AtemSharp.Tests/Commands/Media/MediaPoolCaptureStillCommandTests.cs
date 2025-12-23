@@ -6,7 +6,7 @@ public class MediaPoolCaptureStillCommandTests : SerializedCommandTestBase<Media
 {
     public class CommandData : CommandDataBase;
 
-    protected override MediaPoolCaptureStillCommand CreateSut(TestCaseData testCase)
+    protected override MediaPoolCaptureStillCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MediaPoolCaptureStillCommand();
     }

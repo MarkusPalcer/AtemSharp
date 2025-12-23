@@ -17,8 +17,7 @@ internal class FairlightMixerMasterUpdateCommandTests : DeserializedCommandTestB
         public double Gain { get; set; }
     }
 
-    internal override void CompareCommandProperties(FairlightMixerMasterUpdateCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(FairlightMixerMasterUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.EqualizerEnabled, Is.EqualTo(expectedData.EqualizerEnabled));
         Assert.That(actualCommand.EqualizerGain, Is.EqualTo(expectedData.EqualizerGain).Within(0.01));

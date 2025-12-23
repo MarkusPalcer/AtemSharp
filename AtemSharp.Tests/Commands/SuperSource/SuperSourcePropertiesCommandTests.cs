@@ -48,7 +48,7 @@ public class SuperSourcePropertiesCommandTests : SerializedCommandTestBase<Super
         public double BorderLightSourceAltitude { get; set; }
     }
 
-    protected override SuperSourcePropertiesCommand CreateSut(TestCaseData testCase)
+    protected override SuperSourcePropertiesCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new SuperSourcePropertiesCommand(new AtemSharp.State.Video.SuperSource.SuperSource
         {

@@ -14,7 +14,7 @@ public class TimeCommandTests : SerializedCommandTestBase<TimeCommand, TimeComma
         public bool IsDropFrame { get; set; }
     }
 
-    protected override TimeCommand CreateSut(TestCaseData testCase)
+    protected override TimeCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new TimeCommand(new AtemState
         {

@@ -11,7 +11,7 @@ public class MacroPropertiesCommandTests : SerializedCommandTestBase<MacroProper
         public string Description { get; set; } = string.Empty;
     }
 
-    protected override MacroPropertiesCommand CreateSut(TestCaseData testCase)
+    protected override MacroPropertiesCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MacroPropertiesCommand(new AtemSharp.State.Macro.Macro
         {

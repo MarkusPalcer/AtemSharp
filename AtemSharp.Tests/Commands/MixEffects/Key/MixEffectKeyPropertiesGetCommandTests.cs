@@ -24,7 +24,7 @@ internal class MixEffectKeyPropertiesGetCommandTests : DeserializedCommandTestBa
         public double MaskRight { get; set; }
     }
 
-    internal override void CompareCommandProperties(MixEffectKeyPropertiesGetCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(MixEffectKeyPropertiesGetCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.MixEffectIndex, Is.EqualTo(expectedData.MixEffectIndex));
         Assert.That(actualCommand.KeyerIndex, Is.EqualTo(expectedData.KeyerIndex));

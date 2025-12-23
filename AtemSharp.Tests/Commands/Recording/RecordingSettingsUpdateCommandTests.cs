@@ -13,7 +13,7 @@ internal class RecordingSettingsUpdateCommandTests : DeserializedCommandTestBase
         public bool RecordInAllCameras { get; set; }
     }
 
-    internal override void CompareCommandProperties(RecordingSettingsUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(RecordingSettingsUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.FileName, Is.EqualTo(expectedData.Filename));
         Assert.That(actualCommand.WorkingSet1DiskId, Is.EqualTo(expectedData.WorkingSet1DiskId));

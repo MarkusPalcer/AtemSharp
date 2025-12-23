@@ -20,8 +20,7 @@ internal class AudioRoutingSourceUpdateCommandTests : DeserializedCommandTestBas
         public AudioChannelPair AudioChannelPair { get; set; }
     }
 
-    internal override void CompareCommandProperties(AudioRoutingSourceUpdateCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(AudioRoutingSourceUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Id));
         Assert.That(actualCommand.ExternalPortType, Is.EqualTo(expectedData.ExternalPortType));

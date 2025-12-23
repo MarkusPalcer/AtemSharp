@@ -39,7 +39,7 @@ internal class MixEffectKeyDigitalVideoEffectsUpdateCommandTests : DeserializedC
         public byte Rate { get; set; }
     }
 
-    internal override void CompareCommandProperties(MixEffectKeyDigitalVideoEffectsUpdateCommand command, CommandData expected, TestCaseData testCase)
+    internal override void CompareCommandProperties(MixEffectKeyDigitalVideoEffectsUpdateCommand command, CommandData expected, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(command.MixEffectId, Is.EqualTo(expected.MixEffectIndex));
         Assert.That(command.KeyerId, Is.EqualTo(expected.KeyerIndex));

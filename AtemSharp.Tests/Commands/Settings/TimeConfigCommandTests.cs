@@ -12,7 +12,7 @@ public class TimeConfigCommandTests : SerializedCommandTestBase<TimeConfigComman
         public TimeMode Mode { get; set; }
     }
 
-    protected override TimeConfigCommand CreateSut(TestCaseData testCase)
+    protected override TimeConfigCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new TimeConfigCommand(new AtemState
         {

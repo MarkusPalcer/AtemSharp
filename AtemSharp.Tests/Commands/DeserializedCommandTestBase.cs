@@ -3,27 +3,32 @@ using AtemSharp.Commands;
 using AtemSharp.Communication;
 using AtemSharp.State;
 using AtemSharp.State.Info;
+using AtemSharp.Tests.TestUtilities.CommandTests;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AtemSharp.Tests.Commands;
 
-internal abstract class DeserializedCommandTestBase<TCommand, TTestData> : CommandTestBase<TTestData>
+internal abstract class DeserializedCommandTestBase<TCommand, TTestData>
     where TCommand : IDeserializedCommand
     where TTestData : DeserializedCommandTestBase<TCommand, TTestData>.CommandDataBase, new()
 {
     [UsedImplicitly(ImplicitUseTargetFlags.Members | ImplicitUseTargetFlags.WithInheritors)]
-    public new abstract class CommandDataBase : CommandTestBase<TTestData>.CommandDataBase
+    public abstract class CommandDataBase : TestUtilities.CommandTests.CommandDataBase
     {
         // Base class for test data - derived classes add specific properties
     }
 
 
-    public static IEnumerable<NUnit.Framework.TestCaseData> GetTestCases()
-        => GetTestCases<TCommand>();
+    public static IEnumerable<TestCaseData> GetTestCases()
+    {
+        var testCases = Helper.GetTestCases<TCommand, TTestData>().ToArray();
+        Assert.That(testCases.Length, Is.GreaterThan(0), "No test cases found");
+        return testCases;
+    }
 
     [Test, TestCaseSource(nameof(GetTestCases))]
-    public void TestDeserialization(TestCaseData testCase)
+    public void TestDeserialization(TestUtilities.CommandTests.TestCaseData<TTestData> testCase)
     {
         if (testCase.Command.UnknownProperties.Count != 0)
         {
@@ -31,8 +36,7 @@ internal abstract class DeserializedCommandTestBase<TCommand, TTestData> : Comma
         }
 
         // Arrange - Extract command payload from the full packet
-        var fullPacketBytes = ParseHexBytes(testCase.Bytes);
-        var commandPayload = ExtractCommandPayload(fullPacketBytes);
+        var commandPayload = testCase.Payload;
 
         // Act - Deserialize the command
         var actualCommand = DeserializeCommand(commandPayload, testCase.FirstVersion);
@@ -53,7 +57,7 @@ internal abstract class DeserializedCommandTestBase<TCommand, TTestData> : Comma
     }
 
 
-    internal abstract void CompareCommandProperties(TCommand actualCommand, TTestData expectedData, TestCaseData testCase);
+    internal abstract void CompareCommandProperties(TCommand actualCommand, TTestData expectedData, TestUtilities.CommandTests.TestCaseData<TTestData> testCase);
 
     protected virtual void PrepareState(AtemState state, TTestData expectedData)
     {

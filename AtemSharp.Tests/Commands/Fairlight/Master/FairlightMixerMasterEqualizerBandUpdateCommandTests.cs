@@ -22,8 +22,7 @@ internal class FairlightMixerMasterEqualizerBandUpdateCommandTests : Deserialize
         public double QFactor { get; set; }
     }
 
-    internal override void CompareCommandProperties(FairlightMixerMasterEqualizerBandUpdateCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(FairlightMixerMasterEqualizerBandUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.BandIndex, Is.EqualTo(expectedData.Band));
         Assert.That(actualCommand.Enabled, Is.EqualTo(expectedData.BandEnabled));

@@ -16,8 +16,7 @@ internal class AudioMixerHeadphonesUpdateCommandTests : DeserializedCommandTestB
         public double SidetoneGain { get; set; }
     }
 
-    internal override void CompareCommandProperties(AudioMixerHeadphonesUpdateCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(AudioMixerHeadphonesUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));
         Assert.That(actualCommand.ProgramOutGain, Is.EqualTo(expectedData.ProgramOutGain).Within(0.01));

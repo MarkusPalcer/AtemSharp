@@ -11,7 +11,7 @@ public class FadeToBlackRateCommandTests : SerializedCommandTestBase<FadeToBlack
         public byte Rate { get; init; }
     }
 
-    protected override FadeToBlackRateCommand CreateSut(TestCaseData testCase)
+    protected override FadeToBlackRateCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new FadeToBlackRateCommand(new MixEffect
         {

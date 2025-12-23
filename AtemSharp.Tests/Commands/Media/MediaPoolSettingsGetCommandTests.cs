@@ -11,7 +11,7 @@ internal class MediaPoolSettingsGetCommandTests : DeserializedCommandTestBase<Me
         public ushort UnassignedFrames { get; set; }
     }
 
-    internal override void CompareCommandProperties(MediaPoolSettingsGetCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(MediaPoolSettingsGetCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.MaxFrames, Is.EqualTo(expectedData.MaxFrames));
         Assert.That(actualCommand.UnassignedFrames, Is.EqualTo(expectedData.UnassignedFrames));

@@ -16,7 +16,7 @@ public class DownstreamKeyAutoCommandTests : SerializedCommandTestBase<Downstrea
         public bool IsTowardsOnAir { get; set; }
     }
 
-    protected override DownstreamKeyAutoCommand CreateSut(TestCaseData testCase)
+    protected override DownstreamKeyAutoCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new DownstreamKeyAutoCommand(new DownstreamKeyer
         {

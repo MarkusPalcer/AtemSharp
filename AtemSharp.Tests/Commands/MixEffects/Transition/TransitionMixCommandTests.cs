@@ -13,7 +13,7 @@ public class TransitionMixCommandTests : SerializedCommandTestBase<TransitionMix
         public byte Rate { get; set; }
     }
 
-    protected override TransitionMixCommand CreateSut(TestCaseData testCase)
+    protected override TransitionMixCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new TransitionMixCommand(new MixEffect
         {

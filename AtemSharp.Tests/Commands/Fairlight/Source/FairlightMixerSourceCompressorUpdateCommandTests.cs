@@ -19,8 +19,7 @@ internal class FairlightMixerSourceCompressorUpdateCommandTests : DeserializedCo
         public double Release { get; set; }
     }
 
-    internal override void CompareCommandProperties(FairlightMixerSourceCompressorUpdateCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(FairlightMixerSourceCompressorUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.SourceId, Is.EqualTo(expectedData.SourceId));

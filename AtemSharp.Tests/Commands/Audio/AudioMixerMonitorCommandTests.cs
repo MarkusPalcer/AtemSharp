@@ -27,7 +27,7 @@ public class AudioMixerMonitorCommandTests : SerializedCommandTestBase<AudioMixe
         public double DimLevel { get; set; }
     }
 
-    protected override AudioMixerMonitorCommand CreateSut(TestCaseData testCase)
+    protected override AudioMixerMonitorCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new AudioMixerMonitorCommand(new ClassicAudioState
         {

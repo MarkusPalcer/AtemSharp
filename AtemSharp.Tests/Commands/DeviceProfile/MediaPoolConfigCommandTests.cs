@@ -12,7 +12,7 @@ internal class MediaPoolConfigCommandTests : DeserializedCommandTestBase<MediaPo
         public byte ClipCount { get; set; }
     }
 
-    internal override void CompareCommandProperties(MediaPoolConfigCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(MediaPoolConfigCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.StillCount, Is.EqualTo(expectedData.StillCount));
         Assert.That(actualCommand.ClipCount, Is.EqualTo(expectedData.ClipCount));

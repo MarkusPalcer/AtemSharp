@@ -23,7 +23,7 @@ public class FairlightMixerMasterCompressorCommandTests : SerializedCommandTestB
         public double Release { get; set; }
     }
 
-    protected override FairlightMixerMasterCompressorCommand CreateSut(TestCaseData testCase)
+    protected override FairlightMixerMasterCompressorCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new FairlightMixerMasterCompressorCommand(new MasterProperties
         {

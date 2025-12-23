@@ -13,7 +13,7 @@ public class PreviewInputCommandTests : SerializedCommandTestBase<PreviewInputCo
         public ushort Source { get; set; }
     }
 
-    protected override PreviewInputCommand CreateSut(TestCaseData testCase)
+    protected override PreviewInputCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new PreviewInputCommand(new MixEffect
         {

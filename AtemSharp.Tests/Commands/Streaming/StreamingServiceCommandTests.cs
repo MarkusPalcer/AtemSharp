@@ -14,7 +14,7 @@ public class StreamingServiceCommandTests : SerializedCommandTestBase<StreamingS
     }
 
 
-    protected override StreamingServiceCommand CreateSut(TestCaseData testCase)
+    protected override StreamingServiceCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new StreamingServiceCommand(new AtemState
         {

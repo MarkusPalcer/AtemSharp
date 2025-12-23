@@ -14,8 +14,7 @@ internal class ProductIdentifierCommandTests : DeserializedCommandTestBase<Produ
         public Model Model { get; set; }
     }
 
-    internal override void CompareCommandProperties(ProductIdentifierCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(ProductIdentifierCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.Model, Is.EqualTo(expectedData.Model));
         Assert.That(actualCommand.ProductIdentifier, Is.EqualTo(expectedData.Name));

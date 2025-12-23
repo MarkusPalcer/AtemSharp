@@ -16,7 +16,7 @@ public class InputPropertiesCommandTests : SerializedCommandTestBase<InputProper
         public ExternalPortType ExternalPortType { get; set; }
     }
 
-    protected override InputPropertiesCommand CreateSut(TestCaseData testCase)
+    protected override InputPropertiesCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new InputPropertiesCommand(new InputChannel
         {

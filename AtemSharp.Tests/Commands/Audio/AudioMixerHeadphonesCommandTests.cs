@@ -26,7 +26,7 @@ public class AudioMixerHeadphonesCommandTests : SerializedCommandTestBase<AudioM
         public double SidetoneGain { get; set; }
     }
 
-    protected override AudioMixerHeadphonesCommand CreateSut(TestCaseData testCase)
+    protected override AudioMixerHeadphonesCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         // Create command with valid state
         return new AudioMixerHeadphonesCommand(new ClassicAudioState

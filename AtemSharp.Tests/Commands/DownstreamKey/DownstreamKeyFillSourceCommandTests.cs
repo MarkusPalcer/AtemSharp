@@ -13,7 +13,7 @@ public class DownstreamKeyFillSourceCommandTests : SerializedCommandTestBase<Dow
         public ushort FillSource { get; set; }
     }
 
-    protected override DownstreamKeyFillSourceCommand CreateSut(TestCaseData testCase)
+    protected override DownstreamKeyFillSourceCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new DownstreamKeyFillSourceCommand(new DownstreamKeyer
         {

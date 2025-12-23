@@ -15,7 +15,7 @@ public class TransitionPropertiesCommandTests : SerializedCommandTestBase<Transi
         public TransitionSelection NextSelection { get; set; }
     }
 
-    protected override TransitionPropertiesCommand CreateSut(TestCaseData testCase)
+    protected override TransitionPropertiesCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new TransitionPropertiesCommand(new MixEffect
         {

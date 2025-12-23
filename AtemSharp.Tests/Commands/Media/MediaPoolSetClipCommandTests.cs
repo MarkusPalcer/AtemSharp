@@ -13,7 +13,7 @@ public class MediaPoolSetClipCommandTests : SerializedCommandTestBase<MediaPoolS
         public ushort Frames { get; set; }
     }
 
-    protected override MediaPoolSetClipCommand CreateSut(TestCaseData testCase)
+    protected override MediaPoolSetClipCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MediaPoolSetClipCommand(new MediaPoolEntry
         {

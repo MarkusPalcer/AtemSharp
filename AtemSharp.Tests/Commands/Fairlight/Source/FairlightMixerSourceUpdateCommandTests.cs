@@ -29,8 +29,7 @@ internal class FairlightMixerSourceUpdateCommandTests : DeserializedCommandTestB
         public int MaxFramesDelay { get; set; }
     }
 
-    internal override void CompareCommandProperties(FairlightMixerSourceUpdateCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(FairlightMixerSourceUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.SourceId.ToString(), Is.EqualTo(expectedData.SourceId));

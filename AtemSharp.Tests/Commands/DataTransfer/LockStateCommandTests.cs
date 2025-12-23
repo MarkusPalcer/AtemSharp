@@ -11,7 +11,7 @@ public class LockStateCommandTests : SerializedCommandTestBase<LockStateCommand,
         public bool Locked { get; set; }
     }
 
-    protected override LockStateCommand CreateSut(TestCaseData testCase)
+    protected override LockStateCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new LockStateCommand
         {

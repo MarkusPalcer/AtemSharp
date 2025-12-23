@@ -10,7 +10,7 @@ public class AutoTransitionCommandTests : SerializedCommandTestBase<AutoTransiti
         public byte Index { get; set; }
     }
 
-    protected override AutoTransitionCommand CreateSut(TestCaseData testCase)
+    protected override AutoTransitionCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new AutoTransitionCommand(new MixEffect { Id = testCase.Command.Index });
     }

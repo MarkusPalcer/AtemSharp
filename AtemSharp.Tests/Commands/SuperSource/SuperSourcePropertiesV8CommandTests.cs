@@ -24,7 +24,7 @@ public class SuperSourcePropertiesV8CommandTests : SerializedCommandTestBase<Sup
         public bool ArtInvertKey { get; set; }
     }
 
-    protected override SuperSourcePropertiesV8Command CreateSut(TestCaseData testCase)
+    protected override SuperSourcePropertiesV8Command CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new SuperSourcePropertiesV8Command(new AtemSharp.State.Video.SuperSource.SuperSource
         {

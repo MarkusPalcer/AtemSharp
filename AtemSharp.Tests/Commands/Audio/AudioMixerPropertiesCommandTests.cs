@@ -12,7 +12,7 @@ public class AudioMixerPropertiesCommandTests : SerializedCommandTestBase<AudioM
         public bool AudioFollowVideo { get; set; }
     }
 
-    protected override AudioMixerPropertiesCommand CreateSut(TestCaseData testCase)
+    protected override AudioMixerPropertiesCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new AudioMixerPropertiesCommand(new ClassicAudioState
         {

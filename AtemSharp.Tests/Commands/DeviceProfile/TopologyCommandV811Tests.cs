@@ -27,7 +27,7 @@ internal class TopologyCommandV811Tests : DeserializedCommandTestBase<TopologyCo
         public bool OnlyConfigurableOutputs { get; set; }
     }
 
-    internal override void CompareCommandProperties(TopologyCommandV811 actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(TopologyCommandV811 actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.MixEffects, Is.EqualTo(expectedData.MixEffectBlocks));
         Assert.That(actualCommand.Sources, Is.EqualTo(expectedData.VideoSources));

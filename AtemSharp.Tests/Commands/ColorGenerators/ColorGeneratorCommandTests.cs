@@ -21,7 +21,7 @@ public class ColorGeneratorCommandTests : SerializedCommandTestBase<ColorGenerat
         public double Luma { get; set; }
     }
 
-    protected override ColorGeneratorCommand CreateSut(TestCaseData testCase)
+    protected override ColorGeneratorCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new ColorGeneratorCommand(new ColorGeneratorState
         {

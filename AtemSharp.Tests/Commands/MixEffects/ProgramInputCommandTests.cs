@@ -13,7 +13,7 @@ public class ProgramInputCommandTests : SerializedCommandTestBase<ProgramInputCo
         public ushort Source { get; set; }
     }
 
-    protected override ProgramInputCommand CreateSut(TestCaseData testCase)
+    protected override ProgramInputCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new ProgramInputCommand(new MixEffect
         {

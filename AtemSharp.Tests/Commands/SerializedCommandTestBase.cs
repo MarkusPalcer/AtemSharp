@@ -1,10 +1,11 @@
 using AtemSharp.Commands;
+using AtemSharp.Tests.TestUtilities.CommandTests;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AtemSharp.Tests.Commands;
 
-public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTestBase<TTestData>
+public abstract class SerializedCommandTestBase<TCommand, TTestData>
     where TCommand : SerializedCommand
     where TTestData : SerializedCommandTestBase<TCommand, TTestData>.CommandDataBase, new()
 {
@@ -15,29 +16,6 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
     protected virtual Range[] GetFloatingPointByteRanges()
     {
         return [];
-    }
-
-    /// <summary>
-    /// Extract command payload using the length encoded in the ATEM packet header.
-    /// This automatically handles both fixed-length and variable-length commands.
-    /// </summary>
-    /// <param name="fullPacketBytes">The complete packet bytes including headers</param>
-    /// <returns>The command payload bytes</returns>
-    private static byte[] ExtractExpectedPayload(byte[] fullPacketBytes)
-    {
-        if (fullPacketBytes.Length < 8)
-        {
-            throw new ArgumentException("Packet must be at least 8 bytes (4-byte header + 4-byte command name)");
-        }
-
-        // Read the total packet length from the first 2 bytes (big-endian)
-        var totalPacketLength = (fullPacketBytes[0] << 8) | fullPacketBytes[1];
-
-        // Command payload length = total packet length - 8 bytes (4-byte packet header + 4-byte command name)
-        var commandPayloadLength = totalPacketLength - 8;
-
-        // Extract exactly that many bytes after the 8-byte header
-        return ExtractCommandPayload(fullPacketBytes, commandPayloadLength);
     }
 
     private bool IsFloatingPointByte(int index, int totalLength)
@@ -77,25 +55,27 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
     }
 
     [UsedImplicitly(ImplicitUseTargetFlags.WithInheritors | ImplicitUseTargetFlags.WithMembers)]
-    public new abstract class CommandDataBase : CommandTestBase<TTestData>.CommandDataBase
+    public abstract class CommandDataBase : TestUtilities.CommandTests.CommandDataBase
     {
         public uint Mask { get; set; }
     }
 
-    public static IEnumerable<NUnit.Framework.TestCaseData> GetTestCases()
-        => GetTestCases<TCommand>();
+    public static IEnumerable<TestCaseData> GetTestCases()
+    {
+        var testCases = Helper.GetTestCases<TCommand, TTestData>().ToArray();
+        Assert.That(testCases.Length, Is.GreaterThan(0), "No test cases found");
+        return testCases;
+    }
 
     [Test, TestCaseSource(nameof(GetTestCases))]
-    public void TestSerialization(TestCaseData testCase)
+    public void TestSerialization(TestUtilities.CommandTests.TestCaseData<TTestData> testCase)
     {
         if (testCase.Command.UnknownProperties.Count != 0)
         {
             Assert.Fail("Unprocessed test data:\n" + JsonConvert.SerializeObject(testCase.Command.UnknownProperties));
         }
 
-        // Arrange - Extract expected payload from the full packet
-        var fullPacketBytes = ParseHexBytes(testCase.Bytes);
-        var expectedPayload = ExtractExpectedPayload(fullPacketBytes);
+        var expectedPayload = testCase.Payload;
 
         var command = CreateSut(testCase);
         command.Flag = testCase.Command.Mask;
@@ -125,5 +105,5 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData> : CommandTe
         }
     }
 
-    protected abstract TCommand CreateSut(TestCaseData testCase);
+    protected abstract TCommand CreateSut(TestUtilities.CommandTests.TestCaseData<TTestData> testCase);
 }

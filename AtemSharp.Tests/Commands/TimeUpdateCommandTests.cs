@@ -14,7 +14,7 @@ internal class TimeUpdateCommandTests : DeserializedCommandTestBase<TimeUpdateCo
         public bool IsDropFrame { get; set; }
     }
 
-    internal override void CompareCommandProperties(TimeUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(TimeUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.Hours, Is.EqualTo(expectedData.Hour));
         Assert.That(actualCommand.Minutes, Is.EqualTo(expectedData.Minute));

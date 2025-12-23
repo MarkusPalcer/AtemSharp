@@ -14,7 +14,7 @@ public class MultiViewerSourceCommandTests : SerializedCommandTestBase<MultiView
 		public ushort Source { get; set; }
 	}
 
-	protected override MultiViewerSourceCommand CreateSut(TestCaseData testCase)
+	protected override MultiViewerSourceCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
 	{
         return new MultiViewerSourceCommand(new MultiViewerWindowState
         {

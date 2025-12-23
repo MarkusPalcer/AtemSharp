@@ -14,7 +14,7 @@ public class MediaPlayerStatusCommandTests : SerializedCommandTestBase<MediaPlay
         public ushort ClipFrame { get; set; }
     }
 
-    protected override MediaPlayerStatusCommand CreateSut(TestCaseData testCase)
+    protected override MediaPlayerStatusCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MediaPlayerStatusCommand(new MediaPlayer
         {

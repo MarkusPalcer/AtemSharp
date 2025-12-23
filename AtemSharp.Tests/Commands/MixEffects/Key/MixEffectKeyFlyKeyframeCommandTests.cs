@@ -57,7 +57,7 @@ public class MixEffectKeyFlyKeyframeCommandTests : SerializedCommandTestBase<Mix
         public double MaskRight { get; set; }
     }
 
-    protected override MixEffectKeyFlyKeyframeCommand CreateSut(TestCaseData testCase)
+    protected override MixEffectKeyFlyKeyframeCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MixEffectKeyFlyKeyframeCommand(new UpstreamKeyerFlyKeyframe
         {

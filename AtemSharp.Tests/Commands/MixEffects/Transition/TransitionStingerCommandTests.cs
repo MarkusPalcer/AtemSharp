@@ -31,7 +31,7 @@ public class TransitionStingerCommandTests : SerializedCommandTestBase<Transitio
         public ushort MixRate { get; set; }
     }
 
-    protected override TransitionStingerCommand CreateSut(TestCaseData testCase)
+    protected override TransitionStingerCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new TransitionStingerCommand(new MixEffect
         {

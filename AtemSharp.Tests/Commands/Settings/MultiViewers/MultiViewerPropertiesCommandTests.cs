@@ -17,7 +17,7 @@ public class MultiViewerPropertiesCommandTests : SerializedCommandTestBase<Multi
         public bool ProgramPreviewSwapped { get; set; }
     }
 
-    protected override MultiViewerPropertiesCommand CreateSut(TestCaseData testCase)
+    protected override MultiViewerPropertiesCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MultiViewerPropertiesCommand(new MultiViewer
         {

@@ -31,5 +31,7 @@
     <ItemGroup>
         <EmbeddedResource Include="TestData\libatem-data.json" />
         <None Remove="TestData\RunMacro.json" />
+        <None Remove="TestData\atem-mini-iso-pro.json" />
+        <EmbeddedResource Include="TestData\atem-mini-iso-pro.json" />
     </ItemGroup>
 </Project>

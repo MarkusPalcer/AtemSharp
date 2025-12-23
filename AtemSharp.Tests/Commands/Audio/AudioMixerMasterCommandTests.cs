@@ -23,7 +23,7 @@ public class AudioMixerMasterCommandTests : SerializedCommandTestBase<AudioMixer
         public bool FollowFadeToBlack { get; set; }
     }
 
-    protected override AudioMixerMasterCommand CreateSut(TestCaseData testCase)
+    protected override AudioMixerMasterCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new AudioMixerMasterCommand(new ClassicAudioState
         {

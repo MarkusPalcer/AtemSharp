@@ -10,7 +10,7 @@ public class RecordingIsoCommandTests : SerializedCommandTestBase<RecordingIsoCo
         public bool IsoRecordAllInputs { get; set; }
     }
 
-    protected override RecordingIsoCommand CreateSut(TestCaseData testCase)
+    protected override RecordingIsoCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new RecordingIsoCommand(new AtemState
         {

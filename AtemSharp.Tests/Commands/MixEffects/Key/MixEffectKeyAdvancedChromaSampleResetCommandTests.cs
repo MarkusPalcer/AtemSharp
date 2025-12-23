@@ -14,7 +14,7 @@ public class MixEffectKeyAdvancedChromaSampleResetCommandTests : SerializedComma
         public bool KeyAdjustments { get; set; }
     }
 
-    protected override MixEffectKeyAdvancedChromaSampleResetCommand CreateSut(TestCaseData testCase)
+    protected override MixEffectKeyAdvancedChromaSampleResetCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MixEffectKeyAdvancedChromaSampleResetCommand(new UpstreamKeyer
         {

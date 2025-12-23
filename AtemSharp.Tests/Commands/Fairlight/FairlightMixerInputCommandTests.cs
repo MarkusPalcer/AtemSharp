@@ -16,7 +16,7 @@ public class FairlightMixerInputCommandTests : SerializedCommandTestBase<Fairlig
         public FairlightInputConfiguration ActiveConfiguration { get; set; }
     }
 
-    protected override FairlightMixerInputCommand CreateSut(TestCaseData testCase)
+    protected override FairlightMixerInputCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new FairlightMixerInputCommand(new FairlightAudioInput
         {

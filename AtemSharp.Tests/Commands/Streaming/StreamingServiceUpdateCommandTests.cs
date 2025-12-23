@@ -13,7 +13,7 @@ internal class StreamingServiceUpdateCommandTests : DeserializedCommandTestBase<
         public uint[] Bitrates { get; set; } = [];
     }
 
-    internal override void CompareCommandProperties(StreamingServiceUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(StreamingServiceUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.ServiceName, Is.EqualTo(expectedData.ServiceName));
         Assert.That(actualCommand.Url, Is.EqualTo(expectedData.Url));

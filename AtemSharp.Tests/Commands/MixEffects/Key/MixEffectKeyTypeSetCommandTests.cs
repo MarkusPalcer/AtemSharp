@@ -13,7 +13,7 @@ public class MixEffectKeyTypeSetCommandTests : SerializedCommandTestBase<MixEffe
         public bool FlyEnabled  { get; set; }
     }
 
-    protected override MixEffectKeyTypeSetCommand CreateSut(TestCaseData testCase)
+    protected override MixEffectKeyTypeSetCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MixEffectKeyTypeSetCommand(new UpstreamKeyer
         {

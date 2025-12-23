@@ -14,7 +14,7 @@ public class MultiViewerWindowSafeAreaCommandTests : SerializedCommandTestBase<M
         public bool SafeAreaEnabled { get; set; }
     }
 
-    protected override MultiViewerWindowSafeAreaCommand CreateSut(TestCaseData testCase)
+    protected override MultiViewerWindowSafeAreaCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MultiViewerWindowSafeAreaCommand(new MultiViewerWindowState
         {

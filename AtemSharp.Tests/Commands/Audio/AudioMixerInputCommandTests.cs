@@ -25,7 +25,7 @@ public class AudioMixerInputCommandTests : SerializedCommandTestBase<AudioMixerI
         public bool RcaToXlrEnabled { get; set; }
     }
 
-    protected override AudioMixerInputCommand CreateSut(TestCaseData testCase)
+    protected override AudioMixerInputCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new AudioMixerInputCommand(new ClassicAudioChannel
         {

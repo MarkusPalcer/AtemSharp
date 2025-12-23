@@ -17,8 +17,7 @@ internal class DownstreamKeyStateV8UpdateCommandTests : DeserializedCommandTestB
         public bool IsTowardsOnAir { get; set; }
     }
 
-    internal override void CompareCommandProperties(DownstreamKeyStateV8UpdateCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(DownstreamKeyStateV8UpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.Index, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.OnAir, Is.EqualTo(expectedData.OnAir));

@@ -12,8 +12,7 @@ internal class MacroRecordingStatusCommandTests : DeserializedCommandTestBase<Ma
         public ushort Index { get; set; }
     }
 
-    internal override void CompareCommandProperties(MacroRecordingStatusCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(MacroRecordingStatusCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.IsRecording, Is.EqualTo(expectedData.IsRecording));
         Assert.That(actualCommand.MacroIndex, Is.EqualTo(expectedData.Index));

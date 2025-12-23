@@ -45,7 +45,7 @@ public class MixEffectKeyAdvancedChromaPropertiesCommandTests : SerializedComman
         public double Blue { get; set; }
     }
 
-    protected override MixEffectKeyAdvancedChromaPropertiesCommand CreateSut(TestCaseData testCase)
+    protected override MixEffectKeyAdvancedChromaPropertiesCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MixEffectKeyAdvancedChromaPropertiesCommand(new UpstreamKeyer
         {

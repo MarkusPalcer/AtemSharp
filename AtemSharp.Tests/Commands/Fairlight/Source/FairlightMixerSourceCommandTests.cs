@@ -33,7 +33,7 @@ public class FairlightMixerSourceCommandTests : SerializedCommandTestBase<Fairli
         public FairlightAudioMixOption MixOption { get; set; }
     }
 
-    protected override FairlightMixerSourceCommand CreateSut(TestCaseData testCase)
+    protected override FairlightMixerSourceCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new FairlightMixerSourceCommand(new AtemSharp.State.Audio.Fairlight.Source
         {

@@ -10,7 +10,7 @@ public class MediaPoolClearClipCommandTests : SerializedCommandTestBase<MediaPoo
         public byte Index { get; set; }
     }
 
-    protected override MediaPoolClearClipCommand CreateSut(TestCaseData testCase)
+    protected override MediaPoolClearClipCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MediaPoolClearClipCommand(new Clip { Id = testCase.Command.Index });
     }

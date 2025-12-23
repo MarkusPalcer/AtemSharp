@@ -10,7 +10,7 @@ public class MacroAddTimedPauseCommandTests : SerializedCommandTestBase<MacroAdd
         public ushort Frames { get; set; }
     }
 
-    protected override MacroAddTimedPauseCommand CreateSut(TestCaseData testCase)
+    protected override MacroAddTimedPauseCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MacroAddTimedPauseCommand
         {

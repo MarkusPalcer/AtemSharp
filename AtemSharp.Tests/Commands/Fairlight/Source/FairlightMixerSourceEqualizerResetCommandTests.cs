@@ -12,7 +12,7 @@ public class FairlightMixerSourceEqualizerResetCommandTests : SerializedCommandT
         public byte Band { get; set; }
     }
 
-    protected override FairlightMixerSourceEqualizerResetCommand CreateSut(TestCaseData testCase)
+    protected override FairlightMixerSourceEqualizerResetCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new FairlightMixerSourceEqualizerResetCommand(new AtemSharp.State.Audio.Fairlight.Source
         {

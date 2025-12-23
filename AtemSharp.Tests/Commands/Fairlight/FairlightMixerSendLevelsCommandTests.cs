@@ -9,7 +9,7 @@ public class FairlightMixerSendLevelsCommandTests : SerializedCommandTestBase<Fa
         public bool SendLevels  { get; set; }
     }
 
-    protected override FairlightMixerSendLevelsCommand CreateSut(TestCaseData testCase)
+    protected override FairlightMixerSendLevelsCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new FairlightMixerSendLevelsCommand
         {

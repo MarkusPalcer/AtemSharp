@@ -12,7 +12,7 @@ internal class LockStateUpdateCommandTests : DeserializedCommandTestBase<LockSta
         public bool Locked { get; set; }
     }
 
-    internal override void CompareCommandProperties(LockStateUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(LockStateUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.Index, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.Locked, Is.EqualTo(expectedData.Locked));

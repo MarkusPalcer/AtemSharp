@@ -12,7 +12,7 @@ public class FairlightMixerResetPeakLevelsCommandTests : SerializedCommandTestBa
         public bool Master { get; set; }
     }
 
-    protected override FairlightMixerResetPeakLevelsCommand CreateSut(TestCaseData testCase)
+    protected override FairlightMixerResetPeakLevelsCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new FairlightMixerResetPeakLevelsCommand
         {

@@ -13,7 +13,7 @@ public class RecordingSettingsCommandTests : SerializedCommandTestBase<Recording
         public bool RecordInAllCameras { get; set; }
     }
 
-    protected override RecordingSettingsCommand CreateSut(TestCaseData testCase)
+    protected override RecordingSettingsCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new RecordingSettingsCommand(new AtemState
         {

@@ -13,7 +13,7 @@ public class AuxSourceCommandTests : SerializedCommandTestBase<AuxSourceCommand,
         public ushort Source { get; set; }
     }
 
-    protected override AuxSourceCommand CreateSut(TestCaseData testCase)
+    protected override AuxSourceCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new AuxSourceCommand(new AuxiliaryOutput {Id = testCase.Command.Id, Source = testCase.Command.Source});
     }

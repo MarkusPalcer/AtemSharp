@@ -13,7 +13,7 @@ public class MediaPlayerSourceCommandTests : SerializedCommandTestBase<MediaPlay
         public byte ClipIndex { get; set; }
     }
 
-    protected override MediaPlayerSourceCommand CreateSut(TestCaseData testCase)
+    protected override MediaPlayerSourceCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MediaPlayerSourceCommand(new MediaPlayer
         {

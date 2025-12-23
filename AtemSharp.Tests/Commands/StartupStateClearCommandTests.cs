@@ -7,7 +7,7 @@ public class StartupStateClearCommandTests : SerializedCommandTestBase<StartupSt
 {
     public class CommandData : CommandDataBase;
 
-    protected override StartupStateClearCommand CreateSut(TestCaseData testCase)
+    protected override StartupStateClearCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new StartupStateClearCommand();
     }

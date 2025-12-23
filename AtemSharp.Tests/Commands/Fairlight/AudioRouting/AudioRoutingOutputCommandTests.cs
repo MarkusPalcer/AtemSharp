@@ -12,7 +12,7 @@ public class AudioRoutingOutputCommandTests : SerializedCommandTestBase<AudioRou
         public string Name { get; set; } = string.Empty;
     }
 
-    protected override AudioRoutingOutputCommand CreateSut(TestCaseData testCase)
+    protected override AudioRoutingOutputCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new AudioRoutingOutputCommand(new AudioRoutingEntry
         {

@@ -12,7 +12,7 @@ public class MixEffectKeyFlyKeyframeStoreCommandTests : SerializedCommandTestBas
         public byte KeyFrame { get; set; }
     }
 
-    protected override MixEffectKeyFlyKeyframeStoreCommand CreateSut(TestCaseData testCase)
+    protected override MixEffectKeyFlyKeyframeStoreCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MixEffectKeyFlyKeyframeStoreCommand(new UpstreamKeyerFlyKeyframe
         {

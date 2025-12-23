@@ -12,7 +12,7 @@ internal class RecordingStatusUpdateCommandTests : DeserializedCommandTestBase<R
         public uint TotalRecordingTimeAvailable { get; set; }
     }
 
-    internal override void CompareCommandProperties(RecordingStatusUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(RecordingStatusUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That((ushort)actualCommand.Error, Is.EqualTo(expectedData.Error));
         Assert.That((ushort)actualCommand.Status, Is.EqualTo(expectedData.Status));

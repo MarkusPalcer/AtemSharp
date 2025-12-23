@@ -15,7 +15,7 @@ public class DataTransferUploadRequestCommandTests : SerializedCommandTestBase<D
         public ushort Mode { get; set; }
     }
 
-    protected override DataTransferUploadRequestCommand CreateSut(TestCaseData testCase)
+    protected override DataTransferUploadRequestCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new DataTransferUploadRequestCommand(
             testCase.Command.TransferId,

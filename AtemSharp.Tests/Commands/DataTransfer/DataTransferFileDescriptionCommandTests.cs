@@ -14,7 +14,7 @@ public class DataTransferFileDescriptionCommandTests : SerializedCommandTestBase
         public string FileHash { get; set; } = string.Empty;
     }
 
-    protected override DataTransferFileDescriptionCommand CreateSut(TestCaseData testCase)
+    protected override DataTransferFileDescriptionCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new DataTransferFileDescriptionCommand(
             testCase.Command.TransferId,

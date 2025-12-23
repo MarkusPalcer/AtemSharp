@@ -13,7 +13,7 @@ public class DownstreamKeyCutSourceCommandTests : SerializedCommandTestBase<Down
         public ushort CutSource { get; set; }
     }
 
-    protected override DownstreamKeyCutSourceCommand CreateSut(TestCaseData testCase)
+    protected override DownstreamKeyCutSourceCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new DownstreamKeyCutSourceCommand(new DownstreamKeyer
         {

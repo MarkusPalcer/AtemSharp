@@ -14,8 +14,7 @@ internal class MediaPlayerSourceUpdateCommandTests : DeserializedCommandTestBase
         public uint SourceIndex { get; set; }
     }
 
-    internal override void CompareCommandProperties(MediaPlayerSourceUpdateCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(MediaPlayerSourceUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.SourceType, Is.EqualTo(expectedData.SourceType));
         Assert.That(actualCommand.MediaPlayerId, Is.EqualTo(expectedData.Index));

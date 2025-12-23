@@ -24,8 +24,7 @@ internal class FairlightMixerMasterLevelsUpdateCommandTests : DeserializedComman
         public double RightPeak { get; set; }
     }
 
-    internal override void CompareCommandProperties(FairlightMixerMasterLevelsUpdateCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(FairlightMixerMasterLevelsUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.InputLeftLevel, Is.EqualTo(expectedData.InputLeftLevel).Within(0.01));
         Assert.That(actualCommand.InputRightLevel, Is.EqualTo(expectedData.InputRightLevel).Within(0.01));

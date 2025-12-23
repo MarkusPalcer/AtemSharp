@@ -25,7 +25,7 @@ public class DownstreamKeyMaskCommandTests : SerializedCommandTestBase<Downstrea
         public double MaskRight { get; set; }
     }
 
-    protected override DownstreamKeyMaskCommand CreateSut(TestCaseData testCase)
+    protected override DownstreamKeyMaskCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         // Create command with the keyer ID
         var command = new DownstreamKeyMaskCommand(new DownstreamKeyer

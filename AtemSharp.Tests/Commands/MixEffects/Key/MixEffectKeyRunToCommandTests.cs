@@ -14,7 +14,7 @@ public class MixEffectKeyRunToCommandTests : SerializedCommandTestBase<MixEffect
         public FlyKeyDirection RunToInfinite { get; set; }
     }
 
-    protected override MixEffectKeyRunToCommand CreateSut(TestCaseData testCase)
+    protected override MixEffectKeyRunToCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         switch (testCase.Command.KeyFrame)
         {

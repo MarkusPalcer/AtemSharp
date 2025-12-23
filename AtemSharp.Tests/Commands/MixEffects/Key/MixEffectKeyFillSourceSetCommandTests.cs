@@ -12,7 +12,7 @@ public class MixEffectKeyFillSourceSetCommandTests : SerializedCommandTestBase<M
         public ushort FillSource { get; set; }
     }
 
-    protected override MixEffectKeyFillSourceSetCommand CreateSut(TestCaseData testCase)
+    protected override MixEffectKeyFillSourceSetCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MixEffectKeyFillSourceSetCommand(new UpstreamKeyer
         {

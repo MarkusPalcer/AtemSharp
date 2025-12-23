@@ -13,7 +13,7 @@ public class MixEffectKeyCutSourceSetCommandTests : SerializedCommandTestBase<Mi
     }
 
 
-    protected override MixEffectKeyCutSourceSetCommand CreateSut(TestCaseData testCase)
+    protected override MixEffectKeyCutSourceSetCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MixEffectKeyCutSourceSetCommand(new UpstreamKeyer
         {

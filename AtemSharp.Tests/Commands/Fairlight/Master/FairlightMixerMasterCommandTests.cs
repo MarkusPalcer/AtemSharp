@@ -21,7 +21,7 @@ public class FairlightMixerMasterCommandTests : SerializedCommandTestBase<Fairli
         public double Gain { get; set; }
     }
 
-    protected override FairlightMixerMasterCommand CreateSut(TestCaseData testCase)
+    protected override FairlightMixerMasterCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new FairlightMixerMasterCommand(new MasterProperties
         {

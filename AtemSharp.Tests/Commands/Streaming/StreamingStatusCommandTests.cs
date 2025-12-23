@@ -11,7 +11,7 @@ public class StreamingStatusCommandTests : SerializedCommandTestBase<StreamingSt
         public bool IsStreaming { get; set; }
     }
 
-    protected override StreamingStatusCommand CreateSut(TestCaseData testCase)
+    protected override StreamingStatusCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new StreamingStatusCommand(new AtemState
         {

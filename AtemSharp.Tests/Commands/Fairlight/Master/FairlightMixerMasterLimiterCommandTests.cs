@@ -24,7 +24,7 @@ public class FairlightMixerMasterLimiterCommandTests : SerializedCommandTestBase
         public double Release { get; set; }
     }
 
-    protected override FairlightMixerMasterLimiterCommand CreateSut(TestCaseData testCase)
+    protected override FairlightMixerMasterLimiterCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new  FairlightMixerMasterLimiterCommand(new MasterProperties
         {

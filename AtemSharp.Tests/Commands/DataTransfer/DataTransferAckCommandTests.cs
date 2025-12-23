@@ -12,7 +12,7 @@ public class DataTransferAckCommandTests : SerializedCommandTestBase<DataTransfe
         public byte TransferIndex { get; set; }
     }
 
-    protected override DataTransferAckCommand CreateSut(TestCaseData testCase)
+    protected override DataTransferAckCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         // Create command with the test data values
         return new DataTransferAckCommand(

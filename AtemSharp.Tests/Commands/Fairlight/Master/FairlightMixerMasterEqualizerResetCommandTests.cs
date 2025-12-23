@@ -10,7 +10,7 @@ public class FairlightMixerMasterEqualizerResetCommandTests : SerializedCommandT
         public byte Band { get; set; }
     }
 
-    protected override FairlightMixerMasterEqualizerResetCommand CreateSut(TestCaseData testCase)
+    protected override FairlightMixerMasterEqualizerResetCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new FairlightMixerMasterEqualizerResetCommand
         {

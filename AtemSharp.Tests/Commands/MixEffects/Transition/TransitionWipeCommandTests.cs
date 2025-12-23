@@ -35,7 +35,7 @@ public class TransitionWipeCommandTests : SerializedCommandTestBase<TransitionWi
         public bool FlipFlop { get; set; }
     }
 
-    protected override TransitionWipeCommand CreateSut(TestCaseData testCase)
+    protected override TransitionWipeCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new TransitionWipeCommand(new MixEffect
         {

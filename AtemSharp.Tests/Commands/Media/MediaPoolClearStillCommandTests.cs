@@ -10,7 +10,7 @@ public class MediaPoolClearStillCommandTests : SerializedCommandTestBase<MediaPo
         public byte Index { get; set; }
     }
 
-    protected override MediaPoolClearStillCommand CreateSut(TestCaseData testCase)
+    protected override MediaPoolClearStillCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MediaPoolClearStillCommand(new Still { Id = testCase.Command.Index });
     }

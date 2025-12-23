@@ -12,7 +12,7 @@ public class FairlightMixerMasterDynamicsResetCommandTests : SerializedCommandTe
         public bool Limiter { get; set; }
     }
 
-    protected override FairlightMixerMasterDynamicsResetCommand CreateSut(TestCaseData testCase)
+    protected override FairlightMixerMasterDynamicsResetCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new FairlightMixerMasterDynamicsResetCommand
         {

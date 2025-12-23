@@ -12,7 +12,7 @@ public class DisplayClockStateSetCommandTests : SerializedCommandTestBase<Displa
         public DisplayClockClockState State { get; set; }
     }
 
-    protected override DisplayClockStateSetCommand CreateSut(TestCaseData testCase)
+    protected override DisplayClockStateSetCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new DisplayClockStateSetCommand(new AtemSharp.State.DisplayClock.DisplayClock { ClockState = testCase.Command.State });
     }

@@ -14,7 +14,7 @@ public class MultiViewerWindowVuMeterCommandTests : SerializedCommandTestBase<Mu
         public bool VuEnabled { get; set; }
     }
 
-    protected override MultiViewerWindowVuMeterCommand CreateSut(TestCaseData testCase)
+    protected override MultiViewerWindowVuMeterCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MultiViewerWindowVuMeterCommand(new MultiViewerWindowState
         {

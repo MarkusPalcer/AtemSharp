@@ -12,7 +12,7 @@ public class RecordingStatusCommandTests : SerializedCommandTestBase<RecordingSt
     }
 
 
-    protected override RecordingStatusCommand CreateSut(TestCaseData testCase)
+    protected override RecordingStatusCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new RecordingStatusCommand(new AtemState
         {

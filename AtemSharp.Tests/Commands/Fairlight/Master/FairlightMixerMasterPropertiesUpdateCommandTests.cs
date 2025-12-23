@@ -12,8 +12,7 @@ internal class FairlightMixerMasterPropertiesUpdateCommandTests : DeserializedCo
         public bool AudioFollowVideoCrossfadeTransitionEnabled { get; set; }
     }
 
-    internal override void CompareCommandProperties(FairlightMixerMasterPropertiesUpdateCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(FairlightMixerMasterPropertiesUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.AudioFollowsVideo, Is.EqualTo(expectedData.AudioFollowVideoCrossfadeTransitionEnabled));
     }

@@ -23,7 +23,7 @@ public class FairlightMixerSourceLimiterCommandTests : SerializedCommandTestBase
         public double Release { get; set; }
     }
 
-    protected override FairlightMixerSourceLimiterCommand CreateSut(TestCaseData testCase)
+    protected override FairlightMixerSourceLimiterCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new FairlightMixerSourceLimiterCommand(new AtemSharp.State.Audio.Fairlight.Source
         {

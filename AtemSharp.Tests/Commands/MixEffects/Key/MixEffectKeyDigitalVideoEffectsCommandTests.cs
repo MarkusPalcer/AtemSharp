@@ -69,7 +69,7 @@ public class MixEffectKeyDigitalVideoEffectsCommandTests : SerializedCommandTest
         public byte Rate { get; set; }
     }
 
-    protected override MixEffectKeyDigitalVideoEffectsCommand CreateSut(TestCaseData testCase)
+    protected override MixEffectKeyDigitalVideoEffectsCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         // Create command with the mix effect and keyer IDs
         return new MixEffectKeyDigitalVideoEffectsCommand(new UpstreamKeyer

@@ -25,7 +25,7 @@ internal class MixEffectKeyAdvancedChromaPropertiesUpdateCommandTests : Deserial
     }
 
     internal override void CompareCommandProperties(MixEffectKeyAdvancedChromaPropertiesUpdateCommand actualCommand,
-                                                     CommandData expectedData, TestCaseData testCase)
+                                                     CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.MixEffectIndex));
         Assert.That(actualCommand.KeyerId, Is.EqualTo(expectedData.KeyerIndex));

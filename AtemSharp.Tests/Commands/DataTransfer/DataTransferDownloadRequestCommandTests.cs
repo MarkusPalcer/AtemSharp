@@ -15,7 +15,7 @@ public class DataTransferDownloadRequestCommandTests : SerializedCommandTestBase
         public ushort Unknown2 { get; set; }    // Additional field not in TypeScript
     }
 
-    protected override DataTransferDownloadRequestCommand CreateSut(TestCaseData testCase)
+    protected override DataTransferDownloadRequestCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new DataTransferDownloadRequestCommand
         {

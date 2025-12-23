@@ -11,7 +11,7 @@ public class DownstreamKeyRateCommandTests : SerializedCommandTestBase<Downstrea
         public byte Rate { get; set; }
     }
 
-    protected override DownstreamKeyRateCommand CreateSut(TestCaseData testCase)
+    protected override DownstreamKeyRateCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new DownstreamKeyRateCommand(new DownstreamKeyer
         {

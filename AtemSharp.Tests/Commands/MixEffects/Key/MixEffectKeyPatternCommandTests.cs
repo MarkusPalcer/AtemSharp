@@ -27,7 +27,7 @@ public class MixEffectKeyPatternCommandTests : SerializedCommandTestBase<MixEffe
         public double Size { get; set; }
     }
 
-    protected override MixEffectKeyPatternCommand CreateSut(TestCaseData testCase)
+    protected override MixEffectKeyPatternCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MixEffectKeyPatternCommand(new UpstreamKeyer
         {

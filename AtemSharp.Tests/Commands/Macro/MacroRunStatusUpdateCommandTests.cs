@@ -14,8 +14,7 @@ internal class MacroRunStatusUpdateCommandTests : DeserializedCommandTestBase<Ma
         public ushort Index { get; set; }
     }
 
-    internal override void CompareCommandProperties(MacroRunStatusUpdateCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(MacroRunStatusUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.IsRunning, Is.EqualTo(expectedData.IsRunning));
         Assert.That(actualCommand.Loop, Is.EqualTo(expectedData.Loop));

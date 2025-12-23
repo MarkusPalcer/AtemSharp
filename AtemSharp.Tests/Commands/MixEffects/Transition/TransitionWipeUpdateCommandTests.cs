@@ -22,8 +22,7 @@ internal class TransitionWipeUpdateCommandTests : DeserializedCommandTestBase<Tr
         public bool FlipFlop { get; set; }
     }
 
-    internal override void CompareCommandProperties(TransitionWipeUpdateCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(TransitionWipeUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(testCase.Command.Index));
         Assert.That(actualCommand.Rate, Is.EqualTo(expectedData.Rate));

@@ -12,7 +12,7 @@ public class FairlightMixerMasterPropertiesCommandTests
     }
 
 
-    protected override FairlightMixerMasterPropertiesCommand CreateSut(TestCaseData testCase)
+    protected override FairlightMixerMasterPropertiesCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new FairlightMixerMasterPropertiesCommand(new MasterProperties
         {

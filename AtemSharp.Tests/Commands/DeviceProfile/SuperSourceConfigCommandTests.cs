@@ -23,8 +23,7 @@ internal class SuperSourceConfigCommandTests : DeserializedCommandTestBase<Super
         }
     }
 
-    internal override void CompareCommandProperties(SuperSourceConfigCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(SuperSourceConfigCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.BoxCount, Is.EqualTo(expectedData.BoxCount));
     }

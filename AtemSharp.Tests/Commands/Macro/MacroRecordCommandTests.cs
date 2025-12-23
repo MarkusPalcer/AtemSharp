@@ -11,7 +11,7 @@ public class MacroRecordCommandTests : SerializedCommandTestBase<MacroRecordComm
         public string Description { get; set; } = string.Empty;
     }
 
-    protected override MacroRecordCommand CreateSut(TestCaseData testCase)
+    protected override MacroRecordCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MacroRecordCommand(new AtemSharp.State.Macro.Macro
         {

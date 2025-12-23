@@ -13,7 +13,7 @@ public class DownstreamKeyAutoCommandV801Tests : SerializedCommandTestBase<Downs
         public bool IsTowardsOnAir { get; set; }
     }
 
-    protected override DownstreamKeyAutoCommandV801 CreateSut(TestCaseData testCase)
+    protected override DownstreamKeyAutoCommandV801 CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new DownstreamKeyAutoCommandV801(new DownstreamKeyer
         {

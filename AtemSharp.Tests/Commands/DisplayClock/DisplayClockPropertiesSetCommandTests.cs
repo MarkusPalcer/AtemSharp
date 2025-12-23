@@ -87,7 +87,7 @@ public class DisplayClockPropertiesSetCommandTests : SerializedCommandTestBase<D
         Assert.That(command.Flag & (1 << 8), Is.Not.EqualTo(0));
     }
 
-    protected override DisplayClockPropertiesSetCommand CreateSut(TestCaseData testCase)
+    protected override DisplayClockPropertiesSetCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new DisplayClockPropertiesSetCommand(new AtemSharp.State.DisplayClock.DisplayClock
         {

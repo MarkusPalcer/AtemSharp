@@ -10,7 +10,7 @@ public class CutCommandTests : SerializedCommandTestBase<CutCommand, CutCommandT
         public byte Index { get; set; }
     }
 
-    protected override CutCommand CreateSut(TestCaseData testCase)
+    protected override CutCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new CutCommand(new MixEffect { Id = testCase.Command.Index });
     }

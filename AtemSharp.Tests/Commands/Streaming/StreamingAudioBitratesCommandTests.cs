@@ -11,7 +11,7 @@ public class StreamingAudioBitratesCommandTests : SerializedCommandTestBase<Stre
         public uint HighBitrate { get; set; }
     }
 
-    protected override StreamingAudioBitratesCommand CreateSut(TestCaseData testCase)
+    protected override StreamingAudioBitratesCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new StreamingAudioBitratesCommand(new AtemState
         {

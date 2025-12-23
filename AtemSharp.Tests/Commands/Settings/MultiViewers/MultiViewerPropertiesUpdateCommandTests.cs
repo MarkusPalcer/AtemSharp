@@ -15,8 +15,7 @@ internal class MultiViewerPropertiesUpdateCommandTests : DeserializedCommandTest
         public bool ProgramPreviewSwapped { get; set; }
     }
 
-    internal override void CompareCommandProperties(MultiViewerPropertiesUpdateCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(MultiViewerPropertiesUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.MultiViewerId, Is.EqualTo(expectedData.MultiviewIndex));
         Assert.That(actualCommand.Layout, Is.EqualTo(expectedData.Layout));

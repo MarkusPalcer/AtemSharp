@@ -12,7 +12,7 @@ internal class PowerStatusCommandTests : DeserializedCommandTestBase<PowerStatus
         public bool Pin2 { get; set; }
     }
 
-    internal override void CompareCommandProperties(PowerStatusCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(PowerStatusCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.PowerSupplies[0], Is.EqualTo(expectedData.Pin1));
         Assert.That(actualCommand.PowerSupplies[1], Is.EqualTo(expectedData.Pin2));

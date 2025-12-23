@@ -11,7 +11,7 @@ internal class StreamingStatsUpdateCommandTests : DeserializedCommandTestBase<St
         public ushort CacheUsed { get; set; }
     }
 
-    internal override void CompareCommandProperties(StreamingStatsUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(StreamingStatsUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.EncodingBitrate, Is.EqualTo(expectedData.EncodingBitrate));
         Assert.That(actualCommand.CacheUsed, Is.EqualTo(expectedData.CacheUsed));

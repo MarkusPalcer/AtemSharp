@@ -24,8 +24,7 @@ internal class InputPropertiesUpdateCommandTests : DeserializedCommandTestBase<I
         public MeAvailability MeAvailability { get; set; }
     }
 
-    internal override void CompareCommandProperties(InputPropertiesUpdateCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(InputPropertiesUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Id));
         Assert.That(actualCommand.LongName, Is.EqualTo(expectedData.LongName));

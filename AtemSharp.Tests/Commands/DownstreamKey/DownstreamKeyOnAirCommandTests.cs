@@ -13,7 +13,7 @@ public class DownstreamKeyOnAirCommandTests : SerializedCommandTestBase<Downstre
         public bool OnAir { get; set; }
     }
 
-    protected override DownstreamKeyOnAirCommand CreateSut(TestCaseData testCase)
+    protected override DownstreamKeyOnAirCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new DownstreamKeyOnAirCommand(new DownstreamKeyer
         {

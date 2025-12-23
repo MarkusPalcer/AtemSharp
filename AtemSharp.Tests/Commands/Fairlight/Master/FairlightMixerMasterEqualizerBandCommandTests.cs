@@ -22,7 +22,7 @@ public class FairlightMixerMasterEqualizerBandCommandTests : SerializedCommandTe
         public double QFactor { get; set; }
     }
 
-    protected override FairlightMixerMasterEqualizerBandCommand CreateSut(TestCaseData testCase)
+    protected override FairlightMixerMasterEqualizerBandCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new FairlightMixerMasterEqualizerBandCommand(new MasterEqualizerBand
         {

@@ -10,7 +10,7 @@ public class MediaPoolSettingsSetCommandTests : SerializedCommandTestBase<MediaP
         public ushort[] MaxFrames { get; set; } = [];
     }
 
-    protected override MediaPoolSettingsSetCommand CreateSut(TestCaseData testCase)
+    protected override MediaPoolSettingsSetCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MediaPoolSettingsSetCommand(new MediaPoolSettings
         {

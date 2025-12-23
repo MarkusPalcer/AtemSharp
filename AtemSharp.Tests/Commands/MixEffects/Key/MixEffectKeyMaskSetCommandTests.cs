@@ -22,7 +22,7 @@ public class MixEffectKeyMaskSetCommandTests : SerializedCommandTestBase<AtemSha
         public double MaskRight { get; set; }
     }
 
-    protected override AtemSharp.Commands.MixEffects.Key.MixEffectKeyMaskSetCommand CreateSut(TestCaseData testCase)
+    protected override AtemSharp.Commands.MixEffects.Key.MixEffectKeyMaskSetCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new AtemSharp.Commands.MixEffects.Key.MixEffectKeyMaskSetCommand(new UpstreamKeyer
         {

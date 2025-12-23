@@ -14,7 +14,7 @@ public class TransitionDipCommandTests : SerializedCommandTestBase<TransitionDip
         public ushort Input { get; set; }
     }
 
-    protected override TransitionDipCommand CreateSut(TestCaseData testCase)
+    protected override TransitionDipCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new TransitionDipCommand(new MixEffect
         {

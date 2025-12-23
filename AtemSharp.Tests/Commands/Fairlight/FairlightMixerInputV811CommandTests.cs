@@ -13,7 +13,7 @@ public class FairlightMixerInputV811CommandTests : SerializedCommandTestBase<Fai
         public FairlightAnalogInputLevel ActiveInputLevel { get; set; }
     }
 
-    protected override FairlightMixerInputV811Command CreateSut(TestCaseData testCase)
+    protected override FairlightMixerInputV811Command CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new FairlightMixerInputV811Command(new FairlightAudioInput
         {

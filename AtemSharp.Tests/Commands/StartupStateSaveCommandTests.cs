@@ -7,7 +7,7 @@ public class StartupStateSaveCommandTests : SerializedCommandTestBase<StartupSta
 {
     public class CommandData : CommandDataBase {}
 
-    protected override StartupStateSaveCommand CreateSut(TestCaseData testCase)
+    protected override StartupStateSaveCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new StartupStateSaveCommand();
     }

@@ -12,7 +12,7 @@ public class DataTransferDataSendCommandTests : SerializedCommandTestBase<DataTr
         public string Body { get; set; } = "";
     }
 
-    protected override DataTransferDataSendCommand CreateSut(TestCaseData testCase)
+    protected override DataTransferDataSendCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new DataTransferDataSendCommand
         {

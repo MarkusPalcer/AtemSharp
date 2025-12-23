@@ -12,7 +12,7 @@ public class DownstreamKeyTieCommandTests : SerializedCommandTestBase<Downstream
         public bool Tie { get; set; }
     }
 
-    protected override DownstreamKeyTieCommand CreateSut(TestCaseData testCase)
+    protected override DownstreamKeyTieCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new DownstreamKeyTieCommand(new DownstreamKeyer
         {

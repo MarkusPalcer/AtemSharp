@@ -22,7 +22,7 @@ public class FairlightMixerMonitorCommandTests : SerializedCommandTestBase<Fairl
         public double InputSidetoneGain { get; set; }
     }
 
-    protected override FairlightMixerMonitorCommand CreateSut(TestCaseData testCase)
+    protected override FairlightMixerMonitorCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new FairlightMixerMonitorCommand(new FairlightAudioState
         {

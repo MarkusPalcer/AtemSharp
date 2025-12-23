@@ -15,7 +15,7 @@ public class AudioMixerResetPeaksCommandTests : SerializedCommandTestBase<AudioM
         public bool Monitor { get; set; }
     }
 
-    protected override AudioMixerResetPeaksCommand CreateSut(TestCaseData testCase)
+    protected override AudioMixerResetPeaksCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new AudioMixerResetPeaksCommand(new ClassicAudioChannel
         {

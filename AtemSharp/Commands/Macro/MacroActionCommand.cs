@@ -5,6 +5,7 @@ namespace AtemSharp.Commands.Macro;
 /// <summary>
 /// Used to run, stop, delete, etc. a macro
 /// </summary>
+[Command("MAct")]
 [BufferSize(4)]
 public partial class MacroActionCommand(State.Macro.Macro macro, MacroAction action) : SerializedCommand
 {

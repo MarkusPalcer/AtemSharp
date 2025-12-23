@@ -13,7 +13,7 @@ public class MultiViewerVuOpacityCommandTests : SerializedCommandTestBase<MultiV
         public byte Opacity { get; set; }
     }
 
-    protected override MultiViewerVuOpacityCommand CreateSut(TestCaseData testCase)
+    protected override MultiViewerVuOpacityCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MultiViewerVuOpacityCommand(new MultiViewer
         {

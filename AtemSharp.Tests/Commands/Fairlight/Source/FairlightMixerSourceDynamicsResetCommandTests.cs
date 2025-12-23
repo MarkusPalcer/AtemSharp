@@ -14,7 +14,7 @@ public class FairlightMixerSourceDynamicsResetCommandTests : SerializedCommandTe
         public bool Limiter { get; set; }
     }
 
-    protected override FairlightMixerSourceDynamicsResetCommand CreateSut(TestCaseData testCase)
+    protected override FairlightMixerSourceDynamicsResetCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new  FairlightMixerSourceDynamicsResetCommand(new AtemSharp.State.Audio.Fairlight.Source
         {

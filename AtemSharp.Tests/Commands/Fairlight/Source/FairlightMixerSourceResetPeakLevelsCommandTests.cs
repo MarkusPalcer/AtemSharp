@@ -13,7 +13,7 @@ public class FairlightMixerSourceResetPeakLevelsCommandTests : SerializedCommand
         public bool DynamicsOutput { get; set; }
     }
 
-    protected override FairlightMixerSourceResetPeakLevelsCommand CreateSut(TestCaseData testCase)
+    protected override FairlightMixerSourceResetPeakLevelsCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new FairlightMixerSourceResetPeakLevelsCommand(new AtemSharp.State.Audio.Fairlight.Source
         {

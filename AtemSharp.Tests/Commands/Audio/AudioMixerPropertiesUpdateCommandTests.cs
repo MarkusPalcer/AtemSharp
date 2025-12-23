@@ -13,8 +13,7 @@ internal class AudioMixerPropertiesUpdateCommandTests : DeserializedCommandTestB
         public bool AudioFollowVideo { get; set; }
     }
 
-    internal override void CompareCommandProperties(AudioMixerPropertiesUpdateCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(AudioMixerPropertiesUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.AudioFollowVideo, Is.EqualTo(expectedData.AudioFollowVideo));
     }

@@ -36,7 +36,7 @@ public class MixEffectKeyAdvancedChromaSampleCommandTests : SerializedCommandTes
         public double SampledCr { get; set; }
     }
 
-    protected override MixEffectKeyAdvancedChromaSampleCommand CreateSut(TestCaseData testCase)
+    protected override MixEffectKeyAdvancedChromaSampleCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MixEffectKeyAdvancedChromaSampleCommand(new UpstreamKeyer
         {

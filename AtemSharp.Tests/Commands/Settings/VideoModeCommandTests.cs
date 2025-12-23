@@ -17,7 +17,7 @@ public class VideoModeCommandTests : SerializedCommandTestBase<VideoModeCommand,
         public VideoMode VideoMode { get; set; }
     }
 
-    protected override VideoModeCommand CreateSut(TestCaseData testCase)
+    protected override VideoModeCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new VideoModeCommand(new AtemState
         {

@@ -31,8 +31,7 @@ internal class DisplayClockPropertiesGetCommandTests : DeserializedCommandTestBa
         public byte Frame { get; set; }
     }
 
-    internal override void CompareCommandProperties(DisplayClockPropertiesGetCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(DisplayClockPropertiesGetCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.Enabled, Is.EqualTo(expectedData.Enabled));
         Assert.That(actualCommand.Size, Is.EqualTo(expectedData.Size));

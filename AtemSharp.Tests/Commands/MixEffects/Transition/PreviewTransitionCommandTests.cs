@@ -13,7 +13,7 @@ public class PreviewTransitionCommandTests : SerializedCommandTestBase<PreviewTr
         public bool PreviewTransition { get; set; }
     }
 
-    protected override PreviewTransitionCommand CreateSut(TestCaseData testCase)
+    protected override PreviewTransitionCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new PreviewTransitionCommand(new MixEffect
         {

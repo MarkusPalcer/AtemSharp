@@ -14,8 +14,7 @@ internal class ColorGeneratorUpdateCommandTests : DeserializedCommandTestBase<Co
         public double Luma { get; set; }
     }
 
-    internal override void CompareCommandProperties(ColorGeneratorUpdateCommand actualCommand, CommandData expectedData,
-                                                     TestCaseData testCase)
+    internal override void CompareCommandProperties(ColorGeneratorUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.Hue, Is.EqualTo(expectedData.Hue).Within(0.1));

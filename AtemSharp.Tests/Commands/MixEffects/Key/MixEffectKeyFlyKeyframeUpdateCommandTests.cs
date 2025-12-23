@@ -34,7 +34,7 @@ internal class MixEffectKeyFlyKeyframeUpdateCommandTests : DeserializedCommandTe
         public double MaskRight { get; set; }
     }
 
-    internal override void CompareCommandProperties(MixEffectKeyFlyKeyframeUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(MixEffectKeyFlyKeyframeUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.MixEffectIndex));
         Assert.That(actualCommand.UpstreamKeyerId, Is.EqualTo(expectedData.KeyerIndex));

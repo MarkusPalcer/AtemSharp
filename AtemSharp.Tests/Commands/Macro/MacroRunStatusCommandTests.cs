@@ -8,7 +8,7 @@ public class MacroRunStatusCommandTests : SerializedCommandTestBase<MacroRunStat
         public bool Loop { get; set; }
     }
 
-    protected override MacroRunStatusCommand CreateSut(TestCaseData testCase)
+    protected override MacroRunStatusCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MacroRunStatusCommand
         {

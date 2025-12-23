@@ -18,7 +18,7 @@ public class TransitionPositionCommandTests : SerializedCommandTestBase<Transiti
         public double HandlePosition { get; set; }
     }
 
-    protected override TransitionPositionCommand CreateSut(TestCaseData testCase)
+    protected override TransitionPositionCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new TransitionPositionCommand(new MixEffect
         {

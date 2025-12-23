@@ -28,7 +28,7 @@ public class MixEffectKeyLumaCommandTests : SerializedCommandTestBase<MixEffectK
         public bool Invert { get; set; }
     }
 
-    protected override MixEffectKeyLumaCommand CreateSut(TestCaseData testCase)
+    protected override MixEffectKeyLumaCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new MixEffectKeyLumaCommand(new UpstreamKeyer
         {

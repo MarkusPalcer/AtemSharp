@@ -21,7 +21,7 @@ public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<Downst
         public bool Invert { get; set; }
     }
 
-    protected override DownstreamKeyGeneralCommand CreateSut(TestCaseData testCase)
+    protected override DownstreamKeyGeneralCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new DownstreamKeyGeneralCommand(new DownstreamKeyer
         {

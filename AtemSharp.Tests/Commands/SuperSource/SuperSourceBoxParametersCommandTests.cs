@@ -30,7 +30,7 @@ public class SuperSourceBoxParametersCommandTests : SerializedCommandTestBase<Su
         public double CropRight { get; set; }
     }
 
-    protected override SuperSourceBoxParametersCommand CreateSut(TestCaseData testCase)
+    protected override SuperSourceBoxParametersCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new SuperSourceBoxParametersCommand(new SuperSourceBox
         {

@@ -31,7 +31,7 @@ public class TransitionDigitalVideoEffectCommandTests : SerializedCommandTestBas
         public bool FlipFlop { get; set; }
     }
 
-    protected override TransitionDigitalVideoEffectCommand CreateSut(TestCaseData testCase)
+    protected override TransitionDigitalVideoEffectCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
         return new TransitionDigitalVideoEffectCommand(new MixEffect
         {
