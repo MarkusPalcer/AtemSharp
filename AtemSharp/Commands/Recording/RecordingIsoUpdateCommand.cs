@@ -4,7 +4,7 @@ using AtemSharp.State.Info;
 namespace AtemSharp.Commands.Recording;
 
 [Command("ISOi", ProtocolVersion.V8_1_1)]
-public partial class RecordingIsoUpdateCommand : IDeserializedCommand
+internal partial class RecordingIsoUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private bool _recordAllInputs;
 

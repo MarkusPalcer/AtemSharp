@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Audio.Fairlight.Master;
 
 [Command("FMPP")]
-public partial class FairlightMixerMasterPropertiesUpdateCommand : IDeserializedCommand
+internal partial class FairlightMixerMasterPropertiesUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)]
     private bool _audioFollowsVideo;

@@ -4,7 +4,7 @@ using AtemSharp.State.Info;
 namespace AtemSharp.Commands.Recording;
 
 [Command("RMSu", ProtocolVersion.V8_1_1)]
-public partial class RecordingSettingsUpdateCommand : IDeserializedCommand
+internal partial class RecordingSettingsUpdateCommand : IDeserializedCommand
 {
     // Stryker disable once string : initialization is always overriden by deserialization
     [CustomDeserialization] private string _fileName = string.Empty;

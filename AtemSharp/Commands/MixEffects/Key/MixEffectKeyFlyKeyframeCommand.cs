@@ -3,6 +3,9 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 
+/// <summary>
+/// Used to set the properties of a keyframe for the UpstreamKeyer fly animation
+/// </summary>
 // TODO #82: Capture real test data and verify implementation and tests
 [Command("CKFP")]
 [BufferSize(56)]

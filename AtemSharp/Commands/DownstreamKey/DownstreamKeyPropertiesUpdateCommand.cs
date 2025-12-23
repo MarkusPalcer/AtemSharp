@@ -2,11 +2,8 @@ using AtemSharp.State;
 
 namespace AtemSharp.Commands.DownstreamKey;
 
-/// <summary>
-/// Command received from ATEM device containing downstream keyer properties
-/// </summary>
 [Command("DskP")]
-public partial class DownstreamKeyPropertiesUpdateCommand : IDeserializedCommand
+internal partial class DownstreamKeyPropertiesUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _downstreamKeyerId;
 

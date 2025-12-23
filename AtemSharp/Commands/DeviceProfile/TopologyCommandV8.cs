@@ -3,11 +3,8 @@ using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
-/// <summary>
-/// Device topology command received from ATEM containing device capabilities and configuration
-/// </summary>
 [Command("_top", ProtocolVersion.V8_0)]
-public partial class TopologyCommandV8 : IDeserializedCommand
+internal partial class TopologyCommandV8 : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _mixEffects;
     [DeserializedField(1)] private byte _sources;

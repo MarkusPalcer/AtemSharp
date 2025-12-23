@@ -3,7 +3,7 @@ using AtemSharp.State.Video.MixEffect;
 namespace AtemSharp.Commands.MixEffects.Transition;
 
 /// <summary>
-/// Command to set stinger transition settings for a mix effect
+/// Used to set the properties of the stinger transition for a mix effect
 /// </summary>
 [Command("CTSt")]
 [BufferSize(20)]

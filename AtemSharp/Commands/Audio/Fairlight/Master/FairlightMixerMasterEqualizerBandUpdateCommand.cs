@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Audio.Fairlight.Master;
 
 [Command("AMBP")]
-public partial class FairlightMixerMasterEqualizerBandUpdateCommand : IDeserializedCommand
+internal partial class FairlightMixerMasterEqualizerBandUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)]
     private byte _bandIndex;

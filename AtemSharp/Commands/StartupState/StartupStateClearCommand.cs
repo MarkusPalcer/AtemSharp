@@ -1,5 +1,8 @@
 namespace AtemSharp.Commands.StartupState;
 
+/// <summary>
+/// Used to reset the startup state to defaults
+/// </summary>
 [Command("SRcl")]
 [BufferSize(4)]
 public partial class StartupStateClearCommand : SerializedCommand

@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
 [TestFixture]
-public class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixEffectBlockConfigCommand,
+internal class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixEffectBlockConfigCommand,
     MixEffectBlockConfigCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -13,7 +13,7 @@ public class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixE
         public byte KeyCount { get; set; }
     }
 
-    protected override void CompareCommandProperties(MixEffectBlockConfigCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(MixEffectBlockConfigCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.Index, Is.EqualTo(expectedData.Index));

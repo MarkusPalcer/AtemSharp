@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Media;
 
-public class MediaPoolClipDescriptionCommandTests : DeserializedCommandTestBase<MediaPoolClipDescriptionCommand , MediaPoolClipDescriptionCommandTests.CommandData>
+internal class MediaPoolClipDescriptionCommandTests : DeserializedCommandTestBase<MediaPoolClipDescriptionCommand , MediaPoolClipDescriptionCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -13,7 +13,7 @@ public class MediaPoolClipDescriptionCommandTests : DeserializedCommandTestBase<
         public ushort FrameCount { get; set; }
     }
 
-    protected override void CompareCommandProperties(MediaPoolClipDescriptionCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(MediaPoolClipDescriptionCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.ClipId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.IsUsed, Is.EqualTo(expectedData.IsUsed));

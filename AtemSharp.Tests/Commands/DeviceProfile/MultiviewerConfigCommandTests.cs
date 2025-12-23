@@ -5,7 +5,7 @@ using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
-public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<MultiviewerConfigCommand,
+internal class MultiviewerConfigCommandTests : DeserializedCommandTestBase<MultiviewerConfigCommand,
     MultiviewerConfigCommandTests.CommandData>
 {
     [MaxProtocolVersion(ProtocolVersion.V8_0_1)]
@@ -27,7 +27,7 @@ public class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multivi
         public bool CanChangeLayout { get; set; }
     }
 
-    protected override void CompareCommandProperties(MultiviewerConfigCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(MultiviewerConfigCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.Count, Is.EqualTo(expectedData.Count));

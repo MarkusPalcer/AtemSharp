@@ -10,7 +10,7 @@ namespace AtemSharp.Attributes;
 /// </remarks>
 [AttributeUsage(AttributeTargets.Field)]
 [ExcludeFromCodeCoverage]
-public class NoPropertyAttribute : Attribute
+internal class NoPropertyAttribute : Attribute
 {
 
 }

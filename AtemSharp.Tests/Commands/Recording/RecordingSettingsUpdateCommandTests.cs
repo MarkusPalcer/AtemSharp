@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Recording;
 
-public class RecordingSettingsUpdateCommandTests : DeserializedCommandTestBase<RecordingSettingsUpdateCommand, RecordingSettingsUpdateCommandTests.CommandData>
+internal class RecordingSettingsUpdateCommandTests : DeserializedCommandTestBase<RecordingSettingsUpdateCommand, RecordingSettingsUpdateCommandTests.CommandData>
 {
     public class CommandData: CommandDataBase
     {
@@ -13,7 +13,7 @@ public class RecordingSettingsUpdateCommandTests : DeserializedCommandTestBase<R
         public bool RecordInAllCameras { get; set; }
     }
 
-    protected override void CompareCommandProperties(RecordingSettingsUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(RecordingSettingsUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.FileName, Is.EqualTo(expectedData.Filename));
         Assert.That(actualCommand.WorkingSet1DiskId, Is.EqualTo(expectedData.WorkingSet1DiskId));

@@ -11,6 +11,6 @@ namespace AtemSharp.Attributes;
 /// </remarks>
 [AttributeUsage(AttributeTargets.Field)]
 [ExcludeFromCodeCoverage]
-public class CustomDeserializationAttribute : Attribute
+internal class CustomDeserializationAttribute : Attribute
 {
 }

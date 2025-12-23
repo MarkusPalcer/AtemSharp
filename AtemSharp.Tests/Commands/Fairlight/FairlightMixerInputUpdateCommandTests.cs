@@ -7,7 +7,7 @@ using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.Fairlight;
 
-public class FairlightMixerInputUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerInputUpdateCommand,
+internal class FairlightMixerInputUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerInputUpdateCommand,
     FairlightMixerInputUpdateCommandTests.CommandData>
 {
     [MaxProtocolVersion(ProtocolVersion.V8_0_1)]
@@ -27,7 +27,7 @@ public class FairlightMixerInputUpdateCommandTests : DeserializedCommandTestBase
         public FairlightAnalogInputLevel ActiveInputLevel { get; set; }
     }
 
-    protected override void CompareCommandProperties(FairlightMixerInputUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(FairlightMixerInputUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Index));

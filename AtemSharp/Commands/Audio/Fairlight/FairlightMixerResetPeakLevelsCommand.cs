@@ -2,6 +2,9 @@ using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.Audio.Fairlight;
 
+/// <summary>
+/// Used to reset the peaks of all channels and/or the master channel of the fairlight mixer
+/// </summary>
 [Command("RFLP")]
 public class FairlightMixerResetPeakLevelsCommand : SerializedCommand
 {

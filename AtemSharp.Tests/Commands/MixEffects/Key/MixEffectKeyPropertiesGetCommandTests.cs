@@ -5,7 +5,7 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
 [TestFixture]
-public class MixEffectKeyPropertiesGetCommandTests : DeserializedCommandTestBase<MixEffectKeyPropertiesGetCommand,
+internal class MixEffectKeyPropertiesGetCommandTests : DeserializedCommandTestBase<MixEffectKeyPropertiesGetCommand,
     MixEffectKeyPropertiesGetCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -24,7 +24,7 @@ public class MixEffectKeyPropertiesGetCommandTests : DeserializedCommandTestBase
         public double MaskRight { get; set; }
     }
 
-    protected override void CompareCommandProperties(MixEffectKeyPropertiesGetCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(MixEffectKeyPropertiesGetCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectIndex, Is.EqualTo(expectedData.MixEffectIndex));
         Assert.That(actualCommand.KeyerIndex, Is.EqualTo(expectedData.KeyerIndex));

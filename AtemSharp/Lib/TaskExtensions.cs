@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace AtemSharp.Lib;
 
-public static class TaskExtensions
+internal static class TaskExtensions
 {
     [ExcludeFromCodeCoverage(Justification="Untestable")]
     public static async void FireAndForget(this Task task, [CallerArgumentExpression(nameof(task))] string? name = null)

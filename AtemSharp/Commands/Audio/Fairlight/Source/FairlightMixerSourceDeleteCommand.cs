@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Audio.Fairlight.Source;
 
 [Command("FASD")]
-public partial class FairlightMixerSourceDeleteCommand : IDeserializedCommand
+internal partial class FairlightMixerSourceDeleteCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private ushort _inputId;
 

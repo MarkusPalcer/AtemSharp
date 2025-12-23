@@ -1,5 +1,8 @@
 namespace AtemSharp.Commands.Audio.Fairlight.Source;
 
+/// <summary>
+/// Used to reset a combination of the dynamics components of a fairlight source
+/// </summary>
 [Command("RICD")]
 [BufferSize(20)]
 public partial class FairlightMixerSourceDynamicsResetCommand(State.Audio.Fairlight.Source source) : SerializedCommand

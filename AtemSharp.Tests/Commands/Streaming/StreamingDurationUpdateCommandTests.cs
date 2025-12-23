@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Streaming;
 
-public class StreamingDurationUpdateCommandTests : DeserializedCommandTestBase<StreamingDurationUpdateCommand,
+internal class StreamingDurationUpdateCommandTests : DeserializedCommandTestBase<StreamingDurationUpdateCommand,
     StreamingDurationUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -15,7 +15,7 @@ public class StreamingDurationUpdateCommandTests : DeserializedCommandTestBase<S
         public bool IsDropFrame { get; set; }
     }
 
-    protected override void CompareCommandProperties(StreamingDurationUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(StreamingDurationUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.Hours, Is.EqualTo(expectedData.Hour));

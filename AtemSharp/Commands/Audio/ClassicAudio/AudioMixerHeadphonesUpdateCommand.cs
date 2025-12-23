@@ -3,29 +3,17 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Audio.ClassicAudio;
 
 [Command("AMHP")]
-public partial class AudioMixerHeadphonesUpdateCommand : IDeserializedCommand
+internal partial class AudioMixerHeadphonesUpdateCommand : IDeserializedCommand
 {
-    /// <summary>
-    /// Gain in decibel
-    /// </summary>
     [DeserializedField(0)] [CustomScaling($"{nameof(DeserializationExtensions)}.{nameof(DeserializationExtensions.UInt16ToDecibel)}")]
     private double _gain;
 
-    /// <summary>
-    /// Program out gain in decibel, -Infinity to +6dB
-    /// </summary>
     [DeserializedField(2)] [CustomScaling($"{nameof(DeserializationExtensions)}.{nameof(DeserializationExtensions.UInt16ToDecibel)}")]
     private double _programOutGain;
 
-    /// <summary>
-    /// Sidetone gain in decibel, -Infinity to +6dB
-    /// </summary>
     [DeserializedField(6)] [CustomScaling($"{nameof(DeserializationExtensions)}.{nameof(DeserializationExtensions.UInt16ToDecibel)}")]
     private double _sidetoneGain;
 
-    /// <summary>
-    /// Talkback gain in decibel, -Infinity to +6dB
-    /// </summary>
     [DeserializedField(4)] [CustomScaling($"{nameof(DeserializationExtensions)}.{nameof(DeserializationExtensions.UInt16ToDecibel)}")]
     private double _talkbackGain;
 

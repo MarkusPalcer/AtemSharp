@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Media;
 
 [Command("MPCS")]
-public partial class MediaPoolClipDescriptionCommand : IDeserializedCommand
+internal partial class MediaPoolClipDescriptionCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _clipId;
     [DeserializedField(1)] private bool _isUsed;

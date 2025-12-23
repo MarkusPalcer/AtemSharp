@@ -5,14 +5,14 @@ using AtemSharp.State.Info;
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
 [TestFixture]
-public class VersionCommandTests : DeserializedCommandTestBase<VersionCommand, VersionCommandTests.CommandData>
+internal class VersionCommandTests : DeserializedCommandTestBase<VersionCommand, VersionCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
         public ProtocolVersion ProtocolVersion { get; set; }
     }
 
-    protected override void CompareCommandProperties(VersionCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(VersionCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.Version, Is.EqualTo(expectedData.ProtocolVersion));
     }

@@ -5,7 +5,7 @@ using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.Macro;
 
-public class MacroPropertiesUpdateCommandTests : DeserializedCommandTestBase<MacroPropertiesUpdateCommand,
+internal class MacroPropertiesUpdateCommandTests : DeserializedCommandTestBase<MacroPropertiesUpdateCommand,
     MacroPropertiesUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -17,7 +17,7 @@ public class MacroPropertiesUpdateCommandTests : DeserializedCommandTestBase<Mac
         public string Description { get; set; } = string.Empty;
     }
 
-    protected override void CompareCommandProperties(MacroPropertiesUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(MacroPropertiesUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Index));

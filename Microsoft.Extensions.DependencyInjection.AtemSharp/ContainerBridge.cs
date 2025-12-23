@@ -5,7 +5,7 @@ using AtemSharp.Lib;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-public class ContainerBridge(IServiceProvider serviceProvider) : IServices
+internal class ContainerBridge(IServiceProvider serviceProvider) : IServices
 {
     public IAtemClient CreateAtemClient()
     {

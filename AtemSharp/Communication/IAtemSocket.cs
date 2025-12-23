@@ -2,7 +2,7 @@ using AtemSharp.Commands;
 
 namespace AtemSharp.Communication;
 
-public interface IAtemSocket : IAsyncDisposable
+internal interface IAtemSocket : IAsyncDisposable
 {
     event EventHandler? Disconnected;
     event EventHandler<ReceivedCommandsEventArgs>? ReceivedCommands;

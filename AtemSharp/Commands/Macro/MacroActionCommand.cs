@@ -1,7 +1,10 @@
 namespace AtemSharp.Commands.Macro;
 
+
 // TODO #74: Capture test data and create tests for this command
-[Command("MAct")]
+/// <summary>
+/// Used to run, stop, delete, etc. a macro
+/// </summary>
 [BufferSize(4)]
 public partial class MacroActionCommand(State.Macro.Macro macro, MacroAction action) : SerializedCommand
 {

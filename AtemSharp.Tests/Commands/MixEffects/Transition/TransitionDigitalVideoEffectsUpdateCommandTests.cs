@@ -5,7 +5,7 @@ using AtemSharp.State.Video.MixEffect.Transition;
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
 [TestFixture]
-public class TransitionDigitalVideoEffectsUpdateCommandTests : DeserializedCommandTestBase<TransitionDigitalVideoEffectsUpdateCommand,
+internal class TransitionDigitalVideoEffectsUpdateCommandTests : DeserializedCommandTestBase<TransitionDigitalVideoEffectsUpdateCommand,
     TransitionDigitalVideoEffectsUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -25,7 +25,7 @@ public class TransitionDigitalVideoEffectsUpdateCommandTests : DeserializedComma
         public bool FlipFlop { get; set; }
     }
 
-    protected override void CompareCommandProperties(TransitionDigitalVideoEffectsUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(TransitionDigitalVideoEffectsUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));

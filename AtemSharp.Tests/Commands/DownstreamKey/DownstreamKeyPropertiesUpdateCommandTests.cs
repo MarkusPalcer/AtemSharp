@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.DownstreamKey;
 
 [TestFixture]
-public class DownstreamKeyPropertiesUpdateCommandTests : DeserializedCommandTestBase<DownstreamKeyPropertiesUpdateCommand,
+internal class DownstreamKeyPropertiesUpdateCommandTests : DeserializedCommandTestBase<DownstreamKeyPropertiesUpdateCommand,
     DownstreamKeyPropertiesUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -23,7 +23,7 @@ public class DownstreamKeyPropertiesUpdateCommandTests : DeserializedCommandTest
         public double MaskRight { get; set; }
     }
 
-    protected override void CompareCommandProperties(DownstreamKeyPropertiesUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(DownstreamKeyPropertiesUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.DownstreamKeyerId, Is.EqualTo(expectedData.Index));

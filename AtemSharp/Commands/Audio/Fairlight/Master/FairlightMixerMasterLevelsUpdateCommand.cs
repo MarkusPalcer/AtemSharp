@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Audio.Fairlight.Master;
 
 [Command("FDLv")]
-public partial class FairlightMixerMasterLevelsUpdateCommand : IDeserializedCommand
+internal partial class FairlightMixerMasterLevelsUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] [ScalingFactor(100)] [SerializedType(typeof(short))] private double _inputLeftLevel;
     [DeserializedField(2)] [ScalingFactor(100)] [SerializedType(typeof(short))] private double _inputRightLevel;

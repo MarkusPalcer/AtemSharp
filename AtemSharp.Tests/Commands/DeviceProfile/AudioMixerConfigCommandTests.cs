@@ -6,7 +6,7 @@ using AtemSharp.Tests.TestUtilities;
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
 [TestFixture]
-public class AudioMixerConfigCommandTests : DeserializedCommandTestBase<AudioMixerConfigCommand, AudioMixerConfigCommandTests.CommandData>
+internal class AudioMixerConfigCommandTests : DeserializedCommandTestBase<AudioMixerConfigCommand, AudioMixerConfigCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -15,7 +15,7 @@ public class AudioMixerConfigCommandTests : DeserializedCommandTestBase<AudioMix
         public byte Headphones { get; set; }
     }
 
-    protected override void CompareCommandProperties(AudioMixerConfigCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(AudioMixerConfigCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.Inputs, Is.EqualTo(expectedData.Inputs));
         Assert.That(actualCommand.Monitors, Is.EqualTo(expectedData.Monitors));

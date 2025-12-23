@@ -5,7 +5,7 @@ using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
-public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand, TopologyCommandTests.CommandData>
+internal class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand, TopologyCommandTests.CommandData>
 {
     [MaxProtocolVersion(ProtocolVersion.V7_5_2)]
     public class CommandData : CommandDataBase
@@ -30,7 +30,7 @@ public class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand,
         public bool OnlyConfigurableOutputs { get; set; }
     }
 
-    protected override void CompareCommandProperties(TopologyCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(TopologyCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffects, Is.EqualTo(expectedData.MixEffectBlocks));
         Assert.That(actualCommand.Sources, Is.EqualTo(expectedData.VideoSources));

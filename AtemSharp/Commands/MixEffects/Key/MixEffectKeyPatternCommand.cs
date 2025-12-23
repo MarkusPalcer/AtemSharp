@@ -3,6 +3,9 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 
+/// <summary>
+/// Used to set the pattern settings of an UpstreamKeyer
+/// </summary>
 [Command("CKPt")]
 [BufferSize(16)]
 public partial class MixEffectKeyPatternCommand(UpstreamKeyer keyer) : SerializedCommand

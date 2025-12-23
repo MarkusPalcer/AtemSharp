@@ -2,11 +2,13 @@ using AtemSharp.State.Video.DownstreamKeyer;
 
 namespace AtemSharp.Commands.DownstreamKey;
 
+/// <summary>
+/// Used to set the transition- and animation- duration of a downstream keyer in frames
+/// </summary>
 [Command("CDsR")]
 [BufferSize(4)]
 public partial class DownstreamKeyRateCommand(DownstreamKeyer dsk) : SerializedCommand
 {
     [SerializedField(0)] [NoProperty] private readonly byte _downstreamKeyId = dsk.Id;
-
     [SerializedField(1)] private byte _rate = dsk.Properties.Rate;
 }

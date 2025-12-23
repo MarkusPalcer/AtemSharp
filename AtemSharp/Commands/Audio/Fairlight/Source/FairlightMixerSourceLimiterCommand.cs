@@ -1,5 +1,8 @@
 namespace AtemSharp.Commands.Audio.Fairlight.Source;
 
+/// <summary>
+/// Used to set the properties of the limiter of a fairlight mixer source
+/// </summary>
 [Command("CILP")]
 [BufferSize(36)]
 public partial class FairlightMixerSourceLimiterCommand(State.Audio.Fairlight.Source source) : SerializedCommand

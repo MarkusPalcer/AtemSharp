@@ -4,7 +4,7 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
-public class MixEffectKeyPatternUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyPatternUpdateCommand,
+internal class MixEffectKeyPatternUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyPatternUpdateCommand,
     MixEffectKeyPatternUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -20,7 +20,7 @@ public class MixEffectKeyPatternUpdateCommandTests : DeserializedCommandTestBase
         public double Size { get; set; }
     }
 
-    protected override void CompareCommandProperties(MixEffectKeyPatternUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(MixEffectKeyPatternUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.MixEffectIndex));

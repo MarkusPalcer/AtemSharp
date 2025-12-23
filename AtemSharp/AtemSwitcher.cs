@@ -31,7 +31,7 @@ public class AtemSwitcher : IAtemSwitcher
     /// </summary>
     public static HashSet<string> UnknownCommands { get; } = new();
 
-    public AtemSwitcher(string remoteHost, int remotePort, IServices services)
+    internal AtemSwitcher(string remoteHost, int remotePort, IServices services)
     {
         _services = services;
         _remoteHost = remoteHost;

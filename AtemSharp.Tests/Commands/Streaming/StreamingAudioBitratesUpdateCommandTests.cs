@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Streaming;
 
-public class StreamingAudioBitratesUpdateCommandTests : DeserializedCommandTestBase<StreamingAudioBitratesUpdateCommand, StreamingAudioBitratesUpdateCommandTests.CommandData>
+internal class StreamingAudioBitratesUpdateCommandTests : DeserializedCommandTestBase<StreamingAudioBitratesUpdateCommand, StreamingAudioBitratesUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -11,7 +11,7 @@ public class StreamingAudioBitratesUpdateCommandTests : DeserializedCommandTestB
         public uint HighBitrate { get; set; }
     }
 
-    protected override void CompareCommandProperties(StreamingAudioBitratesUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(StreamingAudioBitratesUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.LowBitrate, Is.EqualTo(expectedData.LowBitrate));
         Assert.That(actualCommand.HighBitrate, Is.EqualTo(expectedData.HighBitrate));

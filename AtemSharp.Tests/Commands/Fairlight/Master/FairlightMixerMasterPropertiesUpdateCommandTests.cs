@@ -4,7 +4,7 @@ using FairlightMixerMasterPropertiesUpdateCommand = AtemSharp.Commands.Audio.Fai
 
 namespace AtemSharp.Tests.Commands.Fairlight.Master;
 
-public class FairlightMixerMasterPropertiesUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerMasterPropertiesUpdateCommand,
+internal class FairlightMixerMasterPropertiesUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerMasterPropertiesUpdateCommand,
     FairlightMixerMasterPropertiesUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -12,7 +12,7 @@ public class FairlightMixerMasterPropertiesUpdateCommandTests : DeserializedComm
         public bool AudioFollowVideoCrossfadeTransitionEnabled { get; set; }
     }
 
-    protected override void CompareCommandProperties(FairlightMixerMasterPropertiesUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(FairlightMixerMasterPropertiesUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.AudioFollowsVideo, Is.EqualTo(expectedData.AudioFollowVideoCrossfadeTransitionEnabled));

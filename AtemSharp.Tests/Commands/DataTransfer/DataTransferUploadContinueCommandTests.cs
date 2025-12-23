@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.DataTransfer;
 
 [TestFixture]
-public class DataTransferUploadContinueCommandTests : DeserializedCommandTestBase<DataTransferUploadContinueCommand,
+internal class DataTransferUploadContinueCommandTests : DeserializedCommandTestBase<DataTransferUploadContinueCommand,
     DataTransferUploadContinueCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -14,7 +14,7 @@ public class DataTransferUploadContinueCommandTests : DeserializedCommandTestBas
         public ushort ChunkCount { get; set; }
     }
 
-    protected override void CompareCommandProperties(DataTransferUploadContinueCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(DataTransferUploadContinueCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.TransferId, Is.EqualTo(expectedData.TransferId));

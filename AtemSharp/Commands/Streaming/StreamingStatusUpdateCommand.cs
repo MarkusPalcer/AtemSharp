@@ -6,7 +6,7 @@ using AtemSharp.State.Streaming;
 namespace AtemSharp.Commands.Streaming;
 
 [Command("StRS", ProtocolVersion.V8_1_1)]
-public class StreamingStatusUpdateCommand : IDeserializedCommand
+internal class StreamingStatusUpdateCommand : IDeserializedCommand
 {
     [ExcludeFromCodeCoverage]
     public StreamingStatus Status { get; internal set; }

@@ -5,7 +5,7 @@ using AtemSharp.Types;
 namespace AtemSharp.Commands.MixEffects.Key;
 
 [Command("KKFP")]
-public partial class MixEffectKeyFlyKeyframeUpdateCommand : IDeserializedCommand
+internal partial class MixEffectKeyFlyKeyframeUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _mixEffectId;
     [DeserializedField(1)] private byte _upstreamKeyerId;

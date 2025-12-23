@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Audio.Fairlight.Monitor;
 
 [Command("FMHP")]
-public partial class FairlightMixerMonitorUpdateCommand : IDeserializedCommand
+internal partial class FairlightMixerMonitorUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] [SerializedType(typeof(int))] [ScalingFactor(100)] private double _gain;
     [DeserializedField(4)] [SerializedType(typeof(int))] [ScalingFactor(100)] private double _inputMasterGain;

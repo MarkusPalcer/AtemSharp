@@ -4,6 +4,12 @@ using AtemSharp.State.Video.SuperSource;
 
 namespace AtemSharp.Commands.SuperSource;
 
+/// <summary>
+/// Used to set the parameters of a super source box
+/// </summary>
+/// <remarks>
+/// Used for <see cref="ProtocolVersion"/> 8.0 and higher
+/// </remarks>
 [Command("CSBP", ProtocolVersion.V8_0)]
 [BufferSize(24)]
 public partial class SuperSourceBoxParametersV8Command(SuperSourceBox box) : SerializedCommand

@@ -5,7 +5,7 @@ using AtemSharp.State.Video.SuperSource;
 namespace AtemSharp.Commands.SuperSource;
 
 [Command("SSrc", ProtocolVersion.V8_0)]
-public partial class SuperSourcePropertiesUpdateV8Command : IDeserializedCommand
+internal partial class SuperSourcePropertiesUpdateV8Command : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _superSourceId;
     [DeserializedField(2)] private ushort _artFillSource;

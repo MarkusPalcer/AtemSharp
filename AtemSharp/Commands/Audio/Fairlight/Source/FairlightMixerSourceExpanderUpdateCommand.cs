@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Audio.Fairlight.Source;
 
 [Command("AIXP")]
-public partial class FairlightMixerSourceExpanderUpdateCommand : IDeserializedCommand
+internal partial class FairlightMixerSourceExpanderUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private ushort _inputId;
 

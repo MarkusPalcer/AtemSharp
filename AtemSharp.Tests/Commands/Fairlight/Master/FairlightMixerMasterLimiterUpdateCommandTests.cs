@@ -4,7 +4,7 @@ using FairlightMixerMasterLimiterUpdateCommand = AtemSharp.Commands.Audio.Fairli
 
 namespace AtemSharp.Tests.Commands.Fairlight.Master;
 
-public class FairlightMixerMasterLimiterUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerMasterLimiterUpdateCommand,
+internal class FairlightMixerMasterLimiterUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerMasterLimiterUpdateCommand,
     FairlightMixerMasterLimiterUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -17,7 +17,7 @@ public class FairlightMixerMasterLimiterUpdateCommandTests : DeserializedCommand
     }
 
 
-    protected override void CompareCommandProperties(FairlightMixerMasterLimiterUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(FairlightMixerMasterLimiterUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.LimiterEnabled, Is.EqualTo(expectedData.LimiterEnabled));

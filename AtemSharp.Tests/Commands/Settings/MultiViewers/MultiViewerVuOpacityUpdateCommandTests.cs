@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.Settings.MultiViewers;
 
 [TestFixture]
-public class MultiViewerVuOpacityUpdateCommandTests : DeserializedCommandTestBase<MultiViewerVuOpacityUpdateCommand,
+internal class MultiViewerVuOpacityUpdateCommandTests : DeserializedCommandTestBase<MultiViewerVuOpacityUpdateCommand,
     MultiViewerVuOpacityUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -13,7 +13,7 @@ public class MultiViewerVuOpacityUpdateCommandTests : DeserializedCommandTestBas
         public byte Opacity { get; set; }
     }
 
-    protected override void CompareCommandProperties(MultiViewerVuOpacityUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(MultiViewerVuOpacityUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.Opacity, Is.EqualTo(expectedData.Opacity));

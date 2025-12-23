@@ -2,6 +2,9 @@ using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.Macro;
 
+/// <summary>
+/// Used to start recording a macro
+/// </summary>
 // Manual serialization due to variable buffer size
 [Command("MSRc")]
 public class MacroRecordCommand(AtemSharp.State.Macro.Macro targetSlot) : SerializedCommand

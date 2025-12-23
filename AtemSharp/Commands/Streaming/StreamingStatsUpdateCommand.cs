@@ -4,7 +4,7 @@ using AtemSharp.State.Info;
 namespace AtemSharp.Commands.Streaming;
 
 [Command("SRSS", ProtocolVersion.V8_1_1)]
-public partial class StreamingStatsUpdateCommand : IDeserializedCommand
+internal partial class StreamingStatsUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)]  private uint _encodingBitrate;
     [DeserializedField(4)] private ushort _cacheUsed;

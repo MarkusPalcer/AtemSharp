@@ -4,7 +4,7 @@ using AtemSharp.State.Video.SuperSource;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
-public class SuperSourcePropertiesUpdateV8CommandTests : DeserializedCommandTestBase<SuperSourcePropertiesUpdateV8Command,
+internal class SuperSourcePropertiesUpdateV8CommandTests : DeserializedCommandTestBase<SuperSourcePropertiesUpdateV8Command,
     SuperSourcePropertiesUpdateV8CommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -19,7 +19,7 @@ public class SuperSourcePropertiesUpdateV8CommandTests : DeserializedCommandTest
         public bool ArtInvertKey { get; set; }
     }
 
-    protected override void CompareCommandProperties(SuperSourcePropertiesUpdateV8Command actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(SuperSourcePropertiesUpdateV8Command actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.SuperSourceId, Is.EqualTo(expectedData.SSrcId));

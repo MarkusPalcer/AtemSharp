@@ -2,22 +2,11 @@ using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Transition;
 
-/// <summary>
-/// Command received from ATEM device containing dip transition settings update
-/// </summary>
 [Command("TDpP")]
-public partial class TransitionDipUpdateCommand : IDeserializedCommand
+internal partial class TransitionDipUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _mixEffectId;
-
-    /// <summary>
-    /// Rate of the dip transition in frames
-    /// </summary>
     [DeserializedField(1)] private byte _rate;
-
-    /// <summary>
-    /// Input source for the dip transition
-    /// </summary>
     [DeserializedField(2)] private ushort _input;
 
     /// <inheritdoc />

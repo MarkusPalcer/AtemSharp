@@ -5,7 +5,7 @@ using AtemSharp.State.Settings;
 namespace AtemSharp.Commands.Settings;
 
 /// <summary>
-/// Command to set the time configuration mode for the ATEM device
+/// Used to set the time configuration mode for the ATEM device
 /// </summary>
 [Command("CTCC", ProtocolVersion.V8_1_1)]
 [BufferSize(4)]

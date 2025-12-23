@@ -2,15 +2,9 @@ using AtemSharp.State;
 
 namespace AtemSharp.Commands.DataTransfer;
 
-/// <summary>
-/// Command received when a data transfer lock has been obtained
-/// </summary>
 [Command("LKOB")]
-public partial class LockObtainedCommand : IDeserializedCommand
+internal partial class LockObtainedCommand : IDeserializedCommand
 {
-    /// <summary>
-    /// Index of the lock that was obtained
-    /// </summary>
     [DeserializedField(0)] private ushort _index;
 
     /// <inheritdoc />

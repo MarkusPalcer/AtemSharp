@@ -2,6 +2,9 @@ using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Audio.Fairlight.Master;
 
+/// <summary>
+/// Used to set the properties of the limiter on the master channel of the fairlight mixer
+/// </summary>
 [Command("CMLP")]
 [BufferSize(20)]
 public partial class FairlightMixerMasterLimiterCommand(MasterProperties master) : SerializedCommand

@@ -3,7 +3,7 @@ using FairlightMixerMasterLevelsUpdateCommand = AtemSharp.Commands.Audio.Fairlig
 
 namespace AtemSharp.Tests.Commands.Fairlight.Master;
 
-public class FairlightMixerMasterLevelsUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerMasterLevelsUpdateCommand,
+internal class FairlightMixerMasterLevelsUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerMasterLevelsUpdateCommand,
     FairlightMixerMasterLevelsUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -24,7 +24,7 @@ public class FairlightMixerMasterLevelsUpdateCommandTests : DeserializedCommandT
         public double RightPeak { get; set; }
     }
 
-    protected override void CompareCommandProperties(FairlightMixerMasterLevelsUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(FairlightMixerMasterLevelsUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.InputLeftLevel, Is.EqualTo(expectedData.InputLeftLevel).Within(0.01));

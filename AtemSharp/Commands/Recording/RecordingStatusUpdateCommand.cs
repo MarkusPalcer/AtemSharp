@@ -5,7 +5,7 @@ using AtemSharp.State.Recording;
 namespace AtemSharp.Commands.Recording;
 
 [Command("RTMS", ProtocolVersion.V8_1_1)]
-public class RecordingStatusUpdateCommand : IDeserializedCommand
+internal class RecordingStatusUpdateCommand : IDeserializedCommand
 {
     public uint? RecordingTimeAvailable { get; internal set; }
 

@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
 [TestFixture]
-public class MediaPoolConfigCommandTests : DeserializedCommandTestBase<MediaPoolConfigCommand, MediaPoolConfigCommandTests.CommandData>
+internal class MediaPoolConfigCommandTests : DeserializedCommandTestBase<MediaPoolConfigCommand, MediaPoolConfigCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -12,7 +12,7 @@ public class MediaPoolConfigCommandTests : DeserializedCommandTestBase<MediaPool
         public byte ClipCount { get; set; }
     }
 
-    protected override void CompareCommandProperties(MediaPoolConfigCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(MediaPoolConfigCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.StillCount, Is.EqualTo(expectedData.StillCount));
         Assert.That(actualCommand.ClipCount, Is.EqualTo(expectedData.ClipCount));

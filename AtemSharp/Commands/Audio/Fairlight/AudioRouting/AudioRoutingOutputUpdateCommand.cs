@@ -4,7 +4,7 @@ using AtemSharp.State.Audio.Fairlight;
 namespace AtemSharp.Commands.Audio.Fairlight.AudioRouting;
 
 [Command("AROP")]
-public partial class AudioRoutingOutputUpdateCommand : IDeserializedCommand
+internal partial class AudioRoutingOutputUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)]
     private uint _id;

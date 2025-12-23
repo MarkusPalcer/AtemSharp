@@ -2,6 +2,9 @@ using AtemSharp.State;
 
 namespace AtemSharp.Commands.ColorGenerators;
 
+/// <summary>
+/// Used to set the color a color generator generates
+/// </summary>
 [Command("CClV")]
 [BufferSize(8)]
 public partial class ColorGeneratorCommand(ColorGeneratorState colorGenerator) : SerializedCommand

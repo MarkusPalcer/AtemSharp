@@ -4,7 +4,7 @@ using FairlightMixerSourceUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Sou
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
-public class FairlightMixerSourceUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerSourceUpdateCommand,
+internal class FairlightMixerSourceUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerSourceUpdateCommand,
     FairlightMixerSourceUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -29,7 +29,7 @@ public class FairlightMixerSourceUpdateCommandTests : DeserializedCommandTestBas
         public int MaxFramesDelay { get; set; }
     }
 
-    protected override void CompareCommandProperties(FairlightMixerSourceUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(FairlightMixerSourceUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Index));

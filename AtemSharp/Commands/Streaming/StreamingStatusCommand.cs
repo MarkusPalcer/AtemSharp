@@ -4,6 +4,9 @@ using AtemSharp.State.Streaming;
 
 namespace AtemSharp.Commands.Streaming;
 
+/// <summary>
+/// Used to start/stop streaming
+/// </summary>
 [Command("StrR", ProtocolVersion.V8_1_1)]
 [BufferSize(4)]
 public partial class StreamingStatusCommand(AtemState state) : SerializedCommand

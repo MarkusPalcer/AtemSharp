@@ -2,6 +2,9 @@ using AtemSharp.State.Media;
 
 namespace AtemSharp.Commands.Media;
 
+/// <summary>
+/// Used to set the name of a clip in the media pool
+/// </summary>
 [Command("SMPC")]
 [BufferSize(68)]
 public partial class MediaPoolSetClipCommand(MediaPoolEntry entry) : SerializedCommand

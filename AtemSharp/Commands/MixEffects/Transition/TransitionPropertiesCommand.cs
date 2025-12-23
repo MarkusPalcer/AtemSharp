@@ -4,7 +4,7 @@ using AtemSharp.State.Video.MixEffect.Transition;
 namespace AtemSharp.Commands.MixEffects.Transition;
 
 /// <summary>
-/// Command to set transition properties for a mix effect
+/// Used to set which transition to use and which keyers to add in with the next transition for a MixEffect
 /// </summary>
 [Command("CTTp")]
 [BufferSize(4)]

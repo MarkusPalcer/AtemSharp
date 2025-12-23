@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Audio.Fairlight.Master;
 
 [Command("AMLP")]
-public partial class FairlightMixerMasterLimiterUpdateCommand : IDeserializedCommand
+internal partial class FairlightMixerMasterLimiterUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)]
     private bool _limiterEnabled;

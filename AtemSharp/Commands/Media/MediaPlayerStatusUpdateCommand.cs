@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Media;
 
 [Command("RCPS")]
-public partial class MediaPlayerStatusUpdateCommand : IDeserializedCommand
+internal partial class MediaPlayerStatusUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _mediaPlayerId;
     [DeserializedField(1)] private bool _isPlaying;

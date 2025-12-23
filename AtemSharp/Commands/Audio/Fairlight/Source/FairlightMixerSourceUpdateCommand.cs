@@ -4,7 +4,7 @@ using AtemSharp.State.Audio.Fairlight;
 namespace AtemSharp.Commands.Audio.Fairlight.Source;
 
 [Command("FASP")]
-public partial class FairlightMixerSourceUpdateCommand : IDeserializedCommand
+internal partial class FairlightMixerSourceUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private ushort _inputId;
 

@@ -6,7 +6,7 @@ using AtemSharp.State.Video.InputChannel;
 namespace AtemSharp.Tests.Commands.Inputs;
 
 [TestFixture]
-public class InputPropertiesUpdateCommandTests : DeserializedCommandTestBase<InputPropertiesUpdateCommand,
+internal class InputPropertiesUpdateCommandTests : DeserializedCommandTestBase<InputPropertiesUpdateCommand,
     InputPropertiesUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -24,7 +24,7 @@ public class InputPropertiesUpdateCommandTests : DeserializedCommandTestBase<Inp
         public MeAvailability MeAvailability { get; set; }
     }
 
-    protected override void CompareCommandProperties(InputPropertiesUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(InputPropertiesUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Id));

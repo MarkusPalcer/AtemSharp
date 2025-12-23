@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.MixEffects.FadeToBlack;
 
-public class FadeToBlackRateUpdateCommandTests : DeserializedCommandTestBase<FadeToBlackRateUpdateCommand,
+internal class FadeToBlackRateUpdateCommandTests : DeserializedCommandTestBase<FadeToBlackRateUpdateCommand,
     FadeToBlackRateUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -12,7 +12,7 @@ public class FadeToBlackRateUpdateCommandTests : DeserializedCommandTestBase<Fad
         public ushort Rate { get; init; }
     }
 
-    protected override void CompareCommandProperties(FadeToBlackRateUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(FadeToBlackRateUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));

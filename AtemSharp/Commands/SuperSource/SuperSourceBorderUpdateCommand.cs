@@ -6,7 +6,7 @@ using AtemSharp.Types.Border;
 namespace AtemSharp.Commands.SuperSource;
 
 [Command("SSBd", ProtocolVersion.V8_0)]
-public partial class SuperSourceBorderUpdateCommand : IDeserializedCommand
+internal partial class SuperSourceBorderUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _superSourceId;
     [DeserializedField(1)] private bool _borderEnabled;

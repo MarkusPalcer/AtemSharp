@@ -6,7 +6,7 @@ using NSubstitute;
 
 namespace AtemSharp.Tests.TestUtilities;
 
-public sealed class TestServices : IServices, IAsyncDisposable
+internal sealed class TestServices : IServices, IAsyncDisposable
 {
     internal readonly List<ActionLoop> RunningLoops = new();
 

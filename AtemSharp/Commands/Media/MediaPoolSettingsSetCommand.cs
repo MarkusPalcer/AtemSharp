@@ -3,6 +3,7 @@ using AtemSharp.State.Settings;
 
 namespace AtemSharp.Commands.Media;
 
+// TODO #94: Figure out what this means
 [Command("CMPS", ProtocolVersion.V8_0)]
 public class MediaPoolSettingsSetCommand(MediaPoolSettings settings) : SerializedCommand
 {

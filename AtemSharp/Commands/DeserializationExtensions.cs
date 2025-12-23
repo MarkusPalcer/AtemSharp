@@ -6,7 +6,7 @@ namespace AtemSharp.Commands;
 /// <summary>
 /// Extension methods for working with spans and memory streams for ATEM protocol parsing
 /// </summary>
-public static class DeserializationExtensions
+internal static class DeserializationExtensions
 {
     /// <summary>
     /// Convert UInt16 big-endian value to decibel

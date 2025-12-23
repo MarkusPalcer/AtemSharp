@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.MixEffects;
 
 [TestFixture]
-public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<PreviewInputUpdateCommand,
+internal class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<PreviewInputUpdateCommand,
     PreviewInputUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -13,7 +13,7 @@ public class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Previe
         public int Source { get; set; }
     }
 
-    protected override void CompareCommandProperties(PreviewInputUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(PreviewInputUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));

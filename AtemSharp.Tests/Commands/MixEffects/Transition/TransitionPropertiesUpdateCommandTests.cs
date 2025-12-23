@@ -5,7 +5,7 @@ using AtemSharp.State.Video.MixEffect.Transition;
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
 [TestFixture]
-public class TransitionPropertiesUpdateCommandTests : DeserializedCommandTestBase<TransitionPropertiesUpdateCommand,
+internal class TransitionPropertiesUpdateCommandTests : DeserializedCommandTestBase<TransitionPropertiesUpdateCommand,
     TransitionPropertiesUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -17,7 +17,7 @@ public class TransitionPropertiesUpdateCommandTests : DeserializedCommandTestBas
         public TransitionSelection NextSelection { get; set; }
     }
 
-    protected override void CompareCommandProperties(TransitionPropertiesUpdateCommand actualCommand,
+    internal override void CompareCommandProperties(TransitionPropertiesUpdateCommand actualCommand,
                                                      CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));

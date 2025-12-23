@@ -4,7 +4,7 @@ using AtemSharp.Types.Border;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
-public class MixEffectKeyDigitalVideoEffectsUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyDigitalVideoEffectsUpdateCommand,
+internal class MixEffectKeyDigitalVideoEffectsUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyDigitalVideoEffectsUpdateCommand,
     MixEffectKeyDigitalVideoEffectsUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -39,7 +39,7 @@ public class MixEffectKeyDigitalVideoEffectsUpdateCommandTests : DeserializedCom
         public byte Rate { get; set; }
     }
 
-    protected override void CompareCommandProperties(MixEffectKeyDigitalVideoEffectsUpdateCommand command, CommandData expected, TestCaseData testCase)
+    internal override void CompareCommandProperties(MixEffectKeyDigitalVideoEffectsUpdateCommand command, CommandData expected, TestCaseData testCase)
     {
         Assert.That(command.MixEffectId, Is.EqualTo(expected.MixEffectIndex));
         Assert.That(command.KeyerId, Is.EqualTo(expected.KeyerIndex));

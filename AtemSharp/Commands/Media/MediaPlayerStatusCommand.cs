@@ -2,6 +2,9 @@ using AtemSharp.State.Media;
 
 namespace AtemSharp.Commands.Media;
 
+/// <summary>
+/// Used to control how the mediaplayer plays a clip
+/// </summary>
 [Command("SCPS")]
 [BufferSize(8)]
 public partial class MediaPlayerStatusCommand(MediaPlayer mediaPlayer) : SerializedCommand

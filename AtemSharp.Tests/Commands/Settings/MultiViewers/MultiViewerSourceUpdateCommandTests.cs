@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.Settings.MultiViewers;
 
 [TestFixture]
-public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<MultiViewerSourceUpdateCommand,
+internal class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<MultiViewerSourceUpdateCommand,
     MultiViewerSourceUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -16,7 +16,7 @@ public class MultiViewerSourceUpdateCommandTests : DeserializedCommandTestBase<M
         public bool SupportsSafeArea { get; set; }
     }
 
-    protected override void CompareCommandProperties(MultiViewerSourceUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(MultiViewerSourceUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.MultiViewerId, Is.EqualTo(expectedData.MultiviewIndex));

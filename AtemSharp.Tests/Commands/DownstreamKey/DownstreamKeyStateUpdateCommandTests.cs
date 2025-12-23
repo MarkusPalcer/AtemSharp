@@ -5,7 +5,7 @@ using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DownstreamKey;
 
-public class DownstreamKeyStateUpdateCommandTests : DeserializedCommandTestBase<DownstreamKeyStateUpdateCommand,
+internal class DownstreamKeyStateUpdateCommandTests : DeserializedCommandTestBase<DownstreamKeyStateUpdateCommand,
     DownstreamKeyStateUpdateCommandTests.CommandData>
 {
     [MaxProtocolVersion(ProtocolVersion.V8_0)]
@@ -18,7 +18,7 @@ public class DownstreamKeyStateUpdateCommandTests : DeserializedCommandTestBase<
         public int RemainingFrames { get; set; }
     }
 
-    protected override void CompareCommandProperties(DownstreamKeyStateUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(DownstreamKeyStateUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.Index, Is.EqualTo(expectedData.Index));

@@ -10,14 +10,14 @@ namespace AtemSharp.Tests.Commands.Settings;
 /// All test cases have Mode=N525i5994NTSC but expect different byte inputs.
 /// </summary>
 [TestFixture]
-public class VideoModeUpdateCommandTests : DeserializedCommandTestBase<VideoModeUpdateCommand, VideoModeUpdateCommandTests.CommandData>
+internal class VideoModeUpdateCommandTests : DeserializedCommandTestBase<VideoModeUpdateCommand, VideoModeUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
         public VideoMode VideoMode { get; set; }
     }
 
-    protected override void CompareCommandProperties(VideoModeUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(VideoModeUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.Mode, Is.EqualTo(expectedData.VideoMode));
     }

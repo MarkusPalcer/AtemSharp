@@ -1,6 +1,6 @@
 namespace AtemSharp.FrameworkAbstraction;
 
-public interface ITimeProvider
+internal interface ITimeProvider
 {
     DateTime Now { get; }
 

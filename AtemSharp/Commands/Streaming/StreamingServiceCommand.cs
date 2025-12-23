@@ -3,6 +3,9 @@ using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.Streaming;
 
+/// <summary>
+/// Used to configure the streaming service
+/// </summary>
 [Command("CRSS", ProtocolVersion.V8_1_1)]
 [BufferSize(1100)]
 public partial class StreamingServiceCommand(AtemState state) : SerializedCommand

@@ -2,6 +2,9 @@ using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.Macro;
 
+/// <summary>
+/// Used to change the name and description of a macro after recording it
+/// </summary>
 // This class needs to be serialized manually, because the buffer size is
 // dynamic which is not supported by code generation
 [Command("CMPr")]

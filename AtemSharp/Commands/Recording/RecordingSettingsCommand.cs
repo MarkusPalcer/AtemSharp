@@ -3,6 +3,9 @@ using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.Recording;
 
+/// <summary>
+/// Used to set the settings of the recorder
+/// </summary>
 [Command("CRMS", ProtocolVersion.V8_1_1)]
 [BufferSize(144)]
 public partial class RecordingSettingsCommand(AtemState state) : SerializedCommand

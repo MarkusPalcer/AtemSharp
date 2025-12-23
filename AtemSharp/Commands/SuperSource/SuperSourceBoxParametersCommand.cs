@@ -1,8 +1,15 @@
 using System.Drawing;
+using AtemSharp.State.Info;
 using AtemSharp.State.Video.SuperSource;
 
 namespace AtemSharp.Commands.SuperSource;
 
+/// <summary>
+/// Used to set the parameters of a super source box
+/// </summary>
+/// <remarks>
+/// Used for <see cref="ProtocolVersion"/> below 8.0
+/// </remarks>
 [Command("CSBP")]
 [BufferSize(24)]
 public partial class SuperSourceBoxParametersCommand(SuperSourceBox box) : SerializedCommand

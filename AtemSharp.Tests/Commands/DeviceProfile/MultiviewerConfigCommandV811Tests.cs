@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
-public class MultiviewerConfigCommandV811Tests : DeserializedCommandTestBase<MultiviewerConfigCommandV811,
+internal class MultiviewerConfigCommandV811Tests : DeserializedCommandTestBase<MultiviewerConfigCommandV811,
     MultiviewerConfigCommandV811Tests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -24,7 +24,7 @@ public class MultiviewerConfigCommandV811Tests : DeserializedCommandTestBase<Mul
         public bool CanChangeLayout { get; set; }
     }
 
-    protected override void CompareCommandProperties(MultiviewerConfigCommandV811 actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(MultiviewerConfigCommandV811 actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.WindowCount, Is.EqualTo(expectedData.WindowCount));

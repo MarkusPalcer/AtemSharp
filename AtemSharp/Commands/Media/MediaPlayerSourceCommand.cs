@@ -2,6 +2,9 @@ using AtemSharp.State.Media;
 
 namespace AtemSharp.Commands.Media;
 
+/// <summary>
+/// Used to switch the media player to a certain still or clip
+/// </summary>
 [Command("MPSS")]
 [BufferSize(8)]
 public partial class MediaPlayerSourceCommand(MediaPlayer player) : SerializedCommand

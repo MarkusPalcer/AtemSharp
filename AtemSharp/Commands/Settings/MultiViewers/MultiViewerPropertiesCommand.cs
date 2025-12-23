@@ -4,7 +4,7 @@ using AtemSharp.State.Settings.MultiViewer;
 namespace AtemSharp.Commands.Settings.MultiViewers;
 
 /// <summary>
-/// Command to set MultiViewer properties (layout and program/preview swap)
+/// Used to set MultiViewer properties (layout and program/preview swap)
 /// </summary>
 [Command("CMvP", ProtocolVersion.V8_0)]
 [BufferSize(4)]

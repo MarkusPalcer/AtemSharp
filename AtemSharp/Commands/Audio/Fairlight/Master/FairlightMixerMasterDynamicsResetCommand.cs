@@ -2,6 +2,9 @@ using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.Audio.Fairlight.Master;
 
+/// <summary>
+/// Used to reset a combination of the four dynamics components on the master channel of the fairlight mixer
+/// </summary>
 [Command("RMOD")]
 public class FairlightMixerMasterDynamicsResetCommand : SerializedCommand
 {

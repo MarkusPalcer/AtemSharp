@@ -2,11 +2,8 @@ using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Transition;
 
-/// <summary>
-/// Command received from ATEM device containing transition preview update
-/// </summary>
 [Command("TrPr")]
-public partial class PreviewTransitionUpdateCommand : IDeserializedCommand
+internal partial class PreviewTransitionUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _mixEffectId;
 

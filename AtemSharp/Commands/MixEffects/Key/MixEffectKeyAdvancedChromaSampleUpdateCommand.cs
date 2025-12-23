@@ -2,65 +2,32 @@ using AtemSharp.State;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 
-/// <summary>
-/// Command received from ATEM device containing upstream keyer advanced chroma sample settings update
-/// </summary>
 [Command("KACC")]
-public partial class MixEffectKeyAdvancedChromaSampleUpdateCommand : IDeserializedCommand
+internal partial class MixEffectKeyAdvancedChromaSampleUpdateCommand : IDeserializedCommand
 {
-    /// <summary>
-    /// Mix effect index (0-based)
-    /// </summary>
     [DeserializedField(0)] private byte _mixEffectId;
 
-    /// <summary>
-    /// Upstream keyer index (0-based)
-    /// </summary>
     [DeserializedField(1)] private byte _keyerId;
 
-    /// <summary>
-    /// Whether the cursor is enabled
-    /// </summary>
     [DeserializedField(2)] private bool _enableCursor;
 
-    /// <summary>
-    /// Whether to show preview
-    /// </summary>
     [DeserializedField(3)] private bool _preview;
 
-    /// <summary>
-    /// Cursor X position
-    /// </summary>
     [DeserializedField(4)] [ScalingFactor(1000)] [SerializedType(typeof(short))]
     private double _cursorX;
 
-    /// <summary>
-    /// Cursor Y position
-    /// </summary>
     [DeserializedField(6)] [ScalingFactor(1000)] [SerializedType(typeof(short))]
     private double _cursorY;
 
-    /// <summary>
-    /// Cursor size
-    /// </summary>
     [DeserializedField(8)] [ScalingFactor(100)]
     private double _cursorSize;
 
-    /// <summary>
-    /// Sampled Y (luminance) value
-    /// </summary>
     [DeserializedField(10)] [ScalingFactor(10000)]
     private double _sampledY;
 
-    /// <summary>
-    /// Sampled Cb (blue-difference chroma) value
-    /// </summary>
     [DeserializedField(12)] [ScalingFactor(10000)] [SerializedType(typeof(short))]
     private double _sampledCb;
 
-    /// <summary>
-    /// Sampled Cr (red-difference chroma) value
-    /// </summary>
     [DeserializedField(14)] [ScalingFactor(10000)] [SerializedType(typeof(short))]
     private double _sampledCr;
 

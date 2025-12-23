@@ -2,6 +2,9 @@ using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Audio.Fairlight.Source;
 
+/// <summary>
+/// Used to set the properties of a fairlight mixer source
+/// </summary>
 [Command("CFSP")]
 [BufferSize(48)]
 public partial class FairlightMixerSourceCommand(State.Audio.Fairlight.Source source) : SerializedCommand

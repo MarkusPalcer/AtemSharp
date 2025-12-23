@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.ColorGenerators;
 
-public class ColorGeneratorUpdateCommandTests : DeserializedCommandTestBase<ColorGeneratorUpdateCommand,
+internal class ColorGeneratorUpdateCommandTests : DeserializedCommandTestBase<ColorGeneratorUpdateCommand,
     ColorGeneratorUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -14,7 +14,7 @@ public class ColorGeneratorUpdateCommandTests : DeserializedCommandTestBase<Colo
         public double Luma { get; set; }
     }
 
-    protected override void CompareCommandProperties(ColorGeneratorUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(ColorGeneratorUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Index));

@@ -19,6 +19,18 @@ public class DeserializedCommandGenerator : CodeGeneratorBase
         var ns = symbol.ContainingNamespace.ToDisplayString();
         var className = symbol.Name;
 
+        var visibility = symbol.DeclaredAccessibility switch
+        {
+            Accessibility.Public => "public",
+            Accessibility.NotApplicable => string.Empty,
+            Accessibility.Private => "private",
+            Accessibility.ProtectedAndInternal => "protected internal",
+            Accessibility.Protected => "protected",
+            Accessibility.Internal => "internal",
+            Accessibility.ProtectedOrInternal => "protected internal",
+            _ => string.Empty
+        };
+
         // Find fields with DeserializedFieldAttribute
         var fields = symbol.GetMembers()
                            .OfType<IFieldSymbol>()
@@ -52,7 +64,7 @@ public class DeserializedCommandGenerator : CodeGeneratorBase
 
                             #nullable enable annotations
 
-                            public partial class {{className}}
+                            {{visibility}} partial class {{className}}
                             {
                                 {{string.Join("\n", fields.Select(x => x!.PropertyCode))}}
 

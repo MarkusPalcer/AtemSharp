@@ -2,15 +2,9 @@ using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
-/// <summary>
-/// Command to receive video mixer configuration information
-/// </summary>
-/// <remarks>
-/// Used up to (excluding) protocol version 8.0
-/// </remarks>
 [Command("_VMC")]
 // ReSharper disable once RedundantExtendsListEntry Needed for CodeGen
-public partial class VideoMixerConfigCommand : VideoMixerConfigCommandBase, IDeserializedCommand
+internal partial class VideoMixerConfigCommand : VideoMixerConfigCommandBase, IDeserializedCommand
 {
     [DeserializedField(0)] private ushort _videoModeCount;
 

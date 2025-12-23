@@ -6,7 +6,7 @@ using AtemSharp.Tests.TestUtilities;
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
 [TestFixture]
-public class SuperSourceConfigCommandTests : DeserializedCommandTestBase<SuperSourceConfigCommand,
+internal class SuperSourceConfigCommandTests : DeserializedCommandTestBase<SuperSourceConfigCommand,
     SuperSourceConfigCommandTests.CommandData>
 {
     [MaxProtocolVersion(ProtocolVersion.V7_5_2)]
@@ -23,7 +23,7 @@ public class SuperSourceConfigCommandTests : DeserializedCommandTestBase<SuperSo
         }
     }
 
-    protected override void CompareCommandProperties(SuperSourceConfigCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(SuperSourceConfigCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.BoxCount, Is.EqualTo(expectedData.BoxCount));

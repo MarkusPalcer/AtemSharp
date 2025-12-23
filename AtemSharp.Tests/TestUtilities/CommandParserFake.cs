@@ -4,7 +4,7 @@ using AtemSharp.State.Info;
 
 namespace AtemSharp.Tests.TestUtilities;
 
-public class CommandParserFake : ICommandParser
+internal class CommandParserFake : ICommandParser
 {
     public ProtocolVersion Version { get; set; }
 

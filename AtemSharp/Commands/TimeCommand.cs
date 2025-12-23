@@ -2,6 +2,9 @@ using AtemSharp.State;
 
 namespace AtemSharp.Commands;
 
+/// <summary>
+/// Used to set the current time
+/// </summary>
 [Command("Time")]
 [BufferSize(8)]
 public partial class TimeCommand(AtemState state) : SerializedCommand

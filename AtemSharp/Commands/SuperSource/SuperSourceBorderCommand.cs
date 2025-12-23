@@ -3,6 +3,9 @@ using AtemSharp.Types.Border;
 
 namespace AtemSharp.Commands.SuperSource;
 
+/// <summary>
+/// Used to change the border properties of a super source
+/// </summary>
 [Command("CSBd", ProtocolVersion.V8_0)]
 [BufferSize(24)]
 public partial class SuperSourceBorderCommand(State.Video.SuperSource.SuperSource superSource) : SerializedCommand

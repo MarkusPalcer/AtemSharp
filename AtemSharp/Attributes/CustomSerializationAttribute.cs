@@ -12,7 +12,7 @@ namespace AtemSharp.Attributes;
 [AttributeUsage(AttributeTargets.Field)]
 [SuppressMessage("ReSharper", "UnusedParameter.Local")]
 [ExcludeFromCodeCoverage]
-public class CustomSerializationAttribute : Attribute
+internal class CustomSerializationAttribute : Attribute
 {
     /// <summary>
     /// Marks the field to be serialized with a custom logic, but does not change the Flag property when the value of

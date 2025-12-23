@@ -4,7 +4,7 @@ using AtemSharp.Types;
 namespace AtemSharp.Commands.ColorGenerators;
 
 [Command("ColV")]
-public partial class ColorGeneratorUpdateCommand : IDeserializedCommand
+internal partial class ColorGeneratorUpdateCommand : IDeserializedCommand
 {
     /// <summary>
     /// The ID of the updated color generator

@@ -4,7 +4,7 @@ using FairlightMixerMonitorUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Mo
 
 namespace AtemSharp.Tests.Commands.Fairlight.Monitor;
 
-public class FairlightMixerMonitorUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerMonitorUpdateCommand,
+internal class FairlightMixerMonitorUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerMonitorUpdateCommand,
     FairlightMixerMonitorUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -16,7 +16,7 @@ public class FairlightMixerMonitorUpdateCommandTests : DeserializedCommandTestBa
         public double InputSidetoneGain { get; set; }
     }
 
-    protected override void CompareCommandProperties(FairlightMixerMonitorUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(FairlightMixerMonitorUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));

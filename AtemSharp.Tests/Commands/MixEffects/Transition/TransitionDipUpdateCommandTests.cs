@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
 [TestFixture]
-public class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<TransitionDipUpdateCommand,
+internal class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<TransitionDipUpdateCommand,
     TransitionDipUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -14,7 +14,7 @@ public class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<Trans
         public ushort Input { get; set; }
     }
 
-    protected override void CompareCommandProperties(TransitionDipUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(TransitionDipUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));

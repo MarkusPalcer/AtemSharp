@@ -4,7 +4,7 @@ using AtemSharp.Types;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
-public class MixEffectKeyFlyKeyframeUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyFlyKeyframeUpdateCommand, MixEffectKeyFlyKeyframeUpdateCommandTests.CommandData>
+internal class MixEffectKeyFlyKeyframeUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyFlyKeyframeUpdateCommand, MixEffectKeyFlyKeyframeUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -34,7 +34,7 @@ public class MixEffectKeyFlyKeyframeUpdateCommandTests : DeserializedCommandTest
         public double MaskRight { get; set; }
     }
 
-    protected override void CompareCommandProperties(MixEffectKeyFlyKeyframeUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(MixEffectKeyFlyKeyframeUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.MixEffectIndex));
         Assert.That(actualCommand.UpstreamKeyerId, Is.EqualTo(expectedData.KeyerIndex));

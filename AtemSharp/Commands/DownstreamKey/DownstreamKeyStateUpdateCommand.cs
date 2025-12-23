@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.DownstreamKey;
 
 [Command("DskS")]
-public partial class DownstreamKeyStateUpdateCommand : IDeserializedCommand
+internal partial class DownstreamKeyStateUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _index;
     [DeserializedField(1)] private bool _onAir;

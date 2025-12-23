@@ -3,11 +3,8 @@ using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands;
 
-/// <summary>
-/// Command indicating that the ATEM has completed sending initial state information
-/// </summary>
 [Command("InCm")]
-public class InitCompleteCommand : IDeserializedCommand
+internal class InitCompleteCommand : IDeserializedCommand
 {
     public static InitCompleteCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
     {

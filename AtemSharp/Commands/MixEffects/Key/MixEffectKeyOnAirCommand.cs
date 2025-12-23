@@ -3,7 +3,7 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 namespace AtemSharp.Commands.MixEffects.Key;
 
 /// <summary>
-/// Command to set the on-air state of an upstream keyer
+/// Used to set the on-air state of an upstream keyer
 /// </summary>
 [Command("CKOn")]
 [BufferSize(4)]
@@ -13,8 +13,5 @@ public partial class MixEffectKeyOnAirCommand(UpstreamKeyer keyer) : SerializedC
 
     [SerializedField(1)] [NoProperty] private readonly byte _keyerId = keyer.Id;
 
-    /// <summary>
-    /// Whether the upstream keyer is on air
-    /// </summary>
     [SerializedField(2, 0)] private bool _onAir = keyer.OnAir;
 }

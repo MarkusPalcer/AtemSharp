@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
 [TestFixture]
-public class SuperSourceConfigCommandV8Tests : DeserializedCommandTestBase<SuperSourceConfigCommandV8,
+internal class SuperSourceConfigCommandV8Tests : DeserializedCommandTestBase<SuperSourceConfigCommandV8,
     SuperSourceConfigCommandV8Tests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -20,7 +20,7 @@ public class SuperSourceConfigCommandV8Tests : DeserializedCommandTestBase<Super
         }
     }
 
-    protected override void CompareCommandProperties(SuperSourceConfigCommandV8 actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(SuperSourceConfigCommandV8 actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.SuperSourceId, Is.EqualTo(expectedData.SsrcId));

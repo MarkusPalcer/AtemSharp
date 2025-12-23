@@ -6,7 +6,7 @@ namespace AtemSharp.FrameworkAbstraction;
 /// <summary>
 /// Interface for UDP client operations, allowing for testability and mocking
 /// </summary>
-public interface IUdpClient : IDisposable
+internal interface IUdpClient : IDisposable
 {
     void Bind(IPEndPoint remoteEndpoint);
 

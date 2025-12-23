@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
-public class SuperSourceBoxParametersUpdateCommandV8Tests : DeserializedCommandTestBase<SuperSourceBoxParametersUpdateCommandV8, SuperSourceBoxParametersUpdateCommandV8Tests.CommandData>
+internal class SuperSourceBoxParametersUpdateCommandV8Tests : DeserializedCommandTestBase<SuperSourceBoxParametersUpdateCommandV8, SuperSourceBoxParametersUpdateCommandV8Tests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -21,7 +21,7 @@ public class SuperSourceBoxParametersUpdateCommandV8Tests : DeserializedCommandT
         public double CropRight { get; set; }
     }
 
-    protected override void CompareCommandProperties(SuperSourceBoxParametersUpdateCommandV8 actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(SuperSourceBoxParametersUpdateCommandV8 actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.SuperSourceId, Is.EqualTo(expectedData.SSrcId));
         Assert.That(actualCommand.BoxId, Is.EqualTo(expectedData.BoxIndex));

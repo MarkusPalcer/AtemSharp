@@ -2,6 +2,9 @@ using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Audio.Fairlight.Source;
 
+/// <summary>
+/// Used to set the properties of an equalizer band on a fairlight source
+/// </summary>
 [Command("CEBP")]
 [BufferSize(32)]
 public partial class FairlightMixerSourceEqualizerBandCommand(SourceEqualizerBand band) : SerializedCommand

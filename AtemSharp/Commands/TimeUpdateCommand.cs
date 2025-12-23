@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands;
 
 [Command("Time")]
-public partial class TimeUpdateCommand : IDeserializedCommand
+internal partial class TimeUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _hours;
     [DeserializedField(1)] private byte _minutes;

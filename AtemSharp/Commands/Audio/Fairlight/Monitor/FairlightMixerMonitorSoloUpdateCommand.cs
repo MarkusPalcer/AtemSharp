@@ -4,7 +4,7 @@ namespace AtemSharp.Commands.Audio.Fairlight.Monitor;
 
 // TODO: #72 find test data
 [Command("FAMS")]
-public partial class FairlightMixerMonitorSoloUpdateCommand : IDeserializedCommand
+internal partial class FairlightMixerMonitorSoloUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private bool _solo;
     [DeserializedField(8)] private ushort _index;

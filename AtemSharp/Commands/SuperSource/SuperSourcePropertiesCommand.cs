@@ -1,8 +1,15 @@
+using AtemSharp.State.Info;
 using AtemSharp.State.Video.SuperSource;
 using AtemSharp.Types.Border;
 
 namespace AtemSharp.Commands.SuperSource;
 
+/// <summary>
+/// Used to set the general properties of a super source
+/// </summary>
+/// <remarks>
+/// Used for <see cref="ProtocolVersion"/> below 8.0
+/// </remarks>
 [Command("CSSc")]
 [BufferSize(36)]
 public partial class SuperSourcePropertiesCommand(State.Video.SuperSource.SuperSource superSource) : SerializedCommand

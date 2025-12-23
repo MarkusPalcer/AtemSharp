@@ -4,7 +4,7 @@ using FairlightMixerMasterUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Mas
 
 namespace AtemSharp.Tests.Commands.Fairlight.Master;
 
-public class FairlightMixerMasterUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerMasterUpdateCommand,
+internal class FairlightMixerMasterUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerMasterUpdateCommand,
     FairlightMixerMasterUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -17,7 +17,7 @@ public class FairlightMixerMasterUpdateCommandTests : DeserializedCommandTestBas
         public double Gain { get; set; }
     }
 
-    protected override void CompareCommandProperties(FairlightMixerMasterUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(FairlightMixerMasterUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.EqualizerEnabled, Is.EqualTo(expectedData.EqualizerEnabled));

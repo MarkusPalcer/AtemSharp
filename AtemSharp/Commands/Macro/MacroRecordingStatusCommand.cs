@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Macro;
 
 [Command("MRcS")]
-public partial class MacroRecordingStatusCommand : IDeserializedCommand
+internal partial class MacroRecordingStatusCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private bool _isRecording;
 

@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
 [TestFixture]
-public class MixEffectKeyOnAirUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyOnAirUpdateCommand,
+internal class MixEffectKeyOnAirUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyOnAirUpdateCommand,
     MixEffectKeyOnAirUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -14,7 +14,7 @@ public class MixEffectKeyOnAirUpdateCommandTests : DeserializedCommandTestBase<M
         public bool OnAir { get; set; }
     }
 
-    protected override void CompareCommandProperties(MixEffectKeyOnAirUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(MixEffectKeyOnAirUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.MixEffectIndex));

@@ -5,7 +5,7 @@ using AudioMixerMasterUpdateCommand = AtemSharp.Commands.Audio.ClassicAudio.Audi
 namespace AtemSharp.Tests.Commands.Audio;
 
 [TestFixture]
-public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<AudioMixerMasterUpdateCommand,
+internal class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<AudioMixerMasterUpdateCommand,
     AudioMixerMasterUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -15,7 +15,7 @@ public class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<Au
         public bool FollowFadeToBlack { get; set; }
     }
 
-    protected override void CompareCommandProperties(AudioMixerMasterUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(AudioMixerMasterUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));

@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Media;
 
-public class MediaPoolFrameDescriptionCommandTests : DeserializedCommandTestBase<MediaPoolFrameDescriptionCommand,
+internal class MediaPoolFrameDescriptionCommandTests : DeserializedCommandTestBase<MediaPoolFrameDescriptionCommand,
     MediaPoolFrameDescriptionCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -15,7 +15,7 @@ public class MediaPoolFrameDescriptionCommandTests : DeserializedCommandTestBase
         public string Filename { get; set; } = string.Empty;
     }
 
-    protected override void CompareCommandProperties(MediaPoolFrameDescriptionCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(MediaPoolFrameDescriptionCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.MediaPoolId, Is.EqualTo((byte)expectedData.Bank));

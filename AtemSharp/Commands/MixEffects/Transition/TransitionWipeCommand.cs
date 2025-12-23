@@ -3,7 +3,7 @@ using AtemSharp.State.Video.MixEffect;
 namespace AtemSharp.Commands.MixEffects.Transition;
 
 /// <summary>
-/// Command to set wipe transition settings for a mix effect
+/// Used to set the settings of the  wipe transition for a mix effect
 /// </summary>
 [Command("CTWp")]
 [BufferSize(20)]

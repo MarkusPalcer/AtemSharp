@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace AtemSharp.Tests.Commands;
 
-public abstract class DeserializedCommandTestBase<TCommand, TTestData> : CommandTestBase<TTestData>
+internal abstract class DeserializedCommandTestBase<TCommand, TTestData> : CommandTestBase<TTestData>
     where TCommand : IDeserializedCommand
     where TTestData : DeserializedCommandTestBase<TCommand, TTestData>.CommandDataBase, new()
 {
@@ -53,7 +53,7 @@ public abstract class DeserializedCommandTestBase<TCommand, TTestData> : Command
     }
 
 
-    protected abstract void CompareCommandProperties(TCommand actualCommand, TTestData expectedData, TestCaseData testCase);
+    internal abstract void CompareCommandProperties(TCommand actualCommand, TTestData expectedData, TestCaseData testCase);
 
     protected virtual void PrepareState(AtemState state, TTestData expectedData)
     {

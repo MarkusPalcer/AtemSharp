@@ -2,20 +2,10 @@ using AtemSharp.State;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
-/// <summary>
-/// Media pool configuration command received from ATEM
-/// </summary>
 [Command("_mpl")]
-public partial class MediaPoolConfigCommand : IDeserializedCommand
+internal partial class MediaPoolConfigCommand : IDeserializedCommand
 {
-    /// <summary>
-    /// Number of still images available in the media pool
-    /// </summary>
     [DeserializedField(0)] private byte _stillCount;
-
-    /// <summary>
-    /// Number of video clips available in the media pool
-    /// </summary>
     [DeserializedField(1)] private byte _clipCount;
 
     /// <inheritdoc />

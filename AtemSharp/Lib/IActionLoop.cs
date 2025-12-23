@@ -1,6 +1,6 @@
 namespace AtemSharp.Lib;
 
-public interface IActionLoop
+internal interface IActionLoop
 {
     Task Cancel();
 }

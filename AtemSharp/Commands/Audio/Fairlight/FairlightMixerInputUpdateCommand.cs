@@ -5,7 +5,7 @@ using AtemSharp.State.Ports;
 namespace AtemSharp.Commands.Audio.Fairlight;
 
 [Command("FAIP")]
-public partial class FairlightMixerInputUpdateCommand : IDeserializedCommand
+internal partial class FairlightMixerInputUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private ushort _id;
     [DeserializedField(2)] private FairlightInputType _inputType;

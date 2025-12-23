@@ -5,7 +5,7 @@ using AtemSharp.Communication;
 
 namespace AtemSharp.Tests.TestUtilities;
 
-public class AtemClientFake : IAtemClient
+internal class AtemClientFake : IAtemClient
 {
     private IPEndPoint? _remoteEndPoint;
 

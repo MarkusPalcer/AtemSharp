@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DownstreamKey;
 
-public class DownstreamKeyStateV8UpdateCommandTests : DeserializedCommandTestBase<DownstreamKeyStateV8UpdateCommand,
+internal class DownstreamKeyStateV8UpdateCommandTests : DeserializedCommandTestBase<DownstreamKeyStateV8UpdateCommand,
     DownstreamKeyStateV8UpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -17,7 +17,7 @@ public class DownstreamKeyStateV8UpdateCommandTests : DeserializedCommandTestBas
         public bool IsTowardsOnAir { get; set; }
     }
 
-    protected override void CompareCommandProperties(DownstreamKeyStateV8UpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(DownstreamKeyStateV8UpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.Index, Is.EqualTo(expectedData.Index));

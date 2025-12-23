@@ -4,7 +4,7 @@ using AtemSharp.State.Info;
 namespace AtemSharp.Commands.Streaming;
 
 [Command("SRST", ProtocolVersion.V8_1_1)]
-public partial class StreamingDurationUpdateCommand : IDeserializedCommand
+internal partial class StreamingDurationUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _hours;
     [DeserializedField(1)] private byte _minutes;

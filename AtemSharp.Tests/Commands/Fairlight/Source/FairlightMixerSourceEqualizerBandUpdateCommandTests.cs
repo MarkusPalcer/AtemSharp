@@ -6,7 +6,7 @@ using FairlightMixerSourceEqualizerBandUpdateCommand =
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
-public class FairlightMixerSourceEqualizerBandUpdateCommandTests : DeserializedCommandTestBase<
+internal class FairlightMixerSourceEqualizerBandUpdateCommandTests : DeserializedCommandTestBase<
     FairlightMixerSourceEqualizerBandUpdateCommand, FairlightMixerSourceEqualizerBandUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -24,7 +24,7 @@ public class FairlightMixerSourceEqualizerBandUpdateCommandTests : DeserializedC
         public double QFactor { get; set; }
     }
 
-    protected override void CompareCommandProperties(FairlightMixerSourceEqualizerBandUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(FairlightMixerSourceEqualizerBandUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Index));

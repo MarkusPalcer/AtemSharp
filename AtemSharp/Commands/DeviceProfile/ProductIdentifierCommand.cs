@@ -3,21 +3,12 @@ using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
-/// <summary>
-/// Product identifier command received from ATEM
-/// </summary>
 [Command("_pin")]
-public partial class ProductIdentifierCommand : IDeserializedCommand
+internal partial class ProductIdentifierCommand : IDeserializedCommand
 {
-    /// <summary>
-    /// ATEM device model
-    /// </summary>
     [DeserializedField(40)] private Model _model;
 
     // Stryker disable once string : initialization is always overriden by deserialization
-    /// <summary>
-    /// Product identifier string from the device
-    /// </summary>
     public string ProductIdentifier { get; internal set; } = string.Empty;
 
     private void DeserializeInternal(ReadOnlySpan<byte> rawCommand)

@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Audio.Fairlight.Master;
 
 [Command("MOCP")]
-public partial class FairlightMixerMasterCompressorUpdateCommand : IDeserializedCommand
+internal partial class FairlightMixerMasterCompressorUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)]
     private bool _enabled;

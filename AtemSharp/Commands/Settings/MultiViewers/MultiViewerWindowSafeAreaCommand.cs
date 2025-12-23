@@ -3,7 +3,7 @@ using AtemSharp.State.Settings.MultiViewer;
 namespace AtemSharp.Commands.Settings.MultiViewers;
 
 /// <summary>
-/// Command to enable or disable safe area display for a specific MultiViewer window
+/// Used to enable or disable safe area display for a specific MultiViewer window
 /// </summary>
 [Command("SaMw")]
 [BufferSize(4)]

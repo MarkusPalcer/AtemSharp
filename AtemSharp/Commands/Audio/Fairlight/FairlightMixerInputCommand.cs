@@ -2,6 +2,9 @@ using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Audio.Fairlight;
 
+/// <summary>
+/// Used to configure an input of the fairlight mixer
+/// </summary>
 [Command("CFIP")]
 [BufferSize(8)]
 public partial class FairlightMixerInputCommand(FairlightAudioInput input) : SerializedCommand

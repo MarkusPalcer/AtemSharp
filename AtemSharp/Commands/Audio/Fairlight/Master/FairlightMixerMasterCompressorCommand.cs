@@ -2,6 +2,9 @@ using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Audio.Fairlight.Master;
 
+/// <summary>
+/// Used to configure the compressor on the master channel of the fairlight mixer
+/// </summary>
 [Command("CMCP")]
 [BufferSize(24)]
 public partial class FairlightMixerMasterCompressorCommand(MasterProperties master) : SerializedCommand

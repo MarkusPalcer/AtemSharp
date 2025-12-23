@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Macro;
 
-public class MacroRunStatusUpdateCommandTests : DeserializedCommandTestBase<MacroRunStatusUpdateCommand,
+internal class MacroRunStatusUpdateCommandTests : DeserializedCommandTestBase<MacroRunStatusUpdateCommand,
     MacroRunStatusUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -14,7 +14,7 @@ public class MacroRunStatusUpdateCommandTests : DeserializedCommandTestBase<Macr
         public ushort Index { get; set; }
     }
 
-    protected override void CompareCommandProperties(MacroRunStatusUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(MacroRunStatusUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.IsRunning, Is.EqualTo(expectedData.IsRunning));

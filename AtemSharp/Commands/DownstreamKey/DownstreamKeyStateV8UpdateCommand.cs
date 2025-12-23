@@ -4,7 +4,7 @@ using AtemSharp.State.Info;
 namespace AtemSharp.Commands.DownstreamKey;
 
 [Command("DskS", ProtocolVersion.V8_0_1)]
-public partial class DownstreamKeyStateV8UpdateCommand : IDeserializedCommand
+internal partial class DownstreamKeyStateV8UpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _index;
 

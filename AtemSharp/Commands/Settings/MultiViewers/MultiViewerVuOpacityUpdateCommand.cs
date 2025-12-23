@@ -2,18 +2,11 @@ using AtemSharp.State;
 
 namespace AtemSharp.Commands.Settings.MultiViewers;
 
-/// <summary>
-/// Command to set MultiViewer VU opacity level
-/// </summary>
 [Command("VuMo")]
 [BufferSize(4)]
-public partial class MultiViewerVuOpacityUpdateCommand : IDeserializedCommand
+internal partial class MultiViewerVuOpacityUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _multiViewerId;
-
-    /// <summary>
-    /// VU opacity level (0-100)
-    /// </summary>
     [DeserializedField(1)] private byte _opacity;
 
     /// <inheritdoc />

@@ -5,7 +5,7 @@ using AtemSharp.State.Info;
 namespace AtemSharp.Commands.SuperSource;
 
 [Command("SSBP", ProtocolVersion.V8_0)]
-public partial class SuperSourceBoxParametersUpdateCommandV8 : IDeserializedCommand
+internal partial class SuperSourceBoxParametersUpdateCommandV8 : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _superSourceId;
     [DeserializedField(1)] private byte _boxId;

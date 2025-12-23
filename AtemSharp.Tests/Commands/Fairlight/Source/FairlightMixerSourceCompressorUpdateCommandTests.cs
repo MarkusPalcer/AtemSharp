@@ -4,7 +4,7 @@ using FairlightMixerSourceCompressorUpdateCommand = AtemSharp.Commands.Audio.Fai
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
-public class FairlightMixerSourceCompressorUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerSourceCompressorUpdateCommand,
+internal class FairlightMixerSourceCompressorUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerSourceCompressorUpdateCommand,
     FairlightMixerSourceCompressorUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -19,7 +19,7 @@ public class FairlightMixerSourceCompressorUpdateCommandTests : DeserializedComm
         public double Release { get; set; }
     }
 
-    protected override void CompareCommandProperties(FairlightMixerSourceCompressorUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(FairlightMixerSourceCompressorUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Index));

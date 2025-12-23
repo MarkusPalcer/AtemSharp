@@ -2,6 +2,9 @@ using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Audio.Fairlight.Master;
 
+/// <summary>
+/// Used to set the properties of one equalizer band on the master channel of the fairlight mixer
+/// </summary>
 [Command("CMBP")]
 [BufferSize(20)]
 public partial class FairlightMixerMasterEqualizerBandCommand(MasterEqualizerBand band) : SerializedCommand

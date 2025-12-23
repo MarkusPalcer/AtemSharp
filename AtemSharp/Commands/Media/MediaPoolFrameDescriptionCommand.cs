@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Media;
 
 [Command("MPfe")]
-public partial class MediaPoolFrameDescriptionCommand : IDeserializedCommand
+internal partial class MediaPoolFrameDescriptionCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _mediaPoolId;
 

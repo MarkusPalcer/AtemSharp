@@ -4,7 +4,7 @@ using AtemSharp.State.Media;
 namespace AtemSharp.Commands.Media;
 
 [Command("MPCE")]
-public partial class MediaPlayerSourceUpdateCommand : IDeserializedCommand
+internal partial class MediaPlayerSourceUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _mediaPlayerId;
 

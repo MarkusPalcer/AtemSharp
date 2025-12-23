@@ -12,7 +12,7 @@ namespace AtemSharp.Attributes;
 [AttributeUsage(AttributeTargets.Field)]
 [SuppressMessage("ReSharper", "UnusedParameter.Local")]
 [ExcludeFromCodeCoverage]
-public class SerializedTypeAttribute : Attribute
+internal class SerializedTypeAttribute : Attribute
 {
     public SerializedTypeAttribute(Type type) {}
 }

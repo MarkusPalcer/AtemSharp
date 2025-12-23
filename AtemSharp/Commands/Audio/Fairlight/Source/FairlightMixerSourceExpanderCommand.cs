@@ -1,5 +1,8 @@
 namespace AtemSharp.Commands.Audio.Fairlight.Source;
 
+/// <summary>
+/// Used to set the expander properties of a fairlight source
+/// </summary>
 [Command("CIXP")]
 [BufferSize(40)]
 public partial class FairlightMixerSourceExpanderCommand(State.Audio.Fairlight.Source source) : SerializedCommand

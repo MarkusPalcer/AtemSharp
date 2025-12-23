@@ -4,22 +4,11 @@ using AtemSharp.State.Settings.MultiViewer;
 
 namespace AtemSharp.Commands.Settings.MultiViewers;
 
-/// <summary>
-/// Command received from ATEM device containing MultiViewer properties update
-/// </summary>
 [Command("MvPr", ProtocolVersion.V8_0)]
-public partial class MultiViewerPropertiesUpdateCommand : IDeserializedCommand
+internal partial class MultiViewerPropertiesUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _multiViewerId;
-
-    /// <summary>
-    /// MultiViewer layout configuration
-    /// </summary>
     [DeserializedField(1)] private MultiViewerLayout _layout;
-
-    /// <summary>
-    /// Whether program and preview outputs are swapped
-    /// </summary>
     [DeserializedField(2)] private bool _programPreviewSwapped;
 
     /// <inheritdoc />

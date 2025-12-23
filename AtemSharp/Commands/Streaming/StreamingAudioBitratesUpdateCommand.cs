@@ -4,10 +4,9 @@ using AtemSharp.State.Info;
 namespace AtemSharp.Commands.Streaming;
 
 [Command("STAB", ProtocolVersion.V8_1_1)]
-public partial class StreamingAudioBitratesUpdateCommand : IDeserializedCommand
+internal partial class StreamingAudioBitratesUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private uint _lowBitrate;
-
     [DeserializedField(4)] private uint _highBitrate;
 
     /// <inheritdoc />

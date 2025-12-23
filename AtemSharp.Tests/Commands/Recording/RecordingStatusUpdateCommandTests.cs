@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Recording;
 
-public class RecordingStatusUpdateCommandTests : DeserializedCommandTestBase<RecordingStatusUpdateCommand, RecordingStatusUpdateCommandTests.CommandData>
+internal class RecordingStatusUpdateCommandTests : DeserializedCommandTestBase<RecordingStatusUpdateCommand, RecordingStatusUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -12,7 +12,7 @@ public class RecordingStatusUpdateCommandTests : DeserializedCommandTestBase<Rec
         public uint TotalRecordingTimeAvailable { get; set; }
     }
 
-    protected override void CompareCommandProperties(RecordingStatusUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(RecordingStatusUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That((ushort)actualCommand.Error, Is.EqualTo(expectedData.Error));
         Assert.That((ushort)actualCommand.Status, Is.EqualTo(expectedData.Status));

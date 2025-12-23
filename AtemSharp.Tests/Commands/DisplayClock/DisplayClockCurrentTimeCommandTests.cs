@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.DisplayClock;
 
 [TestFixture]
-public class DisplayClockCurrentTimeCommandTests : DeserializedCommandTestBase<DisplayClockCurrentTimeCommand,
+internal class DisplayClockCurrentTimeCommandTests : DeserializedCommandTestBase<DisplayClockCurrentTimeCommand,
     DisplayClockCurrentTimeCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -20,7 +20,7 @@ public class DisplayClockCurrentTimeCommandTests : DeserializedCommandTestBase<D
         public byte Frame { get; set; }
     }
 
-    protected override void CompareCommandProperties(DisplayClockCurrentTimeCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(DisplayClockCurrentTimeCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.Hours, Is.EqualTo(expectedData.Time.Hour));
         Assert.That(actualCommand.Minutes, Is.EqualTo(expectedData.Time.Minute));

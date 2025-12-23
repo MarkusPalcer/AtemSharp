@@ -4,7 +4,7 @@ using AtemSharp.State.Video.DownstreamKeyer;
 namespace AtemSharp.Commands.DownstreamKey;
 
 /// <summary>
-/// Command to trigger an auto transition on a downstream keyer
+/// Used to trigger an auto transition on a downstream keyer
 /// </summary>
 /// <remarks>
 /// Used for protocol version 8.0.1 and higher

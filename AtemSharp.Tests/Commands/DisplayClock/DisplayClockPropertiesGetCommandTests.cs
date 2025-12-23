@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace AtemSharp.Tests.Commands.DisplayClock;
 
 [TestFixture]
-public class DisplayClockPropertiesGetCommandTests : DeserializedCommandTestBase<DisplayClockPropertiesGetCommand,
+internal class DisplayClockPropertiesGetCommandTests : DeserializedCommandTestBase<DisplayClockPropertiesGetCommand,
     DisplayClockPropertiesGetCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -31,7 +31,7 @@ public class DisplayClockPropertiesGetCommandTests : DeserializedCommandTestBase
         public byte Frame { get; set; }
     }
 
-    protected override void CompareCommandProperties(DisplayClockPropertiesGetCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(DisplayClockPropertiesGetCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.Enabled, Is.EqualTo(expectedData.Enabled));

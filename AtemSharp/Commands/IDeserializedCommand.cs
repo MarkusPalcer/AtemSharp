@@ -5,7 +5,7 @@ namespace AtemSharp.Commands;
 /// <summary>
 /// A command sent from the ATEM device
 /// </summary>
-public interface IDeserializedCommand : ICommand
+internal interface IDeserializedCommand : ICommand
 {
 	/// <summary>
 	/// Apply this command to the ATEM state

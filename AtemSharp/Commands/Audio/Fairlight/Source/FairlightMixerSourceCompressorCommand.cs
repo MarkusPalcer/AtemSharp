@@ -1,5 +1,8 @@
 namespace AtemSharp.Commands.Audio.Fairlight.Source;
 
+/// <summary>
+/// Used to set the properties of the compressor of a fairlight mixer source
+/// </summary>
 [Command("CICP")]
 [BufferSize(40)]
 public partial class FairlightMixerSourceCompressorCommand(State.Audio.Fairlight.Source source) : SerializedCommand

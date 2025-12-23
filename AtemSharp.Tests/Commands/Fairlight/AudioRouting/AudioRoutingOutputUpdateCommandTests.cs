@@ -4,7 +4,7 @@ using AudioRoutingOutputUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Audio
 
 namespace AtemSharp.Tests.Commands.Fairlight.AudioRouting;
 
-public class AudioRoutingOutputUpdateCommandTests : DeserializedCommandTestBase<AudioRoutingOutputUpdateCommand,
+internal class AudioRoutingOutputUpdateCommandTests : DeserializedCommandTestBase<AudioRoutingOutputUpdateCommand,
     AudioRoutingOutputUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -18,7 +18,7 @@ public class AudioRoutingOutputUpdateCommandTests : DeserializedCommandTestBase<
         public AudioChannelPair AudioChannelPair { get; set; }
     }
 
-    protected override void CompareCommandProperties(AudioRoutingOutputUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(AudioRoutingOutputUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Id));

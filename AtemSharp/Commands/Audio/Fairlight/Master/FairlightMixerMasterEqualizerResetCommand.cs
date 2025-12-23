@@ -1,5 +1,8 @@
 namespace AtemSharp.Commands.Audio.Fairlight.Master;
 
+/// <summary>
+/// Used to reset the propertries of one equalizer band on the master channel of the fairlight mixer
+/// </summary>
 [Command("RMOE")]
 [BufferSize(4)]
 public partial class FairlightMixerMasterEqualizerResetCommand : SerializedCommand

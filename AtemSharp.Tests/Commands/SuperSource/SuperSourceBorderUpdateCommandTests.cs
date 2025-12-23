@@ -4,7 +4,7 @@ using AtemSharp.Types.Border;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
-public class SuperSourceBorderUpdateCommandTests : DeserializedCommandTestBase<SuperSourceBorderUpdateCommand,
+internal class SuperSourceBorderUpdateCommandTests : DeserializedCommandTestBase<SuperSourceBorderUpdateCommand,
     SuperSourceBorderUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -25,7 +25,7 @@ public class SuperSourceBorderUpdateCommandTests : DeserializedCommandTestBase<S
         public double LightSourceAltitude { get; set; }
     }
 
-    protected override void CompareCommandProperties(SuperSourceBorderUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(SuperSourceBorderUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.SuperSourceId, Is.EqualTo(expectedData.SSrcId));

@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Macro;
 
 [Command("MRPr")]
-public partial class MacroRunStatusUpdateCommand : IDeserializedCommand
+internal partial class MacroRunStatusUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(2)] private ushort _macroIndex;
 

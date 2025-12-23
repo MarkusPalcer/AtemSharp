@@ -2,6 +2,9 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 
+/// <summary>
+/// Used to set the chroma sample settings
+/// </summary>
 [Command("RACK")]
 [BufferSize(4)]
 public partial class MixEffectKeyAdvancedChromaSampleResetCommand(UpstreamKeyer keyer) : SerializedCommand

@@ -5,7 +5,7 @@ using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
-public class SuperSourceBoxParametersUpdateCommandTests : DeserializedCommandTestBase<SuperSourceBoxParametersUpdateCommand,
+internal class SuperSourceBoxParametersUpdateCommandTests : DeserializedCommandTestBase<SuperSourceBoxParametersUpdateCommand,
     SuperSourceBoxParametersUpdateCommandTests.CommandData>
 {
     [MaxProtocolVersion(ProtocolVersion.V7_5_2)]
@@ -24,7 +24,7 @@ public class SuperSourceBoxParametersUpdateCommandTests : DeserializedCommandTes
         public double CropRight { get; set; }
     }
 
-    protected override void CompareCommandProperties(SuperSourceBoxParametersUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(SuperSourceBoxParametersUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.BoxId, Is.EqualTo(expectedData.BoxIndex));

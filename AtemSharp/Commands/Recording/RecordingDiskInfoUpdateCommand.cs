@@ -5,7 +5,7 @@ using AtemSharp.State.Recording;
 namespace AtemSharp.Commands.Recording;
 
 [Command("RTMD", ProtocolVersion.V8_1_1)]
-public partial class RecordingDiskInfoUpdateCommand : IDeserializedCommand
+internal partial class RecordingDiskInfoUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private uint _diskId;
 

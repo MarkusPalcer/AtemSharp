@@ -9,8 +9,5 @@ namespace AtemSharp.Commands.Audio.ClassicAudio;
 [BufferSize(4)]
 public partial class AudioMixerPropertiesCommand(ClassicAudioState audio) : SerializedCommand
 {
-    /// <summary>
-    /// Whether audio follows video crossfade transition
-    /// </summary>
     [SerializedField(1, 0)] private bool _audioFollowVideo = audio.AudioFollowsVideo;
 }

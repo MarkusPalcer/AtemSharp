@@ -3,15 +3,9 @@ using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
-/// <summary>
-/// Version command received from ATEM device
-/// </summary>
 [Command("_ver")]
-public partial class VersionCommand : IDeserializedCommand
+internal partial class VersionCommand : IDeserializedCommand
 {
-    /// <summary>
-    /// ATEM protocol version
-    /// </summary>
     [DeserializedField(0)] private ProtocolVersion _version;
 
     /// <inheritdoc />

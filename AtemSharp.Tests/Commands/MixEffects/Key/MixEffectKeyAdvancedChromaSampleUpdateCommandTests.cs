@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
 [TestFixture]
-public class MixEffectKeyAdvancedChromaSampleUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyAdvancedChromaSampleUpdateCommand,
+internal class MixEffectKeyAdvancedChromaSampleUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyAdvancedChromaSampleUpdateCommand,
     MixEffectKeyAdvancedChromaSampleUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -21,7 +21,7 @@ public class MixEffectKeyAdvancedChromaSampleUpdateCommandTests : DeserializedCo
         public double SampledCr { get; set; }
     }
 
-    protected override void CompareCommandProperties(MixEffectKeyAdvancedChromaSampleUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(MixEffectKeyAdvancedChromaSampleUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.MixEffectIndex));

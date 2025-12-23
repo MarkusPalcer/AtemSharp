@@ -4,20 +4,10 @@ using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
-/// <summary>
-/// Fairlight audio mixer configuration command received from ATEM
-/// </summary>
 [Command("_FAC")]
-public partial class FairlightAudioMixerConfigCommand : IDeserializedCommand
+internal partial class FairlightAudioMixerConfigCommand : IDeserializedCommand
 {
-    /// <summary>
-    /// Number of Fairlight audio inputs available
-    /// </summary>
     [DeserializedField(0)] private byte _inputs;
-
-    /// <summary>
-    /// Number of Fairlight monitor channels available
-    /// </summary>
     [DeserializedField(1)] private byte _monitors;
 
     /// <inheritdoc />

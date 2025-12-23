@@ -3,11 +3,8 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 
-/// <summary>
-/// Command received from ATEM device containing upstream keyer base properties
-/// </summary>
 [Command("KeBP")]
-public partial class MixEffectKeyPropertiesGetCommand : IDeserializedCommand
+internal partial class MixEffectKeyPropertiesGetCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _mixEffectIndex;
 

@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.DataTransfer;
 
 [Command("FTDa")]
-public partial class DataTransferDataReceivedCommand : IDeserializedCommand
+internal partial class DataTransferDataReceivedCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private ushort _transferId;
     [CustomDeserialization] private byte[] _body = [];

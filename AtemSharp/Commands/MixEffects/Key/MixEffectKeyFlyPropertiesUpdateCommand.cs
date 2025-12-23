@@ -3,34 +3,19 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 
-/// <summary>
-/// Command received from ATEM device containing upstream keyer fly properties
-/// </summary>
 [Command("KeFS")]
-public partial class MixEffectKeyFlyPropertiesGetCommand : IDeserializedCommand
+internal partial class MixEffectKeyFlyPropertiesUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _mixEffectIndex;
 
     [DeserializedField(1)] private byte _keyerIndex;
 
-    /// <summary>
-    /// Whether key frame A is set
-    /// </summary>
     [DeserializedField(2)] private bool _isASet;
 
-    /// <summary>
-    /// Whether key frame B is set
-    /// </summary>
     [DeserializedField(3)] private bool _isBSet;
 
-    /// <summary>
-    /// Running to key frame flags
-    /// </summary>
     [DeserializedField(4)] private IsAtKeyFrame _isAtKeyFrame;
 
-    /// <summary>
-    /// Running to infinite index
-    /// </summary>
     [DeserializedField(5)] private byte _runToInfiniteIndex;
 
     /// <inheritdoc />

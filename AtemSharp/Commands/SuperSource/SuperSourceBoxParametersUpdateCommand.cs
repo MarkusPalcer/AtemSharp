@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.SuperSource;
 
 [Command("SSBP")]
-public partial class SuperSourceBoxParametersUpdateCommand : IDeserializedCommand
+internal partial class SuperSourceBoxParametersUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _boxId;
     [DeserializedField(1)] private bool _enabled;

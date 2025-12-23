@@ -3,7 +3,7 @@ using System.Text;
 
 namespace AtemSharp.Commands;
 
-public static class SerializationExtensions
+internal static class SerializationExtensions
 {
     /// <summary>
     /// Convert balance value to integer

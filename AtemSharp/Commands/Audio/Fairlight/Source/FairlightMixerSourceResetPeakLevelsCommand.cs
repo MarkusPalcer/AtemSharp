@@ -1,5 +1,8 @@
 namespace AtemSharp.Commands.Audio.Fairlight.Source;
 
+/// <summary>
+/// Used to reset the peaks for a fairlight mixer source
+/// </summary>
 [Command("RFIP")]
 [BufferSize(20)]
 public partial class FairlightMixerSourceResetPeakLevelsCommand(State.Audio.Fairlight.Source source) : SerializedCommand

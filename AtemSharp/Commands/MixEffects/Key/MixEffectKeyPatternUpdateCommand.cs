@@ -5,7 +5,7 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 namespace AtemSharp.Commands.MixEffects.Key;
 
 [Command("KePt")]
-public partial class MixEffectKeyPatternUpdateCommand : IDeserializedCommand
+internal partial class MixEffectKeyPatternUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _mixEffectId;
 

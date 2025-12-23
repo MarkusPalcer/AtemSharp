@@ -2,6 +2,9 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 
+/// <summary>
+/// Used to set the source of the content for an upstream keyer
+/// </summary>
 [Command("CKeF")]
 [BufferSize(4)]
 public partial class MixEffectKeyFillSourceSetCommand(UpstreamKeyer keyer) : SerializedCommand

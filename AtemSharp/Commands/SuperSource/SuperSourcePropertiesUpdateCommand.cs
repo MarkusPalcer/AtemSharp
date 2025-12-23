@@ -6,7 +6,7 @@ using AtemSharp.Types.Border;
 namespace AtemSharp.Commands.SuperSource;
 
 [Command("SSrc")]
-public partial class SuperSourcePropertiesUpdateCommand : IDeserializedCommand
+internal partial class SuperSourcePropertiesUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private ushort _artFillSource;
     [DeserializedField(2)] private ushort _artCutSource;

@@ -5,7 +5,7 @@ namespace AtemSharp.Commands;
 
 // TODO #49: Capture test cases
 [Command("TlSr")]
-public partial class TallyBySourceCommand : IDeserializedCommand
+internal partial class TallyBySourceCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private ushort _sourceCount;
     [CustomDeserialization] private Tally[] _tallyBySource = [];

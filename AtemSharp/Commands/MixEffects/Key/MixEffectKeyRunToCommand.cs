@@ -2,6 +2,9 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 
+/// <summary>
+/// Used to animate the upstream keyer to a specific position (predefined or keyframe)
+/// </summary>
 [Command("RFlK")]
 [BufferSize(8)]
 public partial class MixEffectKeyRunToCommand : SerializedCommand
@@ -23,7 +26,7 @@ public partial class MixEffectKeyRunToCommand : SerializedCommand
     }
 
     /// <summary>
-    /// Creates a new command that sends the keyer into the given direction until it is invisible
+    /// Creates a new command that animates the keyer into the given direction until it is invisible
     /// </summary>
     public static MixEffectKeyRunToCommand RunToInfinite(UpstreamKeyer keyer, FlyKeyDirection direction)
     {

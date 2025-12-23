@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.MixEffects.FadeToBlack;
 
 [Command("FtbP")]
-public partial class FadeToBlackRateUpdateCommand : IDeserializedCommand
+internal partial class FadeToBlackRateUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _mixEffectId;
 

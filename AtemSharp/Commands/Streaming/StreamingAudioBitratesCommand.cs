@@ -3,6 +3,9 @@ using AtemSharp.State.Info;
 
 namespace AtemSharp.Commands.Streaming;
 
+/// <summary>
+/// Used to set the low and high bitrate for streaming
+/// </summary>
 [Command("STAB", ProtocolVersion.V8_1_1)]
 [BufferSize(8)]
 public partial class StreamingAudioBitratesCommand(AtemState state) : SerializedCommand

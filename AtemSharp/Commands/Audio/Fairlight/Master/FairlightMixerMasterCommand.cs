@@ -2,6 +2,9 @@ using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Audio.Fairlight.Master;
 
+/// <summary>
+/// Used to enable the equalizer and set gains for the master channel on the fairlight mixer
+/// </summary>
 [Command("CFMP")]
 [BufferSize(20)]
 public partial class FairlightMixerMasterCommand(MasterProperties master) : SerializedCommand

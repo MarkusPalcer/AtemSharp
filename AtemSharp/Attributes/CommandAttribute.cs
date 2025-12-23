@@ -5,7 +5,7 @@ namespace AtemSharp.Attributes;
 
 [AttributeUsage(AttributeTargets.Class)]
 [ExcludeFromCodeCoverage]
-public class CommandAttribute : Attribute
+internal class CommandAttribute : Attribute
 {
 	/// <summary>
 	/// Raw command name for ATEM protocol

@@ -3,7 +3,7 @@ using AtemSharp.State.Video.MixEffect;
 namespace AtemSharp.Commands.MixEffects;
 
 /// <summary>
-/// Command to set the preview input source for a mix effect
+/// Used to set the preview input source for a mix effect
 /// </summary>
 [Command("CPvI")]
 [BufferSize(4)]

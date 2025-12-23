@@ -3,7 +3,7 @@ using AtemSharp.State.Video.MixEffect;
 namespace AtemSharp.Commands.MixEffects.Transition;
 
 /// <summary>
-/// Command to set the transition mix rate for a mix effect
+/// Used to set the duration of the mix transition for a MixEffect
 /// </summary>
 [Command("CTMx")]
 [BufferSize(4)]

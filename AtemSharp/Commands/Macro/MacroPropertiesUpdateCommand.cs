@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Macro;
 
 [Command("MPrp")]
-public partial class MacroPropertiesUpdateCommand : IDeserializedCommand
+internal partial class MacroPropertiesUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private ushort _id;
 

@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
-public class TopologyCommandV811Tests : DeserializedCommandTestBase<TopologyCommandV811, TopologyCommandV811Tests.CommandData>
+internal class TopologyCommandV811Tests : DeserializedCommandTestBase<TopologyCommandV811, TopologyCommandV811Tests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -27,7 +27,7 @@ public class TopologyCommandV811Tests : DeserializedCommandTestBase<TopologyComm
         public bool OnlyConfigurableOutputs { get; set; }
     }
 
-    protected override void CompareCommandProperties(TopologyCommandV811 actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(TopologyCommandV811 actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That(actualCommand.MixEffects, Is.EqualTo(expectedData.MixEffectBlocks));
         Assert.That(actualCommand.Sources, Is.EqualTo(expectedData.VideoSources));

@@ -2,6 +2,9 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Commands.MixEffects.Key;
 
+/// <summary>
+/// Used to set the mask properties for an UpstreamKeyer
+/// </summary>
 [Command("CKMs")]
 [BufferSize(12)]
 public partial class MixEffectKeyMaskSetCommand(UpstreamKeyer keyer) : SerializedCommand

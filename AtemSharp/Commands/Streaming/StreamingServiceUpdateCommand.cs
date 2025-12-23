@@ -4,7 +4,7 @@ using AtemSharp.State.Info;
 namespace AtemSharp.Commands.Streaming;
 
 [Command("SRSU", ProtocolVersion.V8_1_1)]
-public partial class StreamingServiceUpdateCommand : IDeserializedCommand
+internal partial class StreamingServiceUpdateCommand : IDeserializedCommand
 {
     // Stryker disable once string : initialization is always overriden by deserialization
     [CustomDeserialization] private string _serviceName = string.Empty;

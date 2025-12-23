@@ -6,7 +6,7 @@ namespace AtemSharp.Commands.MixEffects.Key;
 
 // TODO #80: Capture test data and use test class base
 /// <summary>
-/// Command to update DVE settings for an upstream keyer
+/// Used to update DVE settings for an upstream keyer
 /// </summary>
 [Command("CKDV")]
 [BufferSize(64)]

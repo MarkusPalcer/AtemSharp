@@ -4,7 +4,7 @@ using AtemSharp.State.Info;
 namespace AtemSharp.Commands.DeviceProfile;
 
 [Command("_top", ProtocolVersion.V8_1_1)]
-public partial class TopologyCommandV811: IDeserializedCommand
+internal partial class TopologyCommandV811: IDeserializedCommand
 {
     [DeserializedField(0)] private byte _mixEffects;
     [DeserializedField(1)] private byte _sources;

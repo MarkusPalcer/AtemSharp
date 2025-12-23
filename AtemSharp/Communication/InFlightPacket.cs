@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace AtemSharp.Communication;
 
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public struct InFlightPacket(ushort packetId, int trackingId, byte[] payload)
+internal struct InFlightPacket(ushort packetId, int trackingId, byte[] payload)
 {
     public readonly ushort PacketId = packetId;
     public readonly int TrackingId = trackingId;

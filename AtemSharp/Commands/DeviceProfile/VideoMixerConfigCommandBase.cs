@@ -4,11 +4,8 @@ using AtemSharp.State.Settings;
 
 namespace AtemSharp.Commands.DeviceProfile;
 
-public class VideoMixerConfigCommandBase : IDeserializedCommand
+internal class VideoMixerConfigCommandBase : IDeserializedCommand
 {
-    /// <summary>
-    /// Array of supported video modes
-    /// </summary>
     public SupportedVideoMode[] SupportedVideoModes { get; protected set; } = [];
 
     /// <inheritdoc />

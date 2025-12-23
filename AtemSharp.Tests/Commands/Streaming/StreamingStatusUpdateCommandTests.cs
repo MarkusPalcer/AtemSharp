@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Streaming;
 
-public class StreamingStatusUpdateCommandTests : DeserializedCommandTestBase<StreamingStatusUpdateCommand, StreamingStatusUpdateCommandTests.CommandData>
+internal class StreamingStatusUpdateCommandTests : DeserializedCommandTestBase<StreamingStatusUpdateCommand, StreamingStatusUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
@@ -11,7 +11,7 @@ public class StreamingStatusUpdateCommandTests : DeserializedCommandTestBase<Str
         public ushort Error { get; set; }
     }
 
-    protected override void CompareCommandProperties(StreamingStatusUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
+    internal override void CompareCommandProperties(StreamingStatusUpdateCommand actualCommand, CommandData expectedData, TestCaseData testCase)
     {
         Assert.That((ushort)actualCommand.Status, Is.EqualTo(expectedData.Status));
         Assert.That((ushort)actualCommand.Error, Is.EqualTo(expectedData.Error));

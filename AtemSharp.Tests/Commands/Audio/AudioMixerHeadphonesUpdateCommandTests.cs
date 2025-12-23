@@ -5,7 +5,7 @@ using AudioMixerHeadphonesUpdateCommand = AtemSharp.Commands.Audio.ClassicAudio.
 namespace AtemSharp.Tests.Commands.Audio;
 
 [TestFixture]
-public class AudioMixerHeadphonesUpdateCommandTests : DeserializedCommandTestBase<AudioMixerHeadphonesUpdateCommand,
+internal class AudioMixerHeadphonesUpdateCommandTests : DeserializedCommandTestBase<AudioMixerHeadphonesUpdateCommand,
     AudioMixerHeadphonesUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
@@ -16,7 +16,7 @@ public class AudioMixerHeadphonesUpdateCommandTests : DeserializedCommandTestBas
         public double SidetoneGain { get; set; }
     }
 
-    protected override void CompareCommandProperties(AudioMixerHeadphonesUpdateCommand actualCommand, CommandData expectedData,
+    internal override void CompareCommandProperties(AudioMixerHeadphonesUpdateCommand actualCommand, CommandData expectedData,
                                                      TestCaseData testCase)
     {
         Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));

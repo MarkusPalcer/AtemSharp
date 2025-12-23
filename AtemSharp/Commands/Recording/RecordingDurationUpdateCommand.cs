@@ -3,7 +3,7 @@ using AtemSharp.State;
 namespace AtemSharp.Commands.Recording;
 
 [Command("RTMR")]
-public partial class RecordingDurationUpdateCommand : IDeserializedCommand
+internal partial class RecordingDurationUpdateCommand : IDeserializedCommand
 {
     [DeserializedField(0)] private byte _hours;
 

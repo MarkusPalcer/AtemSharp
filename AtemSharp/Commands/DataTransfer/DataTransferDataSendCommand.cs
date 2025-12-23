@@ -3,8 +3,7 @@ using AtemSharp.State.Info;
 namespace AtemSharp.Commands.DataTransfer;
 
 /// <summary>
-/// Command to send or receive data transfer content
-/// This command can be both sent to and received from the ATEM device
+/// Used to send data transfer content
 /// </summary>
 [Command("FTDa")]
 public class DataTransferDataSendCommand : SerializedCommand
@@ -12,14 +11,8 @@ public class DataTransferDataSendCommand : SerializedCommand
     // This command does not use the generated code because the payload does
     // not have a fixed size
 
-    /// <summary>
-    /// Transfer ID
-    /// </summary>
     public required ushort TransferId { get; set; }
 
-    /// <summary>
-    /// Data content
-    /// </summary>
     public required byte[] Body { get; set; } = [];
 
     /// <inheritdoc />
