@@ -1,4 +1,5 @@
 using AtemSharp.State;
+using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Commands.Audio.Fairlight.Master;
 
@@ -12,12 +13,12 @@ internal partial class FairlightMixerMasterEqualizerBandUpdateCommand : IDeseria
     private bool _enabled;
 
     [DeserializedField(2)]
-    [CustomScaling($"{nameof(DeserializationExtensions)}.{nameof(DeserializationExtensions.GetComponentsLegacy)}")]
-    [SerializedType(typeof(byte))]
-    private byte[] _supportedShapes = [];
+    [CustomScaling($"{nameof(DeserializationExtensions)}.{nameof(DeserializationExtensions.GetComponents)}")]
+    [SerializedType(typeof(Shape))]
+    private Shape[] _supportedShapes = [];
 
     [DeserializedField(3)]
-    private byte _shape;
+    private Shape _shape;
 
     [DeserializedField(4)]
     [CustomScaling($"{nameof(DeserializationExtensions)}.{nameof(DeserializationExtensions.GetComponentsLegacy)}")]

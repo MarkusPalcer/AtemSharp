@@ -17,7 +17,7 @@ public partial class FairlightMixerSourceEqualizerBandCommand(SourceEqualizerBan
 
     [SerializedField(17, 0)] private bool _enabled = band.Enabled;
 
-    [SerializedField(18, 1)] private byte _shape = band.Shape;
+    [SerializedField(18, 1)] private Shape _shape = band.Shape;
 
     [SerializedField(19, 2)] private byte _frequencyRange = band.FrequencyRange;
 

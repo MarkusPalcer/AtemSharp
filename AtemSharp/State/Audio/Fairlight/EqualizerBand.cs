@@ -9,8 +9,8 @@ public abstract class EqualizerBand
 {
     public byte Id { get; internal init; }
     public bool Enabled { get; internal set; }
-    public byte[] SupportedShapes { get; internal set; } = [];
-    public byte Shape { get; internal set; }
+    public Shape[] SupportedShapes { get; internal set; } = [];
+    public Shape Shape { get; internal set; }
     public byte[] SupportedFrequencyRanges { get; internal set; } = [];
     public byte FrequencyRange { get; internal set; }
     public uint Frequency { get; internal set; }
