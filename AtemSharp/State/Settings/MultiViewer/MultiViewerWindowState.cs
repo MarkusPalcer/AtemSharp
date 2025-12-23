@@ -20,7 +20,7 @@ public class MultiViewerWindowState
     /// <summary>
     /// Whether audio meter overlay is enabled for this window (optional)
     /// </summary>
-    public bool AudioMeter { get; internal set; }
+    public bool VuMeter { get; internal set; }
 
     /// <summary>
     /// The video source assigned to this window (input number)

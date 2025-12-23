@@ -32,6 +32,6 @@ internal class MultiViewerWindowVuMeterUpdateCommandTests : DeserializedCommandT
         var actualCommand = state.Settings.MultiViewers[expectedData.MultiviewIndex].Windows[expectedData.WindowIndex];
         Assert.That(actualCommand.MultiViewerId, Is.EqualTo(expectedData.MultiviewIndex));
         Assert.That(actualCommand.WindowIndex, Is.EqualTo(expectedData.WindowIndex));
-        Assert.That(actualCommand.AudioMeter, Is.EqualTo(expectedData.VuEnabled));
+        Assert.That(actualCommand.VuMeter, Is.EqualTo(expectedData.VuEnabled));
     }
 }

@@ -20,7 +20,7 @@ public class MultiViewerWindowVuMeterCommandTests : SerializedCommandTestBase<Mu
         {
             MultiViewerId = testCase.Command.MultiviewIndex,
             WindowIndex = testCase.Command.WindowIndex,
-            AudioMeter = testCase.Command.VuEnabled
+            VuMeter = testCase.Command.VuEnabled
         });
     }
 }

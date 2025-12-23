@@ -16,6 +16,6 @@ internal partial class MultiViewerWindowVuMeterUpdateCommand : IDeserializedComm
         var multiViewer = state.Settings.MultiViewers[MultiViewerId];
 
         var currentWindow = multiViewer.Windows.GetOrCreate(WindowIndex);
-        currentWindow.AudioMeter = VuEnabled;
+        currentWindow.VuMeter = VuEnabled;
     }
 }

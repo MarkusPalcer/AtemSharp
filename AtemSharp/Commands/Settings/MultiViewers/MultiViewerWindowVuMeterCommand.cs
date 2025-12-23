@@ -13,5 +13,5 @@ public partial class MultiViewerWindowVuMeterCommand(MultiViewerWindowState wind
 
     [SerializedField(1)] [NoProperty] internal readonly byte WindowIndex = window.WindowIndex;
 
-    [SerializedField(2)] private bool _vuEnabled = window.AudioMeter;
+    [SerializedField(2)] private bool _vuEnabled = window.VuMeter;
 }
