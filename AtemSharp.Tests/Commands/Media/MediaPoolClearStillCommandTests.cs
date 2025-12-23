@@ -12,6 +12,6 @@ public class MediaPoolClearStillCommandTests : SerializedCommandTestBase<MediaPo
 
     protected override MediaPoolClearStillCommand CreateSut(TestCaseData testCase)
     {
-        return new MediaPoolClearStillCommand(new MediaPoolEntry { Id = testCase.Command.Index });
+        return new MediaPoolClearStillCommand(new Still { Id = testCase.Command.Index });
     }
 }

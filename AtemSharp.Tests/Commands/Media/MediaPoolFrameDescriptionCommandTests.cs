@@ -1,5 +1,6 @@
 using AtemSharp.Commands.Media;
 using AtemSharp.State;
+using AtemSharp.State.Media;
 
 namespace AtemSharp.Tests.Commands.Media;
 
@@ -40,14 +41,13 @@ internal class MediaPoolFrameDescriptionCommandTests : DeserializedCommandTestBa
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)
     {
-        var source = expectedData.Bank switch
+        MediaPoolEntry item = expectedData.Bank switch
         {
-            0 => state.Media.Frames,
-            3 => state.Media.Clips,
+            0 => state.Media.Frames[expectedData.Index],
+            3 => state.Media.Clips[expectedData.Index],
             _ => throw new ArgumentOutOfRangeException()
         };
 
-        var item = source[expectedData.Index];
         Assert.That(item.Id, Is.EqualTo(expectedData.Index));
         Assert.That(item.IsUsed, Is.EqualTo(expectedData.IsUsed));
         Assert.That(item.Hash, Is.EqualTo(expectedData.Hash));

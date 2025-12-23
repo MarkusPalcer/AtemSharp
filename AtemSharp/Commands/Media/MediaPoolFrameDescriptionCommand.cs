@@ -1,4 +1,5 @@
 using AtemSharp.State;
+using AtemSharp.State.Media;
 
 namespace AtemSharp.Commands.Media;
 
@@ -26,7 +27,7 @@ internal partial class MediaPoolFrameDescriptionCommand : IDeserializedCommand
     /// <inheritdoc />
     public void ApplyToState(AtemState state)
     {
-        var entry = MediaPoolId switch
+        MediaPoolEntry entry = MediaPoolId switch
         {
             0 => state.Media.Frames[FrameIndex],
             3 => state.Media.Clips[FrameIndex],

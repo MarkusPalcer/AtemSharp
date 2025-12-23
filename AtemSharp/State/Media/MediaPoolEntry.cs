@@ -19,3 +19,7 @@ public class MediaPoolEntry
     [ExcludeFromCodeCoverage]
     public override string ToString() => $"{GetType().Name} #{Id}";
 }
+
+
+public class Clip : MediaPoolEntry;
+public class Still : MediaPoolEntry;

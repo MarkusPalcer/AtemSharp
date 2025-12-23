@@ -12,6 +12,6 @@ public class MediaPoolClearClipCommandTests : SerializedCommandTestBase<MediaPoo
 
     protected override MediaPoolClearClipCommand CreateSut(TestCaseData testCase)
     {
-        return new MediaPoolClearClipCommand(new MediaPoolEntry { Id = testCase.Command.Index });
+        return new MediaPoolClearClipCommand(new Clip { Id = testCase.Command.Index });
     }
 }
