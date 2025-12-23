@@ -12,8 +12,15 @@ This is a C# port of the TypeScript [atem-connection](https://github.com/Sofie-A
 
 ## Installation
 
+### AtemSharp
 ```bash
 dotnet add package AtemSharp
+```
+
+### DI-Extensions
+
+```bash
+dotnet add package Microsoft.Extensions.DependencyInjection.AtemSharp
 ```
 
 ## Quick Start
