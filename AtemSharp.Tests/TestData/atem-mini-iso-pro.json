@@ -1,6 +1,15 @@
 {
     "$comment": "This test data has been captured with Wireshark from my ATEM Mini Pro ISO",
     "commands": {
-
+        "DUMMY": [
+            {
+                "name": "A display name for the test case to show in the test list",
+                "Payload": "00-00-00-00",
+                "Command": {
+                    "some": "command",
+                    "data": 4
+                }
+            }
+        ]
     }
 }
