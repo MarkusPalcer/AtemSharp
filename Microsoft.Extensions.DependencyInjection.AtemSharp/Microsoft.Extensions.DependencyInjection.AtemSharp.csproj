@@ -5,7 +5,17 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>Microsoft.Extensions.DependencyInjection</RootNamespace>
-        <IsPackable>true</IsPackable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>Microsoft.Extensions.DependencyInjection.AtemSharp</PackageId>
+        <Authors>Markus Palcer</Authors>
+        <Description>C# library for connecting with ATEM switchers</Description>
+        <Copyright>MIT</Copyright>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/MarkusPalcer/AtemSharp</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageTags>atem;blackmagic;switcher;video</PackageTags>
+        <ImplicitUsings>true</ImplicitUsings>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,6 +24,10 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AtemSharp\AtemSharp.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="../README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
     <ItemGroup>

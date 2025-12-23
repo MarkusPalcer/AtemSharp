@@ -14,12 +14,17 @@
         <RepositoryType>git</RepositoryType>
         <PackageTags>atem;blackmagic;switcher;video</PackageTags>
         <ImplicitUsings>true</ImplicitUsings>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="../README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
 
     <ItemGroup>
         <InternalsVisibleTo Include="AtemSharp.Tests" />
         <InternalsVisibleTo Include="Microsoft.Extensions.DependencyInjection.AtemSharp" />
-        
+
         <ProjectReference Include="$(ProjectDir)..\AtemSharp.CodeGenerators\AtemSharp.CodeGenerators.csproj"
                           Pack="false"
                           ReferenceOutputAssembly="false"
@@ -31,6 +36,5 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="System.Reactive" Version="6.0.1" />
     </ItemGroup>
 </Project>
