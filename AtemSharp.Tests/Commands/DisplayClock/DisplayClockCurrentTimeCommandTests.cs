@@ -20,7 +20,7 @@ internal class DisplayClockCurrentTimeCommandTests : DeserializedCommandTestBase
         public byte Frame { get; set; }
     }
 
-    internal override void CompareCommandProperties(DisplayClockCurrentTimeCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(DisplayClockCurrentTimeCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.Hours, Is.EqualTo(expectedData.Time.Hour));
         Assert.That(actualCommand.Minutes, Is.EqualTo(expectedData.Time.Minute));

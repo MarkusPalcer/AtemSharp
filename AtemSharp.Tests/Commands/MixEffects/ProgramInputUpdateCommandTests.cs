@@ -13,7 +13,7 @@ internal class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<Prog
         public int Source { get; set; }
     }
 
-    internal override void CompareCommandProperties(ProgramInputUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(ProgramInputUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source));

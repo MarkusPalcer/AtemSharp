@@ -21,7 +21,7 @@ internal class MixEffectKeyAdvancedChromaSampleUpdateCommandTests : Deserialized
         public double SampledCr { get; set; }
     }
 
-    internal override void CompareCommandProperties(MixEffectKeyAdvancedChromaSampleUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(MixEffectKeyAdvancedChromaSampleUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.MixEffectIndex));
         Assert.That(actualCommand.KeyerId, Is.EqualTo(expectedData.KeyerIndex));

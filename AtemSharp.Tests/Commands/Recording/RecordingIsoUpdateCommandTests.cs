@@ -10,7 +10,7 @@ internal class RecordingIsoUpdateCommandTests : DeserializedCommandTestBase<Reco
         public bool IsoRecordAllInputs { get; set; }
     }
 
-    internal override void CompareCommandProperties(RecordingIsoUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(RecordingIsoUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.RecordAllInputs, Is.EqualTo(expectedData.IsoRecordAllInputs));
     }

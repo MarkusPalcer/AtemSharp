@@ -20,7 +20,7 @@ internal class MixEffectKeyPatternUpdateCommandTests : DeserializedCommandTestBa
         public double Size { get; set; }
     }
 
-    internal override void CompareCommandProperties(MixEffectKeyPatternUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(MixEffectKeyPatternUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.MixEffectIndex));
         Assert.That(actualCommand.KeyerId, Is.EqualTo(expectedData.KeyerIndex));

@@ -17,7 +17,7 @@ internal class MacroPropertiesUpdateCommandTests : DeserializedCommandTestBase<M
         public string Description { get; set; } = string.Empty;
     }
 
-    internal override void CompareCommandProperties(MacroPropertiesUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(MacroPropertiesUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.IsUsed, Is.EqualTo(expectedData.IsUsed));

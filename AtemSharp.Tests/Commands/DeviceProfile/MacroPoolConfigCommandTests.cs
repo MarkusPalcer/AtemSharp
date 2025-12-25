@@ -11,7 +11,7 @@ internal class MacroPoolConfigCommandTests : DeserializedCommandTestBase<MacroPo
         public byte MacroCount { get; set; }
     }
 
-    internal override void CompareCommandProperties(MacroPoolConfigCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(MacroPoolConfigCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.MacroCount, Is.EqualTo(expectedData.MacroCount));
     }

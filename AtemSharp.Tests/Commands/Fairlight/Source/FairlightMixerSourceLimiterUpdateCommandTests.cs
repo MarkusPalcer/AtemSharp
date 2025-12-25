@@ -19,7 +19,7 @@ internal class FairlightMixerSourceLimiterUpdateCommandTests : DeserializedComma
     }
 
 
-    internal override void CompareCommandProperties(FairlightMixerSourceLimiterUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(FairlightMixerSourceLimiterUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.SourceId, Is.EqualTo(expectedData.SourceId));

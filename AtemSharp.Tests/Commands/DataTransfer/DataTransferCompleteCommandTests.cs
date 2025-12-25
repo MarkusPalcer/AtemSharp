@@ -12,7 +12,7 @@ internal class DataTransferCompleteCommandTests : DeserializedCommandTestBase<Da
         public ushort TransferId { get; set; }
     }
 
-    internal override void CompareCommandProperties(DataTransferCompleteCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(DataTransferCompleteCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.TransferId, Is.EqualTo(expectedData.TransferId));
     }

@@ -25,7 +25,7 @@ internal class SuperSourceBorderUpdateCommandTests : DeserializedCommandTestBase
         public double LightSourceAltitude { get; set; }
     }
 
-    internal override void CompareCommandProperties(SuperSourceBorderUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(SuperSourceBorderUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.SuperSourceId, Is.EqualTo(expectedData.SSrcId));
         Assert.That(actualCommand.BorderEnabled, Is.EqualTo(expectedData.Enabled));

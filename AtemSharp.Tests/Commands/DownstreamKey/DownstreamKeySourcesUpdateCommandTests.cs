@@ -15,7 +15,7 @@ internal class DownstreamKeySourcesUpdateCommandTests : DeserializedCommandTestB
         public int FillSource { get; set; }
     }
 
-    internal override void CompareCommandProperties(DownstreamKeySourcesUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(DownstreamKeySourcesUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.DownstreamKeyerId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.CutSource, Is.EqualTo(expectedData.CutSource));

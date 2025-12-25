@@ -15,7 +15,7 @@ internal class MediaPlayerStatusUpdateCommandTests : DeserializedCommandTestBase
         public ushort ClipFrame { get; set; }
     }
 
-    internal override void CompareCommandProperties(MediaPlayerStatusUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(MediaPlayerStatusUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.MediaPlayerId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.IsPlaying, Is.EqualTo(expectedData.Playing));

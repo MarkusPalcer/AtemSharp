@@ -27,7 +27,7 @@ internal class MultiviewerConfigCommandTests : DeserializedCommandTestBase<Multi
         public bool CanChangeLayout { get; set; }
     }
 
-    internal override void CompareCommandProperties(MultiviewerConfigCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(MultiviewerConfigCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.Count, Is.EqualTo(expectedData.Count));
         Assert.That(actualCommand.WindowCount, Is.EqualTo(expectedData.WindowCount));

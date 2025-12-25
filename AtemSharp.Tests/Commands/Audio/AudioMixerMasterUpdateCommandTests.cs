@@ -15,7 +15,7 @@ internal class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<
         public bool FollowFadeToBlack { get; set; }
     }
 
-    internal override void CompareCommandProperties(AudioMixerMasterUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(AudioMixerMasterUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));
         Assert.That(actualCommand.Balance, Is.EqualTo(expectedData.Balance).Within(0.01));

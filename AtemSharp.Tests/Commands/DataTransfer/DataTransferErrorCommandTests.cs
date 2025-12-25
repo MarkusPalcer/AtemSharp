@@ -13,7 +13,7 @@ internal class DataTransferErrorCommandTests : DeserializedCommandTestBase<DataT
         public ErrorCodes ErrorCode { get; set; }
     }
 
-    internal override void CompareCommandProperties(DataTransferErrorCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(DataTransferErrorCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.TransferId, Is.EqualTo(expectedData.TransferId));
         Assert.That(actualCommand.ErrorCode, Is.EqualTo(expectedData.ErrorCode));

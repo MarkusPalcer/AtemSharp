@@ -12,7 +12,7 @@ internal class TimeConfigUpdateCommandTests : DeserializedCommandTestBase<TimeCo
         public TimeMode Mode { get; set; }
     }
 
-    internal override void CompareCommandProperties(TimeConfigUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(TimeConfigUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.Mode, Is.EqualTo(expectedData.Mode));
     }

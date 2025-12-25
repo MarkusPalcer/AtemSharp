@@ -12,7 +12,7 @@ internal class FadeToBlackRateUpdateCommandTests : DeserializedCommandTestBase<F
         public ushort Rate { get; init; }
     }
 
-    internal override void CompareCommandProperties(FadeToBlackRateUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(FadeToBlackRateUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.Rate, Is.EqualTo(expectedData.Rate));

@@ -13,7 +13,7 @@ internal class FairlightMixerSourceDeleteCommandTests : DeserializedCommandTestB
         public string SourceId { get; set; } = string.Empty;
     }
 
-    internal override void CompareCommandProperties(FairlightMixerSourceDeleteCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(FairlightMixerSourceDeleteCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.InputId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.SourceId.ToString(), Is.EqualTo(expectedData.SourceId));

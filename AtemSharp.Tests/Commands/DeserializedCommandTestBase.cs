@@ -13,12 +13,16 @@ internal abstract class DeserializedCommandTestBase<TCommand, TTestData>
     where TCommand : IDeserializedCommand
     where TTestData : DeserializedCommandTestBase<TCommand, TTestData>.CommandDataBase, new()
 {
+    private class TestStateHolder : IStateHolder
+    {
+        public AtemState State { get; } = new();
+    }
+
     [UsedImplicitly(ImplicitUseTargetFlags.Members | ImplicitUseTargetFlags.WithInheritors)]
     public abstract class CommandDataBase : TestUtilities.CommandTests.CommandDataBase
     {
         // Base class for test data - derived classes add specific properties
     }
-
 
     public static IEnumerable<TestCaseData> GetTestCases()
     {
@@ -42,30 +46,40 @@ internal abstract class DeserializedCommandTestBase<TCommand, TTestData>
         var actualCommand = DeserializeCommand(commandPayload, testCase.FirstVersion);
 
         // Assert - Compare properties
-        Assert.Multiple(() => CompareCommandProperties(actualCommand, testCase.Command, testCase));
-
-        var state = new AtemState();
+        Assert.Multiple(() => CompareCommandProperties(actualCommand, testCase.Command));
 
         if (TestApplyToState(testCase.Command))
         {
-            PrepareState(state, testCase.Command);
+            var stateHolder = new TestStateHolder();
 
-            actualCommand.ApplyToState(state);
+            PrepareState(stateHolder, testCase.Command);
 
-            Assert.Multiple(() => CompareStateProperties(state, testCase.Command));
+            actualCommand.Apply(stateHolder);
+
+            Assert.Multiple(() => CompareStateProperties(stateHolder, testCase.Command));
         }
     }
 
 
-    internal abstract void CompareCommandProperties(TCommand actualCommand, TTestData expectedData, TestUtilities.CommandTests.TestCaseData<TTestData> testCase);
+    internal abstract void CompareCommandProperties(TCommand actualCommand, TTestData expectedData);
+
+    protected virtual bool TestApplyToState(TTestData testData) => true;
 
     protected virtual void PrepareState(AtemState state, TTestData expectedData)
     {
     }
 
-    protected virtual bool TestApplyToState(TTestData testData) => true;
+    protected virtual void PrepareState(IStateHolder stateHolder, TTestData testData)
+    {
+        PrepareState(stateHolder.State, testData);
+    }
 
     protected abstract void CompareStateProperties(AtemState state, TTestData expectedData);
+
+    protected virtual void CompareStateProperties(IStateHolder stateHolder, TTestData testData)
+    {
+        CompareStateProperties(stateHolder.State, testData);
+    }
 
 
     private static TCommand DeserializeCommand(byte[] payload, ProtocolVersion protocolVersion)

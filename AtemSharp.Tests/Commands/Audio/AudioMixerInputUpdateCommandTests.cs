@@ -25,7 +25,7 @@ internal class AudioMixerInputUpdateCommandTests : DeserializedCommandTestBase<A
         public bool RcaToXlrEnabled { get; set; }
     }
 
-    internal override void CompareCommandProperties(AudioMixerInputUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(AudioMixerInputUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.Index, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.SourceType, Is.EqualTo(expectedData.SourceType));

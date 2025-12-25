@@ -24,7 +24,7 @@ internal class SuperSourceBoxParametersUpdateCommandTests : DeserializedCommandT
         public double CropRight { get; set; }
     }
 
-    internal override void CompareCommandProperties(SuperSourceBoxParametersUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(SuperSourceBoxParametersUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.BoxId, Is.EqualTo(expectedData.BoxIndex));
         Assert.That(actualCommand.Enabled, Is.EqualTo(expectedData.Enabled));

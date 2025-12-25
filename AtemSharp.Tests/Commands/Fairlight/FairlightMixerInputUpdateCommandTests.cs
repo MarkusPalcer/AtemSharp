@@ -27,7 +27,7 @@ internal class FairlightMixerInputUpdateCommandTests : DeserializedCommandTestBa
         public FairlightAnalogInputLevel ActiveInputLevel { get; set; }
     }
 
-    internal override void CompareCommandProperties(FairlightMixerInputUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(FairlightMixerInputUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.Id, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.InputType, Is.EqualTo(expectedData.InputType));

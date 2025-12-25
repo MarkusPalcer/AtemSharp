@@ -15,7 +15,7 @@ internal class RecordingDiskInfoUpdateCommandTests : DeserializedCommandTestBase
         public string VolumeName { get; set; } = string.Empty;
     }
 
-    internal override void CompareCommandProperties(RecordingDiskInfoUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(RecordingDiskInfoUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.DiskId, Is.EqualTo(expectedData.DiskId));
         Assert.That(actualCommand.IsDelete, Is.EqualTo(expectedData.IsDelete));

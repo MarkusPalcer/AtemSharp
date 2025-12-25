@@ -18,7 +18,7 @@ internal class MixEffectKeyFlyPropertiesUpdateCommandTests : DeserializedCommand
         public byte RunningToInfinite { get; set; }
     }
 
-    internal override void CompareCommandProperties(MixEffectKeyFlyPropertiesUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(MixEffectKeyFlyPropertiesUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.MixEffectIndex, Is.EqualTo(expectedData.MixEffectIndex));
         Assert.That(actualCommand.KeyerIndex, Is.EqualTo(expectedData.KeyerIndex));

@@ -7,10 +7,15 @@ using AtemSharp.State;
 
 namespace AtemSharp;
 
+internal interface IStateHolder
+{
+    AtemState State { get; }
+}
+
 /// <summary>
 /// Represents an ATEM switcher
 /// </summary>
-public class AtemSwitcher : IAtemSwitcher
+public class AtemSwitcher : IAtemSwitcher, IStateHolder
 {
     private bool _disposed;
     private readonly string _remoteHost;
@@ -23,7 +28,7 @@ public class AtemSwitcher : IAtemSwitcher
     /// <inheritdoc />
     public ConnectionState ConnectionState { get; private set; } = ConnectionState.Disconnected;
 
-    /// <inheritdoc />
+    /// <inheritdoc cref="IAtemSwitcher.State" />
     public AtemState State { get; private set; } = new();
 
     /// <summary>

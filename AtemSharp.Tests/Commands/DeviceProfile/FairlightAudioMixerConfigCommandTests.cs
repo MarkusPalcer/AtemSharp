@@ -15,7 +15,7 @@ internal class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBa
         public byte Monitors { get; set; }
     }
 
-    internal override void CompareCommandProperties(FairlightAudioMixerConfigCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(FairlightAudioMixerConfigCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.Inputs, Is.EqualTo(expectedData.Inputs));
         Assert.That(actualCommand.Monitors, Is.EqualTo(expectedData.Monitors));

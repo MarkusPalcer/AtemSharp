@@ -26,7 +26,7 @@ internal class TransitionStingerUpdateCommandTests : DeserializedCommandTestBase
         state.Video.MixEffects.GetOrCreate(expectedData.Index);
     }
 
-    internal override void CompareCommandProperties(TransitionStingerUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(TransitionStingerUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source));

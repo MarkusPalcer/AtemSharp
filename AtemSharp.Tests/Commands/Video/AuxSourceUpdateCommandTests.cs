@@ -13,7 +13,7 @@ internal class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSour
         public int Source { get; set; }
     }
 
-    internal override void CompareCommandProperties(AuxSourceUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(AuxSourceUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.AuxId, Is.EqualTo(expectedData.Id));
         Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source));

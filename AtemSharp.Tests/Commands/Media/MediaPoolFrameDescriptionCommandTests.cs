@@ -16,7 +16,7 @@ internal class MediaPoolFrameDescriptionCommandTests : DeserializedCommandTestBa
         public string Filename { get; set; } = string.Empty;
     }
 
-    internal override void CompareCommandProperties(MediaPoolFrameDescriptionCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(MediaPoolFrameDescriptionCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.MediaPoolId, Is.EqualTo((byte)expectedData.Bank));
         Assert.That(actualCommand.FrameIndex, Is.EqualTo(expectedData.Index));
