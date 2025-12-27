@@ -8,7 +8,7 @@ public class Library : IAtemSharpLibrary
 {
     private readonly IServices _services;
 
-    internal Library(IServices services)
+    public Library(IServices services)
     {
         _services = services;
     }

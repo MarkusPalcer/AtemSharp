@@ -1,4 +1,5 @@
 using AtemSharp.Commands.Macro;
+using NSubstitute;
 
 namespace AtemSharp.Tests.Commands.Macro;
 
@@ -13,7 +14,7 @@ public class MacroRecordCommandTests : SerializedCommandTestBase<MacroRecordComm
 
     protected override MacroRecordCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
-        return new MacroRecordCommand(new AtemSharp.State.Macro.Macro
+        return new MacroRecordCommand(new AtemSharp.State.Macro.Macro(Substitute.For<IAtemSwitcher>())
         {
             Id = testCase.Command.Index,
             Name = testCase.Command.Name,

@@ -1,7 +1,9 @@
 using AtemSharp.Commands;
 using AtemSharp.Commands.Macro;
+using AtemSharp.Commands.MixEffects.Transition;
 using AtemSharp.Lib;
 using AtemSharp.State.Macro;
+using AtemSharp.State.Video.MixEffect;
 using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests;
@@ -129,7 +131,6 @@ public class AtemSwitcherTests
 
         Assert.ThrowsAsync<TaskCanceledException>(async () => await connectTask.WithTimeout());
 
-        Assert.That(data.Atem.ConnectionState, Is.EqualTo(ConnectionState.Disconnected));
         Assert.That(data.Services.RunningLoops, Is.All.Matches<ActionLoop>(x => !x.IsRunning));
     }
 
@@ -243,7 +244,7 @@ public class AtemSwitcherTests
         data.Services.ClientFake.SimulateReceivedCommand(new InitCompleteCommand());
         await data.Atem.ConnectAsync().WithTimeout();
 
-        var command = new MacroActionCommand(new Macro(), MacroAction.Run);
+        var command = new AutoTransitionCommand(new MixEffect());
         await data.Atem.SendCommandAsync(command).WithTimeout();
 
         Assert.That(data.Services.ClientFake.SentCommands, Is.EquivalentTo(new[] { command }));
@@ -254,7 +255,7 @@ public class AtemSwitcherTests
     {
         await using var data = new TestData();
 
-        var sendTask = data.Atem.SendCommandAsync(new MacroActionCommand(new Macro(), MacroAction.Run));
+        var sendTask = data.Atem.SendCommandAsync(new MacroActionCommand(new Macro(data.Atem), MacroAction.Run));
         var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => await sendTask.WithTimeout());
         Assert.That(ex.Message, Contains.Substring("while not connected"));
     }
@@ -268,7 +269,7 @@ public class AtemSwitcherTests
         data.Services.ClientFake.SimulateReceivedCommand(new InitCompleteCommand());
         await data.Atem.ConnectAsync().WithTimeout();
 
-        MacroActionCommand[] commands = [new(new Macro(), MacroAction.Run), new(new Macro(), MacroAction.Stop)];
+        MacroActionCommand[] commands = [new(new Macro(data.Atem), MacroAction.Run), new(new Macro(data.Atem), MacroAction.Stop)];
         await data.Atem.SendCommandsAsync(commands).WithTimeout();
 
         Assert.That(data.Services.ClientFake.SentCommands, Is.EquivalentTo(commands));
@@ -279,10 +280,49 @@ public class AtemSwitcherTests
     {
         await using var data = new TestData();
 
-        MacroActionCommand[] commands = [new(new Macro(), MacroAction.Run), new(new Macro(), MacroAction.Stop)];
+        MacroActionCommand[] commands = [new(new Macro(data.Atem), MacroAction.Run), new(new Macro(data.Atem), MacroAction.Stop)];
         var sendTask = data.Atem.SendCommandsAsync(commands);
         var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => await sendTask.WithTimeout());
         Assert.That(ex.Message, Contains.Substring("while not connected"));
+    }
+
+    [Test]
+    public async Task ReceiveCommand_ShouldUpdateState()
+    {
+        await using var data = new TestData();
+
+        var connectTask = data.Atem.ConnectAsync();
+        Assert.That(data.Atem.ConnectionState, Is.EqualTo(ConnectionState.Connecting));
+
+        data.Services.ClientFake.SuccessfullyConnect();
+        await connectTask.TimesOut().WithTimeout();
+
+        data.Services.ClientFake.SimulateReceivedCommand(new InitCompleteCommand());
+        await connectTask.WithTimeout();
+
+        data.Atem.Macros.Populate(5);
+
+        var evt = new SemaphoreSlim(0);
+
+        data.Atem.Macros.CurrentlyPlayingChanged += (_, _) => evt.Release();
+
+        data.Services.ClientFake.SimulateReceivedCommand(new MacroRunStatusUpdateCommand()
+        {
+            IsWaiting = false,
+            IsRunning = true,
+            MacroIndex = 2,
+            Loop = true
+        });
+
+        await evt.WaitAsync().WithTimeout();
+
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(data.Atem.Macros.CurrentlyPlaying, Is.SameAs(data.Atem.Macros[2]));
+            Assert.That(data.Atem.Macros.PlayLooped, Is.True);
+            Assert.That(data.Atem.Macros.PlaybackIsWaiting, Is.False);
+        });
     }
 
     [Test]

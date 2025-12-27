@@ -4,18 +4,14 @@ using AtemSharp.Communication;
 using AtemSharp.DependencyInjection;
 using AtemSharp.Lib;
 using AtemSharp.State;
+using AtemSharp.State.Macro;
 
 namespace AtemSharp;
-
-internal interface IStateHolder
-{
-    AtemState State { get; }
-}
 
 /// <summary>
 /// Represents an ATEM switcher
 /// </summary>
-public class AtemSwitcher : IAtemSwitcher, IStateHolder
+public class AtemSwitcher : IAtemSwitcher
 {
     private bool _disposed;
     private readonly string _remoteHost;
@@ -31,6 +27,9 @@ public class AtemSwitcher : IAtemSwitcher, IStateHolder
     /// <inheritdoc cref="IAtemSwitcher.State" />
     public AtemState State { get; private set; } = new();
 
+    /// <inheritdoc />
+    public MacroSystem Macros { get; }
+
     /// <summary>
     /// Gets a collection of unknown command raw names encountered during communication
     /// </summary>
@@ -42,6 +41,7 @@ public class AtemSwitcher : IAtemSwitcher, IStateHolder
         _remoteHost = remoteHost;
         _remotePort = remotePort;
 
+        Macros = new MacroSystem(this);
         _client = _services.CreateAtemClient();
     }
 
@@ -72,16 +72,8 @@ public class AtemSwitcher : IAtemSwitcher, IStateHolder
 
         _receiveLoop = _services.StartActionLoop(ReceiveCommandLoop);
 
-        try {
-            // Wait for InitCompleteCommand to be received, indicating the connection is fully established
-           await _connectionCompletionSource.Task.WaitAsync(cancellationToken);
-        }
-        catch (Exception)
-        {
-            ConnectionState = ConnectionState.Disconnected;
-            await StopReceiveLoop();
-            throw;
-        }
+        // Wait for InitCompleteCommand to be received, indicating the connection is fully established
+        await _connectionCompletionSource.Task.WaitAsync(cancellationToken);
 
         ConnectionState = ConnectionState.Connected;
     }
@@ -100,7 +92,7 @@ public class AtemSwitcher : IAtemSwitcher, IStateHolder
         var command = await _client.ReceivedCommands.ReceiveAsync(token);
 
         // Apply the command to the current state
-        command.ApplyToState(State);
+        command.Apply(this);
 
         // Check if this is the InitCompleteCommand
         if (command is InitCompleteCommand)

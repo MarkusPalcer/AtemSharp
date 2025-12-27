@@ -3,7 +3,7 @@ using System.Threading.Tasks.Dataflow;
 
 namespace AtemSharp.Communication;
 
-internal interface IAtemProtocol : IAsyncDisposable
+public interface IAtemProtocol : IAsyncDisposable
 {
     IReceivableSourceBlock<AtemPacket> ReceivedPackets { get; }
     IReceivableSourceBlock<int> AckedTrackingIds { get; }

@@ -3,9 +3,11 @@ using AtemSharp.Commands;
 using AtemSharp.Communication;
 using AtemSharp.State;
 using AtemSharp.State.Info;
+using AtemSharp.State.Macro;
 using AtemSharp.Tests.TestUtilities.CommandTests;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using NSubstitute;
 
 namespace AtemSharp.Tests.Commands;
 
@@ -15,7 +17,15 @@ internal abstract class DeserializedCommandTestBase<TCommand, TTestData>
 {
     private class TestStateHolder : IStateHolder
     {
+        private IAtemSwitcher _switcher = Substitute.For<IAtemSwitcher>();
+
+        public TestStateHolder()
+        {
+            Macros = new MacroSystem(_switcher);
+        }
+
         public AtemState State { get; } = new();
+        public MacroSystem Macros { get; }
     }
 
     [UsedImplicitly(ImplicitUseTargetFlags.Members | ImplicitUseTargetFlags.WithInheritors)]

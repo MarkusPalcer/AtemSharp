@@ -142,7 +142,7 @@ public class AtemClientTests
         data.Services.ProtocolFake.SucceedConnection();
         await data.Sut.ConnectAsync("127.0.0.1", 12345).WithTimeout();
 
-        var sendTask = data.Sut.SendCommandAsync(new MacroActionCommand(new Macro(), MacroAction.Run));
+        var sendTask = data.Sut.SendCommandAsync(new MacroActionCommand(new Macro(Substitute.For<IAtemSwitcher>()), MacroAction.Run));
 
         data.Services.ProtocolFake.SucceedDisconnection();
         await data.Sut.DisconnectAsync().WithTimeout();
@@ -213,7 +213,7 @@ public class AtemClientTests
         data.Services.ProtocolFake.SucceedConnection();
         await data.Sut.ConnectAsync("127.0.0.1", 12345).WithTimeout();
 
-        var command = new MacroActionCommand(new Macro { Id = 0 }, MacroAction.Run);
+        var command = new MacroActionCommand(new Macro(Substitute.For<IAtemSwitcher>()) { Id = 0 }, MacroAction.Run);
         var sendTask = data.Sut.SendCommandAsync(command);
         var packet = await data.Services.ProtocolFake.GetSentPacket().WithTimeout();
 
@@ -234,7 +234,7 @@ public class AtemClientTests
         data.Services.ProtocolFake.SucceedConnection();
         await data.Sut.ConnectAsync("127.0.0.1", 12345).WithTimeout();
 
-        var command = new MacroActionCommand(new Macro { Id = 0 }, MacroAction.Run);
+        var command = new MacroActionCommand(new Macro(Substitute.For<IAtemSwitcher>()) { Id = 0 }, MacroAction.Run);
         Task[] sendTasks =
         [
             data.Sut.SendCommandAsync(command),
@@ -260,7 +260,7 @@ public class AtemClientTests
         data.Services.ProtocolFake.SucceedConnection();
         await data.Sut.ConnectAsync("127.0.0.1", 12345).WithTimeout();
 
-        var command = new MacroActionCommand(new Macro { Id = 0 }, MacroAction.Run);
+        var command = new MacroActionCommand(new Macro(Substitute.For<IAtemSwitcher>()) { Id = 0 }, MacroAction.Run);
         var sendTask = data.Sut.SendCommandsAsync([command, command]);
 
         var packet = await data.Services.ProtocolFake.GetSentPacket().WithTimeout();
@@ -293,7 +293,7 @@ public class AtemClientTests
         await data.Sut.ConnectAsync("127.0.0.1", 12345).WithTimeout();
 
 
-        var command = new MacroActionCommand(new Macro { Id = 0 }, MacroAction.Run);
+        var command = new MacroActionCommand(new Macro(Substitute.For<IAtemSwitcher>()) { Id = 0 }, MacroAction.Run);
         var sendTask = data.Sut.SendCommandAsync(command);
         var packet = await data.Services.ProtocolFake.GetSentPacket().WithTimeout();
 
@@ -312,7 +312,7 @@ public class AtemClientTests
     {
         await using var data = new TestInstances();
 
-        var command = new MacroActionCommand(new Macro { Id = 0 }, MacroAction.Run);
+        var command = new MacroActionCommand(new Macro(Substitute.For<IAtemSwitcher>()) { Id = 0 }, MacroAction.Run);
         var sendTask = data.Sut.SendCommandAsync(command).WithTimeout();
 
         var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => await sendTask.WithTimeout());

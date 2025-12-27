@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Macro;
@@ -26,10 +27,16 @@ internal partial class MacroPropertiesUpdateCommand : IDeserializedCommand
         Description = rawCommand.ReadString(8 + nameLength, descriptionLength);
     }
 
-    /// <inheritdoc />
+    [ExcludeFromCodeCoverage(Justification = "Obsolete")]
     public void ApplyToState(AtemState state)
     {
-        var macro = state.Macros.Macros[Id];
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public void Apply(IStateHolder state)
+    {
+        var macro = state.Macros[Id];
         macro.Name = Name;
         macro.Description = Description;
         macro.IsUsed = IsUsed;

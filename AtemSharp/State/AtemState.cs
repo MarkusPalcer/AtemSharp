@@ -1,7 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State.Audio;
 using AtemSharp.State.Info;
-using AtemSharp.State.Macro;
 using AtemSharp.State.Media;
 using AtemSharp.State.Recording;
 using AtemSharp.State.Settings;
@@ -56,9 +55,6 @@ public class AtemState
 
     [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public MediaState Media { get; } = new();
-
-    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
-    public MacroState Macros { get; } = new();
 
     [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public RecordingState Recording { get; } = new();

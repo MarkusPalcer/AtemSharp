@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Macro;
@@ -9,10 +10,15 @@ internal partial class MacroRecordingStatusCommand : IDeserializedCommand
 
     [DeserializedField(2)] private ushort _macroIndex;
 
-    /// <inheritdoc />
+    [ExcludeFromCodeCoverage(Justification = "Obsolete")]
     public void ApplyToState(AtemState state)
     {
-        state.Macros.Recorder.IsRecording = IsRecording;
-        state.Macros.Recorder.MacroIndex = MacroIndex;
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public void Apply(IStateHolder state)
+    {
+        state.Macros.UpdateCurrentlyRecording(IsRecording ? state.Macros[_macroIndex] : null);
     }
 }

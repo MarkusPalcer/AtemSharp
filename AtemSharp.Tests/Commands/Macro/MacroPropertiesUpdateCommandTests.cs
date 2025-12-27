@@ -28,16 +28,24 @@ internal class MacroPropertiesUpdateCommandTests : DeserializedCommandTestBase<M
 
     protected override void PrepareState(AtemState state, CommandData expectedData)
     {
-        state.Macros.Macros.GetOrCreate(expectedData.Index);
+    }
+
+    protected override void PrepareState(IStateHolder stateHolder, CommandData testData)
+    {
+        stateHolder.Macros.GetOrCreate(testData.Index);
+    }
+
+    protected override void CompareStateProperties(IStateHolder stateHolder, CommandData testData)
+    {
+        var macro = stateHolder.Macros[testData.Index];
+        Assert.That(macro.IsUsed, Is.EqualTo(testData.IsUsed));
+        Assert.That(macro.HasUnsupportedOps, Is.EqualTo(testData.HasUnsupportedOps));
+        Assert.That(macro.Name, Is.EqualTo(testData.Name));
+        Assert.That(macro.Description, Is.EqualTo(testData.Description));
     }
 
     protected override void CompareStateProperties(AtemState state, CommandData expectedData)
     {
-        var actualCommand = state.Macros.Macros[expectedData.Index];
-        Assert.That(actualCommand.IsUsed, Is.EqualTo(expectedData.IsUsed));
-        Assert.That(actualCommand.HasUnsupportedOps, Is.EqualTo(expectedData.HasUnsupportedOps));
-        Assert.That(actualCommand.Name, Is.EqualTo(expectedData.Name));
-        Assert.That(actualCommand.Description, Is.EqualTo(expectedData.Description));
     }
 
     [Test]
@@ -61,20 +69,20 @@ internal class MacroPropertiesUpdateCommandTests : DeserializedCommandTestBase<M
         Assert.That(command.Description, Is.EqualTo(string.Empty));
 
 
-        var state = new AtemState();
-        var macro = state.Macros.Macros.GetOrCreate(0);
+        var state = new TestStateHolder();
+        var macro = state.Macros.GetOrCreate(0);
         macro.Id = 0;
         macro.IsUsed = true;
         macro.HasUnsupportedOps = true;
         macro.Name = "WrongName";
         macro.Description = "WrongDescription";
 
-        command.ApplyToState(state);
-        Assert.That(state.Macros.Macros.Count, Is.EqualTo(1));
-        Assert.That(state.Macros.Macros[0].IsUsed, Is.False);
-        Assert.That(state.Macros.Macros[0].HasUnsupportedOps, Is.False);
-        Assert.That(state.Macros.Macros[0].Name, Is.EqualTo(string.Empty));
-        Assert.That(state.Macros.Macros[0].Description, Is.EqualTo(string.Empty));
+        command.Apply(state);
+        Assert.That(state.Macros.Count, Is.EqualTo(1));
+        Assert.That(state.Macros[0].IsUsed, Is.False);
+        Assert.That(state.Macros[0].HasUnsupportedOps, Is.False);
+        Assert.That(state.Macros[0].Name, Is.EqualTo(string.Empty));
+        Assert.That(state.Macros[0].Description, Is.EqualTo(string.Empty));
     }
 
     [Test]
@@ -89,7 +97,7 @@ internal class MacroPropertiesUpdateCommandTests : DeserializedCommandTestBase<M
             Description = "Description"
         };
 
-        var state = new AtemState();
-        Assert.Throws<KeyNotFoundException>(() => sut.ApplyToState(state));
+        var state = new TestStateHolder();
+        Assert.Throws<KeyNotFoundException>(() => sut.Apply(state));
     }
 }
