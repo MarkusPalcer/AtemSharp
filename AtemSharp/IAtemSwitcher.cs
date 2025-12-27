@@ -1,19 +1,13 @@
 using AtemSharp.Commands;
-using AtemSharp.State;
 
 namespace AtemSharp;
 
-public interface IAtemSwitcher : IAsyncDisposable
+public interface IAtemSwitcher : IAsyncDisposable, IStateHolder
 {
     /// <summary>
     /// The state of the connection to the ATEM switcher
     /// </summary>
     ConnectionState ConnectionState { get; }
-
-    /// <summary>
-    /// Gets the current ATEM state
-    /// </summary>
-    AtemState State { get; }
 
     /// <summary>
     /// Connects to an ATEM device

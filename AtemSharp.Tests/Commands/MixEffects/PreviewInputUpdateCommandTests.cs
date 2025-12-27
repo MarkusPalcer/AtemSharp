@@ -13,7 +13,7 @@ internal class PreviewInputUpdateCommandTests : DeserializedCommandTestBase<Prev
         public int Source { get; set; }
     }
 
-    internal override void CompareCommandProperties(PreviewInputUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(PreviewInputUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.Source, Is.EqualTo(expectedData.Source));

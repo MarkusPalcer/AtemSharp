@@ -13,7 +13,7 @@ internal class FadeToBlackStateCommandTests : DeserializedCommandTestBase<FadeTo
         public byte RemainingFrames { get; set; }
     }
 
-    internal override void CompareCommandProperties(FadeToBlackStateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(FadeToBlackStateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.IsFullyBlack, Is.EqualTo(expectedData.IsFullyBlack));

@@ -14,7 +14,7 @@ internal class DataTransferUploadContinueCommandTests : DeserializedCommandTestB
         public ushort ChunkCount { get; set; }
     }
 
-    internal override void CompareCommandProperties(DataTransferUploadContinueCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(DataTransferUploadContinueCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.TransferId, Is.EqualTo(expectedData.TransferId));
         Assert.That(actualCommand.ChunkSize, Is.EqualTo(expectedData.ChunkSize));

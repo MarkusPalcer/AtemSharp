@@ -11,7 +11,7 @@ internal class StreamingStatusUpdateCommandTests : DeserializedCommandTestBase<S
         public ushort Error { get; set; }
     }
 
-    internal override void CompareCommandProperties(StreamingStatusUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(StreamingStatusUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That((ushort)actualCommand.Status, Is.EqualTo(expectedData.Status));
         Assert.That((ushort)actualCommand.Error, Is.EqualTo(expectedData.Error));

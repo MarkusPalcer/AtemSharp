@@ -18,7 +18,7 @@ internal class TransitionPropertiesUpdateCommandTests : DeserializedCommandTestB
     }
 
     internal override void CompareCommandProperties(TransitionPropertiesUpdateCommand actualCommand,
-                                                     CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+                                                     CommandData expectedData)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.Style, Is.EqualTo(expectedData.Style));

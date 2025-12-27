@@ -19,7 +19,7 @@ internal class SuperSourcePropertiesUpdateV8CommandTests : DeserializedCommandTe
         public bool ArtInvertKey { get; set; }
     }
 
-    internal override void CompareCommandProperties(SuperSourcePropertiesUpdateV8Command actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(SuperSourcePropertiesUpdateV8Command actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.SuperSourceId, Is.EqualTo(expectedData.SSrcId));
         Assert.That(actualCommand.ArtFillSource, Is.EqualTo(expectedData.ArtFillSource));

@@ -16,7 +16,7 @@ internal class FairlightMixerMonitorUpdateCommandTests : DeserializedCommandTest
         public double InputSidetoneGain { get; set; }
     }
 
-    internal override void CompareCommandProperties(FairlightMixerMonitorUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(FairlightMixerMonitorUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));
         Assert.That(actualCommand.InputMasterGain, Is.EqualTo(expectedData.InputMasterGain).Within(0.01));

@@ -11,7 +11,7 @@ internal class LockObtainedCommandTests : DeserializedCommandTestBase<LockObtain
         public ushort Index { get; set; }
     }
 
-    internal override void CompareCommandProperties(LockObtainedCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(LockObtainedCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.Index, Is.EqualTo(expectedData.Index));
     }

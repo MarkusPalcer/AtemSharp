@@ -17,7 +17,7 @@ internal class VideoModeUpdateCommandTests : DeserializedCommandTestBase<VideoMo
         public VideoMode VideoMode { get; set; }
     }
 
-    internal override void CompareCommandProperties(VideoModeUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(VideoModeUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.Mode, Is.EqualTo(expectedData.VideoMode));
     }

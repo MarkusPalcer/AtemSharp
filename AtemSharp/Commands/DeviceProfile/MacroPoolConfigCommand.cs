@@ -8,9 +8,14 @@ internal partial class MacroPoolConfigCommand : IDeserializedCommand
     [DeserializedField(0)] private byte _macroCount;
 
     /// <inheritdoc />
+    public void Apply(IStateHolder stateHolder)
+    {
+        stateHolder.State.Info.MacroPool.MacroCount = MacroCount;
+        stateHolder.Macros.Populate(MacroCount);
+    }
+
     public void ApplyToState(AtemState state)
     {
-        state.Info.MacroPool.MacroCount = MacroCount;
-        state.Macros.Macros.Populate(MacroCount);
+
     }
 }

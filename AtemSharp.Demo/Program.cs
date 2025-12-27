@@ -25,13 +25,10 @@ var atem = lib.CreateAtemSwitcher("192.168.178.69");
 Console.WriteLine("Connecting...");
 await atem.ConnectAsync(cancellationToken: emergencyCts.Token);
 
-Console.WriteLine("Waiting 2s for data to come in...");
-await Task.Delay(TimeSpan.FromSeconds(2), emergencyCts.Token);
-
-var state = atem.State;
-
 // Serialize state to JSON
-var stateJson = JsonConvert.SerializeObject(state, Formatting.Indented, new JsonSerializerSettings { Converters = [new StringEnumConverter()], TypeNameHandling = TypeNameHandling.Auto});
+var stateJson = JsonConvert.SerializeObject(atem, Formatting.Indented,
+                                            new JsonSerializerSettings
+                                                { Converters = [new StringEnumConverter()], TypeNameHandling = TypeNameHandling.Auto });
 
 // Write state to file
 await File.WriteAllTextAsync("state.json", stateJson);

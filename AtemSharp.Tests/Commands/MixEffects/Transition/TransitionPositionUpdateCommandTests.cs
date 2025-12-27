@@ -15,7 +15,7 @@ internal class TransitionPositionUpdateCommandTests : DeserializedCommandTestBas
         public double HandlePosition { get; set; }
     }
 
-    internal override void CompareCommandProperties(TransitionPositionUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(TransitionPositionUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.InTransition, Is.EqualTo(expectedData.InTransition));

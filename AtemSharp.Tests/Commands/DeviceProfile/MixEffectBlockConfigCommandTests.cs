@@ -13,7 +13,7 @@ internal class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<Mi
         public byte KeyCount { get; set; }
     }
 
-    internal override void CompareCommandProperties(MixEffectBlockConfigCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(MixEffectBlockConfigCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.Index, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.KeyCount, Is.EqualTo(expectedData.KeyCount));

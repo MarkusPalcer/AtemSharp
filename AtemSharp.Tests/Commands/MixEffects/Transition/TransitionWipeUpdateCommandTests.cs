@@ -22,9 +22,9 @@ internal class TransitionWipeUpdateCommandTests : DeserializedCommandTestBase<Tr
         public bool FlipFlop { get; set; }
     }
 
-    internal override void CompareCommandProperties(TransitionWipeUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(TransitionWipeUpdateCommand actualCommand, CommandData expectedData)
     {
-        Assert.That(actualCommand.MixEffectId, Is.EqualTo(testCase.Command.Index));
+        Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.Rate, Is.EqualTo(expectedData.Rate));
         Assert.That(actualCommand.Pattern, Is.EqualTo(expectedData.Pattern));
         Assert.That(actualCommand.BorderWidth, Is.EqualTo(expectedData.BorderWidth).Within(0.01));

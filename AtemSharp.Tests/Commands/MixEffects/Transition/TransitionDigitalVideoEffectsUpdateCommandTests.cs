@@ -25,7 +25,7 @@ internal class TransitionDigitalVideoEffectsUpdateCommandTests : DeserializedCom
         public bool FlipFlop { get; set; }
     }
 
-    internal override void CompareCommandProperties(TransitionDigitalVideoEffectsUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(TransitionDigitalVideoEffectsUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.Rate, Is.EqualTo(expectedData.Rate));

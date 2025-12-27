@@ -15,7 +15,7 @@ internal class AudioMixerConfigCommandTests : DeserializedCommandTestBase<AudioM
         public byte Headphones { get; set; }
     }
 
-    internal override void CompareCommandProperties(AudioMixerConfigCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(AudioMixerConfigCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.Inputs, Is.EqualTo(expectedData.Inputs));
         Assert.That(actualCommand.Monitors, Is.EqualTo(expectedData.Monitors));

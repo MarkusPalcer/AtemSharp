@@ -13,7 +13,7 @@ internal class TransitionMixUpdateCommandTests : DeserializedCommandTestBase<Tra
         public int Rate { get; set; }
     }
 
-    internal override void CompareCommandProperties(TransitionMixUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(TransitionMixUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.Rate, Is.EqualTo(expectedData.Rate));

@@ -16,7 +16,7 @@ internal class DataTransferDataReceivedCommandTests : DeserializedCommandTestBas
         public string Body { get; set; } = "";
     }
 
-    internal override void CompareCommandProperties(DataTransferDataReceivedCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(DataTransferDataReceivedCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.TransferId, Is.EqualTo(expectedData.TransferId));
         Assert.That(actualCommand.Body, Is.EqualTo(Convert.FromBase64String(expectedData.Body)));

@@ -13,7 +13,7 @@ internal class MediaPoolClipDescriptionCommandTests : DeserializedCommandTestBas
         public ushort FrameCount { get; set; }
     }
 
-    internal override void CompareCommandProperties(MediaPoolClipDescriptionCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(MediaPoolClipDescriptionCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.ClipId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.IsUsed, Is.EqualTo(expectedData.IsUsed));

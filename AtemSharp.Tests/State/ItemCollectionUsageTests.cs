@@ -10,6 +10,7 @@ using AtemSharp.State.Settings.MultiViewer;
 using AtemSharp.State.Video;
 using AtemSharp.State.Video.MixEffect;
 using AtemSharp.State.Video.SuperSource;
+using NSubstitute;
 
 namespace AtemSharp.Tests.State;
 
@@ -77,12 +78,12 @@ public class ItemCollectionUsageTests
     }
 
     [Test]
-    public void MacroStateMacros()
+    public void MacroSystemMacros()
     {
-        var sut = new MacroState();
+        var sut = new MacroSystem(Substitute.For<IAtemSwitcher>());
 
-        sut.Macros.Populate(5);
-        Assert.That(sut.Macros.Select(x => x.Id), Is.EquivalentTo(Enumerable.Range(0, 5)));
+        sut.Populate(5);
+        Assert.That(sut.Select(x => x.Id), Is.EquivalentTo(Enumerable.Range(0, 5)));
     }
 
     [Test]

@@ -19,7 +19,7 @@ internal class AudioMixerMonitorUpdateCommandTests : DeserializedCommandTestBase
         public double DimLevel { get; set; }
     }
 
-    internal override void CompareCommandProperties(AudioMixerMonitorUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(AudioMixerMonitorUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.Enabled, Is.EqualTo(expectedData.Enabled));
         Assert.That(actualCommand.Gain, Is.EqualTo(expectedData.Gain).Within(0.01));

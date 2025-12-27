@@ -13,7 +13,7 @@ internal class MultiViewerVuOpacityUpdateCommandTests : DeserializedCommandTestB
         public byte Opacity { get; set; }
     }
 
-    internal override void CompareCommandProperties(MultiViewerVuOpacityUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(MultiViewerVuOpacityUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.Opacity, Is.EqualTo(expectedData.Opacity));
     }

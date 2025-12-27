@@ -5,7 +5,7 @@ using AtemSharp.Lib;
 
 namespace AtemSharp.DependencyInjection;
 
-internal interface IServices
+public interface IServices
 {
     IAtemClient CreateAtemClient();
     IActionLoop StartActionLoop(Func<CancellationToken, Task> loopedAction, [CallerArgumentExpression(nameof(loopedAction))] string name = "");

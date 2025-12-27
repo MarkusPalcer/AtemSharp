@@ -3,7 +3,7 @@ using AtemSharp.State.Info;
 
 namespace AtemSharp.Communication;
 
-internal interface ICommandParser
+public interface ICommandParser
 {
     /// <summary>
     /// Current protocol version for parsing commands

@@ -23,7 +23,7 @@ internal class DownstreamKeyPropertiesUpdateCommandTests : DeserializedCommandTe
         public double MaskRight { get; set; }
     }
 
-    internal override void CompareCommandProperties(DownstreamKeyPropertiesUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(DownstreamKeyPropertiesUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.DownstreamKeyerId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.Tie, Is.EqualTo(expectedData.Tie));

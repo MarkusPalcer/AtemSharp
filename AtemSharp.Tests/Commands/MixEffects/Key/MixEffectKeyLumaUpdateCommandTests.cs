@@ -17,7 +17,7 @@ internal class MixEffectKeyLumaUpdateCommandTests : DeserializedCommandTestBase<
         public bool Invert { get; set; }
     }
 
-    internal override void CompareCommandProperties(MixEffectKeyLumaUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(MixEffectKeyLumaUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.MixEffectIndex));
         Assert.That(actualCommand.KeyerId, Is.EqualTo(expectedData.KeyerIndex));

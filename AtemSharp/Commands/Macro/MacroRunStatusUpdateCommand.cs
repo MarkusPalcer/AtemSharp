@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using AtemSharp.State;
 
 namespace AtemSharp.Commands.Macro;
@@ -27,11 +28,17 @@ internal partial class MacroRunStatusUpdateCommand : IDeserializedCommand
     }
 
     /// <inheritdoc />
+    public void Apply(IStateHolder switcher)
+    {
+        var macroSystem = switcher.Macros;
+        macroSystem.UpdatePlayLooped(Loop);
+        macroSystem.UpdateCurrentlyPlaying(_isRunning ? macroSystem[_macroIndex] : null);
+        macroSystem.UpdatePlaybackIsWaiting(IsWaiting);
+    }
+
+    [ExcludeFromCodeCoverage(Justification = "Obsolete")]
     public void ApplyToState(AtemState state)
     {
-        state.Macros.Player.MacroIndex = MacroIndex;
-        state.Macros.Player.IsRunning = IsRunning;
-        state.Macros.Player.IsLooping = Loop;
-        state.Macros.Player.IsWaiting = IsWaiting;
+        throw new NotImplementedException();
     }
 }

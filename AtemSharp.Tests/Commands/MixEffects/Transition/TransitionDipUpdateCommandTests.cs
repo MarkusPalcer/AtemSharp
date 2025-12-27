@@ -14,7 +14,7 @@ internal class TransitionDipUpdateCommandTests : DeserializedCommandTestBase<Tra
         public ushort Input { get; set; }
     }
 
-    internal override void CompareCommandProperties(TransitionDipUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(TransitionDipUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.MixEffectId, Is.EqualTo(expectedData.Index));
         Assert.That(actualCommand.Rate, Is.EqualTo(expectedData.Rate));

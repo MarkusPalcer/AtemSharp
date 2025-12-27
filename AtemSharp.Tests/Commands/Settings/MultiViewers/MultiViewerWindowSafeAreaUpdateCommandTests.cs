@@ -14,7 +14,7 @@ internal class MultiViewerWindowSafeAreaUpdateCommandTests : DeserializedCommand
         public bool SafeAreaEnabled { get; set; }
     }
 
-    internal override void CompareCommandProperties(MultiViewerWindowSafeAreaUpdateCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(MultiViewerWindowSafeAreaUpdateCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.MultiViewerId, Is.EqualTo(expectedData.MultiviewIndex));
         Assert.That(actualCommand.WindowIndex, Is.EqualTo(expectedData.WindowIndex));

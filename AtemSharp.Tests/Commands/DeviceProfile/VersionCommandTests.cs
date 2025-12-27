@@ -12,7 +12,7 @@ internal class VersionCommandTests : DeserializedCommandTestBase<VersionCommand,
         public ProtocolVersion ProtocolVersion { get; set; }
     }
 
-    internal override void CompareCommandProperties(VersionCommand actualCommand, CommandData expectedData, TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    internal override void CompareCommandProperties(VersionCommand actualCommand, CommandData expectedData)
     {
         Assert.That(actualCommand.Version, Is.EqualTo(expectedData.ProtocolVersion));
     }
