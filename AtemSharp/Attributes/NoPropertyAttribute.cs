@@ -14,3 +14,10 @@ internal class NoPropertyAttribute : Attribute
 {
 
 }
+
+[AttributeUsage(AttributeTargets.Field)]
+[ExcludeFromCodeCoverage]
+internal class InternalPropertyAttribute : Attribute
+{
+
+}

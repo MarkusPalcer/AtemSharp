@@ -14,11 +14,14 @@ public class MacroRecordCommandTests : SerializedCommandTestBase<MacroRecordComm
 
     protected override MacroRecordCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
     {
-        return new MacroRecordCommand(new AtemSharp.State.Macro.Macro(Substitute.For<IAtemSwitcher>())
+        var macro = new AtemSharp.State.Macro.Macro(Substitute.For<IAtemSwitcher>())
         {
             Id = testCase.Command.Index,
-            Name = testCase.Command.Name,
-            Description = testCase.Command.Description,
-        });
+        };
+
+        macro.UpdateName(testCase.Command.Name);
+        macro.UpdateDescription(testCase.Command.Description);
+
+        return new MacroRecordCommand(macro);
     }
 }

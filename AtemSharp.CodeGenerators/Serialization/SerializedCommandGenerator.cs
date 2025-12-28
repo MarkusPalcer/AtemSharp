@@ -125,18 +125,25 @@ public class SerializedCommandGenerator : CodeGeneratorBase
         var validationCode = validationMethod is null ? string.Empty : $"{validationMethod}(value);";
         var fieldType = Helpers.GetFieldType(f);
         var docComment = Helpers.GetFieldMsDocComment(f);
+        var visibility = f.GetAttributes().Any(a => a.AttributeClass?.Name == "InternalPropertyAttribute") ? "internal" : "public";
+
+        var setter = f.IsReadOnly
+                         ? string.Empty
+                         : $$"""
+                           set {
+                               {{validationCode}}
+                               {{f.Name}} = value;
+                               {{flagCode}}
+                           }
+                           """;
 
         return $$"""
                  {{docComment}}
-                 public {{fieldType}} {{propertyName}}
+                 {{visibility}} {{fieldType}} {{propertyName}}
                  {
-                    [ExcludeFromCodeCoverage]
+                     [ExcludeFromCodeCoverage]
                      get => {{f.Name}};
-                     set {
-                         {{validationCode}}
-                         {{f.Name}} = value;
-                         {{flagCode}}
-                     }
+                     {{setter}}
                  }
                  """;
     }

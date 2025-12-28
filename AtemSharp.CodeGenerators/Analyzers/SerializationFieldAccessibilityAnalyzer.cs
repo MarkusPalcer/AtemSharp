@@ -10,7 +10,6 @@ namespace AtemSharp.CodeGenerators.Analyzers
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
             ImmutableArray.Create(
-                DiagnosticDescriptors.FieldCannotBeReadonly,
                 DiagnosticDescriptors.FieldCannotBePublic
             );
 
@@ -37,15 +36,6 @@ namespace AtemSharp.CodeGenerators.Analyzers
                 var attrName = attribute.AttributeClass?.Name;
                 if (attrName == "DeserializedFieldAttribute" || attrName == "SerializedFieldAttribute")
                 {
-                    if (fieldSymbol.IsReadOnly)
-                    {
-                        var diag = Diagnostic.Create(
-                            DiagnosticDescriptors.FieldCannotBeReadonly,
-                            fieldSymbol.Locations[0],
-                            fieldSymbol.Name
-                        );
-                        context.ReportDiagnostic(diag);
-                    }
                     if (fieldSymbol.DeclaredAccessibility == Accessibility.Public)
                     {
                         var diag = Diagnostic.Create(

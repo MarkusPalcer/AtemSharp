@@ -304,7 +304,7 @@ public class AtemSwitcherTests
 
         var evt = new SemaphoreSlim(0);
 
-        data.Atem.Macros.CurrentlyPlayingChanged += (_, _) => evt.Release();
+        data.Atem.Macros.Player.CurrentlyPlayingChanged += (_, _) => evt.Release();
 
         data.Services.ClientFake.SimulateReceivedCommand(new MacroRunStatusUpdateCommand()
         {
@@ -319,9 +319,9 @@ public class AtemSwitcherTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(data.Atem.Macros.CurrentlyPlaying, Is.SameAs(data.Atem.Macros[2]));
-            Assert.That(data.Atem.Macros.PlayLooped, Is.True);
-            Assert.That(data.Atem.Macros.PlaybackIsWaiting, Is.False);
+            Assert.That(data.Atem.Macros.Player.CurrentlyPlaying, Is.SameAs(data.Atem.Macros[2]));
+            Assert.That(data.Atem.Macros.Player.PlayLooped, Is.True);
+            Assert.That(data.Atem.Macros.Player.PlaybackIsWaiting, Is.False);
         });
     }
 

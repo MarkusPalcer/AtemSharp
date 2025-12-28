@@ -32,11 +32,11 @@ internal class MacroRecordingStatusCommandTests : DeserializedCommandTestBase<Ma
     {
         if (expectedData.IsRecording)
         {
-            Assert.That(state.Macros.CurrentlyRecording, Is.SameAs(state.Macros[expectedData.Index]));
+            Assert.That(state.Macros.Recorder.CurrentlyRecording, Is.SameAs(state.Macros[expectedData.Index]));
         }
         else
         {
-            Assert.That(state.Macros.CurrentlyRecording, Is.Null);
+            Assert.That(state.Macros.Recorder.CurrentlyRecording, Is.Null);
         }
     }
 }

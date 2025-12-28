@@ -15,7 +15,7 @@ namespace AtemSharp.CodeGenerators.Analyzers
     public class SerializationFieldAccessibilityCodeFixProvider : CodeFixProvider
     {
         public override ImmutableArray<string> FixableDiagnosticIds =>
-            ImmutableArray.Create("GEN008", "GEN009");
+            ImmutableArray.Create("GEN009");
 
         public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;
 
@@ -35,16 +35,7 @@ namespace AtemSharp.CodeGenerators.Analyzers
                 return;
             }
 
-            if (diagnostic.Id == "GEN008")
-            {
-                context.RegisterCodeFix(
-                    CodeAction.Create(
-                        "Remove readonly modifier",
-                        c => RemoveReadonlyAsync(context.Document, fieldDecl, c),
-                        nameof(SerializationFieldAccessibilityCodeFixProvider) + ".RemoveReadonly"),
-                    diagnostic);
-            }
-            else if (diagnostic.Id == "GEN009")
+            if (diagnostic.Id == "GEN009")
             {
                 // Offer to make private, internal, or protected
                 context.RegisterCodeFix(
@@ -66,20 +57,6 @@ namespace AtemSharp.CodeGenerators.Analyzers
                         nameof(SerializationFieldAccessibilityCodeFixProvider) + ".MakeProtected"),
                     diagnostic);
             }
-        }
-
-        private async Task<Document> RemoveReadonlyAsync(Document document, FieldDeclarationSyntax fieldDecl, CancellationToken cancellationToken)
-        {
-            var newModifiers = fieldDecl.Modifiers.Where(m => !m.IsKind(SyntaxKind.ReadOnlyKeyword));
-            var newField = fieldDecl.WithModifiers(SyntaxFactory.TokenList(newModifiers));
-            var root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
-            if (root == null)
-            {
-                return document;
-            }
-
-            var newRoot = root.ReplaceNode(fieldDecl, newField);
-            return document.WithSyntaxRoot(newRoot);
         }
 
         private async Task<Document> ChangeAccessibilityAsync(Document document, FieldDeclarationSyntax fieldDecl, SyntaxKind newAccessibility, CancellationToken cancellationToken)

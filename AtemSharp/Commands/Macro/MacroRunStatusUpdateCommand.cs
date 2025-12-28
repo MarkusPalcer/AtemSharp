@@ -31,9 +31,9 @@ internal partial class MacroRunStatusUpdateCommand : IDeserializedCommand
     public void Apply(IStateHolder switcher)
     {
         var macroSystem = switcher.Macros;
-        macroSystem.UpdatePlayLooped(Loop);
-        macroSystem.UpdateCurrentlyPlaying(_isRunning ? macroSystem[_macroIndex] : null);
-        macroSystem.UpdatePlaybackIsWaiting(IsWaiting);
+        macroSystem.Player.UpdatePlayLooped(Loop);
+        macroSystem.Player.UpdateCurrentlyPlaying(_isRunning ? macroSystem[_macroIndex] : null);
+        macroSystem.Player.UpdatePlaybackIsWaiting(IsWaiting);
     }
 
     [ExcludeFromCodeCoverage(Justification = "Obsolete")]

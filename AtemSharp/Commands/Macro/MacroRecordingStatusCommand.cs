@@ -19,6 +19,6 @@ internal partial class MacroRecordingStatusCommand : IDeserializedCommand
     /// <inheritdoc />
     public void Apply(IStateHolder state)
     {
-        state.Macros.UpdateCurrentlyRecording(IsRecording ? state.Macros[_macroIndex] : null);
+        state.Macros.Recorder.UpdateCurrentlyRecording(IsRecording ? state.Macros[_macroIndex] : null);
     }
 }

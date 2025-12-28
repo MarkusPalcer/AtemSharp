@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace AtemSharp.Commands.Macro;
 
 
@@ -9,9 +11,9 @@ namespace AtemSharp.Commands.Macro;
 [BufferSize(4)]
 public partial class MacroActionCommand(State.Macro.Macro macro, MacroAction action) : SerializedCommand
 {
-    [SerializedField(0)] [NoProperty] private readonly ushort _index = macro.Id;
+    [SerializedField(0)] [InternalProperty] private readonly ushort _index = macro.Id;
 
-    [SerializedField(2)] [NoProperty] private readonly MacroAction _action = action;
+    [SerializedField(2)] [InternalProperty] private readonly MacroAction _action = action;
 
     private void SerializeInternal(byte[] buffer)
     {

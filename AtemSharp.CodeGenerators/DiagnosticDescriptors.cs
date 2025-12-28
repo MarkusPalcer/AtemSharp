@@ -93,17 +93,6 @@ namespace AtemSharp.CodeGenerators
             isEnabledByDefault: true,
             description: "Custom serialization methods named SerializeInternal must have a first parameter of type byte[] and optionally a second parameter of type ProtocolVersion and return void.");
 
-
-        public static readonly DiagnosticDescriptor FieldCannotBeReadonly = new(
-            "GEN008",
-            "Field with Serialization Attribute Cannot Be Readonly",
-            "Field '{0}' is marked with DeserializedFieldAttribute or SerializedFieldAttribute and cannot be readonly",
-            "Usage",
-            DiagnosticSeverity.Error,
-            isEnabledByDefault: true,
-            description: "Fields marked with DeserializedFieldAttribute or SerializedFieldAttribute must not be readonly."
-        );
-
         public static readonly DiagnosticDescriptor FieldCannotBePublic = new(
             "GEN009",
             "Field with Serialization Attribute Cannot Be Public",
