@@ -37,9 +37,9 @@ internal partial class MacroPropertiesUpdateCommand : IDeserializedCommand
     public void Apply(IStateHolder state)
     {
         var macro = state.Macros[Id];
-        macro.Name = Name;
-        macro.Description = Description;
-        macro.IsUsed = IsUsed;
-        macro.HasUnsupportedOps = HasUnsupportedOps;
+        macro.UpdateName(Name);
+        macro.UpdateDescription(_description);
+        macro.UpdateIsUsed(IsUsed);
+        macro.UpdateHasUnsupportedOps(HasUnsupportedOps);
     }
 }

@@ -20,6 +20,7 @@ public class StateGenerator : CodeGeneratorBase
                                 .OfType<IFieldSymbol>()
                                 .Where(f => f.AssociatedSymbol is null)
                                 .Where(f => !f.GetAttributes().Any(a => a.AttributeClass?.Name is "IgnoreDataMember" or "IgnoreDataMemberAttribute"))
+                                .Where(f => !f.Name.Contains("<"))
                                 .Select(ProcessField)
                                 .ToArray();
 
@@ -53,7 +54,7 @@ public class StateGenerator : CodeGeneratorBase
     private ProcessedField ProcessField(IFieldSymbol field)
     {
         var propertyName = Helpers.GetPropertyName(field);
-        var isReadOnly = field.GetAttributes().Any(a => a.AttributeClass?.Name is "ReadOnly" or "ReadOnlyAttribute");
+        var isReadOnly = field.IsReadOnly || field.GetAttributes().Any(a => a.AttributeClass?.Name is "ReadOnly" or "ReadOnlyAttribute");
         var type = Helpers.GetFieldType(field);
 
         var setterCode = isReadOnly

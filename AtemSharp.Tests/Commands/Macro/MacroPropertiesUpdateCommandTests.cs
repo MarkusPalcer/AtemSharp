@@ -72,10 +72,10 @@ internal class MacroPropertiesUpdateCommandTests : DeserializedCommandTestBase<M
         var state = new TestStateHolder();
         var macro = state.Macros.GetOrCreate(0);
         macro.Id = 0;
-        macro.IsUsed = true;
-        macro.HasUnsupportedOps = true;
-        macro.Name = "WrongName";
-        macro.Description = "WrongDescription";
+        macro.UpdateIsUsed(true);
+        macro.UpdateHasUnsupportedOps(true);
+        macro.UpdateName("WrongName");
+        macro.UpdateDescription("WrongDescription");
 
         command.Apply(state);
         Assert.That(state.Macros.Count, Is.EqualTo(1));

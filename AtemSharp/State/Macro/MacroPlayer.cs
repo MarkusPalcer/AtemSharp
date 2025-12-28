@@ -1,12 +1,31 @@
-using System.Diagnostics.CodeAnalysis;
+using System.ComponentModel;
+using AtemSharp.Commands.Macro;
+using AtemSharp.Lib;
 
 namespace AtemSharp.State.Macro;
 
-[ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
-public class MacroPlayer
+public partial class MacroPlayer(IAtemSwitcher switcher)
 {
-    public ushort MacroIndex { get; internal set; }
-    public bool IsRunning { get; internal set; }
-    public bool IsLooping { get; internal set; }
-    public bool IsWaiting { get; internal set; }
+    private bool _playLooped;
+
+    [ReadOnly(true)] private bool _playbackIsWaiting;
+    [ReadOnly(true)] private Macro? _currentlyPlaying;
+
+
+    private partial void SendPlayLoopedUpdateCommand(bool value)
+    {
+        switcher.SendCommandAsync(new MacroRunStatusCommand { Loop = value }).FireAndForget();
+    }
+
+    public async Task StopPlayback()
+    {
+        var macroToStop = _currentlyPlaying;
+
+        if (macroToStop is null)
+        {
+            return;
+        }
+
+        await switcher.SendCommandAsync(new MacroActionCommand(macroToStop, MacroAction.Stop));
+    }
 }

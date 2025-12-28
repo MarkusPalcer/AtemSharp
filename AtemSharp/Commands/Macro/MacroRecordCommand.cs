@@ -9,7 +9,7 @@ namespace AtemSharp.Commands.Macro;
 [Command("MSRc")]
 public class MacroRecordCommand(AtemSharp.State.Macro.Macro targetSlot) : SerializedCommand
 {
-    private readonly ushort _index = targetSlot.Id;
+    internal readonly ushort Index = targetSlot.Id;
 
     public string Name { get; set; } = targetSlot.Name;
     public string Description { get; set; } = targetSlot.Description;
@@ -18,7 +18,7 @@ public class MacroRecordCommand(AtemSharp.State.Macro.Macro targetSlot) : Serial
     public override byte[] Serialize(ProtocolVersion version)
     {
         var buffer = new byte[SerializationExtensions.PadToMultiple(8 + Name.Length + Description.Length, 4)];
-        buffer.WriteUInt16BigEndian(_index, 0);
+        buffer.WriteUInt16BigEndian(Index, 0);
         buffer.WriteUInt16BigEndian((ushort)Name.Length, 2);
         buffer.WriteUInt16BigEndian((ushort)Description.Length, 4);
         buffer.WriteString(Name, 6);
