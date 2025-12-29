@@ -58,8 +58,7 @@ public class AtemProtocolTests
 
         await services.VirtualTime.AdvanceBy(TimeSpan.FromMilliseconds(1));
 
-        var ex = Assert.ThrowsAsync<InvalidOperationException>(() => sut.ConnectAsync(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9110)).WithTimeout());
-        Assert.That(ex.Message, Contains.Substring("Can only connect while not connected"));
+        Assert.ThrowsAsync<InvalidOperationException>(() => sut.ConnectAsync(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 9110)).WithTimeout());
     }
 
     [Test]

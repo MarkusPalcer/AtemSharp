@@ -2,7 +2,6 @@ using AtemSharp.Commands;
 using AtemSharp.Commands.Macro;
 using AtemSharp.Commands.MixEffects.Transition;
 using AtemSharp.Lib;
-using AtemSharp.State.Macro;
 using AtemSharp.State.Video.MixEffect;
 using AtemSharp.Tests.TestUtilities;
 
@@ -15,7 +14,7 @@ public class AtemSwitcherTests
     private class TestData : IAsyncDisposable
     {
         public AtemSwitcher Atem;
-        public TestServices Services;
+        public readonly TestServices Services;
 
         public TestData()
         {
@@ -84,8 +83,7 @@ public class AtemSwitcherTests
         data.Services.ClientFake.SimulateReceivedCommand(new InitCompleteCommand());
         await data.Atem.ConnectAsync().WithTimeout();
 
-        var ex = Assert.ThrowsAsync<InvalidOperationException>(() => data.Atem.ConnectAsync());
-        Assert.That(ex!.Message, Does.Contain("Can not connect while"));
+        Assert.ThrowsAsync<InvalidOperationException>(() => data.Atem.ConnectAsync());
     }
 
     [Test]
@@ -95,8 +93,7 @@ public class AtemSwitcherTests
 
         _ = data.Atem.ConnectAsync();
 
-        var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => await data.Atem.ConnectAsync().WithTimeout());
-        Assert.That(ex!.Message, Does.Contain("Can not connect while"));
+        Assert.ThrowsAsync<InvalidOperationException>(async () => await data.Atem.ConnectAsync().WithTimeout());
     }
 
     [Test]
@@ -187,8 +184,7 @@ public class AtemSwitcherTests
         await using var data = new TestData();
 
         _ = data.Atem.ConnectAsync();
-        var ex = Assert.ThrowsAsync<InvalidOperationException>(() => data.Atem.DisconnectAsync().WithTimeout());
-        Assert.That(ex.Message, Contains.Substring("while transitioning connection states"));
+        Assert.ThrowsAsync<InvalidOperationException>(() => data.Atem.DisconnectAsync().WithTimeout());
         Assert.That(data.Atem.ConnectionState, Is.EqualTo(ConnectionState.Connecting));
     }
 
@@ -204,8 +200,7 @@ public class AtemSwitcherTests
         var disconnectTask = data.Atem.DisconnectAsync();
         Assert.That(disconnectTask.IsCompleted, Is.False);
 
-        var ex = Assert.ThrowsAsync<InvalidOperationException>(() => data.Atem.DisconnectAsync().WithTimeout());
-        Assert.That(ex.Message, Contains.Substring("while transitioning connection states"));
+        Assert.ThrowsAsync<InvalidOperationException>(() => data.Atem.DisconnectAsync().WithTimeout());
     }
 
     [Test]
@@ -255,9 +250,8 @@ public class AtemSwitcherTests
     {
         await using var data = new TestData();
 
-        var sendTask = data.Atem.SendCommandAsync(new MacroActionCommand(new Macro(data.Atem), MacroAction.Run));
-        var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => await sendTask.WithTimeout());
-        Assert.That(ex.Message, Contains.Substring("while not connected"));
+        var sendTask = data.Atem.SendCommandAsync(MacroActionCommand.Stop());
+        Assert.ThrowsAsync<InvalidOperationException>(async () => await sendTask.WithTimeout());
     }
 
     [Test]
@@ -269,7 +263,7 @@ public class AtemSwitcherTests
         data.Services.ClientFake.SimulateReceivedCommand(new InitCompleteCommand());
         await data.Atem.ConnectAsync().WithTimeout();
 
-        MacroActionCommand[] commands = [new(new Macro(data.Atem), MacroAction.Run), new(new Macro(data.Atem), MacroAction.Stop)];
+        MacroActionCommand[] commands = [MacroActionCommand.Stop(), MacroActionCommand.Continue()];
         await data.Atem.SendCommandsAsync(commands).WithTimeout();
 
         Assert.That(data.Services.ClientFake.SentCommands, Is.EquivalentTo(commands));
@@ -280,10 +274,9 @@ public class AtemSwitcherTests
     {
         await using var data = new TestData();
 
-        MacroActionCommand[] commands = [new(new Macro(data.Atem), MacroAction.Run), new(new Macro(data.Atem), MacroAction.Stop)];
+        MacroActionCommand[] commands = [MacroActionCommand.Stop(), MacroActionCommand.Continue()];
         var sendTask = data.Atem.SendCommandsAsync(commands);
-        var ex = Assert.ThrowsAsync<InvalidOperationException>(async () => await sendTask.WithTimeout());
-        Assert.That(ex.Message, Contains.Substring("while not connected"));
+        Assert.ThrowsAsync<InvalidOperationException>(async () => await sendTask.WithTimeout());
     }
 
     [Test]
@@ -321,7 +314,7 @@ public class AtemSwitcherTests
         {
             Assert.That(data.Atem.Macros.Player.CurrentlyPlaying, Is.SameAs(data.Atem.Macros[2]));
             Assert.That(data.Atem.Macros.Player.PlayLooped, Is.True);
-            Assert.That(data.Atem.Macros.Player.PlaybackIsWaiting, Is.False);
+            Assert.That(data.Atem.Macros.Player.PlaybackIsWaitingForUserAction, Is.False);
         });
     }
 

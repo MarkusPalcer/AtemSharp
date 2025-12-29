@@ -11,7 +11,8 @@ public class StateGenerator : CodeGeneratorBase
     private static readonly string[] HardCodedNamespaces =
         {
             "System.ComponentModel",
-            "System.Runtime.CompilerServices"
+            "System.Runtime.CompilerServices",
+            "System.CodeDom.Compiler"
         };
 
     protected override void ProcessClass(SourceProductionContext spc, INamedTypeSymbol classSymbol, ClassDeclarationSyntax classDecl)
@@ -43,6 +44,7 @@ public class StateGenerator : CodeGeneratorBase
 
                                                         public event PropertyChangedEventHandler? PropertyChanged;
 
+                                                        {{Helpers.CodeGeneratorAttribute}}
                                                         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
                                                         {
                                                             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -71,11 +73,13 @@ public class StateGenerator : CodeGeneratorBase
         var sendUpdateDeclaration = isReadOnly ? string.Empty : $"private partial void Send{propertyName}UpdateCommand({type} value);";
 
         var code = $$"""
+                    {{Helpers.CodeGeneratorAttribute}}
                     public {{type}} {{propertyName}} {
                         get => {{field.Name}};
                         {{setterCode}}
                     }
 
+                    {{Helpers.CodeGeneratorAttribute}}
                     internal void Update{{propertyName}}({{type}} value) {
                         {{field.Name}} = value;
                         {{propertyName}}Changed?.Invoke(this, EventArgs.Empty);

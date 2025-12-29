@@ -1,25 +1,27 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace AtemSharp.Commands.Macro;
 
 
-// TODO #74: Capture test data and create tests for this command
 /// <summary>
 /// Used to run, stop, delete, etc. a macro
 /// </summary>
 [Command("MAct")]
 [BufferSize(4)]
-public partial class MacroActionCommand(State.Macro.Macro macro, MacroAction action) : SerializedCommand
+public partial class MacroActionCommand : SerializedCommand
 {
-    [SerializedField(0)] [InternalProperty] private readonly ushort _index = macro.Id;
+    [SerializedField(0)] [InternalProperty] private readonly ushort _index;
 
-    [SerializedField(2)] [InternalProperty] private readonly MacroAction _action = action;
+    [SerializedField(2)] [InternalProperty] private readonly MacroAction _action;
 
-    private void SerializeInternal(byte[] buffer)
+    private MacroActionCommand(ushort index, MacroAction action)
     {
-        if (_action is MacroAction.Stop or MacroAction.StopRecord or MacroAction.InsertUserWait or MacroAction.Continue)
-        {
-            buffer.WriteUInt16BigEndian(0xffff, 0);
-        }
+        _index = index;
+        _action = action;
     }
+
+    public static MacroActionCommand Run(State.Macro.Macro macro) => new(macro.Id, MacroAction.Run);
+    public static MacroActionCommand Stop() => new(0xffff, MacroAction.Stop);
+    public static MacroActionCommand StopRecord() => new(0xffff, MacroAction.StopRecord);
+    public static MacroActionCommand InsertUserWait() => new(0xffff, MacroAction.InsertUserWait);
+    public static MacroActionCommand Continue() => new(0xffff, MacroAction.Continue);
+    public static MacroActionCommand Delete(State.Macro.Macro macro) => new(macro.Id, MacroAction.Delete);
 }

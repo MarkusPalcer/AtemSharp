@@ -46,16 +46,17 @@ public class DeserializedCommandGenerator : CodeGeneratorBase
             return;
         }
 
-        var namespaces = new[] {
+        var namespaces = new[]
+        {
             "using System;",
             "using System.Diagnostics.CodeAnalysis;",
             "using AtemSharp;",
             "using AtemSharp.State.Info;",
-            "using AtemSharp.Lib;"
+            "using AtemSharp.Lib;",
+            "using System.CodeDom.Compiler;"
         }.Concat(fields.Select(x => x!.NamespaceCode)).Distinct();
 
         var internalDeserialization = GetInternalDeserializationMethod(classDecl);
-
 
 
         var fileContent = $$"""
@@ -69,6 +70,7 @@ public class DeserializedCommandGenerator : CodeGeneratorBase
                             {
                                 {{string.Join("\n", fields.Select(x => x!.PropertyCode))}}
 
+                                {{Helpers.CodeGeneratorAttribute}}
                                 public static IDeserializedCommand Deserialize(ReadOnlySpan<byte> rawCommand, ProtocolVersion protocolVersion)
                                 {
                                     var result = new {{className}} {
@@ -79,6 +81,7 @@ public class DeserializedCommandGenerator : CodeGeneratorBase
                                     return result;
                                 }
                             }
+
                             #nullable restore
                             """;
 
@@ -100,7 +103,8 @@ public class DeserializedCommandGenerator : CodeGeneratorBase
                 continue;
             }
 
-            if (!method.Modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword) || m.IsKind(SyntaxKind.PrivateKeyword) || m.IsKind(SyntaxKind.InternalKeyword)))
+            if (!method.Modifiers.Any(m => m.IsKind(SyntaxKind.PublicKeyword) || m.IsKind(SyntaxKind.PrivateKeyword) ||
+                                           m.IsKind(SyntaxKind.InternalKeyword)))
             {
                 continue;
             }
@@ -121,7 +125,6 @@ public class DeserializedCommandGenerator : CodeGeneratorBase
             {
                 return "result.DeserializeInternal(rawCommand, protocolVersion);";
             }
-
         }
 
         return string.Empty;
@@ -140,7 +143,7 @@ public class DeserializedCommandGenerator : CodeGeneratorBase
 
         return $$"""
                  {{Helpers.GetFieldMsDocComment(f)}}
-                 [ExcludeFromCodeCoverage]
+                 {{Helpers.CodeGeneratorAttribute}}
                  public {{fieldType}} {{propertyName}}
                  {
                      get => {{f.Name}};

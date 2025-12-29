@@ -56,7 +56,8 @@ public class SerializedCommandGenerator : CodeGeneratorBase
             "using System.Diagnostics.CodeAnalysis;",
             "using AtemSharp;",
             "using AtemSharp.State.Info;",
-            "using static AtemSharp.Commands.SerializationExtensions;"
+            "using static AtemSharp.Commands.SerializationExtensions;",
+            "using System.CodeDom.Compiler;"
         }.Concat(fields.Select(x => x!.NamespaceCode)).Distinct();
 
         var fileContent = $$"""
@@ -71,6 +72,7 @@ public class SerializedCommandGenerator : CodeGeneratorBase
                                 {{string.Join("\n", fields.Select(x => x!.PropertyCode))}}
 
                                 /// <inheritdoc />
+                                {{Helpers.CodeGeneratorAttribute}}
                                 public override byte[] Serialize(ProtocolVersion version) {
                                     var commandVersion = typeof({{className}}).GetCustomAttribute<CommandAttribute>()?.MinimumVersion;
                                     if (commandVersion is not null && commandVersion < version) {
@@ -87,6 +89,7 @@ public class SerializedCommandGenerator : CodeGeneratorBase
                                     return buffer;
                                 }
                             }
+
                             #nullable restore
                             """;
 
@@ -130,18 +133,18 @@ public class SerializedCommandGenerator : CodeGeneratorBase
         var setter = f.IsReadOnly
                          ? string.Empty
                          : $$"""
-                           set {
-                               {{validationCode}}
-                               {{f.Name}} = value;
-                               {{flagCode}}
-                           }
-                           """;
+                             set {
+                                 {{validationCode}}
+                                 {{f.Name}} = value;
+                                 {{flagCode}}
+                             }
+                             """;
 
         return $$"""
                  {{docComment}}
+                 {{Helpers.CodeGeneratorAttribute}}
                  {{visibility}} {{fieldType}} {{propertyName}}
                  {
-                     [ExcludeFromCodeCoverage]
                      get => {{f.Name}};
                      {{setter}}
                  }
@@ -157,7 +160,7 @@ public class SerializedCommandGenerator : CodeGeneratorBase
 
         var offset = Helpers.GetSerializationOffest(f);
         var fieldType = Helpers.GetFieldType(f);
-        var isDouble = fieldType == "double" || fieldType == "System.Double";
+        var isDouble = fieldType is "double" or "System.Double";
         var extensionMethod = Helpers.GetSerializationMethod(f);
         var scalingFactor = Helpers.GetScalingFactor(f);
 
