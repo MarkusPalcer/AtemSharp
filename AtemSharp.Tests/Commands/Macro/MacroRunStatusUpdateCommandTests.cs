@@ -44,6 +44,6 @@ internal class MacroRunStatusUpdateCommandTests : DeserializedCommandTestBase<Ma
         }
 
         Assert.That(state.Macros.Player.PlayLooped, Is.EqualTo(expectedData.Loop));
-        Assert.That(state.Macros.Player.PlaybackIsWaiting, Is.EqualTo(expectedData.IsWaiting));
+        Assert.That(state.Macros.Player.PlaybackIsWaitingForUserAction, Is.EqualTo(expectedData.IsWaiting));
     }
 }

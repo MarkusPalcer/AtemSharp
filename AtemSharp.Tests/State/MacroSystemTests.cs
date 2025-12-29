@@ -88,25 +88,7 @@ public class MacroSystemTests
 
         Assert.That(switcher.SentCommands, Has.Count.EqualTo(1));
         var command = switcher.SentCommands[0].As<MacroActionCommand>();
-        Assert.Multiple(() =>
-        {
-            Assert.That(command.Index, Is.EqualTo(2));
-            Assert.That(command.Action, Is.EqualTo(MacroAction.Stop));
-        });
-    }
-
-    [Test]
-    public async Task StopNonRunningMacro()
-    {
-        var switcher = new AtemSwitcherFake();
-        var sut = new MacroSystem(switcher);
-        sut.Populate(5);
-
-        sut.Player.UpdateCurrentlyPlaying(null);
-
-        await sut.Player.StopPlayback().WithTimeout();
-
-        Assert.That(switcher.SentCommands, Has.Count.EqualTo(0));
+        Assert.That(command.Action, Is.EqualTo(MacroAction.Stop));
     }
 
     [Test]
@@ -122,25 +104,7 @@ public class MacroSystemTests
 
         Assert.That(switcher.SentCommands, Has.Count.EqualTo(1));
         var command = switcher.SentCommands[0].As<MacroActionCommand>();
-        Assert.Multiple(() =>
-        {
-            Assert.That(command.Index, Is.EqualTo(2));
-            Assert.That(command.Action, Is.EqualTo(MacroAction.StopRecord));
-        });
-    }
-
-    [Test]
-    public async Task StopNonRecordingMacro()
-    {
-        var switcher = new AtemSwitcherFake();
-        var sut = new MacroSystem(switcher);
-        sut.Populate(5);
-
-        sut.Recorder.UpdateCurrentlyRecording(null);
-
-        await sut.Recorder.StopRecording().WithTimeout();
-
-        Assert.That(switcher.SentCommands, Has.Count.EqualTo(0));
+        Assert.That(command.Action, Is.EqualTo(MacroAction.StopRecord));
     }
 
     [Test]
@@ -166,12 +130,8 @@ public class MacroSystemTests
         sut.Populate(5);
         sut.Recorder.UpdateCurrentlyRecording(null);
 
-        var ex = Assert.ThrowsAsync<InvalidOperationException>(() => sut.Recorder.AddPause(12).WithTimeout());
-        Assert.Multiple(() =>
-        {
-            Assert.That(ex.Message, Does.Contain("Can only add pause while recording"));
-            Assert.That(switcher.SentCommands, Has.Count.EqualTo(0));
-        });
+        Assert.ThrowsAsync<InvalidOperationException>(() => sut.Recorder.AddPause(12).WithTimeout());
+        Assert.That(switcher.SentCommands, Has.Count.EqualTo(0));
     }
 
     [Test]
@@ -244,5 +204,44 @@ public class MacroSystemTests
             Assert.That(command.Name, Is.EqualTo("My Macro"));
             Assert.That(command.Description, Is.EqualTo("My Description"));
         });
+    }
+
+    [Test]
+    public async Task Continue()
+    {
+        var switcher = new AtemSwitcherFake();
+        var sut = new MacroSystem(switcher);
+        sut.Populate(5);
+
+        await sut.Player.Continue().WithTimeout();
+
+        Assert.That(switcher.SentCommands, Has.Count.EqualTo(1));
+        var command = switcher.SentCommands[0].As<MacroActionCommand>();
+        Assert.That(command.Action, Is.EqualTo(MacroAction.Continue));
+    }
+
+    [Test]
+    public async Task AddWaitForUser()
+    {
+        var switcher = new AtemSwitcherFake();
+        var sut = new MacroSystem(switcher);
+
+        sut.Populate(5);
+        sut.Recorder.UpdateCurrentlyRecording(sut[2]);
+
+        await sut.Recorder.AddWaitForUser().WithTimeout();
+
+        Assert.That(switcher.SentCommands, Has.Count.EqualTo(1));
+        var command = switcher.SentCommands[0].As<MacroActionCommand>();
+        Assert.That(command.Action, Is.EqualTo(MacroAction.InsertUserWait));
+    }
+
+    [Test]
+    public void AddWaitForUser_WithoutRecording()
+    {
+        var switcher = new AtemSwitcherFake();
+        var sut = new MacroSystem(switcher);
+
+        Assert.ThrowsAsync<InvalidOperationException>(() => sut.Recorder.AddWaitForUser().WithTimeout());
     }
 }

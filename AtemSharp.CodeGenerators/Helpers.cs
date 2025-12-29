@@ -349,5 +349,8 @@ namespace AtemSharp.CodeGenerators
 
             return $"using {ns};";
         }
+
+        public static string CodeGeneratorAttribute =>
+            $"[GeneratedCode(\"{typeof(Helpers).Assembly.FullName}\",\"{typeof(Helpers).Assembly.ImageRuntimeVersion}\")]";
     }
 }
