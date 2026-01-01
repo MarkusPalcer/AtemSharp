@@ -1,0 +1,35 @@
+on:
+  push:
+    tags:
+      - v*
+
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: '0'
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore packages
+        run: nuget restore
+
+      - name: Build
+        run: dotnet build -c Release
+
+      - name: Package
+        run: dotnet pack -c Release
+
+      - name: Publish new versions
+        run: dotnet nuget push **/Release/*.nupkg -s https://www.nuget.org -k ${{ secrets.NUGET_KEY }} --skip-duplicate
