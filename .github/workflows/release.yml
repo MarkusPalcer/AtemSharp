@@ -33,7 +33,3 @@ jobs:
 
       - name: Publish new versions
         run: dotnet nuget push **/Release/*.nupkg -s https://www.nuget.org -k ${{ secrets.NUGET_KEY }} --skip-duplicate
-
-      - name: Create Release
-        uses: ncipollo/release-action@v1
-
