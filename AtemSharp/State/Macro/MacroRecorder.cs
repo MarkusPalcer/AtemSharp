@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using AtemSharp.Batch;
 using AtemSharp.Commands.Macro;
 using AtemSharp.Extensions;
 
@@ -7,7 +8,7 @@ namespace AtemSharp.State.Macro;
 /// <summary>
 /// The recording part of the macro system
 /// </summary>
-public partial class MacroRecorder(IAtemSwitcher switcher)
+public partial class MacroRecorder(IBatchLike switcher)
 {
     /// <summary>
     /// Gets the macro which is currently being recorded or <c>null</c> if no recording is in progress

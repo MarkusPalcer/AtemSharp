@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using AtemSharp.Batch;
 using AtemSharp.Commands.Macro;
 using AtemSharp.Lib;
 
@@ -11,7 +12,7 @@ namespace AtemSharp.State.Macro;
 /// </summary>
 [ExcludeFromCodeCoverage(Justification="Auto-Properties aren't tested")]
 [DebuggerDisplay("{" + nameof(ToString) + ",nq}")]
-public partial class Macro(IAtemSwitcher switcher)
+public partial class Macro(IBatchLike switcher)
 {
     /// <summary>
     /// Gets the id of the macro

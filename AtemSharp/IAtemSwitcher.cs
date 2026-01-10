@@ -1,8 +1,8 @@
-using AtemSharp.Commands;
+using AtemSharp.Batch;
 
 namespace AtemSharp;
 
-public interface IAtemSwitcher : IAsyncDisposable, IStateHolder
+public interface IAtemSwitcher : IAsyncDisposable, IBatchLike
 {
     /// <summary>
     /// The state of the connection to the ATEM switcher
@@ -22,6 +22,5 @@ public interface IAtemSwitcher : IAsyncDisposable, IStateHolder
     /// <returns>Task that completes when disconnected</returns>
     Task DisconnectAsync();
 
-    Task SendCommandAsync(SerializedCommand command);
-    Task SendCommandsAsync(IEnumerable<SerializedCommand> commands);
+    IBatchOperation StartBatch();
 }

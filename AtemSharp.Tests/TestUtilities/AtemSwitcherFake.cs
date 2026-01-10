@@ -1,3 +1,4 @@
+using AtemSharp.Batch;
 using AtemSharp.Commands;
 using AtemSharp.State;
 using AtemSharp.State.Macro;
@@ -27,6 +28,11 @@ public class AtemSwitcherFake : IAtemSwitcher
     public Task DisconnectAsync()
     {
         return Task.CompletedTask;
+    }
+
+    public IBatchOperation StartBatch()
+    {
+        throw new  NotImplementedException();
     }
 
     public Task SendCommandAsync(SerializedCommand command)

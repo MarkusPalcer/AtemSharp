@@ -170,7 +170,7 @@ public class SerializedCommandGenerator : CodeGeneratorBase
                              """;
 
         return $$"""
-                 private bool _{{f.Name}}_isDirty;
+                 {{ ( f.IsReadOnly ? string.Empty : $"private bool _{f.Name}_isDirty;" ) }}
 
                  {{docComment}}
                  {{Helpers.CodeGeneratorAttribute}}
