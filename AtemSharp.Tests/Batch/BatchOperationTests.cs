@@ -14,7 +14,7 @@ public class BatchOperationTests
 
         public override byte[] Serialize(ProtocolVersion version)
         {
-            throw new NotImplementedException();
+            return [];
         }
 
         internal override bool TryMergeTo(SerializedCommand other)
@@ -30,7 +30,7 @@ public class BatchOperationTests
 
         public override byte[] Serialize(ProtocolVersion version)
         {
-            throw new NotImplementedException();
+            return [];
         }
 
         internal override bool TryMergeTo(SerializedCommand other)

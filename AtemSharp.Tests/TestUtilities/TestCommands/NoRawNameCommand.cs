@@ -15,6 +15,6 @@ public class NoRawNameCommand : SerializedCommand
 
     internal override bool TryMergeTo(SerializedCommand other)
     {
-        throw new NotImplementedException();
+        return false;
     }
 }

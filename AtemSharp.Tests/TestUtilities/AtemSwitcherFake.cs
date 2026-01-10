@@ -39,7 +39,7 @@ public class AtemSwitcherFake : IAtemSwitcher
 
     public IBatchOperation StartBatch()
     {
-        throw new  NotImplementedException();
+        return new BatchOperation(this);
     }
 
     public Task SendCommandAsync(SerializedCommand command)
