@@ -41,4 +41,19 @@ public class FairlightMixerMasterDynamicsResetCommand : SerializedCommand
         buffer.WriteUInt8(val, 1);
         return buffer;
     }
+
+    internal override bool TryMergeTo(SerializedCommand other)
+    {
+        if (other is not FairlightMixerMasterDynamicsResetCommand target)
+        {
+            return false;
+        }
+
+        target.ResetDynamics |= ResetDynamics;
+        target.ResetExpander |= ResetExpander;
+        target.ResetCompressor |= ResetCompressor;
+        target.ResetLimiter |= ResetLimiter;
+
+        return true;
+    }
 }

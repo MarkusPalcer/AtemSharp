@@ -24,4 +24,24 @@ public partial class MacroActionCommand : SerializedCommand
     public static MacroActionCommand InsertUserWait() => new(0xffff, MacroAction.InsertUserWait);
     public static MacroActionCommand Continue() => new(0xffff, MacroAction.Continue);
     public static MacroActionCommand Delete(State.Macro.Macro macro) => new(macro.Id, MacroAction.Delete);
+
+    internal override bool TryMergeTo(SerializedCommand other)
+    {
+        if (other is not MacroActionCommand target)
+        {
+            return false;
+        }
+
+        if (target.Action != Action)
+        {
+            return false;
+        }
+
+        if (target.Index != Index)
+        {
+            return false;
+        }
+
+        return true;
+    }
 }

@@ -25,4 +25,9 @@ public class DataTransferDataSendCommand : SerializedCommand
 
         return buffer;
     }
+
+    internal override bool TryMergeTo(SerializedCommand other)
+    {
+        return false;
+    }
 }

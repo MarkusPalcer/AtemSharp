@@ -11,4 +11,9 @@ public class VariableSizeCommand(byte value, int size) : SerializedCommand
     {
         return Enumerable.Repeat(value, size).ToArray();
     }
+
+    internal override bool TryMergeTo(SerializedCommand other)
+    {
+        throw new NotImplementedException();
+    }
 }

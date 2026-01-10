@@ -13,6 +13,8 @@ public class MacroPropertiesCommand(State.Macro.Macro macro) : SerializedCommand
     private readonly ushort _id = macro.Id;
     private string _name = macro.Name;
     private string _description = macro.Description;
+    private bool _nameIsDirty;
+    private bool _descriptionIsDirty;
 
     public string Name
     {
@@ -21,6 +23,7 @@ public class MacroPropertiesCommand(State.Macro.Macro macro) : SerializedCommand
         {
             _name = value;
             Flag |= 1 << 0;
+            _nameIsDirty = true;
         }
     }
 
@@ -31,6 +34,7 @@ public class MacroPropertiesCommand(State.Macro.Macro macro) : SerializedCommand
         {
             _description = value;
             Flag |= 1 << 1;
+            _descriptionIsDirty = true;
         }
     }
 
@@ -46,5 +50,30 @@ public class MacroPropertiesCommand(State.Macro.Macro macro) : SerializedCommand
         buffer.WriteString(_description, 8 + _name.Length);
 
         return buffer;
+    }
+
+    internal override bool TryMergeTo(SerializedCommand other)
+    {
+        if (other is not MacroPropertiesCommand target)
+        {
+            return false;
+        }
+
+        if (target._id != _id)
+        {
+            return false;
+        }
+
+        if (_nameIsDirty)
+        {
+            target.Name = Name;
+        }
+
+        if (_descriptionIsDirty)
+        {
+            target.Description = Description;
+        }
+
+        return true;
     }
 }

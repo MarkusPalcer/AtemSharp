@@ -37,4 +37,17 @@ public class FairlightMixerResetPeakLevelsCommand : SerializedCommand
 
         return buffer;
     }
+
+    internal override bool TryMergeTo(SerializedCommand other)
+    {
+        if (other is not FairlightMixerResetPeakLevelsCommand target)
+        {
+            return false;
+        }
+
+        target.All |= All;
+        target.Master |= Master;
+
+        return true;
+    }
 }

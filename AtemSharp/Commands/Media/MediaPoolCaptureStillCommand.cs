@@ -4,4 +4,10 @@ namespace AtemSharp.Commands.Media;
 /// Used to tell the media player to capture the current program frame as a still
 /// </summary>
 [Command("Capt")]
-public class MediaPoolCaptureStillCommand : EmptyCommand;
+public class MediaPoolCaptureStillCommand : EmptyCommand
+{
+    internal override bool TryMergeTo(SerializedCommand other)
+    {
+        return other is MediaPoolCaptureStillCommand;
+    }
+}

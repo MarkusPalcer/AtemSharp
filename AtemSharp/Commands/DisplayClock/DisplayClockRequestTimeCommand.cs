@@ -10,4 +10,9 @@ public class DisplayClockRequestTimeCommand : SerializedCommand
 {
     /// <inheritdoc />
     public override byte[] Serialize(ProtocolVersion version) => new byte[4];
+
+    internal override bool TryMergeTo(SerializedCommand other)
+    {
+        return other is DisplayClockRequestTimeCommand;
+    }
 }

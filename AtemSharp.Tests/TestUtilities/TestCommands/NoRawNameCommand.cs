@@ -12,4 +12,9 @@ public class NoRawNameCommand : SerializedCommand
         SerializeCalled = true;
         return [];
     }
+
+    internal override bool TryMergeTo(SerializedCommand other)
+    {
+        throw new NotImplementedException();
+    }
 }
