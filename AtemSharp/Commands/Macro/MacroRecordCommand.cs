@@ -9,7 +9,7 @@ namespace AtemSharp.Commands.Macro;
 [Command("MSRc")]
 public class MacroRecordCommand(AtemSharp.State.Macro.Macro targetSlot) : SerializedCommand
 {
-    internal readonly ushort Index = targetSlot.Id;
+    internal ushort Index = targetSlot.Id;
 
     public string Name
     {
@@ -56,10 +56,17 @@ public class MacroRecordCommand(AtemSharp.State.Macro.Macro targetSlot) : Serial
             return false;
         }
 
+        // We can only record one macro, so if a new record is queued it replaces the old record
         if (target.Index != Index)
         {
-            return false;
+            target.Index = Index;
+            target.Name = Name;
+            target.Description = Description;
+
+            return true;
         }
+
+        // Else only replace properties which have values that are changed
 
         if (_nameIsDirty)
         {

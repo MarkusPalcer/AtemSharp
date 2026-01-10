@@ -16,6 +16,8 @@ public class MacroPropertiesCommand(State.Macro.Macro macro) : SerializedCommand
     private bool _nameIsDirty;
     private bool _descriptionIsDirty;
 
+    internal ushort Id => _id;
+
     public string Name
     {
         get => _name;

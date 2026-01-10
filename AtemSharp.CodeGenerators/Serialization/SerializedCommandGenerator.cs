@@ -158,7 +158,8 @@ public class SerializedCommandGenerator : CodeGeneratorBase
         var docComment = Helpers.GetFieldMsDocComment(f);
         var visibility = f.GetAttributes().Any(a => a.AttributeClass?.Name == "InternalPropertyAttribute") ? "internal" : "public";
 
-        var setter = f.IsReadOnly
+        var hasSetter = f.IsReadOnly || f.GetAttributes().Any(a => a.AttributeClass?.Name == "ReadOnlyAttribute");
+        var setter = hasSetter
                          ? string.Empty
                          : $$"""
                              set {
@@ -170,7 +171,7 @@ public class SerializedCommandGenerator : CodeGeneratorBase
                              """;
 
         return $$"""
-                 {{ ( f.IsReadOnly ? string.Empty : $"private bool _{f.Name}_isDirty;" ) }}
+                 {{ ( hasSetter ? string.Empty : $"private bool _{f.Name}_isDirty;" ) }}
 
                  {{docComment}}
                  {{Helpers.CodeGeneratorAttribute}}

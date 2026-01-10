@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 namespace AtemSharp.Commands.Macro;
 
 
@@ -8,7 +10,7 @@ namespace AtemSharp.Commands.Macro;
 [BufferSize(4)]
 public partial class MacroActionCommand : SerializedCommand
 {
-    [SerializedField(0)] [InternalProperty] private readonly ushort _index;
+    [SerializedField(0)] [InternalProperty] [ReadOnly(true)] private ushort _index;
 
     [SerializedField(2)] [InternalProperty] private readonly MacroAction _action;
 
@@ -37,11 +39,20 @@ public partial class MacroActionCommand : SerializedCommand
             return false;
         }
 
-        if (target.Index != Index)
+        switch (Action)
         {
-            return false;
+            case MacroAction.Run:
+                target._index = Index;
+                return true;
+            case MacroAction.Stop:
+            case MacroAction.StopRecord:
+            case MacroAction.InsertUserWait:
+            case MacroAction.Continue:
+                return true;
+            case MacroAction.Delete:
+                return target._index == _index;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
-
-        return true;
     }
 }

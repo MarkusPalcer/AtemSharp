@@ -17,4 +17,14 @@ public class MacroAddTimedPauseCommandTests : SerializedCommandTestBase<MacroAdd
             Frames = testCase.Command.Frames
         };
     }
+
+    [Test]
+    public void MergeCommand()
+    {
+        var first = new MacroAddTimedPauseCommand { Frames = 2 };
+        var second = new MacroAddTimedPauseCommand { Frames = 3 };
+
+        Assert.That(second.TryMergeTo(first), Is.True);
+        Assert.That(first.Frames, Is.EqualTo(5));
+    }
 }

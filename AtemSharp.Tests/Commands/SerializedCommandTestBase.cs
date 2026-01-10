@@ -67,6 +67,51 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData>
         return testCases;
     }
 
+    public static TestCaseData CreateMergingTestCase<TValue>(
+                                                      string propertyName,
+                                                      TValue firstValue,
+                                                      TValue secondValue)
+    {
+        return new TestCaseData(propertyName, firstValue, secondValue).SetName(propertyName);
+    }
+
+    public void TestPropertyMerging<TValue>(
+        Func<TCommand> factory,
+        string propertyName,
+        TValue firstValue,
+        TValue secondValue)
+    {
+        var first = factory();
+        var second = factory();
+
+        var getter = typeof(TCommand).GetProperty(propertyName)?.GetMethod ?? throw new  InvalidOperationException($"No getter for property {typeof(TCommand)}.{propertyName} found");
+        var setter = typeof(TCommand).GetProperty(propertyName)?.SetMethod ?? throw new  InvalidOperationException($"No setter for property {typeof(TCommand)}.{propertyName} found");;
+
+        setter.Invoke(first, [firstValue]);
+        setter.Invoke(second, [secondValue]);
+
+        Assert.That(second.TryMergeTo(first), Is.True);
+        Assert.That(getter.Invoke(first, []), Is.EqualTo(secondValue));
+    }
+
+    public void TestPropertyNonMerging<TValue>(
+        Func<TCommand> factory,
+        string propertyName,
+        TValue firstValue,
+        TValue secondValue)
+    {
+        var first = factory();
+        var second = factory();
+
+        var getter = typeof(TCommand).GetProperty(propertyName)?.GetMethod ?? throw new  InvalidOperationException($"No getter for property {typeof(TCommand)}.{propertyName} found");
+        var setter = typeof(TCommand).GetProperty(propertyName)?.SetMethod ?? throw new  InvalidOperationException($"No setter for property {typeof(TCommand)}.{propertyName} found");;
+
+        setter.Invoke(first, [firstValue]);
+
+        Assert.That(second.TryMergeTo(first), Is.True);
+        Assert.That(getter.Invoke(first, []), Is.EqualTo(firstValue));
+    }
+
     [Test, TestCaseSource(nameof(GetTestCases))]
     public void TestSerialization(TestUtilities.CommandTests.TestCaseData<TTestData> testCase)
     {

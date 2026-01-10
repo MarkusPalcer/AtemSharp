@@ -15,4 +15,18 @@ public class MacroRunStatusCommandTests : SerializedCommandTestBase<MacroRunStat
             Loop = testCase.Command.Loop
         };
     }
+
+    [Test]
+    [TestCase(false, false, false)]
+    [TestCase(true, false, false)]
+    [TestCase(true, true, true)]
+    [TestCase(false, true, true)]
+    public void NewCommandOverridesOldValue(bool first, bool second, bool expected)
+    {
+        var firstCommand = new MacroRunStatusCommand { Loop = first };
+        var secondCommand = new MacroRunStatusCommand { Loop = second };
+
+        Assert.That(secondCommand.TryMergeTo(firstCommand), Is.True);
+        Assert.That(firstCommand.Loop, Is.EqualTo(expected));
+    }
 }
