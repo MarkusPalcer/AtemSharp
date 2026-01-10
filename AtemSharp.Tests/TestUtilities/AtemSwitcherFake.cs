@@ -7,7 +7,14 @@ namespace AtemSharp.Tests.TestUtilities;
 
 public class AtemSwitcherFake : IAtemSwitcher
 {
-    public readonly List<SerializedCommand> SentCommands = [];
+    public readonly List<SerializedCommand[]> SendRequests = [];
+
+    public AtemSwitcherFake()
+    {
+        Macros = new MacroSystem(this);
+    }
+
+    public SerializedCommand[] SentCommands => SendRequests.SelectMany(x => x).ToArray();
 
     public ValueTask DisposeAsync()
     {
@@ -16,7 +23,7 @@ public class AtemSwitcherFake : IAtemSwitcher
 
     public AtemState State { get; internal set; } = null!;
 
-    public MacroSystem Macros { get; internal set; } = null!;
+    public MacroSystem Macros { get; internal set; }
 
     public ConnectionState ConnectionState { get; internal set; } = ConnectionState.Connected;
 
@@ -43,7 +50,7 @@ public class AtemSwitcherFake : IAtemSwitcher
 
     public Task SendCommandsAsync(IEnumerable<SerializedCommand> commands)
     {
-        SentCommands.AddRange(commands);
+        SendRequests.Add(commands.ToArray());
         return Task.CompletedTask;
     }
 }

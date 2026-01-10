@@ -21,7 +21,7 @@ public class MacroSystemTests
         sut.Player.UpdatePlayLooped(!newValue);
         sut.Player.PlayLooped = newValue;
 
-        Assert.That(switcher.SentCommands, Has.Count.EqualTo(1));
+        Assert.That(switcher.SentCommands, Has.Length.EqualTo(1));
         var command = switcher.SentCommands[0].As<MacroRunStatusCommand>();
         Assert.That(command.Loop, Is.EqualTo(newValue));
     }
@@ -38,7 +38,7 @@ public class MacroSystemTests
         sut.Player.UpdatePlayLooped(newValue);
         sut.Player.PlayLooped = newValue;
 
-        Assert.That(switcher.SentCommands, Has.Count.EqualTo(0));
+        Assert.That(switcher.SentCommands, Has.Length.EqualTo(0));
     }
 
     [Test]
@@ -51,9 +51,9 @@ public class MacroSystemTests
         sut[2].UpdateIsUsed(true);
         await sut[2].Run().WithTimeout();
 
-        Assert.That(switcher.SentCommands, Has.Count.EqualTo(1));
+        Assert.That(switcher.SentCommands, Has.Length.EqualTo(1));
 
-        Assert.That(switcher.SentCommands, Has.Count.EqualTo(1));
+        Assert.That(switcher.SentCommands, Has.Length.EqualTo(1));
         var command = switcher.SentCommands[0].As<MacroActionCommand>();
         Assert.Multiple(() =>
         {
@@ -72,7 +72,7 @@ public class MacroSystemTests
         sut[2].UpdateIsUsed(false);
 
         Assert.ThrowsAsync<InvalidOperationException>(() => sut[2].Run().WithTimeout());
-        Assert.That(switcher.SentCommands, Has.Count.EqualTo(0));
+        Assert.That(switcher.SentCommands, Has.Length.EqualTo(0));
     }
 
     [Test]
@@ -86,7 +86,7 @@ public class MacroSystemTests
 
         await sut.Player.StopPlayback().WithTimeout();
 
-        Assert.That(switcher.SentCommands, Has.Count.EqualTo(1));
+        Assert.That(switcher.SentCommands, Has.Length.EqualTo(1));
         var command = switcher.SentCommands[0].As<MacroActionCommand>();
         Assert.That(command.Action, Is.EqualTo(MacroAction.Stop));
     }
@@ -102,7 +102,7 @@ public class MacroSystemTests
 
         await sut.Recorder.StopRecording().WithTimeout();
 
-        Assert.That(switcher.SentCommands, Has.Count.EqualTo(1));
+        Assert.That(switcher.SentCommands, Has.Length.EqualTo(1));
         var command = switcher.SentCommands[0].As<MacroActionCommand>();
         Assert.That(command.Action, Is.EqualTo(MacroAction.StopRecord));
     }
@@ -117,7 +117,7 @@ public class MacroSystemTests
 
         await sut.Recorder.AddPause(12).WithTimeout();
 
-        Assert.That(switcher.SentCommands, Has.Count.EqualTo(1));
+        Assert.That(switcher.SentCommands, Has.Length.EqualTo(1));
         var command = switcher.SentCommands[0].As<MacroAddTimedPauseCommand>();
         Assert.That(command.Frames, Is.EqualTo(12));
     }
@@ -131,7 +131,7 @@ public class MacroSystemTests
         sut.Recorder.UpdateCurrentlyRecording(null);
 
         Assert.ThrowsAsync<InvalidOperationException>(() => sut.Recorder.AddPause(12).WithTimeout());
-        Assert.That(switcher.SentCommands, Has.Count.EqualTo(0));
+        Assert.That(switcher.SentCommands, Has.Length.EqualTo(0));
     }
 
     [Test]
@@ -154,7 +154,7 @@ public class MacroSystemTests
 
         await sut.Recorder.AddPause(TimeSpan.FromSeconds(durationInSeconds)).WithTimeout();
 
-        Assert.That(switcher.SentCommands, Has.Count.EqualTo(1));
+        Assert.That(switcher.SentCommands, Has.Length.EqualTo(1));
         var command = switcher.SentCommands[0].As<MacroAddTimedPauseCommand>();
         Assert.That(command.Frames, Is.EqualTo(expectedFrames));
     }
@@ -168,7 +168,7 @@ public class MacroSystemTests
 
         sut[2].Name = "New Name";
 
-        Assert.That(switcher.SentCommands, Has.Count.EqualTo(1));
+        Assert.That(switcher.SentCommands, Has.Length.EqualTo(1));
         var command = switcher.SentCommands[0].As<MacroPropertiesCommand>();
         Assert.That(command.Name, Is.EqualTo("New Name"));
     }
@@ -182,7 +182,7 @@ public class MacroSystemTests
 
         sut[2].Description = "New Description";
 
-        Assert.That(switcher.SentCommands, Has.Count.EqualTo(1));
+        Assert.That(switcher.SentCommands, Has.Length.EqualTo(1));
         var command = switcher.SentCommands[0].As<MacroPropertiesCommand>();
         Assert.That(command.Description, Is.EqualTo("New Description"));
     }
@@ -196,7 +196,7 @@ public class MacroSystemTests
 
         await sut[2].Record("My Macro", "My Description").WithTimeout();
 
-        Assert.That(switcher.SentCommands, Has.Count.EqualTo(1));
+        Assert.That(switcher.SentCommands, Has.Length.EqualTo(1));
         var command = switcher.SentCommands[0].As<MacroRecordCommand>();
         Assert.Multiple(() =>
         {
@@ -215,7 +215,7 @@ public class MacroSystemTests
 
         await sut.Player.Continue().WithTimeout();
 
-        Assert.That(switcher.SentCommands, Has.Count.EqualTo(1));
+        Assert.That(switcher.SentCommands, Has.Length.EqualTo(1));
         var command = switcher.SentCommands[0].As<MacroActionCommand>();
         Assert.That(command.Action, Is.EqualTo(MacroAction.Continue));
     }
@@ -231,7 +231,7 @@ public class MacroSystemTests
 
         await sut.Recorder.AddWaitForUser().WithTimeout();
 
-        Assert.That(switcher.SentCommands, Has.Count.EqualTo(1));
+        Assert.That(switcher.SentCommands, Has.Length.EqualTo(1));
         var command = switcher.SentCommands[0].As<MacroActionCommand>();
         Assert.That(command.Action, Is.EqualTo(MacroAction.InsertUserWait));
     }
