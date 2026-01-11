@@ -1,5 +1,6 @@
 using AtemSharp.Commands.Macro;
 using AtemSharp.State.Macro;
+using AtemSharp.Tests.Batch;
 using NSubstitute;
 
 namespace AtemSharp.Tests.Commands.Macro;
@@ -147,5 +148,27 @@ public class MacroActionCommandTests : SerializedCommandTestBase<MacroActionComm
             Assert.That(second.Action, Is.EqualTo(MacroAction.Delete));
             Assert.That(second.Index, Is.EqualTo(3));
         });
+    }
+
+    [Test]
+    public void DoesNotMergeWithDifferentCommandType()
+    {
+        var state = new MacroSystem(Substitute.For<IAtemSwitcher>());
+        state.Populate(5);
+
+        var sut = MacroActionCommand.InsertUserWait();
+
+        Assert.That(sut.TryMergeTo(new MergeableCommand(2)), Is.False);
+    }
+
+    [Test]
+    public void DoesNotMergeWithDifferentAction()
+    {
+        var state = new MacroSystem(Substitute.For<IAtemSwitcher>());
+        state.Populate(5);
+
+        var sut = MacroActionCommand.InsertUserWait();
+
+        Assert.That(sut.TryMergeTo(MacroActionCommand.Continue()), Is.False);
     }
 }

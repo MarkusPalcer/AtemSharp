@@ -29,4 +29,10 @@ public class MacroRunStatusCommandTests : SerializedCommandTestBase<MacroRunStat
         Assert.That(secondCommand.TryMergeTo(firstCommand), Is.True);
         Assert.That(firstCommand.Loop, Is.EqualTo(expected));
     }
+
+    [Test]
+    public void TestPropertyMerging_WithWrongType()
+    {
+        TestPropertyMerging_WithWrongType(() => new MacroRunStatusCommand());
+    }
 }

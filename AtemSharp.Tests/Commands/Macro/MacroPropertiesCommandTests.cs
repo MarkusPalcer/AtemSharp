@@ -102,4 +102,10 @@ public class MacroPropertiesCommandTests : SerializedCommandTestBase<MacroProper
     {
         TestPropertyNonMerging(Factory, property, firstValue, secondValue);
     }
+
+    [Test]
+    public void TestPropertyMerging_WithWrongType()
+    {
+        TestPropertyMerging_WithWrongType(Factory);
+    }
 }

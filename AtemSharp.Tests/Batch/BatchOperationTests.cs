@@ -1,6 +1,4 @@
 using AtemSharp.Batch;
-using AtemSharp.Commands;
-using AtemSharp.State.Info;
 using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Batch;
@@ -8,37 +6,6 @@ namespace AtemSharp.Tests.Batch;
 [TestFixture]
 public class BatchOperationTests
 {
-    private class MergeableCommand(int value) : SerializedCommand
-    {
-        public List<int> Values { get; } = [value];
-
-        public override byte[] Serialize(ProtocolVersion version)
-        {
-            return [];
-        }
-
-        internal override bool TryMergeTo(SerializedCommand other)
-        {
-            other.As<MergeableCommand>().Values.Add(value);
-            return true;
-        }
-    }
-
-    private class NonMergeableCommand(int value) : SerializedCommand
-    {
-        public int Value { get; } = value;
-
-        public override byte[] Serialize(ProtocolVersion version)
-        {
-            return [];
-        }
-
-        internal override bool TryMergeTo(SerializedCommand other)
-        {
-            return false;
-        }
-    }
-
     [Test]
     public async Task QueueDifferentCommands()
     {

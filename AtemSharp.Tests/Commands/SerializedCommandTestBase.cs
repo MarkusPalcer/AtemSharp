@@ -1,4 +1,5 @@
 using AtemSharp.Commands;
+using AtemSharp.Tests.Batch;
 using AtemSharp.Tests.TestUtilities.CommandTests;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -110,6 +111,12 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData>
 
         Assert.That(second.TryMergeTo(first), Is.True);
         Assert.That(getter.Invoke(first, []), Is.EqualTo(firstValue));
+    }
+
+    public void TestPropertyMerging_WithWrongType(Func<TCommand> factory)
+    {
+        var command = factory();
+        Assert.That(factory().TryMergeTo(new MergeableCommand(2)), Is.False);
     }
 
     [Test, TestCaseSource(nameof(GetTestCases))]

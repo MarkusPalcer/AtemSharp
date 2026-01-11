@@ -1,4 +1,5 @@
 using AtemSharp.Commands.Macro;
+using AtemSharp.Tests.Batch;
 
 namespace AtemSharp.Tests.Commands.Macro;
 
@@ -26,5 +27,13 @@ public class MacroAddTimedPauseCommandTests : SerializedCommandTestBase<MacroAdd
 
         Assert.That(second.TryMergeTo(first), Is.True);
         Assert.That(first.Frames, Is.EqualTo(5));
+    }
+
+    [Test]
+    public void DoesNotMergeWithDifferentCommandType()
+    {
+        var sut = new MacroAddTimedPauseCommand { Frames = 2 };
+
+        Assert.That(sut.TryMergeTo(new MergeableCommand(2)), Is.False);
     }
 }
