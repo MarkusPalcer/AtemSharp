@@ -18,4 +18,6 @@ public abstract class SerializedCommand : ICommand
     /// <param name="version">Protocol version</param>
     /// <returns>Serialized command data</returns>
     public abstract byte[] Serialize(ProtocolVersion version);
+
+    internal abstract bool TryMergeTo(SerializedCommand other);
 }

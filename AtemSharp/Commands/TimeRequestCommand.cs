@@ -6,4 +6,10 @@ namespace AtemSharp.Commands;
 /// Used to request the current time
 /// </summary>
 [Command("TiRq", ProtocolVersion.V8_0)]
-public class TimeRequestCommand : EmptyCommand;
+public class TimeRequestCommand : EmptyCommand
+{
+    internal override bool TryMergeTo(SerializedCommand other)
+    {
+        return other is TimeRequestCommand;
+    }
+}

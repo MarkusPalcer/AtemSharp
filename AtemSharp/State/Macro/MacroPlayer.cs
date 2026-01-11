@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using AtemSharp.Batch;
 using AtemSharp.Commands.Macro;
 using AtemSharp.Lib;
 
@@ -7,7 +8,7 @@ namespace AtemSharp.State.Macro;
 /// <summary>
 /// The playback engine of the macro system
 /// </summary>
-public partial class MacroPlayer(IAtemSwitcher switcher)
+public partial class MacroPlayer(IBatchLike switcher)
 {
     /// <summary>
     /// Gets/sets whether the macro player should continuously repeat a playing macro until told to stop
@@ -43,5 +44,11 @@ public partial class MacroPlayer(IAtemSwitcher switcher)
     public async Task Continue()
     {
         await switcher.SendCommandAsync(MacroActionCommand.Continue());
+    }
+
+    internal void CopyTo(MacroPlayer target)
+    {
+        target.UpdatePlayLooped(_playLooped);
+        target.UpdatePlaybackIsWaitingForUserAction(_playbackIsWaitingForUserAction);
     }
 }

@@ -5,4 +5,10 @@ namespace AtemSharp.Commands.Recording;
 /// Used to request the duration of the current recording
 /// </summary>
 [Command("RMDR")]
-public class RecordingRequestDurationCommand : EmptyCommand;
+public class RecordingRequestDurationCommand : EmptyCommand
+{
+    internal override bool TryMergeTo(SerializedCommand other)
+    {
+        return other is RecordingRequestDurationCommand;
+    }
+}

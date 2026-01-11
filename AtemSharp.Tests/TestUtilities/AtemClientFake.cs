@@ -56,13 +56,13 @@ internal class AtemClientFake : IAtemClient
         _remoteEndPoint = null;
     }
 
-    Task IAtemClient.SendCommandAsync(SerializedCommand command)
+    Task ICommandSender.SendCommandAsync(SerializedCommand command)
     {
         SentCommands.Add(command);
         return Task.CompletedTask;
     }
 
-    async Task IAtemClient.SendCommandsAsync(IEnumerable<SerializedCommand> commands)
+    async Task ICommandSender.SendCommandsAsync(IEnumerable<SerializedCommand> commands)
     {
         IAtemClient self = this;
         foreach (var command in commands)

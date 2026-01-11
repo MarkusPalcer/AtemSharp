@@ -1,4 +1,5 @@
 using System.Threading.Tasks.Dataflow;
+using AtemSharp.Batch;
 using AtemSharp.Commands;
 using AtemSharp.Communication;
 using AtemSharp.DependencyInjection;
@@ -129,6 +130,11 @@ public class AtemSwitcher : IAtemSwitcher
 
                 break;
         }
+    }
+
+    public IBatchOperation StartBatch()
+    {
+        return new BatchOperation(this);
     }
 
     /// <inheritdoc />

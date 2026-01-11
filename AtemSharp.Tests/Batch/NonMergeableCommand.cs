@@ -1,15 +1,14 @@
 using AtemSharp.Commands;
 using AtemSharp.State.Info;
 
-namespace AtemSharp.Tests.TestUtilities.TestCommands;
+namespace AtemSharp.Tests.Batch;
 
-public class NoRawNameCommand : SerializedCommand
+internal class NonMergeableCommand(int value) : SerializedCommand
 {
-    public bool SerializeCalled;
+    public int Value { get; } = value;
 
     public override byte[] Serialize(ProtocolVersion version)
     {
-        SerializeCalled = true;
         return [];
     }
 

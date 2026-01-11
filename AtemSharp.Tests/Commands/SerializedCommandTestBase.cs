@@ -1,4 +1,5 @@
 using AtemSharp.Commands;
+using AtemSharp.Tests.Batch;
 using AtemSharp.Tests.TestUtilities.CommandTests;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -65,6 +66,57 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData>
         var testCases = Helper.GetTestCases<TCommand, TTestData>().ToArray();
         Assert.That(testCases.Length, Is.GreaterThan(0), "No test cases found");
         return testCases;
+    }
+
+    public static TestCaseData CreateMergingTestCase<TValue>(
+                                                      string propertyName,
+                                                      TValue firstValue,
+                                                      TValue secondValue)
+    {
+        return new TestCaseData(propertyName, firstValue, secondValue).SetName(propertyName);
+    }
+
+    public void TestPropertyMerging<TValue>(
+        Func<TCommand> factory,
+        string propertyName,
+        TValue firstValue,
+        TValue secondValue)
+    {
+        var first = factory();
+        var second = factory();
+
+        var getter = typeof(TCommand).GetProperty(propertyName)?.GetMethod ?? throw new  InvalidOperationException($"No getter for property {typeof(TCommand)}.{propertyName} found");
+        var setter = typeof(TCommand).GetProperty(propertyName)?.SetMethod ?? throw new  InvalidOperationException($"No setter for property {typeof(TCommand)}.{propertyName} found");
+
+        setter.Invoke(first, [firstValue]);
+        setter.Invoke(second, [secondValue]);
+
+        Assert.That(second.TryMergeTo(first), Is.True);
+        Assert.That(getter.Invoke(first, []), Is.EqualTo(secondValue));
+    }
+
+    public void TestPropertyNonMerging<TValue>(
+        Func<TCommand> factory,
+        string propertyName,
+        TValue firstValue,
+        TValue secondValue)
+    {
+        var first = factory();
+        var second = factory();
+
+        var getter = typeof(TCommand).GetProperty(propertyName)?.GetMethod ?? throw new  InvalidOperationException($"No getter for property {typeof(TCommand)}.{propertyName} found");
+        var setter = typeof(TCommand).GetProperty(propertyName)?.SetMethod ?? throw new  InvalidOperationException($"No setter for property {typeof(TCommand)}.{propertyName} found");
+
+        setter.Invoke(first, [firstValue]);
+
+        Assert.That(second.TryMergeTo(first), Is.True);
+        Assert.That(getter.Invoke(first, []), Is.EqualTo(firstValue));
+    }
+
+    public void TestPropertyMerging_WithWrongType(Func<TCommand> factory)
+    {
+        var command = factory();
+        Assert.That(factory().TryMergeTo(new MergeableCommand(2)), Is.False);
     }
 
     [Test, TestCaseSource(nameof(GetTestCases))]

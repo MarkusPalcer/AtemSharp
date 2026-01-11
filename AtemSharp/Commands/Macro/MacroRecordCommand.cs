@@ -9,10 +9,32 @@ namespace AtemSharp.Commands.Macro;
 [Command("MSRc")]
 public class MacroRecordCommand(AtemSharp.State.Macro.Macro targetSlot) : SerializedCommand
 {
-    internal readonly ushort Index = targetSlot.Id;
+    internal ushort Index = targetSlot.Id;
 
-    public string Name { get; set; } = targetSlot.Name;
-    public string Description { get; set; } = targetSlot.Description;
+    public string Name
+    {
+        get => _name;
+        set
+        {
+            _name = value;
+            _nameIsDirty = true;
+        }
+    }
+
+    public string Description
+    {
+        get => _description;
+        set
+        {
+            _description = value;
+            _descriptionIsDirty = true;
+        }
+    }
+
+    private bool _nameIsDirty;
+    private bool _descriptionIsDirty;
+    private string _name = targetSlot.Name;
+    private string _description = targetSlot.Description;
 
     /// <inheritdoc />
     public override byte[] Serialize(ProtocolVersion version)
@@ -25,5 +47,37 @@ public class MacroRecordCommand(AtemSharp.State.Macro.Macro targetSlot) : Serial
         buffer.WriteString(Description, 6 + Name.Length);
 
         return buffer;
+    }
+
+    internal override bool TryMergeTo(SerializedCommand other)
+    {
+        if (other is not MacroRecordCommand target)
+        {
+            return false;
+        }
+
+        // We can only record one macro, so if a new record is queued it replaces the old record
+        if (target.Index != Index)
+        {
+            target.Index = Index;
+            target.Name = Name;
+            target.Description = Description;
+
+            return true;
+        }
+
+        // Else only replace properties which have values that are changed
+
+        if (_nameIsDirty)
+        {
+            target.Name = Name;
+        }
+
+        if (_descriptionIsDirty)
+        {
+            target.Description = Description;
+        }
+
+        return true;
     }
 }

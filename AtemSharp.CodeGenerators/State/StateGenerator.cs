@@ -9,27 +9,50 @@ namespace AtemSharp.CodeGenerators.State;
 public class StateGenerator : CodeGeneratorBase
 {
     private static readonly string[] HardCodedNamespaces =
-        {
-            "System.ComponentModel",
-            "System.Runtime.CompilerServices",
-            "System.CodeDom.Compiler"
-        };
+    {
+        "System.ComponentModel",
+        "System.Runtime.CompilerServices",
+        "System.CodeDom.Compiler"
+    };
 
     protected override void ProcessClass(SourceProductionContext spc, INamedTypeSymbol classSymbol, ClassDeclarationSyntax classDecl)
     {
         var fields = classSymbol.GetMembers()
                                 .OfType<IFieldSymbol>()
                                 .Where(f => f.AssociatedSymbol is null)
-                                .Where(f => !f.GetAttributes().Any(a => a.AttributeClass?.Name is "IgnoreDataMember" or "IgnoreDataMemberAttribute"))
+                                .Where(f => !f.GetAttributes()
+                                              .Any(a => a.AttributeClass?.Name is "IgnoreDataMember" or "IgnoreDataMemberAttribute"))
                                 .Where(f => !f.Name.Contains("<"))
                                 .Select(ProcessField)
                                 .ToArray();
 
         var usings = HardCodedNamespaces.Concat(fields.Where(x => x.Namespace != string.Empty)
-                       .Select(x => x.Namespace))
-         .Distinct()
-         .Select(x => $"using {x};")
-         .ToArray();
+                                                      .Select(x => x.Namespace))
+                                        .Distinct()
+                                        .Select(x => $"using {x};")
+                                        .ToArray();
+
+        var propertyCopies = classSymbol.GetMembers().OfType<IPropertySymbol>()
+                                        .Where(x => x.Type.ContainingNamespace.ToString().Contains(".State"))
+                                        .Select(x => $"{x.Name}.CopyTo(target.{x.Name});")
+                                        .ToArray();
+
+        var internalCopy = classSymbol.GetMembers().OfType<IMethodSymbol>().Any(x => x.Name == "CopyToInternal")
+                               ? "CopyToInternal(target);"
+                               : string.Empty;
+
+        var copyTo = $$"""
+                       internal void CopyTo({{classSymbol.Name}} target) {
+                         {{string.Join("\n", propertyCopies)}}
+                         {{string.Join("\n", fields.Select(x => x.CopyCode))}}
+                         {{internalCopy}}
+                       }
+                       """;
+
+        if (classSymbol.GetMembers().OfType<IMethodSymbol>().Any(x => x.Name == "CopyTo"))
+        {
+            copyTo = string.Empty;
+        }
 
         spc.AddSource($"{classSymbol.Name}.g.cs", $$"""
                                                       #nullable enable
@@ -49,6 +72,9 @@ public class StateGenerator : CodeGeneratorBase
                                                         {
                                                             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
                                                         }
+
+                                                        {{copyTo}}
+
                                                       }
                                                     """);
     }
@@ -73,28 +99,29 @@ public class StateGenerator : CodeGeneratorBase
         var sendUpdateDeclaration = isReadOnly ? string.Empty : $"private partial void Send{propertyName}UpdateCommand({type} value);";
 
         var code = $$"""
-                    {{Helpers.CodeGeneratorAttribute}}
-                    public {{type}} {{propertyName}} {
-                        get => {{field.Name}};
-                        {{setterCode}}
-                    }
+                        {{Helpers.CodeGeneratorAttribute}}
+                        public {{type}} {{propertyName}} {
+                            get => {{field.Name}};
+                            {{setterCode}}
+                        }
 
-                    {{Helpers.CodeGeneratorAttribute}}
-                    internal void Update{{propertyName}}({{type}} value) {
-                        {{field.Name}} = value;
-                        {{propertyName}}Changed?.Invoke(this, EventArgs.Empty);
-                        OnPropertyChanged();
-                    }
+                        {{Helpers.CodeGeneratorAttribute}}
+                        internal void Update{{propertyName}}({{type}} value) {
+                            {{field.Name}} = value;
+                            {{propertyName}}Changed?.Invoke(this, EventArgs.Empty);
+                            OnPropertyChanged();
+                        }
 
-                    public event EventHandler? {{propertyName}}Changed;
+                        public event EventHandler? {{propertyName}}Changed;
 
-                    {{sendUpdateDeclaration}}
-                 """;
+                        {{sendUpdateDeclaration}}
+                     """;
 
         return new ProcessedField
         {
             FieldCode = code,
             Namespace = field.Type.ContainingNamespace.ToString() ?? string.Empty,
+            CopyCode = $"target.Update{propertyName}({propertyName});"
         };
     }
 
@@ -108,5 +135,6 @@ public class StateGenerator : CodeGeneratorBase
     {
         public string FieldCode { get; set; } = string.Empty;
         public string Namespace { get; set; } = string.Empty;
+        public string CopyCode { get; set; } = string.Empty;
     }
 }

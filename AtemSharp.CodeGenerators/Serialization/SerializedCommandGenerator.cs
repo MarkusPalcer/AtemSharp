@@ -60,6 +60,26 @@ public class SerializedCommandGenerator : CodeGeneratorBase
             "using System.CodeDom.Compiler;"
         }.Concat(fields.Select(x => x!.NamespaceCode)).Distinct();
 
+        var mergeCode = $$"""
+                          {{Helpers.CodeGeneratorAttribute}}
+                          internal override bool TryMergeTo(SerializedCommand other) {
+                              if (other is not {{className}} target) {
+                                  return false;
+                              }
+
+                              {{string.Join("\n", fields.Select(x => x!.MergeComparison))}}
+
+                              {{string.Join("\n", fields.Select(x => x!.MergeCode))}}
+
+                              return true;
+                          }
+                          """;
+
+        if (classSymbol.GetMembers().OfType<IMethodSymbol>().Any(x => x.Name == "TryMergeTo"))
+        {
+            mergeCode = string.Empty;
+        }
+
         var fileContent = $$"""
                             {{string.Join("\n", namespaces)}}
 
@@ -88,6 +108,8 @@ public class SerializedCommandGenerator : CodeGeneratorBase
 
                                     return buffer;
                                 }
+
+                                {{mergeCode}}
                             }
 
                             #nullable restore
@@ -105,18 +127,24 @@ public class SerializedCommandGenerator : CodeGeneratorBase
         }
 
         var propertyCode = GetPropertyCode(f);
+        var propertyName = Helpers.GetPropertyName(f);
 
         return new SerializedField
         {
             SerializationCode = serializationCode,
             PropertyCode = propertyCode,
-            NamespaceCode = Helpers.CreateNamespaceCode(f)
+            NamespaceCode = Helpers.CreateNamespaceCode(f),
+            MergeComparison = !HasProperty(f) ? $"if (target.{f.Name} != {f.Name}) {{ return false; }}" : string.Empty,
+            MergeCode = HasProperty(f) ? $"if (_{f.Name}_isDirty) {{ target.{propertyName} = {propertyName}; }}" : string.Empty,
         };
     }
 
+    private static bool HasProperty(IFieldSymbol f)
+        => !f.GetAttributes().Any(a => a.AttributeClass?.Name == "NoPropertyAttribute");
+
     private static string GetPropertyCode(IFieldSymbol f)
     {
-        if (f.GetAttributes().Any(a => a.AttributeClass?.Name == "NoPropertyAttribute"))
+        if (!HasProperty(f))
         {
             return string.Empty;
         }
@@ -130,17 +158,21 @@ public class SerializedCommandGenerator : CodeGeneratorBase
         var docComment = Helpers.GetFieldMsDocComment(f);
         var visibility = f.GetAttributes().Any(a => a.AttributeClass?.Name == "InternalPropertyAttribute") ? "internal" : "public";
 
-        var setter = f.IsReadOnly
+        var hasSetter = f.IsReadOnly || f.GetAttributes().Any(a => a.AttributeClass?.Name == "ReadOnlyAttribute");
+        var setter = hasSetter
                          ? string.Empty
                          : $$"""
                              set {
                                  {{validationCode}}
                                  {{f.Name}} = value;
                                  {{flagCode}}
+                                 _{{f.Name}}_isDirty = true;
                              }
                              """;
 
         return $$"""
+                 {{ ( hasSetter ? string.Empty : $"#pragma warning disable CS0414\nprivate bool _{f.Name}_isDirty;\n#pragma warning restore CS0414" ) }}
+
                  {{docComment}}
                  {{Helpers.CodeGeneratorAttribute}}
                  {{visibility}} {{fieldType}} {{propertyName}}
