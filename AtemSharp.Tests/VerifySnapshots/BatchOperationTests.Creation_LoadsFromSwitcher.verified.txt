@@ -1,0 +1,38 @@
+﻿{
+  Macros: [
+    {
+      Name: Name 0,
+      Description: Description 0,
+      IsUsed: true,
+      HasUnsupportedOps: true
+    },
+    {
+      Id: 1,
+      Name: Name 1,
+      Description: Description 1,
+      IsUsed: true,
+      HasUnsupportedOps: false
+    },
+    {
+      Id: 2,
+      Name: Name 2,
+      Description: Description 2,
+      IsUsed: true,
+      HasUnsupportedOps: true
+    },
+    {
+      Id: 3,
+      Name: Name 3,
+      Description: Description 3,
+      IsUsed: true,
+      HasUnsupportedOps: false
+    },
+    {
+      Id: 4,
+      Name: Name 4,
+      Description: Description 4,
+      IsUsed: true,
+      HasUnsupportedOps: true
+    }
+  ]
+}

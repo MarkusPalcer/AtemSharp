@@ -85,7 +85,7 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData>
         var second = factory();
 
         var getter = typeof(TCommand).GetProperty(propertyName)?.GetMethod ?? throw new  InvalidOperationException($"No getter for property {typeof(TCommand)}.{propertyName} found");
-        var setter = typeof(TCommand).GetProperty(propertyName)?.SetMethod ?? throw new  InvalidOperationException($"No setter for property {typeof(TCommand)}.{propertyName} found");;
+        var setter = typeof(TCommand).GetProperty(propertyName)?.SetMethod ?? throw new  InvalidOperationException($"No setter for property {typeof(TCommand)}.{propertyName} found");
 
         setter.Invoke(first, [firstValue]);
         setter.Invoke(second, [secondValue]);
@@ -104,7 +104,7 @@ public abstract class SerializedCommandTestBase<TCommand, TTestData>
         var second = factory();
 
         var getter = typeof(TCommand).GetProperty(propertyName)?.GetMethod ?? throw new  InvalidOperationException($"No getter for property {typeof(TCommand)}.{propertyName} found");
-        var setter = typeof(TCommand).GetProperty(propertyName)?.SetMethod ?? throw new  InvalidOperationException($"No setter for property {typeof(TCommand)}.{propertyName} found");;
+        var setter = typeof(TCommand).GetProperty(propertyName)?.SetMethod ?? throw new  InvalidOperationException($"No setter for property {typeof(TCommand)}.{propertyName} found");
 
         setter.Invoke(first, [firstValue]);
 

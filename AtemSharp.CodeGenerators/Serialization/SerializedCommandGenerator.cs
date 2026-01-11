@@ -171,7 +171,7 @@ public class SerializedCommandGenerator : CodeGeneratorBase
                              """;
 
         return $$"""
-                 {{ ( hasSetter ? string.Empty : $"private bool _{f.Name}_isDirty;" ) }}
+                 {{ ( hasSetter ? string.Empty : $"#pragma warning disable CS0414\nprivate bool _{f.Name}_isDirty;\n#pragma warning restore CS0414" ) }}
 
                  {{docComment}}
                  {{Helpers.CodeGeneratorAttribute}}

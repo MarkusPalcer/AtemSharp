@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using AtemSharp.Commands;
 using AtemSharp.State;
 using AtemSharp.State.Macro;
@@ -23,9 +24,11 @@ internal class BatchOperation : IBatchOperation
     }
 
     /// <inheritdoc />
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public AtemState State { get; }
 
     /// <inheritdoc />
+    [ExcludeFromCodeCoverage(Justification = "Auto-Properties aren't tested")]
     public MacroSystem Macros { get; }
 
     /// <inheritdoc />
@@ -53,6 +56,11 @@ internal class BatchOperation : IBatchOperation
     /// <inheritdoc />
     public async Task CommitAsync()
     {
+        if (_commandsToSend.Count == 0)
+        {
+            return;
+        }
+
         await _source.SendCommandsAsync(_commandsToSend);
         _commandsToSend.Clear();
     }

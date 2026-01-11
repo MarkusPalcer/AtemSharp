@@ -59,4 +59,8 @@ public partial class MacroRecorder(IBatchLike switcher)
 
         await switcher.SendCommandAsync(MacroActionCommand.InsertUserWait());
     }
+
+    internal void CopyTo(MacroRecorder target)
+    {
+    }
 }

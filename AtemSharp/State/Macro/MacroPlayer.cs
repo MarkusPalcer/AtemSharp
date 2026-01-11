@@ -45,4 +45,10 @@ public partial class MacroPlayer(IBatchLike switcher)
     {
         await switcher.SendCommandAsync(MacroActionCommand.Continue());
     }
+
+    internal void CopyTo(MacroPlayer target)
+    {
+        target.UpdatePlayLooped(_playLooped);
+        target.UpdatePlaybackIsWaitingForUserAction(_playbackIsWaitingForUserAction);
+    }
 }

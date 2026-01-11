@@ -41,6 +41,19 @@ public class StateGenerator : CodeGeneratorBase
                                ? "CopyToInternal(target);"
                                : string.Empty;
 
+        var copyTo = $$"""
+                       internal void CopyTo({{classSymbol.Name}} target) {
+                         {{string.Join("\n", propertyCopies)}}
+                         {{string.Join("\n", fields.Select(x => x.CopyCode))}}
+                         {{internalCopy}}
+                       }
+                       """;
+
+        if (classSymbol.GetMembers().OfType<IMethodSymbol>().Any(x => x.Name == "CopyTo"))
+        {
+            copyTo = string.Empty;
+        }
+
         spc.AddSource($"{classSymbol.Name}.g.cs", $$"""
                                                       #nullable enable
 
@@ -60,11 +73,8 @@ public class StateGenerator : CodeGeneratorBase
                                                             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
                                                         }
 
-                                                        internal void CopyTo({{classSymbol.Name}} target) {
-                                                          {{string.Join("\n", propertyCopies)}}
-                                                          {{string.Join("\n", fields.Select(x => x.CopyCode))}}
-                                                          {{internalCopy}}
-                                                        }
+                                                        {{copyTo}}
+
                                                       }
                                                     """);
     }
