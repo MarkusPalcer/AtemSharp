@@ -17,10 +17,28 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Restore packages
-        run: nuget restore
+        run: dotnet restore
+
+      - name: Restore tools
+        run: dotnet tool restore
 
       - name: Build
         run: dotnet build -c Release
+
+      - name: Capture Coverage
+        shell: pwsh
+        run: |
+          dotnet test --collect:"XPlat Code Coverage"
+          $coverageFiles = Get-ChildItem -Path . -Recurse -Filter coverage.cobertura.xml
+          $coveragePaths = $coverageFiles | ForEach-Object { $_.FullName }
+          $reportsArg = '"' + ($coveragePaths -join ";") + '"'
+          dotnet tool run reportgenerator  -reports:$reportsArg "-targetdir:coverage-report" "-filefilters:-*.g.cs" "-reporttypes:$reportType"
+
+      - name: Upload Coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage-report
 
       - name: Mutation testing
         run: |
