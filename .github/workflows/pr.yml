@@ -23,6 +23,7 @@ jobs:
         run: dotnet build -c Release
 
       - name: Capture Coverage
+        shell: pwsh
         run: .\RunCoverage.ps1
 
       - name: Upload Coverage report
