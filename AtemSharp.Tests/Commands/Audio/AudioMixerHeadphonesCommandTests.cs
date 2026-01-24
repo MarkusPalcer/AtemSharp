@@ -4,7 +4,7 @@ using AudioMixerHeadphonesCommand = AtemSharp.Commands.Audio.ClassicAudio.AudioM
 namespace AtemSharp.Tests.Commands.Audio;
 
 [TestFixture]
-public class AudioMixerHeadphonesCommandTests : SerializedCommandTestBase<AudioMixerHeadphonesCommand,
+public class AudioMixerHeadphonesCommandTests : TypeScriptLibrarySerializedCommandTestBase<AudioMixerHeadphonesCommand,
     AudioMixerHeadphonesCommandTests.CommandData>
 {
     protected override Range[] GetFloatingPointByteRanges()

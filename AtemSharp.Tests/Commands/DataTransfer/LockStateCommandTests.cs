@@ -3,7 +3,7 @@ using AtemSharp.Commands.DataTransfer;
 namespace AtemSharp.Tests.Commands.DataTransfer;
 
 [TestFixture]
-public class LockStateCommandTests : SerializedCommandTestBase<LockStateCommand, LockStateCommandTests.CommandData>
+public class LockStateCommandTests : TypeScriptLibrarySerializedCommandTestBase<LockStateCommand, LockStateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

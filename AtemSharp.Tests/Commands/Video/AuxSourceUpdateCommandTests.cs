@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.Video;
 
 [TestFixture]
-internal class AuxSourceUpdateCommandTests : DeserializedCommandTestBase<AuxSourceUpdateCommand,
+internal class AuxSourceUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<AuxSourceUpdateCommand,
     AuxSourceUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

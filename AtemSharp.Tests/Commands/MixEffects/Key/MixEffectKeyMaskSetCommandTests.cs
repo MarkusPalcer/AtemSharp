@@ -2,7 +2,7 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
-public class MixEffectKeyMaskSetCommandTests : SerializedCommandTestBase<AtemSharp.Commands.MixEffects.Key.MixEffectKeyMaskSetCommand, MixEffectKeyMaskSetCommandTests.CommandData>
+public class MixEffectKeyMaskSetCommandTests : TypeScriptLibrarySerializedCommandTestBase<AtemSharp.Commands.MixEffects.Key.MixEffectKeyMaskSetCommand, MixEffectKeyMaskSetCommandTests.CommandData>
 {
     protected override Range[] GetFloatingPointByteRanges() => [
         (4..6),

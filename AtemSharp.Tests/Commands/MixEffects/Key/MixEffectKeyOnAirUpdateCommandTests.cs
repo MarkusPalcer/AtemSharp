@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
 [TestFixture]
-internal class MixEffectKeyOnAirUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyOnAirUpdateCommand,
+internal class MixEffectKeyOnAirUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<MixEffectKeyOnAirUpdateCommand,
     MixEffectKeyOnAirUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

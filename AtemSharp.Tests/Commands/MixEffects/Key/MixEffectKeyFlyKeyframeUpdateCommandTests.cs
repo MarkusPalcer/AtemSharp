@@ -4,7 +4,7 @@ using AtemSharp.Types;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
-internal class MixEffectKeyFlyKeyframeUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyFlyKeyframeUpdateCommand, MixEffectKeyFlyKeyframeUpdateCommandTests.CommandData>
+internal class MixEffectKeyFlyKeyframeUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<MixEffectKeyFlyKeyframeUpdateCommand, MixEffectKeyFlyKeyframeUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

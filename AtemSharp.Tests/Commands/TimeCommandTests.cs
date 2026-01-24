@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands;
 
-public class TimeCommandTests : SerializedCommandTestBase<TimeCommand, TimeCommandTests.CommandData>
+public class TimeCommandTests : TypeScriptLibrarySerializedCommandTestBase<TimeCommand, TimeCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

@@ -9,7 +9,7 @@ namespace AtemSharp.Tests.Commands.MixEffects.Key;
 // TODO #80: Capture test data and use test class base
 //           for some reason byte 31 contains data in the TS test data and I don't know which
 [Ignore("TODO #80: Capture test data and use test class base")]
-public class MixEffectKeyDigitalVideoEffectsCommandTests : SerializedCommandTestBase<MixEffectKeyDigitalVideoEffectsCommand,
+public class MixEffectKeyDigitalVideoEffectsCommandTests : TypeScriptLibrarySerializedCommandTestBase<MixEffectKeyDigitalVideoEffectsCommand,
     MixEffectKeyDigitalVideoEffectsCommandTests.CommandData>
 {
     /// <summary>

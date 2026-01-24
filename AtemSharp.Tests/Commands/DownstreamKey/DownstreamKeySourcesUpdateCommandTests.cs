@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DownstreamKey;
 
-internal class DownstreamKeySourcesUpdateCommandTests : DeserializedCommandTestBase<DownstreamKeySourcesUpdateCommand,
+internal class DownstreamKeySourcesUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<DownstreamKeySourcesUpdateCommand,
     DownstreamKeySourcesUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

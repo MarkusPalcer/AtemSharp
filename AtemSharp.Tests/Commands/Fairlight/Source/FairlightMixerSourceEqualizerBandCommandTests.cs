@@ -3,7 +3,7 @@ using FairlightMixerSourceEqualizerBandCommand = AtemSharp.Commands.Audio.Fairli
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
-public class FairlightMixerSourceEqualizerBandCommandTests : SerializedCommandTestBase<FairlightMixerSourceEqualizerBandCommand,
+public class FairlightMixerSourceEqualizerBandCommandTests : TypeScriptLibrarySerializedCommandTestBase<FairlightMixerSourceEqualizerBandCommand,
     FairlightMixerSourceEqualizerBandCommandTests.CommandData>
 {
     protected override Range[] GetFloatingPointByteRanges() =>

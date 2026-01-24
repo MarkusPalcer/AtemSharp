@@ -4,7 +4,7 @@ using AudioRoutingOutputUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Audio
 
 namespace AtemSharp.Tests.Commands.Fairlight.AudioRouting;
 
-internal class AudioRoutingOutputUpdateCommandTests : DeserializedCommandTestBase<AudioRoutingOutputUpdateCommand,
+internal class AudioRoutingOutputUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<AudioRoutingOutputUpdateCommand,
     AudioRoutingOutputUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

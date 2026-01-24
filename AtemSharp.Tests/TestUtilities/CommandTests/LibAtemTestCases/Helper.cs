@@ -8,18 +8,7 @@ public static class Helper
 {
     public static TestCaseData<TTestData>[] LoadTestCases<TTestData>(string commandRawName) where TTestData : CommandDataBase, new()
     {
-        // Load the test data file from embedded resources
-        var assembly = Assembly.GetExecutingAssembly();
-        var resourceName = "AtemSharp.Tests.TestData.libatem-data.json";
-
-        using var stream = assembly.GetManifestResourceStream(resourceName);
-        if (stream == null)
-        {
-            throw new FileNotFoundException($"Could not find embedded resource: {resourceName}");
-        }
-
-        using var reader = new StreamReader(stream);
-        var json = reader.ReadToEnd();
+        var json = CommandTests.Helper.GetRessource("AtemSharp.Tests.TestData.libatem-data.json");
         var allTestCases = JsonConvert.DeserializeObject<PartialTestCaseData[]>(json) ?? [];
         var commandTestCases = allTestCases.Where(tc => tc.Name == commandRawName).ToArray();
 

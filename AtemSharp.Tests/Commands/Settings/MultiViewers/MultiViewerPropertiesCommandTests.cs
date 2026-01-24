@@ -7,7 +7,7 @@ namespace AtemSharp.Tests.Commands.Settings.MultiViewers;
 /// Tests for MultiViewerPropertiesCommand
 /// </summary>
 [TestFixture]
-public class MultiViewerPropertiesCommandTests : SerializedCommandTestBase<MultiViewerPropertiesCommand,
+public class MultiViewerPropertiesCommandTests : TypeScriptLibrarySerializedCommandTestBase<MultiViewerPropertiesCommand,
     MultiViewerPropertiesCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

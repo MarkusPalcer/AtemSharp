@@ -5,7 +5,7 @@ using AtemSharp.State.Video.InputChannel;
 namespace AtemSharp.Tests.Commands.Inputs;
 
 [TestFixture]
-public class InputPropertiesCommandTests : SerializedCommandTestBase<InputPropertiesCommand,
+public class InputPropertiesCommandTests : TypeScriptLibrarySerializedCommandTestBase<InputPropertiesCommand,
     InputPropertiesCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

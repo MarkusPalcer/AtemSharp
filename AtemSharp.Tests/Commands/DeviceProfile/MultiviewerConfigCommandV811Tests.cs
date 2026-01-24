@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
-internal class MultiviewerConfigCommandV811Tests : DeserializedCommandTestBase<MultiviewerConfigCommandV811,
+internal class MultiviewerConfigCommandV811Tests : TypeScriptLibraryDeserializedCommandTestBase<MultiviewerConfigCommandV811,
     MultiviewerConfigCommandV811Tests.CommandData>
 {
     public class CommandData : CommandDataBase

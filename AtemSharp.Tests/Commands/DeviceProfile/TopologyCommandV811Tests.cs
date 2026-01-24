@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
-internal class TopologyCommandV811Tests : DeserializedCommandTestBase<TopologyCommandV811, TopologyCommandV811Tests.CommandData>
+internal class TopologyCommandV811Tests : TypeScriptLibraryDeserializedCommandTestBase<TopologyCommandV811, TopologyCommandV811Tests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

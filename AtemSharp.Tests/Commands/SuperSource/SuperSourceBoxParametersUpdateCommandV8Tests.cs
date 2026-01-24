@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
-internal class SuperSourceBoxParametersUpdateCommandV8Tests : DeserializedCommandTestBase<SuperSourceBoxParametersUpdateCommandV8, SuperSourceBoxParametersUpdateCommandV8Tests.CommandData>
+internal class SuperSourceBoxParametersUpdateCommandV8Tests : TypeScriptLibraryDeserializedCommandTestBase<SuperSourceBoxParametersUpdateCommandV8, SuperSourceBoxParametersUpdateCommandV8Tests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

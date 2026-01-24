@@ -2,7 +2,7 @@ using AtemSharp.Commands.Macro;
 
 namespace AtemSharp.Tests.Commands.Macro;
 
-public class MacroRunStatusCommandTests : SerializedCommandTestBase<MacroRunStatusCommand, MacroRunStatusCommandTests.CommandData> {
+public class MacroRunStatusCommandTests : TypeScriptLibrarySerializedCommandTestBase<MacroRunStatusCommand, MacroRunStatusCommandTests.CommandData> {
     public class CommandData : CommandDataBase
     {
         public bool Loop { get; set; }

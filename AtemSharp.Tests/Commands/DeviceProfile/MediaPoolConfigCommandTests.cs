@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
 [TestFixture]
-internal class MediaPoolConfigCommandTests : DeserializedCommandTestBase<MediaPoolConfigCommand, MediaPoolConfigCommandTests.CommandData>
+internal class MediaPoolConfigCommandTests : TypeScriptLibraryDeserializedCommandTestBase<MediaPoolConfigCommand, MediaPoolConfigCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

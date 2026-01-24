@@ -3,7 +3,7 @@ using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
-public class CutCommandTests : SerializedCommandTestBase<CutCommand, CutCommandTests.CommandData>
+public class CutCommandTests : TypeScriptLibrarySerializedCommandTestBase<CutCommand, CutCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

@@ -1,13 +1,17 @@
 {
     "$comment": "This test data has been captured with Wireshark from my ATEM Mini Pro ISO",
     "commands": {
-        "DUMMY": [
+        "MSRc": [
             {
-                "name": "A display name for the test case to show in the test list",
-                "Payload": "00-00-00-00",
-                "Command": {
-                    "some": "command",
-                    "data": 4
+                "Name": "Record Macro #5",
+                "Payload": "00-05-00-09-00-13-4E-65-77-20-4D-61-63-72-6F-54-68-69-73-20-69-73-20-61-20-6E-65-77-20-4D-61-63-72-6F-00-00",
+                "ProtocolVersion": "Unknown",
+                "CommandCreationParameters": {
+                    "MacroId": 5
+                },
+                "Changes": {
+                    "Name": "New Macro",
+                    "Description": "This is a new Macro"
                 }
             }
         ]

@@ -4,7 +4,7 @@ using NSubstitute;
 
 namespace AtemSharp.Tests.Commands.Macro;
 
-public class MacroPropertiesCommandTests : SerializedCommandTestBase<MacroPropertiesCommand, MacroPropertiesCommandTests.CommandData>
+public class MacroPropertiesCommandTests : TypeScriptLibrarySerializedCommandTestBase<MacroPropertiesCommand, MacroPropertiesCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

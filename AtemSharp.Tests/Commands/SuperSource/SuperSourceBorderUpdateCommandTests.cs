@@ -4,7 +4,7 @@ using AtemSharp.Types.Border;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
-internal class SuperSourceBorderUpdateCommandTests : DeserializedCommandTestBase<SuperSourceBorderUpdateCommand,
+internal class SuperSourceBorderUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<SuperSourceBorderUpdateCommand,
     SuperSourceBorderUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

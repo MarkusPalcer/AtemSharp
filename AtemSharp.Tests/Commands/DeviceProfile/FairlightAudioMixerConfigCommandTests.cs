@@ -6,7 +6,7 @@ using AtemSharp.Tests.TestUtilities;
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
 [TestFixture]
-internal class FairlightAudioMixerConfigCommandTests : DeserializedCommandTestBase<FairlightAudioMixerConfigCommand,
+internal class FairlightAudioMixerConfigCommandTests : TypeScriptLibraryDeserializedCommandTestBase<FairlightAudioMixerConfigCommand,
     FairlightAudioMixerConfigCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

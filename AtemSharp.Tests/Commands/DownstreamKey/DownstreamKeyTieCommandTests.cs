@@ -4,7 +4,7 @@ using AtemSharp.State.Video.DownstreamKeyer;
 namespace AtemSharp.Tests.Commands.DownstreamKey;
 
 [TestFixture]
-public class DownstreamKeyTieCommandTests : SerializedCommandTestBase<DownstreamKeyTieCommand, DownstreamKeyTieCommandTests.CommandData>
+public class DownstreamKeyTieCommandTests : TypeScriptLibrarySerializedCommandTestBase<DownstreamKeyTieCommand, DownstreamKeyTieCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

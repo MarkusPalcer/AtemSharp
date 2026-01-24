@@ -4,7 +4,7 @@ using AtemSharp.State.Video.SuperSource;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
-internal class SuperSourcePropertiesUpdateV8CommandTests : DeserializedCommandTestBase<SuperSourcePropertiesUpdateV8Command,
+internal class SuperSourcePropertiesUpdateV8CommandTests : TypeScriptLibraryDeserializedCommandTestBase<SuperSourcePropertiesUpdateV8Command,
     SuperSourcePropertiesUpdateV8CommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

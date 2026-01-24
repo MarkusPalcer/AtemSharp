@@ -6,7 +6,7 @@ using FairlightMixerMasterEqualizerBandUpdateCommand =
 
 namespace AtemSharp.Tests.Commands.Fairlight.Master;
 
-internal class FairlightMixerMasterEqualizerBandUpdateCommandTests : DeserializedCommandTestBase<
+internal class FairlightMixerMasterEqualizerBandUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<
     FairlightMixerMasterEqualizerBandUpdateCommand, FairlightMixerMasterEqualizerBandUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

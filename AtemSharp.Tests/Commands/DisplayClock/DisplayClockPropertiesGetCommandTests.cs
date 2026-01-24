@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 namespace AtemSharp.Tests.Commands.DisplayClock;
 
 [TestFixture]
-internal class DisplayClockPropertiesGetCommandTests : DeserializedCommandTestBase<DisplayClockPropertiesGetCommand,
+internal class DisplayClockPropertiesGetCommandTests : TypeScriptLibraryDeserializedCommandTestBase<DisplayClockPropertiesGetCommand,
     DisplayClockPropertiesGetCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

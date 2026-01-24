@@ -5,7 +5,7 @@ using AtemSharp.State.Ports;
 
 namespace AtemSharp.Tests.Commands.Fairlight;
 
-internal class FairlightMixerInputUpdateV811CommandTests : DeserializedCommandTestBase<FairlightMixerInputUpdateV811Command, FairlightMixerInputUpdateV811CommandTests.CommandData>
+internal class FairlightMixerInputUpdateV811CommandTests : TypeScriptLibraryDeserializedCommandTestBase<FairlightMixerInputUpdateV811Command, FairlightMixerInputUpdateV811CommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

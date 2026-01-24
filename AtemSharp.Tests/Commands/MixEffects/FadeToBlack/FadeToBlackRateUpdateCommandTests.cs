@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.MixEffects.FadeToBlack;
 
-internal class FadeToBlackRateUpdateCommandTests : DeserializedCommandTestBase<FadeToBlackRateUpdateCommand,
+internal class FadeToBlackRateUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<FadeToBlackRateUpdateCommand,
     FadeToBlackRateUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

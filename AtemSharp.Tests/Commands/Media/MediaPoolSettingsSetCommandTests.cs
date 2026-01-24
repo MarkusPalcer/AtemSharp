@@ -3,7 +3,7 @@ using AtemSharp.State.Settings;
 
 namespace AtemSharp.Tests.Commands.Media;
 
-public class MediaPoolSettingsSetCommandTests : SerializedCommandTestBase<MediaPoolSettingsSetCommand, MediaPoolSettingsSetCommandTests.CommandData>
+public class MediaPoolSettingsSetCommandTests : TypeScriptLibrarySerializedCommandTestBase<MediaPoolSettingsSetCommand, MediaPoolSettingsSetCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

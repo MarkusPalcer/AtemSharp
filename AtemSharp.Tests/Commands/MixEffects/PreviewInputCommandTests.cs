@@ -4,7 +4,7 @@ using AtemSharp.State.Video.MixEffect;
 namespace AtemSharp.Tests.Commands.MixEffects;
 
 [TestFixture]
-public class PreviewInputCommandTests : SerializedCommandTestBase<PreviewInputCommand,
+public class PreviewInputCommandTests : TypeScriptLibrarySerializedCommandTestBase<PreviewInputCommand,
     PreviewInputCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

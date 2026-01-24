@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Streaming;
 
-public class StreamingServiceCommandTests : SerializedCommandTestBase<StreamingServiceCommand, StreamingServiceCommandTests.CommandData>
+public class StreamingServiceCommandTests : TypeScriptLibrarySerializedCommandTestBase<StreamingServiceCommand, StreamingServiceCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

@@ -2,7 +2,7 @@ using FairlightMixerSourceResetPeakLevelsCommand = AtemSharp.Commands.Audio.Fair
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
-public class FairlightMixerSourceResetPeakLevelsCommandTests : SerializedCommandTestBase<FairlightMixerSourceResetPeakLevelsCommand, FairlightMixerSourceResetPeakLevelsCommandTests.CommandData>
+public class FairlightMixerSourceResetPeakLevelsCommandTests : TypeScriptLibrarySerializedCommandTestBase<FairlightMixerSourceResetPeakLevelsCommand, FairlightMixerSourceResetPeakLevelsCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

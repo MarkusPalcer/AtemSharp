@@ -4,7 +4,7 @@ using AtemSharp.State.Video.DownstreamKeyer;
 namespace AtemSharp.Tests.Commands.DownstreamKey;
 
 [TestFixture]
-public class DownstreamKeyGeneralCommandTests : SerializedCommandTestBase<DownstreamKeyGeneralCommand,
+public class DownstreamKeyGeneralCommandTests : TypeScriptLibrarySerializedCommandTestBase<DownstreamKeyGeneralCommand,
     DownstreamKeyGeneralCommandTests.CommandData>
 {
     protected override Range[] GetFloatingPointByteRanges() => [

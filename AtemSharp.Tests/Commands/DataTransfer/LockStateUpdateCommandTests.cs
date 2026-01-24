@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.DataTransfer;
 
 [TestFixture]
-internal class LockStateUpdateCommandTests : DeserializedCommandTestBase<LockStateUpdateCommand, LockStateUpdateCommandTests.CommandData>
+internal class LockStateUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<LockStateUpdateCommand, LockStateUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

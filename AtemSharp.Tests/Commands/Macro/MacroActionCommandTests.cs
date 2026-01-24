@@ -5,7 +5,7 @@ using NSubstitute;
 
 namespace AtemSharp.Tests.Commands.Macro;
 
-public class MacroActionCommandTests : SerializedCommandTestBase<MacroActionCommand, MacroActionCommandTests.CommandData>
+public class MacroActionCommandTests : TypeScriptLibrarySerializedCommandTestBase<MacroActionCommand, MacroActionCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

@@ -3,7 +3,7 @@ using AtemSharp.Tests.Batch;
 
 namespace AtemSharp.Tests.Commands.Macro;
 
-public class MacroAddTimedPauseCommandTests : SerializedCommandTestBase<MacroAddTimedPauseCommand,
+public class MacroAddTimedPauseCommandTests : TypeScriptLibrarySerializedCommandTestBase<MacroAddTimedPauseCommand,
     MacroAddTimedPauseCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

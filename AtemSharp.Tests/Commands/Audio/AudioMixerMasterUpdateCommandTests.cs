@@ -5,7 +5,7 @@ using AudioMixerMasterUpdateCommand = AtemSharp.Commands.Audio.ClassicAudio.Audi
 namespace AtemSharp.Tests.Commands.Audio;
 
 [TestFixture]
-internal class AudioMixerMasterUpdateCommandTests : DeserializedCommandTestBase<AudioMixerMasterUpdateCommand,
+internal class AudioMixerMasterUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<AudioMixerMasterUpdateCommand,
     AudioMixerMasterUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

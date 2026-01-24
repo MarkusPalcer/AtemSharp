@@ -4,7 +4,7 @@ using AudioMixerResetPeaksCommand = AtemSharp.Commands.Audio.ClassicAudio.AudioM
 namespace AtemSharp.Tests.Commands.Audio;
 
 [TestFixture]
-public class AudioMixerResetPeaksCommandTests : SerializedCommandTestBase<AudioMixerResetPeaksCommand,
+public class AudioMixerResetPeaksCommandTests : TypeScriptLibrarySerializedCommandTestBase<AudioMixerResetPeaksCommand,
     AudioMixerResetPeaksCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

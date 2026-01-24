@@ -5,7 +5,7 @@ using AudioMixerHeadphonesUpdateCommand = AtemSharp.Commands.Audio.ClassicAudio.
 namespace AtemSharp.Tests.Commands.Audio;
 
 [TestFixture]
-internal class AudioMixerHeadphonesUpdateCommandTests : DeserializedCommandTestBase<AudioMixerHeadphonesUpdateCommand,
+internal class AudioMixerHeadphonesUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<AudioMixerHeadphonesUpdateCommand,
     AudioMixerHeadphonesUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

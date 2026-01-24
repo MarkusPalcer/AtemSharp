@@ -3,7 +3,7 @@ using AtemSharp.State.Video.MixEffect;
 
 namespace AtemSharp.Tests.Commands.MixEffects.FadeToBlack;
 
-public class FadeToBlackAutoCommandTests : SerializedCommandTestBase<FadeToBlackAutoCommand, FadeToBlackAutoCommandTests.CommandData>
+public class FadeToBlackAutoCommandTests : TypeScriptLibrarySerializedCommandTestBase<FadeToBlackAutoCommand, FadeToBlackAutoCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

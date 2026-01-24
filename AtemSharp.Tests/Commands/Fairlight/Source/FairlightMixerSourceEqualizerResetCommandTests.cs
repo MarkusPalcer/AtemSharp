@@ -2,7 +2,7 @@ using FairlightMixerSourceEqualizerResetCommand = AtemSharp.Commands.Audio.Fairl
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
-public class FairlightMixerSourceEqualizerResetCommandTests : SerializedCommandTestBase<FairlightMixerSourceEqualizerResetCommand, FairlightMixerSourceEqualizerResetCommandTests.CommandData>
+public class FairlightMixerSourceEqualizerResetCommandTests : TypeScriptLibrarySerializedCommandTestBase<FairlightMixerSourceEqualizerResetCommand, FairlightMixerSourceEqualizerResetCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

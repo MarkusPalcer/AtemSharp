@@ -4,16 +4,15 @@ using AtemSharp.Communication;
 using AtemSharp.State;
 using AtemSharp.State.Info;
 using AtemSharp.State.Macro;
-using AtemSharp.Tests.TestUtilities.CommandTests;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using NSubstitute;
 
 namespace AtemSharp.Tests.Commands;
 
-internal abstract class DeserializedCommandTestBase<TCommand, TTestData>
+internal abstract class TypeScriptLibraryDeserializedCommandTestBase<TCommand, TTestData>
     where TCommand : IDeserializedCommand
-    where TTestData : DeserializedCommandTestBase<TCommand, TTestData>.CommandDataBase, new()
+    where TTestData : TypeScriptLibraryDeserializedCommandTestBase<TCommand, TTestData>.CommandDataBase, new()
 {
     private class TestStateHolder : IStateHolder
     {
@@ -36,7 +35,7 @@ internal abstract class DeserializedCommandTestBase<TCommand, TTestData>
 
     public static IEnumerable<TestCaseData> GetTestCases()
     {
-        var testCases = Helper.GetTestCases<TCommand, TTestData>().ToArray();
+        var testCases = TestUtilities.CommandTests.LibAtemTestCases.Helper.GetTestCases<TCommand, TTestData>().ToArray().ToArray();
         Assert.That(testCases.Length, Is.GreaterThan(0), "No test cases found");
         return testCases;
     }

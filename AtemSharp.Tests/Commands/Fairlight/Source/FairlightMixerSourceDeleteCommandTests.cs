@@ -4,7 +4,7 @@ using FairlightMixerSourceDeleteCommand = AtemSharp.Commands.Audio.Fairlight.Sou
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
-internal class FairlightMixerSourceDeleteCommandTests : DeserializedCommandTestBase<FairlightMixerSourceDeleteCommand,
+internal class FairlightMixerSourceDeleteCommandTests : TypeScriptLibraryDeserializedCommandTestBase<FairlightMixerSourceDeleteCommand,
     FairlightMixerSourceDeleteCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

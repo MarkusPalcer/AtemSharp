@@ -3,7 +3,7 @@ using AtemSharp.State.Audio.Fairlight;
 
 namespace AtemSharp.Tests.Commands.Fairlight;
 
-public class FairlightMixerInputV811CommandTests : SerializedCommandTestBase<FairlightMixerInputV811Command,
+public class FairlightMixerInputV811CommandTests : TypeScriptLibrarySerializedCommandTestBase<FairlightMixerInputV811Command,
     FairlightMixerInputV811CommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

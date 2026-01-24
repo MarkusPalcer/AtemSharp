@@ -4,7 +4,7 @@ using AtemSharp.State.Video.MixEffect;
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
 [TestFixture]
-public class TransitionStingerCommandTests : SerializedCommandTestBase<TransitionStingerCommand,
+public class TransitionStingerCommandTests : TypeScriptLibrarySerializedCommandTestBase<TransitionStingerCommand,
     TransitionStingerCommandTests.CommandData>
 {
     /// <inheritdoc />

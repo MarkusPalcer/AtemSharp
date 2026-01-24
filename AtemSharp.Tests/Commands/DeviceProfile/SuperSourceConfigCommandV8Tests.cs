@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
 [TestFixture]
-internal class SuperSourceConfigCommandV8Tests : DeserializedCommandTestBase<SuperSourceConfigCommandV8,
+internal class SuperSourceConfigCommandV8Tests : TypeScriptLibraryDeserializedCommandTestBase<SuperSourceConfigCommandV8,
     SuperSourceConfigCommandV8Tests.CommandData>
 {
     public class CommandData : CommandDataBase

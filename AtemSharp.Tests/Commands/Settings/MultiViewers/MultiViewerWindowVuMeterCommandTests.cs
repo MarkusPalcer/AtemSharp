@@ -4,7 +4,7 @@ using AtemSharp.State.Settings.MultiViewer;
 namespace AtemSharp.Tests.Commands.Settings.MultiViewers;
 
 [TestFixture]
-public class MultiViewerWindowVuMeterCommandTests : SerializedCommandTestBase<MultiViewerWindowVuMeterCommand,
+public class MultiViewerWindowVuMeterCommandTests : TypeScriptLibrarySerializedCommandTestBase<MultiViewerWindowVuMeterCommand,
     MultiViewerWindowVuMeterCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

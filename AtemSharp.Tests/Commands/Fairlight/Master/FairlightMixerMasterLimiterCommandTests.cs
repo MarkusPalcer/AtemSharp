@@ -3,7 +3,7 @@ using FairlightMixerMasterLimiterCommand = AtemSharp.Commands.Audio.Fairlight.Ma
 
 namespace AtemSharp.Tests.Commands.Fairlight.Master;
 
-public class FairlightMixerMasterLimiterCommandTests : SerializedCommandTestBase<FairlightMixerMasterLimiterCommand, FairlightMixerMasterLimiterCommandTests.CommandData>
+public class FairlightMixerMasterLimiterCommandTests : TypeScriptLibrarySerializedCommandTestBase<FairlightMixerMasterLimiterCommand, FairlightMixerMasterLimiterCommandTests.CommandData>
 {
     protected override Range[] GetFloatingPointByteRanges() =>
     [

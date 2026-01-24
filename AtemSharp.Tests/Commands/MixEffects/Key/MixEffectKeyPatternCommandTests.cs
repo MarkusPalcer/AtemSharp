@@ -4,7 +4,7 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
-public class MixEffectKeyPatternCommandTests : SerializedCommandTestBase<MixEffectKeyPatternCommand, MixEffectKeyPatternCommandTests.CommandData>
+public class MixEffectKeyPatternCommandTests : TypeScriptLibrarySerializedCommandTestBase<MixEffectKeyPatternCommand, MixEffectKeyPatternCommandTests.CommandData>
 {
     protected override Range[] GetFloatingPointByteRanges() => [
         (4..6),   // Size

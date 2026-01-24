@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Streaming;
 
-public class StreamingAudioBitratesCommandTests : SerializedCommandTestBase<StreamingAudioBitratesCommand, StreamingAudioBitratesCommandTests.CommandData>
+public class StreamingAudioBitratesCommandTests : TypeScriptLibrarySerializedCommandTestBase<StreamingAudioBitratesCommand, StreamingAudioBitratesCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

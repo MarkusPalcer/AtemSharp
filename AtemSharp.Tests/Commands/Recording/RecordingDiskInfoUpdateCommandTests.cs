@@ -4,7 +4,7 @@ using AtemSharp.State.Recording;
 
 namespace AtemSharp.Tests.Commands.Recording;
 
-internal class RecordingDiskInfoUpdateCommandTests : DeserializedCommandTestBase<RecordingDiskInfoUpdateCommand, RecordingDiskInfoUpdateCommandTests.CommandData>
+internal class RecordingDiskInfoUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<RecordingDiskInfoUpdateCommand, RecordingDiskInfoUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.Settings.MultiViewers;
 
 [TestFixture]
-internal class MultiViewerWindowSafeAreaUpdateCommandTests : DeserializedCommandTestBase<MultiViewerWindowSafeAreaUpdateCommand,
+internal class MultiViewerWindowSafeAreaUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<MultiViewerWindowSafeAreaUpdateCommand,
     MultiViewerWindowSafeAreaUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
