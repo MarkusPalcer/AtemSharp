@@ -5,6 +5,9 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    </PropertyGroup>
+
+    <PropertyGroup>
         <PackageId>AtemSharp</PackageId>
         <Authors>Markus Palcer</Authors>
         <Description>C# library for connecting with ATEM switchers</Description>

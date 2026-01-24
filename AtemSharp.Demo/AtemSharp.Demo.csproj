@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\AtemSharp.Json\AtemSharp.Json.csproj" />
       <ProjectReference Include="..\AtemSharp\AtemSharp.csproj" />
     </ItemGroup>
 

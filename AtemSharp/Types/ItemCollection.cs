@@ -87,4 +87,6 @@ public class ItemCollection<TId, TItem> : IEnumerable<TItem>
     {
         _items.Remove(id);
     }
+
+    public IReadOnlyDictionary<TId, TItem> AsReadOnly() => _items.AsReadOnly();
 }
