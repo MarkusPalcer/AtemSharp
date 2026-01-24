@@ -1,3 +1,7 @@
+param (
+    [switch]$openhtml = $false
+)
+
 # Remove old reports
 Get-ChildItem -Path . -Recurse -Filter coverage.cobertura.xml | Remove-Item
 
@@ -30,8 +34,13 @@ dotnet tool restore
 dotnet tool run reportgenerator `
     -reports:$reportsArg `
     "-targetdir:$targetDir" `
-    "-filefilters:-*.g.cs" `
-    "-reporttypes:$reportType"
+    "-reporttypes:$reportType" `
+    "-filefilters:-*.g.cs"
 
-New-Item -Path "$targetDir" -Name ".gitignore" -ItemType "File" -Value "*" -Force
-Write-Host "Coverage report written to coverage-report\index.html"
+New-Item -Path "$targetDir" -Name ".gitignore" -ItemType "File" -Value "*" -Force | Out-Null
+Write-Host "Coverage report written to $((Get-Item .).FullName)\coverage-report\index.html"
+
+# Open the HTML report automatically (Windows)
+if ($openhtml) {
+    Start-Process "coverage-report\index.html"
+}
