@@ -45,7 +45,7 @@ public class ItemCollectionConverter : JsonConverter
         serializer.Serialize(writer, dictionary);
     }
 
-    public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+    public override object ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
     {
         throw new InvalidOperationException("Parsing JSON is not supported.");
     }

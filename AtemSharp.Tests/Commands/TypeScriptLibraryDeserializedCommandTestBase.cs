@@ -35,7 +35,7 @@ internal abstract class TypeScriptLibraryDeserializedCommandTestBase<TCommand, T
 
     public static IEnumerable<TestCaseData> GetTestCases()
     {
-        var testCases = TestUtilities.CommandTests.LibAtemTestCases.Helper.GetTestCases<TCommand, TTestData>().ToArray().ToArray();
+        var testCases = TestUtilities.CommandTests.LibAtemTestCases.Helper.GetTestCases<TCommand, TTestData>().ToArray();
         Assert.That(testCases.Length, Is.GreaterThan(0), "No test cases found");
         return testCases;
     }

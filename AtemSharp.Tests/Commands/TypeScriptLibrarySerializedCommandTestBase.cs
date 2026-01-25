@@ -19,42 +19,6 @@ public abstract class TypeScriptLibrarySerializedCommandTestBase<TCommand, TTest
         return [];
     }
 
-    private bool IsFloatingPointByte(int index, int totalLength)
-    {
-        var ranges = GetFloatingPointByteRanges();
-        foreach (var range in ranges)
-        {
-            var (start, length) = range.GetOffsetAndLength(totalLength);
-            var end = start + length - 1;
-            if (index >= start && index <= end)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private bool AreApproximatelyEqual(byte[] actual, byte[] expected)
-    {
-        if (actual.Length != expected.Length)
-        {
-            return false;
-        }
-
-        for (var i = 0; i < actual.Length; i++)
-        {
-            var tolerance = IsFloatingPointByte(i, actual.Length) ? 2 : 0;
-            if (Math.Abs(actual[i] - expected[i]) > tolerance)
-            {
-                // Check if its within the tolerance with carry
-                return !(Math.Abs(actual[i] - expected[i]) < 256 - tolerance);
-            }
-        }
-
-        return true;
-    }
-
     [UsedImplicitly(ImplicitUseTargetFlags.WithInheritors | ImplicitUseTargetFlags.WithMembers)]
     public abstract class CommandDataBase : TestUtilities.CommandTests.CommandDataBase
     {
@@ -63,7 +27,7 @@ public abstract class TypeScriptLibrarySerializedCommandTestBase<TCommand, TTest
 
     public static IEnumerable<TestCaseData> GetTestCases()
     {
-        var testCases = TestUtilities.CommandTests.LibAtemTestCases.Helper.GetTestCases<TCommand, TTestData>().ToArray().ToArray();
+        var testCases = TestUtilities.CommandTests.LibAtemTestCases.Helper.GetTestCases<TCommand, TTestData>().ToArray();
         Assert.That(testCases.Length, Is.GreaterThan(0), "No test cases found");
         return testCases;
     }
@@ -115,7 +79,6 @@ public abstract class TypeScriptLibrarySerializedCommandTestBase<TCommand, TTest
 
     public void TestPropertyMerging_WithWrongType(Func<TCommand> factory)
     {
-        var command = factory();
         Assert.That(factory().TryMergeTo(new MergeableCommand(2)), Is.False);
     }
 

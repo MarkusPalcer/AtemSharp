@@ -1,5 +1,4 @@
 using System.Reflection;
-using Argon;
 using AtemSharp.State.Settings;
 
 namespace AtemSharp.Tests.TestUtilities.CommandTests;
