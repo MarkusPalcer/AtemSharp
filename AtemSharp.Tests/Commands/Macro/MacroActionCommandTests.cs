@@ -1,3 +1,4 @@
+using Argon;
 using AtemSharp.Commands.Macro;
 using AtemSharp.State.Macro;
 using AtemSharp.Tests.Batch;
@@ -5,29 +6,26 @@ using NSubstitute;
 
 namespace AtemSharp.Tests.Commands.Macro;
 
-public class MacroActionCommandTests : TypeScriptLibrarySerializedCommandTestBase<MacroActionCommand, MacroActionCommandTests.CommandData>
+public class MacroActionCommandTests : SerializedCommandTestBase<MacroActionCommand>
 {
-    public class CommandData : CommandDataBase
-    {
-        public ushort Index { get; set; }
+    public record CreationParameters(ushort MacroId, MacroAction Action);
 
-        public MacroAction Action { get; set; }
-    }
-
-    protected override MacroActionCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
+    protected override MacroActionCommand CreateCommand(IStateHolder state, JObject? creationParameters)
     {
-        var macro = new AtemSharp.State.Macro.Macro(Substitute.For<IAtemSwitcher>()) { Id = testCase.Command.Index };
-        return testCase.Command.Action switch
+        var parameters = creationParameters!.ToObject<CreationParameters>()!;
+
+        return parameters.Action switch
         {
-            MacroAction.Run => MacroActionCommand.Run(macro),
+            MacroAction.Delete => MacroActionCommand.Delete(state.Macros[parameters.MacroId]),
+            MacroAction.Run => MacroActionCommand.Run(state.Macros[parameters.MacroId]),
+            MacroAction.Continue => MacroActionCommand.Continue(),
             MacroAction.Stop => MacroActionCommand.Stop(),
             MacroAction.StopRecord => MacroActionCommand.StopRecord(),
             MacroAction.InsertUserWait => MacroActionCommand.InsertUserWait(),
-            MacroAction.Continue => MacroActionCommand.Continue(),
-            MacroAction.Delete => MacroActionCommand.Delete(macro),
             _ => throw new ArgumentOutOfRangeException()
         };
     }
+
 
     [Test]
     public void LatestRunWins()

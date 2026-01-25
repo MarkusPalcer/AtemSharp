@@ -14,6 +14,52 @@
                     "Description": "This is a new Macro"
                 }
             }
+        ],
+        "MAct": [
+            {
+                "Name": "Delete Macro #0",
+                "Payload": "00-00-05-00",
+                "CommandCreationParameters": {
+                    "MacroId": 0,
+                    "Action": "Delete"
+                }
+            },
+            {
+                "Name": "Run Macro #5",
+                "Payload": "00-05-00-00",
+                "CommandCreationParameters": {
+                    "MacroId": 5,
+                    "Action": "Run"
+                }
+            },
+            {
+                "Name": "Continue",
+                "Payload": "FF-FF-04-00",
+                "CommandCreationParameters": {
+                    "Action": "Continue"
+                }
+            },
+            {
+                "Name": "Stop",
+                "Payload": "FF-FF-01-00",
+                "CommandCreationParameters": {
+                    "Action": "Stop"
+                }
+            },
+            {
+                "Name": "Stop Recording",
+                "Payload": "FF-FF-02-00",
+                "CommandCreationParameters": {
+                    "Action": "StopRecord"
+                }
+            },
+            {
+                "Name": "Insert 'Wait for user'",
+                "Payload": "FF-FF-03-00",
+                "CommandCreationParameters": {
+                    "Action": "InsertUserWait"
+                }
+            }
         ]
     }
 }
