@@ -1,30 +1,17 @@
+using Argon;
 using AtemSharp.Commands.Macro;
 using AtemSharp.State.Macro;
 using NSubstitute;
 
 namespace AtemSharp.Tests.Commands.Macro;
 
-public class MacroPropertiesCommandTests : TypeScriptLibrarySerializedCommandTestBase<MacroPropertiesCommand, MacroPropertiesCommandTests.CommandData>
+public class MacroPropertiesCommandTests : SerializedCommandTestBase<MacroPropertiesCommand>
 {
-    public class CommandData : CommandDataBase
+    protected override MacroPropertiesCommand CreateCommand(IStateHolder state, JObject? creationParameters)
     {
-        public ushort Index { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
+        return new MacroPropertiesCommand(state.Macros[creationParameters!["MacroId"]!.ToObject<ushort>()]);
     }
 
-    protected override MacroPropertiesCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
-    {
-        var macro = new AtemSharp.State.Macro.Macro(Substitute.For<IAtemSwitcher>())
-        {
-            Id = testCase.Command.Index,
-        };
-
-        macro.UpdateName(testCase.Command.Name);
-        macro.UpdateDescription(testCase.Command.Description);
-
-        return new MacroPropertiesCommand(macro);
-    }
 
     [Test]
     public void DoesNotMergeIfIndexIsDifferent()
@@ -37,7 +24,7 @@ public class MacroPropertiesCommandTests : TypeScriptLibrarySerializedCommandTes
         state[3].UpdateName("Name2");
 
         var first = new MacroPropertiesCommand(state[2]);
-        var second = new  MacroPropertiesCommand(state[3]);
+        var second = new MacroPropertiesCommand(state[3]);
 
         Assert.That(second.TryMergeTo(first), Is.False);
         Assert.Multiple(() =>
@@ -62,7 +49,7 @@ public class MacroPropertiesCommandTests : TypeScriptLibrarySerializedCommandTes
             Name = "Name1",
             Description = "Desc1"
         };
-        var second = new  MacroPropertiesCommand(state[2])
+        var second = new MacroPropertiesCommand(state[2])
         {
             Name = "Name2"
         };

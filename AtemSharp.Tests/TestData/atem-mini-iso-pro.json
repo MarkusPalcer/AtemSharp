@@ -76,6 +76,39 @@
                     "Frames": 25
                 }
             }
+        ],
+        "CMPr": [
+            {
+                "Name": "Change name",
+                "Payload": "01-00-00-01-00-08-00-00-4E-65-77-20-4E-61-6D-65",
+                "CommandCreationParameters": {
+                    "MacroId": 1
+                },
+                "Changes": {
+                    "Name": "New Name"
+                }
+            },
+            {
+                "Name": "Change description",
+                "Payload": "02-00-00-01-00-00-00-0F-4E-65-77-20-44-65-73-63-72-69-70-74-69-6F-6E-00",
+                "CommandCreationParameters": {
+                    "MacroId": 1
+                },
+                "Changes": {
+                    "Description": "New Description"
+                }
+            },
+            {
+                "Name": "Change both",
+                "Payload": "03-00-00-00-00-08-00-0F-4E-65-77-20-4E-61-6D-65-4E-65-77-20-44-65-73-63-72-69-70-74-69-6F-6E-00",
+                "CommandCreationParameters": {
+                    "MacroId": 0
+                },
+                "Changes": {
+                    "Name": "New Name",
+                    "Description": "New Description"
+                }
+            }
         ]
     }
 }
