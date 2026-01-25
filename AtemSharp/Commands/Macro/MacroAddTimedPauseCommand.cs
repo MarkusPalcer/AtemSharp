@@ -10,13 +10,5 @@ public partial class MacroAddTimedPauseCommand : SerializedCommand
     [SerializedField(2)] private ushort _frames;
 
     internal override bool TryMergeTo(SerializedCommand other)
-    {
-        if (other is not MacroAddTimedPauseCommand target)
-        {
-            return false;
-        }
-
-        target.Frames += Frames;
-        return true;
-    }
+        => false;
 }

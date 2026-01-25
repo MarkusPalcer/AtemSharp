@@ -60,6 +60,22 @@
                     "Action": "InsertUserWait"
                 }
             }
+        ],
+        "MSlp": [
+            {
+                "Name": "10 frames",
+                "Payload": "00-00-00-0A",
+                "Changes": {
+                    "Frames": 10
+                }
+            },
+            {
+                "Name": "25 frames",
+                "Payload": "00-00-00-19",
+                "Changes": {
+                    "Frames": 25
+                }
+            }
         ]
     }
 }
