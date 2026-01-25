@@ -5,7 +5,7 @@ using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
-internal class MultiviewerConfigCommandTests : DeserializedCommandTestBase<MultiviewerConfigCommand,
+internal class MultiviewerConfigCommandTests : TypeScriptLibraryDeserializedCommandTestBase<MultiviewerConfigCommand,
     MultiviewerConfigCommandTests.CommandData>
 {
     [MaxProtocolVersion(ProtocolVersion.V8_0_1)]

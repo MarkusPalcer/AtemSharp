@@ -7,7 +7,7 @@ using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
-internal class SuperSourcePropertiesUpdateCommandTests : DeserializedCommandTestBase<SuperSourcePropertiesUpdateCommand,
+internal class SuperSourcePropertiesUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<SuperSourcePropertiesUpdateCommand,
     SuperSourcePropertiesUpdateCommandTests.CommandData>
 {
     [MaxProtocolVersion(ProtocolVersion.V7_5_2)]

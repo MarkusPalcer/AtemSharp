@@ -7,7 +7,7 @@ namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
 // TODO #82: Capture real test data and verify implementation and tests
 [Ignore("Verify correct byte sequence with ATEM Control software and compare with generated serialization")]
-public class MixEffectKeyFlyKeyframeCommandTests : SerializedCommandTestBase<MixEffectKeyFlyKeyframeCommand,
+public class MixEffectKeyFlyKeyframeCommandTests : TypeScriptLibrarySerializedCommandTestBase<MixEffectKeyFlyKeyframeCommand,
     MixEffectKeyFlyKeyframeCommandTests.CommandData>
 {
     protected override Range[] GetFloatingPointByteRanges() =>

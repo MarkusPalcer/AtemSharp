@@ -3,7 +3,7 @@ using AtemSharp.State.Video.SuperSource;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
-public class SuperSourcePropertiesV8CommandTests : SerializedCommandTestBase<SuperSourcePropertiesV8Command,
+public class SuperSourcePropertiesV8CommandTests : TypeScriptLibrarySerializedCommandTestBase<SuperSourcePropertiesV8Command,
     SuperSourcePropertiesV8CommandTests.CommandData>
 {
     protected override Range[] GetFloatingPointByteRanges() =>

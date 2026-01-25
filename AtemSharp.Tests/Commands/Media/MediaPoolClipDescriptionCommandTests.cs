@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.Media;
 
-internal class MediaPoolClipDescriptionCommandTests : DeserializedCommandTestBase<MediaPoolClipDescriptionCommand , MediaPoolClipDescriptionCommandTests.CommandData>
+internal class MediaPoolClipDescriptionCommandTests : TypeScriptLibraryDeserializedCommandTestBase<MediaPoolClipDescriptionCommand , MediaPoolClipDescriptionCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

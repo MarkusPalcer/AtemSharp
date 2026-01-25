@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.Settings.MultiViewers;
 
 [TestFixture]
-internal class MultiViewerVuOpacityUpdateCommandTests : DeserializedCommandTestBase<MultiViewerVuOpacityUpdateCommand,
+internal class MultiViewerVuOpacityUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<MultiViewerVuOpacityUpdateCommand,
     MultiViewerVuOpacityUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

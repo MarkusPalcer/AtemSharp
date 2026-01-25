@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands;
 
 [TestFixture]
-internal class PowerStatusCommandTests : DeserializedCommandTestBase<PowerStatusCommand, PowerStatusCommandTests.CommandData>
+internal class PowerStatusCommandTests : TypeScriptLibraryDeserializedCommandTestBase<PowerStatusCommand, PowerStatusCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

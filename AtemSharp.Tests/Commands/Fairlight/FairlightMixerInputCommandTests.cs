@@ -5,7 +5,7 @@ using FairlightMixerInputCommand = AtemSharp.Commands.Audio.Fairlight.FairlightM
 
 namespace AtemSharp.Tests.Commands.Fairlight;
 
-public class FairlightMixerInputCommandTests : SerializedCommandTestBase<FairlightMixerInputCommand,
+public class FairlightMixerInputCommandTests : TypeScriptLibrarySerializedCommandTestBase<FairlightMixerInputCommand,
     FairlightMixerInputCommandTests.CommandData>
 {
     [MaxProtocolVersion(ProtocolVersion.V8_0_1)]

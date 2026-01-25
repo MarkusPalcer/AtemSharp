@@ -4,7 +4,7 @@ using AtemSharp.Types.Border;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
-public class SuperSourceBorderCommandTests : SerializedCommandTestBase<SuperSourceBorderCommand, SuperSourceBorderCommandTests.CommandData>
+public class SuperSourceBorderCommandTests : TypeScriptLibrarySerializedCommandTestBase<SuperSourceBorderCommand, SuperSourceBorderCommandTests.CommandData>
 {
     protected override Range[] GetFloatingPointByteRanges() =>
     [

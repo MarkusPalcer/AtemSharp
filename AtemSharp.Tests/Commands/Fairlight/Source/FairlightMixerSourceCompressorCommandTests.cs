@@ -2,7 +2,7 @@ using FairlightMixerSourceCompressorCommand = AtemSharp.Commands.Audio.Fairlight
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
-public class FairlightMixerSourceCompressorCommandTests : SerializedCommandTestBase<FairlightMixerSourceCompressorCommand,
+public class FairlightMixerSourceCompressorCommandTests : TypeScriptLibrarySerializedCommandTestBase<FairlightMixerSourceCompressorCommand,
     FairlightMixerSourceCompressorCommandTests.CommandData>
 {
     protected override Range[] GetFloatingPointByteRanges() =>

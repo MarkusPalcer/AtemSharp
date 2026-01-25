@@ -5,7 +5,7 @@ using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
-internal class TopologyCommandTests : DeserializedCommandTestBase<TopologyCommand, TopologyCommandTests.CommandData>
+internal class TopologyCommandTests : TypeScriptLibraryDeserializedCommandTestBase<TopologyCommand, TopologyCommandTests.CommandData>
 {
     [MaxProtocolVersion(ProtocolVersion.V7_5_2)]
     public class CommandData : CommandDataBase

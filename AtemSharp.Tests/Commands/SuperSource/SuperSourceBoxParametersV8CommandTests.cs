@@ -4,7 +4,7 @@ using AtemSharp.State.Video.SuperSource;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
-public class SuperSourceBoxParametersV8CommandTests : SerializedCommandTestBase<SuperSourceBoxParametersV8Command, SuperSourceBoxParametersV8CommandTests.CommandData>
+public class SuperSourceBoxParametersV8CommandTests : TypeScriptLibrarySerializedCommandTestBase<SuperSourceBoxParametersV8Command, SuperSourceBoxParametersV8CommandTests.CommandData>
 {
     // Mark all as floating point as it's version dependent where the floating points are
     protected override Range[] GetFloatingPointByteRanges() => [

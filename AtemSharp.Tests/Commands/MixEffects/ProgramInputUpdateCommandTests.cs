@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.MixEffects;
 
 [TestFixture]
-internal class ProgramInputUpdateCommandTests : DeserializedCommandTestBase<ProgramInputUpdateCommand,
+internal class ProgramInputUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<ProgramInputUpdateCommand,
     ProgramInputUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

@@ -6,7 +6,7 @@ using AtemSharp.Tests.TestUtilities;
 namespace AtemSharp.Tests.Commands.DownstreamKey;
 
 [TestFixture]
-public class DownstreamKeyAutoCommandTests : SerializedCommandTestBase<DownstreamKeyAutoCommand,
+public class DownstreamKeyAutoCommandTests : TypeScriptLibrarySerializedCommandTestBase<DownstreamKeyAutoCommand,
     DownstreamKeyAutoCommandTests.CommandData>
 {
     [MaxProtocolVersion(ProtocolVersion.V8_0)]

@@ -3,7 +3,7 @@ using AtemSharp.State.Video.DownstreamKeyer;
 
 namespace AtemSharp.Tests.Commands.DownstreamKey;
 
-public class DownstreamKeyRateCommandTests : SerializedCommandTestBase<DownstreamKeyRateCommand, DownstreamKeyRateCommandTests.CommandData>
+public class DownstreamKeyRateCommandTests : TypeScriptLibrarySerializedCommandTestBase<DownstreamKeyRateCommand, DownstreamKeyRateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

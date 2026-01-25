@@ -6,7 +6,7 @@ using AtemSharp.Tests.TestUtilities;
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
 [TestFixture]
-internal class AudioMixerConfigCommandTests : DeserializedCommandTestBase<AudioMixerConfigCommand, AudioMixerConfigCommandTests.CommandData>
+internal class AudioMixerConfigCommandTests : TypeScriptLibraryDeserializedCommandTestBase<AudioMixerConfigCommand, AudioMixerConfigCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.DownstreamKey;
 
 [TestFixture]
-internal class DownstreamKeyPropertiesUpdateCommandTests : DeserializedCommandTestBase<DownstreamKeyPropertiesUpdateCommand,
+internal class DownstreamKeyPropertiesUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<DownstreamKeyPropertiesUpdateCommand,
     DownstreamKeyPropertiesUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

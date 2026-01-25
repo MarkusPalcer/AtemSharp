@@ -6,7 +6,7 @@ using AudioMixerInputUpdateCommand = AtemSharp.Commands.Audio.ClassicAudio.Audio
 namespace AtemSharp.Tests.Commands.Audio;
 
 [TestFixture]
-internal class AudioMixerInputUpdateCommandTests : DeserializedCommandTestBase<AudioMixerInputUpdateCommand,
+internal class AudioMixerInputUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<AudioMixerInputUpdateCommand,
     AudioMixerInputUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

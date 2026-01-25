@@ -5,7 +5,7 @@ using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.DownstreamKey;
 
-internal class DownstreamKeyStateUpdateCommandTests : DeserializedCommandTestBase<DownstreamKeyStateUpdateCommand,
+internal class DownstreamKeyStateUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<DownstreamKeyStateUpdateCommand,
     DownstreamKeyStateUpdateCommandTests.CommandData>
 {
     [MaxProtocolVersion(ProtocolVersion.V8_0)]

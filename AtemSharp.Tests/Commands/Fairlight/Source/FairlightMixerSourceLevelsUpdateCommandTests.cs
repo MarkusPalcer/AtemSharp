@@ -3,7 +3,7 @@ using FairlightMixerSourceLevelsUpdateCommand = AtemSharp.Commands.Audio.Fairlig
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
-internal class FairlightMixerSourceLevelsUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerSourceLevelsUpdateCommand,
+internal class FairlightMixerSourceLevelsUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<FairlightMixerSourceLevelsUpdateCommand,
     FairlightMixerSourceLevelsUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

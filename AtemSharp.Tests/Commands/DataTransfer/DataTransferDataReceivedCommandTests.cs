@@ -7,7 +7,7 @@ namespace AtemSharp.Tests.Commands.DataTransfer;
 /// Test deserialization functionality of DataTransferDataCommand using data-driven tests
 /// </summary>
 [TestFixture]
-internal class DataTransferDataReceivedCommandTests : DeserializedCommandTestBase<DataTransferDataReceivedCommand,
+internal class DataTransferDataReceivedCommandTests : TypeScriptLibraryDeserializedCommandTestBase<DataTransferDataReceivedCommand,
     DataTransferDataReceivedCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

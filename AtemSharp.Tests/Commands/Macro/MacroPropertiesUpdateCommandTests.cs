@@ -5,7 +5,7 @@ using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.Macro;
 
-internal class MacroPropertiesUpdateCommandTests : DeserializedCommandTestBase<MacroPropertiesUpdateCommand,
+internal class MacroPropertiesUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<MacroPropertiesUpdateCommand,
     MacroPropertiesUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

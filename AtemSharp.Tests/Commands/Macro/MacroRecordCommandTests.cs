@@ -1,36 +1,20 @@
+using Argon;
 using AtemSharp.Commands.Macro;
 using AtemSharp.State.Macro;
+using JetBrains.Annotations;
 using NSubstitute;
 
 namespace AtemSharp.Tests.Commands.Macro;
 
-public class MacroRecordCommandTests : SerializedCommandTestBase<MacroRecordCommand, MacroRecordCommandTests.CommandData>
+public class MacroRecordCommandTests : SerializedCommandTestBase<MacroRecordCommand>
 {
-    public class CommandData : CommandDataBase
+    [UsedImplicitly]
+    private record CommandCreationParameters(ushort MacroId);
+
+    protected override MacroRecordCommand CreateCommand(IStateHolder state, JObject? creationParameters)
     {
-        public ushort Index { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-    }
-
-    protected override MacroRecordCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
-    {
-        var macro = new AtemSharp.State.Macro.Macro(Substitute.For<IAtemSwitcher>())
-        {
-            Id = testCase.Command.Index,
-        };
-
-        macro.UpdateName(testCase.Command.Name);
-        macro.UpdateDescription(testCase.Command.Description);
-
-        return new MacroRecordCommand(macro);
-    }
-
-    static MacroRecordCommand Factory()
-    {
-        var state = new MacroSystem(Substitute.For<IAtemSwitcher>());
-        state.Populate(5);
-        return new MacroRecordCommand(state[2]);
+        var parameters = creationParameters!.ToObject<CommandCreationParameters>()!;
+        return new MacroRecordCommand(state.Macros[parameters.MacroId]);
     }
 
     [Test]
@@ -39,8 +23,8 @@ public class MacroRecordCommandTests : SerializedCommandTestBase<MacroRecordComm
         var state = new MacroSystem(Substitute.For<IAtemSwitcher>());
         state.Populate(5);
 
-        var first = new  MacroRecordCommand(state[2]) { Name = "First" ,  Description = "First Macro" };
-        var second = new  MacroRecordCommand(state[3]) { Name = "Second" ,  Description = "Second Macro" };
+        var first = new MacroRecordCommand(state[2]) { Name = "First", Description = "First Macro" };
+        var second = new MacroRecordCommand(state[3]) { Name = "Second", Description = "Second Macro" };
 
         Assert.That(second.TryMergeTo(first), Is.True);
         Assert.That(first.Index, Is.EqualTo(3));
@@ -72,5 +56,12 @@ public class MacroRecordCommandTests : SerializedCommandTestBase<MacroRecordComm
     public void TestPropertyMerging_WithWrongType()
     {
         TestPropertyMerging_WithWrongType(Factory);
+    }
+
+    static MacroRecordCommand Factory()
+    {
+        var state = new MacroSystem(Substitute.For<IAtemSwitcher>());
+        state.Populate(5);
+        return new MacroRecordCommand(state[2]);
     }
 }

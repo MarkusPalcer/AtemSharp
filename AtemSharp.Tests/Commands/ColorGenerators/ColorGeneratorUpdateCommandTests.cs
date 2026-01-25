@@ -3,7 +3,7 @@ using AtemSharp.State;
 
 namespace AtemSharp.Tests.Commands.ColorGenerators;
 
-internal class ColorGeneratorUpdateCommandTests : DeserializedCommandTestBase<ColorGeneratorUpdateCommand,
+internal class ColorGeneratorUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<ColorGeneratorUpdateCommand,
     ColorGeneratorUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

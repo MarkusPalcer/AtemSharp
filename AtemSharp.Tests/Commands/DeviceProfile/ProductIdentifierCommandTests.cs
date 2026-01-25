@@ -5,7 +5,7 @@ using AtemSharp.State.Info;
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
 [TestFixture]
-internal class ProductIdentifierCommandTests : DeserializedCommandTestBase<ProductIdentifierCommand,
+internal class ProductIdentifierCommandTests : TypeScriptLibraryDeserializedCommandTestBase<ProductIdentifierCommand,
     ProductIdentifierCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

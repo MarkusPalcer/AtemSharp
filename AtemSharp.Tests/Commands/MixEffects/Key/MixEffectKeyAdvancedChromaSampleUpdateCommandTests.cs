@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
 [TestFixture]
-internal class MixEffectKeyAdvancedChromaSampleUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyAdvancedChromaSampleUpdateCommand,
+internal class MixEffectKeyAdvancedChromaSampleUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<MixEffectKeyAdvancedChromaSampleUpdateCommand,
     MixEffectKeyAdvancedChromaSampleUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

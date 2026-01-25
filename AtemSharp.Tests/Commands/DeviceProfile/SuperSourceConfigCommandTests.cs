@@ -6,7 +6,7 @@ using AtemSharp.Tests.TestUtilities;
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
 [TestFixture]
-internal class SuperSourceConfigCommandTests : DeserializedCommandTestBase<SuperSourceConfigCommand,
+internal class SuperSourceConfigCommandTests : TypeScriptLibraryDeserializedCommandTestBase<SuperSourceConfigCommand,
     SuperSourceConfigCommandTests.CommandData>
 {
     [MaxProtocolVersion(ProtocolVersion.V7_5_2)]

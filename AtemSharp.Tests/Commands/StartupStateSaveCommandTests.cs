@@ -3,7 +3,7 @@ using AtemSharp.Commands.StartupState;
 namespace AtemSharp.Tests.Commands;
 
 [TestFixture]
-public class StartupStateSaveCommandTests : SerializedCommandTestBase<StartupStateSaveCommand, StartupStateSaveCommandTests.CommandData>
+public class StartupStateSaveCommandTests : TypeScriptLibrarySerializedCommandTestBase<StartupStateSaveCommand, StartupStateSaveCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase {}
 

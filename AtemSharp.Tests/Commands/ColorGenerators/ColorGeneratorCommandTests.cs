@@ -4,7 +4,7 @@ using AtemSharp.Types;
 
 namespace AtemSharp.Tests.Commands.ColorGenerators;
 
-public class ColorGeneratorCommandTests : SerializedCommandTestBase<ColorGeneratorCommand, ColorGeneratorCommandTests.CommandData>
+public class ColorGeneratorCommandTests : TypeScriptLibrarySerializedCommandTestBase<ColorGeneratorCommand, ColorGeneratorCommandTests.CommandData>
 {
     protected override Range[] GetFloatingPointByteRanges() =>
     [

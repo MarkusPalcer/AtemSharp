@@ -1,32 +1,21 @@
+using Argon;
 using AtemSharp.Commands.Macro;
 using AtemSharp.Tests.Batch;
 
 namespace AtemSharp.Tests.Commands.Macro;
 
-public class MacroAddTimedPauseCommandTests : SerializedCommandTestBase<MacroAddTimedPauseCommand,
-    MacroAddTimedPauseCommandTests.CommandData>
+public class MacroAddTimedPauseCommandTests : SerializedCommandTestBase<MacroAddTimedPauseCommand>
 {
-    public class CommandData : CommandDataBase
-    {
-        public ushort Frames { get; set; }
-    }
-
-    protected override MacroAddTimedPauseCommand CreateSut(TestUtilities.CommandTests.TestCaseData<CommandData> testCase)
-    {
-        return new MacroAddTimedPauseCommand
-        {
-            Frames = testCase.Command.Frames
-        };
-    }
+    protected override MacroAddTimedPauseCommand CreateCommand(IStateHolder state, JObject? creationParameters) => new();
 
     [Test]
-    public void MergeCommand()
+    public void DoesNotMergeWithSameCommand()
     {
         var first = new MacroAddTimedPauseCommand { Frames = 2 };
         var second = new MacroAddTimedPauseCommand { Frames = 3 };
 
-        Assert.That(second.TryMergeTo(first), Is.True);
-        Assert.That(first.Frames, Is.EqualTo(5));
+        Assert.That(second.TryMergeTo(first), Is.False);
+        Assert.That(first.Frames, Is.EqualTo(2));
     }
 
     [Test]
@@ -37,3 +26,4 @@ public class MacroAddTimedPauseCommandTests : SerializedCommandTestBase<MacroAdd
         Assert.That(sut.TryMergeTo(new MergeableCommand(2)), Is.False);
     }
 }
+

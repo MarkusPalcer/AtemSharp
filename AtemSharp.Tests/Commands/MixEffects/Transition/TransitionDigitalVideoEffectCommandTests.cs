@@ -5,7 +5,7 @@ using AtemSharp.State.Video.MixEffect.Transition;
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
 [TestFixture]
-public class TransitionDigitalVideoEffectCommandTests : SerializedCommandTestBase<TransitionDigitalVideoEffectCommand,
+public class TransitionDigitalVideoEffectCommandTests : TypeScriptLibrarySerializedCommandTestBase<TransitionDigitalVideoEffectCommand,
     TransitionDigitalVideoEffectCommandTests.CommandData>
 {
     protected override Range[] GetFloatingPointByteRanges() =>

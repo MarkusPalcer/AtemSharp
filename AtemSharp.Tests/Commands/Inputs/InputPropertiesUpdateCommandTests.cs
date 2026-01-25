@@ -6,7 +6,7 @@ using AtemSharp.State.Video.InputChannel;
 namespace AtemSharp.Tests.Commands.Inputs;
 
 [TestFixture]
-internal class InputPropertiesUpdateCommandTests : DeserializedCommandTestBase<InputPropertiesUpdateCommand,
+internal class InputPropertiesUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<InputPropertiesUpdateCommand,
     InputPropertiesUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

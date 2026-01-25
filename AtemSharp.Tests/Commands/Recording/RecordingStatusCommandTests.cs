@@ -4,7 +4,7 @@ using AtemSharp.State.Recording;
 
 namespace AtemSharp.Tests.Commands.Recording;
 
-public class RecordingStatusCommandTests : SerializedCommandTestBase<RecordingStatusCommand, RecordingStatusCommandTests.CommandData>
+public class RecordingStatusCommandTests : TypeScriptLibrarySerializedCommandTestBase<RecordingStatusCommand, RecordingStatusCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

@@ -4,7 +4,7 @@ using AudioMixerPropertiesCommand = AtemSharp.Commands.Audio.ClassicAudio.AudioM
 namespace AtemSharp.Tests.Commands.Audio;
 
 [TestFixture]
-public class AudioMixerPropertiesCommandTests : SerializedCommandTestBase<AudioMixerPropertiesCommand,
+public class AudioMixerPropertiesCommandTests : TypeScriptLibrarySerializedCommandTestBase<AudioMixerPropertiesCommand,
     AudioMixerPropertiesCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

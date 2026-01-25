@@ -2,7 +2,7 @@ using FairlightMixerSendLevelsCommand = AtemSharp.Commands.Audio.Fairlight.Fairl
 
 namespace AtemSharp.Tests.Commands.Fairlight;
 
-public class FairlightMixerSendLevelsCommandTests : SerializedCommandTestBase<FairlightMixerSendLevelsCommand, FairlightMixerSendLevelsCommandTests.CommandData>
+public class FairlightMixerSendLevelsCommandTests : TypeScriptLibrarySerializedCommandTestBase<FairlightMixerSendLevelsCommand, FairlightMixerSendLevelsCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

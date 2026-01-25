@@ -32,7 +32,7 @@ jobs:
           $coverageFiles = Get-ChildItem -Path . -Recurse -Filter coverage.cobertura.xml
           $coveragePaths = $coverageFiles | ForEach-Object { $_.FullName }
           $reportsArg = '"' + ($coveragePaths -join ";") + '"'
-          dotnet tool run reportgenerator  -reports:$reportsArg "-targetdir:coverage-report" "-filefilters:-*.g.cs" "-reporttypes:$reportType"
+          dotnet tool run reportgenerator -reports:$reportsArg "-targetdir:coverage-report" "-filefilters:-*.g.cs" "-reporttypes:Html"
 
       - name: Upload Coverage report
         uses: actions/upload-artifact@v4

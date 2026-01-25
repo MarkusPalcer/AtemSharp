@@ -1,14 +1,129 @@
 {
     "$comment": "This test data has been captured with Wireshark from my ATEM Mini Pro ISO",
     "commands": {
-        "DUMMY": [
+        "MSRc": [
             {
-                "name": "A display name for the test case to show in the test list",
-                "Payload": "00-00-00-00",
-                "Command": {
-                    "some": "command",
-                    "data": 4
+                "Name": "Record Macro #5",
+                "Payload": "00-05-00-09-00-13-4E-65-77-20-4D-61-63-72-6F-54-68-69-73-20-69-73-20-61-20-6E-65-77-20-4D-61-63-72-6F-00-00",
+                "ProtocolVersion": "Unknown",
+                "CommandCreationParameters": {
+                    "MacroId": 5
+                },
+                "Changes": {
+                    "Name": "New Macro",
+                    "Description": "This is a new Macro"
                 }
+            }
+        ],
+        "MAct": [
+            {
+                "Name": "Delete Macro #0",
+                "Payload": "00-00-05-00",
+                "CommandCreationParameters": {
+                    "MacroId": 0,
+                    "Action": "Delete"
+                }
+            },
+            {
+                "Name": "Run Macro #5",
+                "Payload": "00-05-00-00",
+                "CommandCreationParameters": {
+                    "MacroId": 5,
+                    "Action": "Run"
+                }
+            },
+            {
+                "Name": "Continue",
+                "Payload": "FF-FF-04-00",
+                "CommandCreationParameters": {
+                    "Action": "Continue"
+                }
+            },
+            {
+                "Name": "Stop",
+                "Payload": "FF-FF-01-00",
+                "CommandCreationParameters": {
+                    "Action": "Stop"
+                }
+            },
+            {
+                "Name": "Stop Recording",
+                "Payload": "FF-FF-02-00",
+                "CommandCreationParameters": {
+                    "Action": "StopRecord"
+                }
+            },
+            {
+                "Name": "Insert 'Wait for user'",
+                "Payload": "FF-FF-03-00",
+                "CommandCreationParameters": {
+                    "Action": "InsertUserWait"
+                }
+            }
+        ],
+        "MSlp": [
+            {
+                "Name": "10 frames",
+                "Payload": "00-00-00-0A",
+                "Changes": {
+                    "Frames": 10
+                }
+            },
+            {
+                "Name": "25 frames",
+                "Payload": "00-00-00-19",
+                "Changes": {
+                    "Frames": 25
+                }
+            }
+        ],
+        "CMPr": [
+            {
+                "Name": "Change name",
+                "Payload": "01-00-00-01-00-08-00-00-4E-65-77-20-4E-61-6D-65",
+                "CommandCreationParameters": {
+                    "MacroId": 1
+                },
+                "Changes": {
+                    "Name": "New Name"
+                }
+            },
+            {
+                "Name": "Change description",
+                "Payload": "02-00-00-01-00-00-00-0F-4E-65-77-20-44-65-73-63-72-69-70-74-69-6F-6E-00",
+                "CommandCreationParameters": {
+                    "MacroId": 1
+                },
+                "Changes": {
+                    "Description": "New Description"
+                }
+            },
+            {
+                "Name": "Change both",
+                "Payload": "03-00-00-00-00-08-00-0F-4E-65-77-20-4E-61-6D-65-4E-65-77-20-44-65-73-63-72-69-70-74-69-6F-6E-00",
+                "CommandCreationParameters": {
+                    "MacroId": 0
+                },
+                "Changes": {
+                    "Name": "New Name",
+                    "Description": "New Description"
+                }
+            }
+        ],
+        "MRCP": [
+            {
+                "Name": "Enable looping",
+                "Changes": {
+                    "Loop": true
+                },
+                "Payload": "01-01-00-00"
+            },
+            {
+                "Name": "Disable looping",
+                "Changes": {
+                    "Loop": false
+                },
+                "Payload": "01-00-00-00"
             }
         ]
     }

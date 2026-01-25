@@ -4,7 +4,7 @@ using AudioMixerInputCommand = AtemSharp.Commands.Audio.ClassicAudio.AudioMixerI
 namespace AtemSharp.Tests.Commands.Audio;
 
 [TestFixture]
-public class AudioMixerInputCommandTests : SerializedCommandTestBase<AudioMixerInputCommand,
+public class AudioMixerInputCommandTests : TypeScriptLibrarySerializedCommandTestBase<AudioMixerInputCommand,
     AudioMixerInputCommandTests.CommandData>
 {
     protected override Range[] GetFloatingPointByteRanges()

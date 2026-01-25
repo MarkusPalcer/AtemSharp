@@ -7,7 +7,7 @@ using AtemSharp.Tests.TestUtilities;
 
 namespace AtemSharp.Tests.Commands.Fairlight;
 
-internal class FairlightMixerInputUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerInputUpdateCommand,
+internal class FairlightMixerInputUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<FairlightMixerInputUpdateCommand,
     FairlightMixerInputUpdateCommandTests.CommandData>
 {
     [MaxProtocolVersion(ProtocolVersion.V8_0_1)]

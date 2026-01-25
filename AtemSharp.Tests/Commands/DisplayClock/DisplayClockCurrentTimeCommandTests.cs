@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.DisplayClock;
 
 [TestFixture]
-internal class DisplayClockCurrentTimeCommandTests : DeserializedCommandTestBase<DisplayClockCurrentTimeCommand,
+internal class DisplayClockCurrentTimeCommandTests : TypeScriptLibraryDeserializedCommandTestBase<DisplayClockCurrentTimeCommand,
     DisplayClockCurrentTimeCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

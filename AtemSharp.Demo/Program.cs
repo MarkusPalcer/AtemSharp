@@ -2,6 +2,7 @@
 
 using System.Diagnostics;
 using AtemSharp;
+using AtemSharp.Json;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -28,7 +29,8 @@ await atem.ConnectAsync(cancellationToken: emergencyCts.Token);
 // Serialize state to JSON
 var stateJson = JsonConvert.SerializeObject(atem, Formatting.Indented,
                                             new JsonSerializerSettings
-                                                { Converters = [new StringEnumConverter()], TypeNameHandling = TypeNameHandling.Auto });
+                                                    { Converters = [new StringEnumConverter()], TypeNameHandling = TypeNameHandling.Auto }
+                                               .WithAtemStateSupport());
 
 // Write state to file
 await File.WriteAllTextAsync("state.json", stateJson);

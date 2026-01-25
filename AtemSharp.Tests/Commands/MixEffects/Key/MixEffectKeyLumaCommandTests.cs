@@ -4,7 +4,7 @@ using AtemSharp.State.Video.MixEffect.UpstreamKeyer;
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
 [TestFixture]
-public class MixEffectKeyLumaCommandTests : SerializedCommandTestBase<MixEffectKeyLumaCommand,
+public class MixEffectKeyLumaCommandTests : TypeScriptLibrarySerializedCommandTestBase<MixEffectKeyLumaCommand,
     MixEffectKeyLumaCommandTests.CommandData>
 {
     /// <summary>

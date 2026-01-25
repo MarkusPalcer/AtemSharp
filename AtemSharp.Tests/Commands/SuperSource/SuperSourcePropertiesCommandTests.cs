@@ -7,7 +7,7 @@ using AtemSharp.Types;
 
 namespace AtemSharp.Tests.Commands.SuperSource;
 
-public class SuperSourcePropertiesCommandTests : SerializedCommandTestBase<SuperSourcePropertiesCommand,
+public class SuperSourcePropertiesCommandTests : TypeScriptLibrarySerializedCommandTestBase<SuperSourcePropertiesCommand,
     SuperSourcePropertiesCommandTests.CommandData>
 {
     protected override Range[] GetFloatingPointByteRanges() =>

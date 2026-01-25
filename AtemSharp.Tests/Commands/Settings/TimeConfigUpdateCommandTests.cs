@@ -5,7 +5,7 @@ using AtemSharp.State.Settings;
 namespace AtemSharp.Tests.Commands.Settings;
 
 [TestFixture]
-internal class TimeConfigUpdateCommandTests : DeserializedCommandTestBase<TimeConfigUpdateCommand, TimeConfigUpdateCommandTests.CommandData>
+internal class TimeConfigUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<TimeConfigUpdateCommand, TimeConfigUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

@@ -4,7 +4,7 @@ using FairlightMixerMonitorUpdateCommand = AtemSharp.Commands.Audio.Fairlight.Mo
 
 namespace AtemSharp.Tests.Commands.Fairlight.Monitor;
 
-internal class FairlightMixerMonitorUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerMonitorUpdateCommand,
+internal class FairlightMixerMonitorUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<FairlightMixerMonitorUpdateCommand,
     FairlightMixerMonitorUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

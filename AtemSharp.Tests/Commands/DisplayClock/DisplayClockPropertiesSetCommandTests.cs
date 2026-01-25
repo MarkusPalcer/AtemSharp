@@ -5,7 +5,7 @@ using AtemSharp.State.DisplayClock;
 namespace AtemSharp.Tests.Commands.DisplayClock;
 
 [TestFixture]
-public class DisplayClockPropertiesSetCommandTests : SerializedCommandTestBase<DisplayClockPropertiesSetCommand,
+public class DisplayClockPropertiesSetCommandTests : TypeScriptLibrarySerializedCommandTestBase<DisplayClockPropertiesSetCommand,
     DisplayClockPropertiesSetCommandTests.CommandData>
 {
     protected override Range[] GetFloatingPointByteRanges()

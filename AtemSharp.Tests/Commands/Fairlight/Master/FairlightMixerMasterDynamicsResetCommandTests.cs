@@ -2,7 +2,7 @@ using AtemSharp.Commands.Audio.Fairlight.Master;
 
 namespace AtemSharp.Tests.Commands.Fairlight.Master;
 
-public class FairlightMixerMasterDynamicsResetCommandTests : SerializedCommandTestBase<FairlightMixerMasterDynamicsResetCommand, FairlightMixerMasterDynamicsResetCommandTests.CommandData>
+public class FairlightMixerMasterDynamicsResetCommandTests : TypeScriptLibrarySerializedCommandTestBase<FairlightMixerMasterDynamicsResetCommand, FairlightMixerMasterDynamicsResetCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

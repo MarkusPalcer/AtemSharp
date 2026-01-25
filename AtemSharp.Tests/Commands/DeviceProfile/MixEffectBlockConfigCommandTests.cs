@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.DeviceProfile;
 
 [TestFixture]
-internal class MixEffectBlockConfigCommandTests : DeserializedCommandTestBase<MixEffectBlockConfigCommand,
+internal class MixEffectBlockConfigCommandTests : TypeScriptLibraryDeserializedCommandTestBase<MixEffectBlockConfigCommand,
     MixEffectBlockConfigCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

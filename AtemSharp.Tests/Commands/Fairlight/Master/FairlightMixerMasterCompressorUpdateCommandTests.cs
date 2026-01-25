@@ -4,7 +4,7 @@ using FairlightMixerMasterCompressorUpdateCommand = AtemSharp.Commands.Audio.Fai
 
 namespace AtemSharp.Tests.Commands.Fairlight.Master;
 
-internal class FairlightMixerMasterCompressorUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerMasterCompressorUpdateCommand,
+internal class FairlightMixerMasterCompressorUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<FairlightMixerMasterCompressorUpdateCommand,
     FairlightMixerMasterCompressorUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

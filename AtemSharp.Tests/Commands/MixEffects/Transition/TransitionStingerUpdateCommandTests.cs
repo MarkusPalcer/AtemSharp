@@ -4,7 +4,7 @@ using AtemSharp.State;
 namespace AtemSharp.Tests.Commands.MixEffects.Transition;
 
 [TestFixture]
-internal class TransitionStingerUpdateCommandTests : DeserializedCommandTestBase<TransitionStingerUpdateCommand,
+internal class TransitionStingerUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<TransitionStingerUpdateCommand,
     TransitionStingerUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

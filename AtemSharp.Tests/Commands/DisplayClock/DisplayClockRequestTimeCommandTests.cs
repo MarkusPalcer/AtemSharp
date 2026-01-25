@@ -3,7 +3,7 @@ using AtemSharp.Commands.DisplayClock;
 namespace AtemSharp.Tests.Commands.DisplayClock;
 
 [TestFixture]
-public class DisplayClockRequestTimeCommandTests : SerializedCommandTestBase<DisplayClockRequestTimeCommand,
+public class DisplayClockRequestTimeCommandTests : TypeScriptLibrarySerializedCommandTestBase<DisplayClockRequestTimeCommand,
     DisplayClockRequestTimeCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase;

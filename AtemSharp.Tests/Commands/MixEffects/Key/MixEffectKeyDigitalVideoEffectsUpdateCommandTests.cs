@@ -4,7 +4,7 @@ using AtemSharp.Types.Border;
 
 namespace AtemSharp.Tests.Commands.MixEffects.Key;
 
-internal class MixEffectKeyDigitalVideoEffectsUpdateCommandTests : DeserializedCommandTestBase<MixEffectKeyDigitalVideoEffectsUpdateCommand,
+internal class MixEffectKeyDigitalVideoEffectsUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<MixEffectKeyDigitalVideoEffectsUpdateCommand,
     MixEffectKeyDigitalVideoEffectsUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

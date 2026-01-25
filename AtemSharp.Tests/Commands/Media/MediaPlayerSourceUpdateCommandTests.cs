@@ -4,7 +4,7 @@ using AtemSharp.State.Media;
 
 namespace AtemSharp.Tests.Commands.Media;
 
-internal class MediaPlayerSourceUpdateCommandTests : DeserializedCommandTestBase<MediaPlayerSourceUpdateCommand,
+internal class MediaPlayerSourceUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<MediaPlayerSourceUpdateCommand,
     MediaPlayerSourceUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase

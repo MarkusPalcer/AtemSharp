@@ -4,7 +4,7 @@ using FairlightMixerSourceExpanderUpdateCommand = AtemSharp.Commands.Audio.Fairl
 
 namespace AtemSharp.Tests.Commands.Fairlight.Source;
 
-internal class FairlightMixerSourceExpanderUpdateCommandTests : DeserializedCommandTestBase<FairlightMixerSourceExpanderUpdateCommand, FairlightMixerSourceExpanderUpdateCommandTests.CommandData>
+internal class FairlightMixerSourceExpanderUpdateCommandTests : TypeScriptLibraryDeserializedCommandTestBase<FairlightMixerSourceExpanderUpdateCommand, FairlightMixerSourceExpanderUpdateCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {

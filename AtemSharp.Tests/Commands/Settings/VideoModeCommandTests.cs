@@ -10,7 +10,7 @@ namespace AtemSharp.Tests.Commands.Settings;
 /// All test cases have Mode=N525i5994NTSC but expect different byte outputs.
 /// </summary>
 [TestFixture]
-public class VideoModeCommandTests : SerializedCommandTestBase<VideoModeCommand, VideoModeCommandTests.CommandData>
+public class VideoModeCommandTests : TypeScriptLibrarySerializedCommandTestBase<VideoModeCommand, VideoModeCommandTests.CommandData>
 {
     public class CommandData : CommandDataBase
     {
